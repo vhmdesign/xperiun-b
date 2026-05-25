@@ -1,0 +1,9 @@
+<svg width="260" height="260" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M200 130L210 120V80L130 0V60L200 130ZM130 200L140 210H180L260 130H200L130 200ZM60 130L50 140V180L130 260V200L60 130ZM130 60L120 50H80L0 130H60L130 60Z" fill="url(#grad-banco-sql)"/>
+<defs>
+<linearGradient id="grad-banco-sql" x1="0" y1="130" x2="260" y2="130" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6EB4E6"/>
+<stop offset="1" stop-color="#78BEEB"/>
+</linearGradient>
+</defs>
+</svg>
