@@ -1,0 +1,12 @@
+<svg width="704" height="512" viewBox="0 0 704 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <path d="M512 448c106.039 0 192-85.961 192-192S618.039 64 512 64s-192 85.961-192 192 85.961 192 192 192" fill="#9600ff"/>
+    <path d="M256 512c141.385 0 256-114.615 256-256S397.385 0 256 0 0 114.615 0 256s114.615 256 256 256" fill="url(#gradientOrbCore)"/>
+  </g>
+  <defs>
+    <linearGradient id="gradientOrbCore" x1="0" y1="256" x2="512" y2="256" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4b00ff"/>
+      <stop offset="1" stop-color="#9600ff"/>
+    </linearGradient>
+  </defs>
+</svg>

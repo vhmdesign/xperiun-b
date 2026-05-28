@@ -1,0 +1,11 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<filter id="b256" x="-50%" y="-50%" width="200%" height="200%" filterUnits="userSpaceOnUse">
+<feGaussianBlur stdDeviation="128"/>
+</filter>
+</defs>
+<path d="M960 184C526.667 184 140 696 -80 696V1144H2000V696C1780 696 1393.33 184 960 184Z" fill="#4B00FF" filter="url(#b256)"/>
+<path d="M960 376C526.667 376 140 760 -79.9999 760L-80 1144H2000V760C1780 760 1393.33 376 960 376Z" fill="#9664FF" filter="url(#b256)"/>
+<path d="M960 504C526.667 504 140 824 -80 824L-79.9999 1144H2000V824C1780 824 1393.33 504 960 504Z" fill="#C8AFFF" filter="url(#b256)"/>
+<path d="M939.5 632C506.167 632 140 888 -80 888H-592V1656H2512V888H2000C1780 888 1372.83 632 939.5 632Z" fill="#F5F5FF" filter="url(#b256)"/>
+</svg>
