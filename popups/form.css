@@ -1,0 +1,144 @@
+/* form.css — estilos compartilhados pra todos os popups de inscrição
+   (form-f1.html ... form-f7.html). Acent color por popup via custom
+   property --popup-accent-rgb (R, G, B triplet, setado inline na div
+   .popup-form). Padrão visual espelha .course-modal (backdrop var(--bb-75)
+   + blur). Classes popup-form-* são únicas no codebase — sem colisão
+   com host pages. */
+
+.popup-form {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    box-sizing: border-box;
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s;
+}
+.popup-form.is-open {
+    visibility: visible;
+    transition: visibility 0s linear 0s;
+}
+
+.popup-form .popup-form-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--bb-75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.popup-form.is-open .popup-form-backdrop { opacity: 1; }
+
+.popup-form .popup-form-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 688px;
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.popup-form.is-open .popup-form-content {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .popup-form,
+    .popup-form .popup-form-content,
+    .popup-form .popup-form-backdrop { transition: none; }
+}
+
+/* Card: gradiente diagonal + accent (top line + radial glow).
+   Overrides explícitos de opacity/grid pra anular .oferta-card de
+   formacoes/style.css (popup-form-card é único, mas a especificidade
+   sobe pra 0,0,2,0). */
+.popup-form .popup-form-card {
+    padding: 48px;
+    border-radius: 16px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--dn900);
+    --card-accent: rgba(var(--popup-accent-rgb, 255, 255, 255), 0.25);
+    box-shadow: inset 0 32px 64px -16px var(--card-accent);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+.popup-form .popup-form-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(to right, transparent, var(--card-accent), transparent) top / 100% 2px no-repeat;
+}
+.popup-form .popup-form-card::after {
+    content: "";
+    position: absolute;
+    top: -128px;
+    left: 0;
+    width: 100%;
+    height: 256px;
+    border-radius: 50%;
+    background: var(--card-accent);
+    filter: blur(128px);
+    pointer-events: none;
+    z-index: 1;
+}
+.popup-form .popup-form-card > * { position: relative; z-index: 2; }
+
+.popup-form .popup-form-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(var(--popup-accent-rgb, 255, 255, 255), 0.10);
+    box-sizing: border-box;
+}
+.popup-form .popup-form-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+.popup-form .popup-form-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.popup-form .popup-form-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.popup-form .popup-form-eyebrow .tag-status {
+    background-color: rgba(var(--popup-accent-rgb, 255, 255, 255), 0.25);
+    color: rgb(var(--popup-accent-rgb, 255, 255, 255));
+}
+.popup-form .popup-form-label {
+    font: var(--label);
+    color: var(--bw-75);
+    margin: 0;
+}
+.popup-form .popup-form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+}
+.popup-form .input-group + .input-group { margin-top: 16px; }
+
+.popup-form .popup-form-success {
+    color: var(--sc500);
+    font: var(--label);
+    margin: 0;
+}

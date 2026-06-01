@@ -1,9 +1,0 @@
-<svg width="260" height="260" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M260 120L210 170V20L260 70V120ZM175 50L125 0V170L175 120V50ZM90 90L40 40V140L90 90ZM210 170L170 210V260L210 220V170ZM125 170C125 171.59 85 205.23 85 205.23V260L125 220V170ZM40 140C40 141.59 0 180 0 180L40 220V140Z" fill="url(#grad-pbi-basico)"/>
-<defs>
-<linearGradient id="grad-pbi-basico" x1="37.5" y1="217.5" x2="222.5" y2="32.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#BE9696"/>
-<stop offset="1" stop-color="#C3AA73"/>
-</linearGradient>
-</defs>
-</svg>

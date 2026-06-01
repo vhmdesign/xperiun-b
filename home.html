@@ -645,7 +645,7 @@
             left: -32px;
             width: calc(100% + 64px);
             height: 1080px;
-            background-image: url('media/bg-transition-light.webp');
+            background-image: url('media/home/bg-transition-light.webp');
             background-size: 100% 100%;
             background-position: top center;
             background-repeat: no-repeat;
@@ -805,8 +805,8 @@
             height: 100%;
             width: 100%;
             object-fit: cover;
-            -webkit-mask-image: linear-gradient(to right, black 0%, transparent 75%);
-            mask-image: linear-gradient(to right, black 0%, transparent 75%);
+            -webkit-mask-image: linear-gradient(to right, black 0%, transparent 60%);
+            mask-image: linear-gradient(to right, black 0%, transparent 60%);
         }
 
         .tese-method-content {
@@ -1655,43 +1655,40 @@ black 0%, transparent 100%);
             -webkit-text-fill-color: transparent;
         }
 
-        .sec-depos {
-            padding: 128px 0;
-        }
-
-        .depos-header {
-            max-width: 1408px;
+        /* ── Section Depoimentos (importado do formacoes/style.css) ─ */
+        .sec-depos { padding: 128px 0; }
+        .depos-inner {
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 0 16px 64px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            column-gap: 32px;
+            row-gap: 64px;
+        }
+        .depos-header {
+            grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             gap: 24px;
-            margin-bottom: 40px;
         }
-
         .depos-header-left {
             display: flex;
             flex-direction: column;
             gap: 16px;
-            max-width: 680px;
         }
-
         .depos-social-proof {
             display: flex;
             align-items: center;
             gap: 12px;
             opacity: 0;
-            filter: blur(8px);
+            filter: blur(16px);
             transform: translateY(-16px);
             transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
         }
-
-        .depos-avatar-stack {
-            display: flex;
-            flex-direction: row;
-        }
-
+        .depos-avatar-stack { display: flex; flex-direction: row; }
         .depos-avatar {
             width: 40px;
             height: 40px;
@@ -1701,75 +1698,35 @@ black 0%, transparent 100%);
             flex-shrink: 0;
             box-shadow: -4px 0 0 0 var(--bb-25), inset 0 0 4px 0 var(--bw-25);
         }
-
-        .depos-avatar + .depos-avatar {
-            margin-left: -20px;
-        }
-
-        .depos-eyebrow {
-            font: var(--label);
-            color: var(--bw-75);
-            margin: 0;
-        }
-
-
-
+        .depos-avatar + .depos-avatar { margin-left: -20px; }
+        .depos-eyebrow { font: var(--label); color: var(--bw-75); margin: 0; }
         .depos-stars {
             display: flex;
             align-items: center;
             gap: 4px;
             opacity: 0;
-            filter: blur(8px);
+            filter: blur(16px);
             transform: translateY(16px);
             transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
         }
-
-        .depos-star-stack {
-            display: flex;
-            flex-direction: row;
-        }
-
+        .depos-star-stack { display: flex; flex-direction: row; }
         .depos-star-stack .material-symbols-outlined {
             font-size: 20px;
             color: var(--sg500);
             font-variation-settings: 'FILL' 1;
         }
-
-        .depos-star-stack .material-symbols-outlined + .material-symbols-outlined {
-            margin-left: -4px;
-        }
-
-        .depos-rating {
-            font: var(--p-s);
-            color: var(--sg300);
-            margin: 0;
-            margin-left: 4px;
-        }
-
-        .depos-nav {
-            display: flex;
-            gap: 16px;
-            flex-shrink: 0;
-        }
-
+        .depos-star-stack .material-symbols-outlined + .material-symbols-outlined { margin-left: -4px; }
+        .depos-rating { font: var(--p-s); color: var(--sg300); margin: 0 0 0 4px; }
+        .depos-nav { display: flex; gap: 16px; flex-shrink: 0; }
         .depos-carousel-wrap {
             max-width: 1440px;
             margin: 0 auto;
             padding: 0 0 0 16px;
             overflow: hidden;
             position: relative;
-            opacity: 0;
+            -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 128px), transparent 100%);
+                    mask-image: linear-gradient(to right, #000 calc(100% - 128px), transparent 100%);
         }
-
-        .depos-carousel-wrap::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to right, transparent calc(100% - 128px), var(--bb) 100%);
-            pointer-events: none;
-            z-index: 2;
-        }
-
         .depos-track {
             display: flex;
             gap: 24px;
@@ -1778,44 +1735,26 @@ black 0%, transparent 100%);
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
-
-        .depos-track::-webkit-scrollbar {
-            display: none;
-        }
-
+        .depos-track::-webkit-scrollbar { display: none; }
         .depos-card {
             flex: 0 0 calc((100% - 3 * 24px - 64px) / 3);
             scroll-snap-align: start;
         }
-
         .depos-video {
             aspect-ratio: 16 / 9;
             border-radius: 12px;
             overflow: hidden;
-            background: var(--dn800);
             position: relative;
         }
-
-        .depos-video[data-vid] {
-            cursor: pointer;
-        }
-
+        .depos-video[data-vid] { cursor: pointer; }
         .depos-thumb {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+                    mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
         }
-
-        .depos-video[data-vid]::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 40%, var(--dn900) 100%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
         .depos-info {
             position: absolute;
             bottom: 0;
@@ -1827,25 +1766,9 @@ black 0%, transparent 100%);
             align-items: center;
             gap: 12px;
         }
-
-        .depos-info-text {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .depos-info-label {
-            font: var(--p-s);
-            color: var(--bw-75);
-            margin: 0;
-        }
-
-        .depos-info-name {
-            font: var(--p-l);
-            color: var(--bw);
-            margin: 0;
-        }
-
+        .depos-info-text { display: flex; flex-direction: column; gap: 2px; }
+        .depos-info-label { font: var(--p-s); color: var(--bw-75); margin: 0; }
+        .depos-info-name { font: var(--p-l); color: var(--bw); margin: 0; }
         .depos-play {
             width: 48px;
             height: 48px;
@@ -1861,86 +1784,66 @@ black 0%, transparent 100%);
             transition: background 0.2s;
             align-self: flex-start;
         }
-
-        .depos-play .material-symbols-outlined {
-            font-size: 28px;
-            font-variation-settings: 'FILL' 1;
-        }
-
-        .depos-video[data-vid]:hover .depos-play {
-            background: var(--bw-25);
-        }
-
-        .depos-video iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-            display: block;
-        }
-
+        .depos-play .material-symbols-outlined { font-size: 28px; font-variation-settings: 'FILL' 1; }
+        .depos-video[data-vid]:hover .depos-play { background: var(--bw-25); }
+        .depos-video iframe { width: 100%; height: 100%; border: 0; display: block; }
         @media (min-width: 1440px) {
-            .depos-carousel-wrap {
-                max-width: none;
-                margin: 0;
-                padding-left: 0;
-            }
-            .depos-track {
-                scroll-snap-type: none;
-            }
-            .depos-card {
-                flex: 0 0 calc((1408px - 2 * 24px) / 3);
-                scroll-snap-align: none;
-            }
+            .depos-carousel-wrap { max-width: none; margin: 0; padding-left: 0; }
+            .depos-track { scroll-snap-type: none; }
+            .depos-card { flex: 0 0 calc((1408px - 2 * 24px) / 3); scroll-snap-align: none; }
         }
-
+        @media (max-width: 1439px) {
+            .depos-inner { grid-template-columns: repeat(8, 1fr); }
+        }
         @media (max-width: 1152px) {
-            .depos-card {
-                flex: 0 0 calc((100% - 2 * 24px - 64px) / 2);
-            }
+            .depos-card { flex: 0 0 calc((100% - 2 * 24px - 64px) / 2); }
         }
-
         @media (max-width: 864px) {
-            .depos-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+            .depos-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; padding-bottom: 48px; }
+            .depos-header { flex-direction: column; align-items: flex-start; }
         }
-
         @media (min-width: 576px) and (max-width: 864px) {
-            .depos-card {
-                flex: 0 0 calc(100% - 24px - 32px);
-            }
+            .depos-card { flex: 0 0 calc(100% - 24px - 32px); }
         }
-
         @media (max-width: 576px) {
             .sec-depos { padding: 96px 0; }
-            .depos-track {
-                gap: 16px;
-            }
-            .depos-card {
-                flex: 0 0 calc(100% - 16px - 32px);
-            }
+            .depos-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; padding-bottom: 32px; }
+            .depos-track { gap: 16px; }
+            .depos-card { flex: 0 0 calc(100% - 16px - 32px); }
         }
-
-        /* ── Depoimentos: Empregadores ─────────────────────────── */
-        .depos-employers {
-            margin-top: 80px;
-        }
-
-        .depos-employers-header {
-            max-width: 1408px;
+        /* Depoimentos: empregadores */
+        .depos-employers { margin-top: 80px; }
+        .depos-employers-inner {
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 0 16px 40px;
+            padding: 0 16px 64px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            column-gap: 32px;
         }
-
-
+        .depos-employers-header {
+            grid-column: span 5;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        @media (max-width: 1439px) {
+            .depos-employers-inner { grid-template-columns: repeat(8, 1fr); }
+            .depos-employers-header { grid-column: span 4; }
+        }
+        @media (max-width: 864px) {
+            .depos-employers-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; padding-bottom: 48px; }
+            .depos-employers-header { grid-column: 1 / -1; }
+        }
+        @media (max-width: 576px) {
+            .depos-employers-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; padding-bottom: 32px; }
+        }
         .depos-logos-section {
             padding: 0 16px;
             overflow: hidden;
-            box-shadow: inset 0 2px 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5);
-            opacity: 0;
+            box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
         }
-
         .depos-logos-grid {
             max-width: 1408px;
             margin: 0 auto;
@@ -1949,73 +1852,39 @@ black 0%, transparent 100%);
             grid-template-rows: repeat(2, auto);
             grid-auto-rows: 0px;
             overflow: hidden;
-            box-shadow: inset -2px 0 0 0 var(--bw-5);
+            box-shadow: inset -2px 0 0 0 var(--bw-10);
         }
-
         .depos-logo-card {
             padding: 24px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 80px;
-            box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5);
+            box-shadow: inset 2px 0 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
         }
-
         .depos-logo-card img {
             max-width: 100%;
-            max-height: 32px;
+            max-height: 64px;
             object-fit: contain;
-            filter: brightness(0) invert(1);
             opacity: 0.5;
             display: block;
-            transition: opacity 0.6s ease, filter 0.6s ease;
+            transition: opacity 0.6s ease;
         }
-
-        /* desktop 6 cols, 2 rows: last row = cards 7-12 */
-        .depos-logo-card:nth-child(n+7) {
-            box-shadow: inset 2px 0 0 0 var(--bw-5);
-        }
-
+        .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-5); }
         @media (max-width: 1152px) {
-            .depos-logos-grid {
-                grid-template-columns: repeat(4, 1fr);
-                grid-template-rows: repeat(3, auto);
-            }
-            /* 4 cols, 3 rows: restore bottom for cards 7-8 (row 2); remove for 9-12 (last row) */
-            .depos-logo-card:nth-child(n+7) {
-                box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5);
-            }
-            .depos-logo-card:nth-child(n+9) {
-                box-shadow: inset 2px 0 0 0 var(--bw-5);
-            }
+            .depos-logos-grid { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, auto); }
+            .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5); }
+            .depos-logo-card:nth-child(n+9) { box-shadow: inset 2px 0 0 0 var(--bw-5); }
         }
-
         @media (max-width: 864px) {
-            .depos-logos-grid {
-                grid-template-columns: repeat(3, 1fr);
-                grid-template-rows: repeat(3, auto);
-            }
-            /* 3 cols, 3 rows: last visible row = 7-9; restore 9 then remove 7+ */
-            .depos-logo-card:nth-child(n+9) {
-                box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5);
-            }
-            .depos-logo-card:nth-child(n+7) {
-                box-shadow: inset 2px 0 0 0 var(--bw-5);
-            }
+            .depos-logos-grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, auto); }
+            .depos-logo-card:nth-child(n+9) { box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5); }
+            .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-5); }
         }
-
         @media (max-width: 576px) {
-            .depos-logos-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, auto);
-            }
-            /* 2 cols, 3 rows: last visible row = 5-6; remove bottom from 5+ */
-            .depos-logo-card:nth-child(n+7) {
-                box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5);
-            }
-            .depos-logo-card:nth-child(n+5) {
-                box-shadow: inset 2px 0 0 0 var(--bw-5);
-            }
+            .depos-logos-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, auto); }
+            .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5); }
+            .depos-logo-card:nth-child(n+5) { box-shadow: inset 2px 0 0 0 var(--bw-5); }
         }
 
         /* ======================================================
@@ -2589,13 +2458,22 @@ black 0%, transparent 100%);
             .posgrad-cards { gap: 16px; }
         }
 
-        /* ── Section FAQ ──────────────────────────────────────────── */
-        .sec-faq { padding: 128px 0; }
-        .faq-header {
-            margin: 0 auto 64px;
-            padding: 0 max(32px, calc(50vw - 688px));
+        /* ── Section FAQ (importado do formacoes/style.css) ───────── */
+        .sec-faq {
+            padding: 128px 0;
+        }
+        .faq-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 16px 64px;
             box-sizing: border-box;
-            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            column-gap: 32px;
+            row-gap: 64px;
+        }
+        .faq-header {
+            grid-column: span 5;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -2604,13 +2482,12 @@ black 0%, transparent 100%);
         .faq-grid {
             overflow: hidden;
             box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+            opacity: 0;
         }
-        .faq-row {
-            padding: 0 16px;
-        }
-        .faq-row + .faq-row {
-            box-shadow: inset 0 2px 0 0 var(--bw-10);
-        }
+        .faq-grid.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+        .faq-row { padding: 0 16px; cursor: pointer; transition: background-color 0.2s ease; }
+        .faq-row:hover { background-color: var(--bw-5); }
+        .faq-row + .faq-row { box-shadow: inset 0 2px 0 0 var(--bw-10); }
         .faq-q {
             list-style: none;
             cursor: pointer;
@@ -2626,11 +2503,12 @@ black 0%, transparent 100%);
         }
         .faq-q::-webkit-details-marker { display: none; }
         .faq-q-text { font: var(--p); color: var(--bw); }
-        .faq-q-icon { color: var(--bw-50); flex-shrink: 0; }
+        .faq-q-icon { color: var(--bw-50); flex-shrink: 0; font-weight: 200; }
         .faq-a-grid {
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 0.35s ease;
+            transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: grid-template-rows;
         }
         .faq-a-grid.is-open { grid-template-rows: 1fr; }
         .faq-a-wrap {
@@ -2642,17 +2520,22 @@ black 0%, transparent 100%);
             box-sizing: border-box;
             box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
         }
-        .faq-a {
-            font: var(--p);
-            color: var(--bw-75);
-            margin: 0;
+        .faq-a { font: var(--p); color: var(--bw-75); margin: 0; }
+        @media (max-width: 1439px) {
+            .faq-inner { grid-template-columns: repeat(8, 1fr); }
+            .faq-header { grid-column: span 4; }
+        }
+        @media (max-width: 864px) {
+            .faq-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; padding-bottom: 48px; }
+            .faq-header { grid-column: 1 / -1; }
         }
         @media (max-width: 576px) {
             .sec-faq { padding: 96px 0; }
+            .faq-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; padding-bottom: 32px; }
         }
 
-        /* ── Section CTA Final ────────────────────────────────────── */
-        .sec-cta { padding: 128px max(16px, calc(50vw - 704px)) 0; }
+        /* ── Section CTA Final (importado do formacoes/style.css) ─── */
+        .sec-cta { padding: 128px max(16px, calc(50vw - 704px)); }
         .cta-inner {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -2674,22 +2557,23 @@ black 0%, transparent 100%);
             align-items: flex-start;
             justify-content: flex-end;
         }
-        .cta-header {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .cta-header { display: flex; flex-direction: column; gap: 16px; }
         .cta-title { margin: 0; }
-        .cta-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .cta-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .cta-right .tag-status,
+        .cta-right .btn { opacity: 0; }
+        .cta-right .tag-status.is-entered,
+        .cta-right .btn.is-entered { animation: cta-card-enter 0.6s ease-out both; }
         .cta-sub {
             font: var(--p-l);
             color: var(--bw-75);
             margin: 0;
+            opacity: 0;
+            filter: blur(16px);
+            transform: translateY(16px);
+            transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
         }
+        .cta-actions { display: flex; flex-wrap: wrap; gap: 16px; }
         @media (max-width: 1439px) {
             .cta-inner { grid-template-columns: repeat(8, 1fr); }
             .cta-left, .cta-right { grid-column: span 4; }
@@ -2699,77 +2583,24 @@ black 0%, transparent 100%);
             .cta-left, .cta-right { grid-column: span 6; }
         }
         @media (max-width: 576px) {
-            .sec-cta { padding: 96px 16px 0; }
+            .sec-cta { padding: 96px 16px; }
             .cta-inner { grid-template-columns: repeat(4, 1fr); gap: 16px; }
             .cta-left, .cta-right { grid-column: span 4; }
         }
 
-        /* ── Footer ───────────────────────────────────────────────── */
-        .sec-footer {
-            position: relative;
-            height: 512px;
-            padding-top: 32px;
-            display: flex;
-            flex-direction: column;
-        }
-        .sec-footer::before {
-            /* Lettering — in flow above footer-inner, overlaps 25% of its height */
-            content: '';
-            position: relative;
-            display: block;
-            flex: 0 0 auto;
-            margin: 0 auto calc(-25% / 12);
-            width: 100%;
-            max-width: 1920px;
-            aspect-ratio: 960 / 80;
-            background-color: var(--dn800);
-            -webkit-mask: url('imagens/Xperiun Lettering Syne.svg') center / 100% 100% no-repeat;
-            mask: url('imagens/Xperiun Lettering Syne.svg') center / 100% 100% no-repeat;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .sec-footer::after {
-            /* Bg image — absolute, covers the whole footer */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 1920px;
-            height: 100%;
-            background: url('media/bg-transition-light.webp') top / cover no-repeat;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .footer-inner {
-            position: relative;
-            z-index: 1;
-            flex: 1 1 0;
-            background-color: var(--bw-5);
-            background-image: linear-gradient(180deg, var(--pc300-25), transparent);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-        @media (max-width: 576px) {
-            .sec-footer::before {
-                aspect-ratio: 960 / 360;
-                margin: 0 auto calc(-25% * 3 / 8);
-                -webkit-mask: url('imagens/Xperiun Lettering Morganite.svg') center / 100% 100% no-repeat;
-                mask: url('imagens/Xperiun Lettering Morganite.svg') center / 100% 100% no-repeat;
-            }
-        }
+        /* Footer movido pra /footer/footer.css — carregado dinamicamente
+           via footer/footer-include.js. Não duplicar regras aqui. */
 
     </style>
 </head>
-<body>
+<body class="page-home">
 
 <div id="layer-hero">
 <img src="imagens/Base White Logo.svg" alt="Xperiun" class="hero-logo">
 <section class="hero">
     <div class="hero-inner">
-        <video class="hero-bg" autoplay muted loop playsinline poster="media/sec01bg.webp">
-            <source src="media/sec01bg.mp4" type="video/mp4">
+        <video class="hero-bg" autoplay muted loop playsinline poster="media/home/sec01bg.webp">
+            <source src="media/home/sec01bg.mp4" type="video/mp4">
         </video>
         <div class="hero-content">
             <div class="hero-title-group">
@@ -2880,7 +2711,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 </div><!-- /.tese-rail -->
 <div class="tese-method-wrap">
     <div class="tese-method-card enter-card">
-        <img class="tese-method-img" src="media/home-tese-method-card.webp" alt="">
+        <img class="tese-method-img" src="media/home/home-tese-method-card.webp" alt="">
         <div class="tese-method-content">
             <span class="tag-status" data-semantic="neutral" data-size="l">Método Business-First</span>
             <p class="tese-method-body">Toda fórmula entra com analogia de negócio antes de virar código; toda aula parte de uma decisão real antes de mergulhar na ferramenta. O Power BI não é o destino, é o meio. <span style="color:var(--pc200)">O destino é você sentar na próxima reunião e ser a pessoa que o time olha pra uma resposta.</span></p>
@@ -2919,7 +2750,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
             <article class="troca-card">
                 <div class="troca-demo">
-                    <img class="troca-demo-img" src="media/home-troca-demo-img1.webp" alt="">
+                    <img class="troca-demo-img" src="media/home/home-troca-demo-img1.webp" alt="">
                 </div>
                 <div class="troca-meta">
                     <div class="troca-num">01</div>
@@ -2930,7 +2761,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
             <article class="troca-card">
                 <div class="troca-demo">
-                    <img class="troca-demo-img" src="media/home-troca-demo-img2.webp" alt="">
+                    <img class="troca-demo-img" src="media/home/home-troca-demo-img2.webp" alt="">
                 </div>
                 <div class="troca-meta">
                     <div class="troca-num">02</div>
@@ -2941,7 +2772,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
             <article class="troca-card">
                 <div class="troca-demo">
-                    <img class="troca-demo-img" src="media/home-troca-demo-img3.webp" alt="">
+                    <img class="troca-demo-img" src="media/home/home-troca-demo-img3.webp" alt="">
                 </div>
                 <div class="troca-meta">
                     <div class="troca-num">03</div>
@@ -2952,7 +2783,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
             <article class="troca-card">
                 <div class="troca-demo">
-                    <img class="troca-demo-img" src="media/home-troca-demo-img4.webp" alt="">
+                    <img class="troca-demo-img" src="media/home/home-troca-demo-img4.webp" alt="">
                 </div>
                 <div class="troca-meta">
                     <div class="troca-num">04</div>
@@ -2986,7 +2817,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="formacoes-name">Power BI Básico ao Intermediário</p>
                     </div>
                     <p class="formacoes-outcome">Você sai do Excel e entrega seu primeiro dashboard que o time pede emprestado.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 01</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-1.html">Ver formação 01</a>
                 </div>
             </div>
             <div class="formacoes-item enter-card" style="--dot-color:#AF6E96">
@@ -2998,7 +2829,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="formacoes-name">Power BI Intermediário ao Avançado</p>
                     </div>
                     <p class="formacoes-outcome">DAX, modelagem e performance pra você virar a referência de Power BI da área.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 02</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-2.html">Ver formação 02</a>
                 </div>
             </div>
             <div class="formacoes-item enter-card" style="--dot-color:#5AAAC8">
@@ -3010,7 +2841,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="formacoes-name">Microsoft Fabric</p>
                     </div>
                     <p class="formacoes-outcome">Lakehouse, OneLake e arquitetura moderna pra quem quer estar onde o mercado está indo.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 03</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-3.html">Ver formação 03</a>
                 </div>
             </div>
             <div class="formacoes-item enter-card" style="--dot-color:#6EB4E6">
@@ -3022,7 +2853,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="formacoes-name">Banco de Dados &amp; SQL</p>
                     </div>
                     <p class="formacoes-outcome">Você para de depender da TI pra extrair dado e passa a puxar a informação direto da fonte.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 04</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-4.html">Ver formação 04</a>
                 </div>
             </div>
             <div class="formacoes-item enter-card" style="--dot-color:#78AA9B">
@@ -3034,7 +2865,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="formacoes-name">Python &amp; Data Science</p>
                     </div>
                     <p class="formacoes-outcome">Análises avançadas, automações e modelos preditivos sem precisar virar engenheiro de software.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 05</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-5.html">Ver formação 05</a>
                 </div>
             </div>
             <div class="formacoes-item enter-card" style="--dot-color:#3264FF">
@@ -3043,10 +2874,10 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                     <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNDUgMjIwQzE0NSAyNDIuMDkgMTM4LjI4IDI2MCAxMzAgMjYwQzEyMS43MiAyNjAgMTE1IDI0Mi4wOSAxMTUgMjIwQzExNSAxOTcuOTEgMTIxLjcyIDE4MCAxMzAgMTgwQzEzOC4yOCAxODAgMTQ1IDE5Ny45MSAxNDUgMjIwWk0xNTUuMjEgMTczLjJDMTQ3LjI3IDE3Ny44NSAxNDkuODggMTk3LjA4IDE2MS4wNSAyMTYuMTRDMTcyLjIyIDIzNS4yIDE4Ny43MSAyNDYuODggMTk1LjY1IDI0Mi4yM0MyMDMuNTkgMjM3LjU4IDIwMC45OCAyMTguMzUgMTg5LjgxIDE5OS4yOUMxNzguNjQgMTgwLjIzIDE2My4xNSAxNjguNTUgMTU1LjIxIDE3My4yWk0xNzMuMiAxNTUuMjFDMTY4LjA4IDE2My45NSAxNzkuMzkgMTgwLjA4IDE5OC40NSAxOTEuMjVDMjE3LjUxIDIwMi40MiAyMzcuMTEgMjA0LjM5IDI0Mi4yMyAxOTUuNjVDMjQ3LjM1IDE4Ni45MSAyMzYuMDQgMTcwLjc4IDIxNi45OCAxNTkuNjFDMTk3LjkyIDE0OC40NCAxNzguMzIgMTQ2LjQ3IDE3My4yIDE1NS4yMVpNMTgwIDEzMEMxODAgMTQxLjA1IDE5Ny45MSAxNTAgMjIwIDE1MEMyNDIuMDkgMTUwIDI2MCAxNDEuMDUgMjYwIDEzMEMyNjAgMTE4Ljk1IDI0Mi4wOSAxMTAgMjIwIDExMEMxOTcuOTEgMTEwIDE4MCAxMTguOTUgMTgwIDEzMFpNMCAxMzBDMCAxMzUuNTIgMTcuOTEgMTQwIDQwIDE0MEM2Mi4wOSAxNDAgODAgMTM1LjUyIDgwIDEzMEM4MCAxMjQuNDggNjIuMDkgMTIwIDQwIDEyMEMxNy45MSAxMjAgMCAxMjQuNDggMCAxMzBaTTE3Ljc4IDE5NS42NEMyMS4wNCAyMDEuMiAzOS4xMyAxOTYuNjUgNTguMTkgMTg1LjQ5Qzc3LjI1IDE3NC4zMiA5MC4wNTk5IDE2MC43NyA4Ni44MDk5IDE1NS4yMUM4My41NDk5IDE0OS42NSA2NS40NiAxNTQuMiA0Ni40IDE2NS4zNkMyNy4zNCAxNzYuNTMgMTQuNTMgMTkwLjA4IDE3Ljc4IDE5NS42NFpNNjQuMzYgMjQyLjIzQzcwLjcxIDI0NS45NSA4NC45MiAyMzMuNTIgOTYuMDggMjE0LjQ2QzEwNy4yNSAxOTUuNCAxMTEuMTUgMTc2LjkzIDEwNC43OSAxNzMuMjFDOTguNDQgMTY5LjQ5IDg0LjIyOTkgMTgxLjkyIDczLjA2OTkgMjAwLjk4QzYxLjg5OTkgMjIwLjA0IDU4IDIzOC41MSA2NC4zNiAyNDIuMjNaTTEzMCAwQzEyNy4yNCAwIDEyNSAxNy45MSAxMjUgNDBDMTI1IDYyLjA5IDEyNy4yNCA4MCAxMzAgODBDMTMyLjc2IDgwIDEzNSA2Mi4wOSAxMzUgNDBDMTM1IDE3LjkxIDEzMi43NiAwIDEzMCAwWk0xOTUuNjQgMTcuNzdDMTkwLjg3IDE0Ljk4IDE3Ny45NiAyOC4xNyAxNjYuNzkgNDcuMjNDMTU1LjYyIDY2LjI5IDE1MC40NCA4NC4wMSAxNTUuMiA4Ni44QzE1OS45NyA4OS41OSAxNzIuODggNzYuNCAxODQuMDUgNTcuMzRDMTk1LjIyIDM4LjI4IDIwMC40IDIwLjU2IDE5NS42NCAxNy43N1pNMjQyLjIzIDY0LjM2QzIzOC4wNCA1Ny4yMSAyMTkuMiA2MC40NyAyMDAuMTMgNzEuNjRDMTgxLjA3IDgyLjgxIDE2OS4wMSA5Ny42NSAxNzMuMiAxMDQuOEMxNzcuMzkgMTExLjk1IDE5Ni4yMyAxMDguNjkgMjE1LjMgOTcuNTJDMjM0LjM3IDg2LjM1IDI0Ni40MiA3MS41MSAyNDIuMjMgNjQuMzZaTTg2Ljc5OTkgMTA0Ljc5Qzg5LjEyOTkgMTAwLjgyIDc1LjU2IDg4LjU1IDU2LjUgNzcuMzhDMzcuNDQgNjYuMjEgMjAuMSA2MC4zOCAxNy43NyA2NC4zNUMxNS40NCA2OC4zMiAyOS4wMSA4MC41OSA0OC4wNyA5MS43NkM2Ny4xMyAxMDIuOTMgODQuNDY5OSAxMDguNzYgODYuNzk5OSAxMDQuNzlaTTEwNC44IDg2LjhDMTA3Ljk4IDg0Ljk0IDEwMS41IDY3Ljk4IDkwLjMzIDQ4LjkyQzc5LjE2IDI5Ljg2IDY3LjU0IDE1LjkxIDY0LjM2IDE3Ljc4QzYxLjE4IDE5LjY0IDY3LjY2IDM2LjYgNzguODMgNTUuNjZDOTAgNzQuNzIgMTAxLjYyIDg4LjY3IDEwNC44IDg2LjhaIiBmaWxsPSJ1cmwoI2dyYWQtYXV0b21hY2FvLWlhKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLWF1dG9tYWNhby1pYSIgeDE9IjQxLjA0IiB5MT0iMjE5LjEyIiB4Mj0iMjE5LjE1IiB5Mj0iNDEuMDEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzMyNjRGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM2NDk2QzgiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" width="32" height="32" alt="">
                     <div class="formacoes-info">
                         <span class="formacoes-num">Formação 06</span>
-                        <p class="formacoes-name">Automação &amp; IA</p>
+                        <p class="formacoes-name">Inteligência Artificial e Automação</p>
                     </div>
                     <p class="formacoes-outcome">Você delega o trabalho repetitivo e usa IA como aliada pra entregar mais com o mesmo time.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 06</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-6.html">Ver formação 06</a>
                 </div>
             </div>
             <div class="formacoes-item enter-card" style="--dot-color:#9B469B">
@@ -3058,7 +2889,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="formacoes-name">Carreira &amp; Negócios</p>
                     </div>
                     <p class="formacoes-outcome">Portfólio, LinkedIn, processo seletivo e plano de transição pra quem quer migrar de área ou começar a consultar.</p>
-                    <a class="link" data-color="blue" href="#">Ver formação 07</a>
+                    <a class="link" data-color="blue" href="formacoes/formacao-7.html">Ver formação 07</a>
                 </div>
             </div>
         </div>
@@ -3066,7 +2897,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
         <div class="formacoes-cta-card">
             <div style="display:flex;flex-direction:column;gap:24px;align-items:flex-start;">
                 <p style="margin:0;color:var(--bw-75)">Você não precisa decidir tudo agora. Só precisa enxergar o caminho. Acesse o HUB de Formações, conheça cada trilha por competência e descubra qual delas pode ser o seu próximo passo em dados.</p>
-                <a class="btn" data-size="m" data-emphasis="medium-core" href="#">Conhecer o HUB de Formações</a>
+                <a class="btn" data-size="m" data-emphasis="medium-core" href="formacoes/index.html">Conhecer o HUB de Formações</a>
             </div>
         <div class="formacoes-cta">
             <div class="formacoes-cta-layer">
@@ -3113,6 +2944,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 </section>
 
 <section class="sec-depos" id="sec-depos">
+    <div class="depos-inner">
     <div class="depos-header">
         <div class="depos-header-left">
             <div class="depos-social-proof">
@@ -3146,25 +2978,28 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
             </button>
         </div>
     </div>
+    </div>
     <div class="depos-carousel-wrap enter-card">
         <div class="depos-track" id="depos-track">
-            <div class="depos-card"><div class="depos-video" data-vid="rfp3nnEuQic"><img class="depos-thumb" src="media/depoimento-video-thumb-edson.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Edson</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="5fjerKKTGGs"><img class="depos-thumb" src="media/depoimento-video-thumb-eduardo.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Eduardo</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="vfbwoyCyv9Y"><img class="depos-thumb" src="media/depoimento-video-thumb-claudio.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cláudio</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="9xt3-AQcH80"><img class="depos-thumb" src="media/depoimento-video-thumb-cleiton.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cleiton</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="bPFL_QZYiwg"><img class="depos-thumb" src="media/depoimento-video-thumb-daniel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Daniel</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="kHV7Tqnv1nY"><img class="depos-thumb" src="media/depoimento-video-thumb-vinicius.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vinícius</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="fwOgSvKf5fA"><img class="depos-thumb" src="media/depoimento-video-thumb-gabriel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Gabriel</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="CkKg8x9ADC4"><img class="depos-thumb" src="media/depoimento-video-thumb-ezequiel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Ezequiel</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="Jdi6xmjSqPc"><img class="depos-thumb" src="media/depoimento-video-thumb-louiz.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Louiz</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="i_OWt-A5kDg"><img class="depos-thumb" src="media/depoimento-video-thumb-pedro.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Pedro</p></div></div></div></div>
-            <div class="depos-card"><div class="depos-video" data-vid="FPi0RUmpmb8"><img class="depos-thumb" src="media/depoimento-video-thumb-vitoria.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vitória</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="rfp3nnEuQic"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-edson.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Edson</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="5fjerKKTGGs"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-eduardo.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Eduardo</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="vfbwoyCyv9Y"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-claudio.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cláudio</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="9xt3-AQcH80"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-cleiton.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cleiton</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="bPFL_QZYiwg"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-daniel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Daniel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="kHV7Tqnv1nY"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-vinicius.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vinícius</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="fwOgSvKf5fA"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-gabriel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Gabriel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="CkKg8x9ADC4"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-ezequiel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Ezequiel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="Jdi6xmjSqPc"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-louiz.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Louiz</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="i_OWt-A5kDg"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-pedro.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Pedro</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="FPi0RUmpmb8"><img class="depos-thumb" src="media/depoimento-video-thumb/depoimento-video-thumb-vitoria.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vitória</p></div></div></div></div>
         </div>
     </div>
 
     <div class="depos-employers">
+        <div class="depos-employers-inner">
         <div class="depos-employers-header">
             <h2 class="depos-employers-title sec-title">Quem já é <strong>Incomparável</strong> trabalha aqui</h2>
+        </div>
         </div>
         <div class="depos-logos-section enter-card">
             <div class="depos-logos-grid" id="depos-logos-grid">
@@ -3265,7 +3100,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
             <div class="completa-card">
                 <div class="completa-card-header">
-                    <video class="completa-card-header-video" src="media/home-completa-card-header.mp4" autoplay loop muted playsinline oncanplay="this.playbackRate=1"></video>
+                    <video class="completa-card-header-video" src="media/home/home-completa-card-header.mp4" autoplay loop muted playsinline oncanplay="this.playbackRate=1"></video>
                     <span class="tag-status" data-size="m" data-semantic="success">Acesso total</span>
                     <span class="tag-status" data-size="m" data-semantic="success">Anuidade</span>
                 </div>
@@ -3302,8 +3137,8 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                         <p class="completa-price-savings">Você economiza R$ 4.982</p>
                     </div>
                     <div class="completa-ctas">
-                        <a class="btn completa-cta-wave" data-size="l" data-emphasis="medium-core" href="#">Assinar Xperiun Completa</a>
-                        <a class="btn" data-size="s" data-emphasis="subtle" href="#">Tirar dúvidas com a equipe</a>
+                        <a class="btn completa-cta-wave" data-size="l" data-emphasis="medium-core" href="#" onclick="event.preventDefault(); window.openPopup && window.openPopup('popup-form-fc')">Assinar Xperiun Completa</a>
+                        <a class="btn" data-size="s" data-emphasis="subtle" href="https://api.whatsapp.com/send?phone=554831974984&text=Tudo%20bem?%20Vim%20pelo%20site%20da%20Xperiun." target="_blank" rel="noopener">Tirar dúvidas com a equipe</a>
                     </div>
                     <div class="completa-trust">
                         <p class="completa-trust-item">
@@ -3337,7 +3172,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
     <div class="entrada-card enter-card">
         <div class="entrada-media">
-            <video src="media/home-entrada-media.mp4" autoplay muted loop playsinline poster="media/home-entrada-media.webp"></video>
+            <video src="media/home/home-entrada-media.mp4" autoplay muted loop playsinline poster="media/home/home-entrada-media.webp"></video>
         </div>
         <div class="entrada-body">
             <div class="entrada-col">
@@ -3354,7 +3189,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                     </span>
                 </p>
                 <p class="entrada-price-alt">até R$ <span class="entrada-price-alt-value">49</span> pra sentir como a gente ensina.</p>
-                <a class="btn" data-size="m" data-emphasis="neutral" href="#">Conhecer</a>
+                <a class="btn" data-size="m" data-emphasis="neutral" href="areas/index.html">Conhecer</a>
             </div>
         </div>
     </div>
@@ -3371,8 +3206,8 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
     <div class="posgrad-cards">
         <div class="posgrad-card posgrad-card--pp enter-card">
             <div class="posgrad-card-media">
-                <video class="posgrad-card-bg" autoplay muted loop playsinline poster="media/home-posgrad-card-media-postech.webp">
-                    <source src="media/home-posgrad-card-media-postech.mp4" type="video/mp4">
+                <video class="posgrad-card-bg" autoplay muted loop playsinline poster="media/home/home-posgrad-card-media-postech.webp">
+                    <source src="media/home/home-posgrad-card-media-postech.mp4" type="video/mp4">
                 </video>
                 <div class="posgrad-card-scrim"></div>
                 <img src="imagens/Pos Graduacao Logo.svg" class="posgrad-logo-top" width="156" alt="">
@@ -3389,17 +3224,17 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                 <div class="posgrad-card-body">
                     <div class="posgrad-card-info">
                         <h3 class="troca-card-title">Pós Tech em Business Intelligence & Analytics</h3>
-                        <p class="posgrad-card-desc">Estratégia de dados aplicada à tomada de decisão.</p>
+                        <p class="posgrad-card-desc">Arquitetura moderna e especialização técnica.</p>
                     </div>
                 </div>
                 <div class="posgrad-card-cta">
-                    <a class="btn" data-size="s" data-emphasis="neutral" href="#">Conhecer Pós Tech</a>
+                    <a class="btn" data-size="s" data-emphasis="neutral" href="https://xperiun.com/ed/postech/" target="_blank" rel="noopener">Conhecer Pós Tech</a>
                 </div>
             </div>
         </div>
         <div class="posgrad-card posgrad-card--pc enter-card">
             <div class="posgrad-card-media">
-                <img src="media/home-posgrad-card-media-mba.webp" class="posgrad-card-bg" alt="">
+                <img src="media/home/home-posgrad-card-media-mba.webp" class="posgrad-card-bg" alt="">
                 <div class="posgrad-card-scrim"></div>
                 <img src="imagens/Pos Graduacao Logo.svg" class="posgrad-logo-top" width="156" alt="">
                 <div class="posgrad-logo-center">
@@ -3414,12 +3249,12 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
             <div class="posgrad-card-bottom">
                 <div class="posgrad-card-body">
                     <div class="posgrad-card-info">
-                        <h3 class="troca-card-title">Pós Tech em Engenharia de Dados & IA</h3>
-                        <p class="posgrad-card-desc">Arquitetura moderna e especialização técnica.</p>
+                        <h3 class="troca-card-title">MBA em BI Analytics 360</h3>
+                        <p class="posgrad-card-desc">Formação executiva em dados aplicada a negócio.</p>
                     </div>
                 </div>
                 <div class="posgrad-card-cta">
-                    <a class="btn" data-size="s" data-emphasis="neutral" href="#">Conhecer MBA</a>
+                    <a class="btn" data-size="s" data-emphasis="neutral" href="https://xperiun.com/ed/mba/" target="_blank" rel="noopener">Conhecer MBA</a>
                 </div>
             </div>
         </div>
@@ -3427,9 +3262,11 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 </section>
 
 <section class="sec-faq" id="sec-faq">
+    <div class="faq-inner">
     <div class="faq-header">
         <span class="faq-eyebrow sec-eyebrow">FAQ</span>
         <h2 class="faq-title sec-title">Perguntas que a gente recebe <strong>toda semana</strong></h2>
+    </div>
     </div>
     <div class="faq-grid">
 
@@ -3523,18 +3360,24 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                 <span class="tag-status" data-semantic="neutral" data-size="m">Crédito vitalício de upgrade</span>
                 <span class="tag-status" data-semantic="neutral" data-size="m">Feita por gente de negócio, pra gente de negócio</span>
             </div>
-            <a href="#" class="btn" data-size="m" data-emphasis="medium-core">Quero a Xperiun Completa</a>
+            <div class="cta-actions">
+                <a href="#" class="btn" data-size="m" data-emphasis="medium-core" onclick="event.preventDefault(); window.openPopup && window.openPopup('popup-form-fc')">Quero a Xperiun Completa</a>
+            </div>
         </div>
     </div>
 </section>
 
-<footer class="sec-footer" id="sec-footer">
-    <div class="footer-inner"></div>
-</footer>
+<div data-footer></div>
+<script src="footer/footer-include.js"></script>
 
 </div>
 
 <nav class="home-dots" id="homeDots" aria-label="Navegação de seções"></nav>
+
+<div data-menu></div>
+<script src="menu/menu-include.js"></script>
+<div data-popup-form="fc"></div>
+<script src="popups/form-include.js"></script>
 
 <script>
 (function () {
@@ -4303,15 +4146,59 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
     var nav = document.getElementById('homeDots');
     if (!lc || !lt || !nav) return;
 
+    /* getOffsetIn(el, container) — soma offsetTop subindo pela chain de
+       offsetParent até encontrar o container. Necessário porque seções
+       dentro de .dn-stack (position: relative) têm offsetTop relativo ao
+       .dn-stack, não ao layer-trocas — usar el.offsetTop direto retorna
+       um número pequeno e o updateActive escolhe a seção errada. */
+    function getOffsetIn(el, container) {
+        var top = 0;
+        var node = el;
+        while (node) {
+            top += node.offsetTop;
+            if (node.offsetParent === container) return top;
+            node = node.offsetParent;
+            if (!node) break;
+        }
+        return top;
+    }
+
     /* Monta lista ordenada de targets: hero + todas section[id] no DOM */
-    var targets = [{ el: null, id: 'hero', layer: 'hero' }];
+    var targets = [{ el: null, id: 'hero', layer: 'hero', offsetTop: 0 }];
     document.querySelectorAll('section[id]').forEach(function (sec) {
         targets.push({
             el: sec,
             id: sec.id,
-            layer: lc.contains(sec) ? 'content' : 'trocas'
+            layer: lc.contains(sec) ? 'content' : 'trocas',
+            offsetTop: 0
         });
     });
+
+    function recomputeOffsets() {
+        targets.forEach(function (t) {
+            if (!t.el) return;
+            var container = t.layer === 'trocas' ? lt : lc;
+            t.offsetTop = getOffsetIn(t.el, container);
+        });
+    }
+    recomputeOffsets();
+    window.addEventListener('resize', recomputeOffsets);
+
+    /* sec-trocas tem altura definida por outro script (calc(100vh + maxTranslate))
+       que roda depois desse. Sem reagir a mudanças de tamanho das seções, as
+       posições cacheadas no init ficam erradas pra todas as seções pós-trocas.
+       ResizeObserver em cada section: qualquer mudança de altura recomputa. */
+    if (typeof ResizeObserver !== 'undefined') {
+        var ro = new ResizeObserver(recomputeOffsets);
+        targets.forEach(function (t) { if (t.el) ro.observe(t.el); });
+    }
+    /* Fallback: força 2 recomputes após o load — pra navegadores sem
+       ResizeObserver e pra pegar qualquer layout assíncrono que ainda
+       não tenha settled. */
+    requestAnimationFrame(function () {
+        requestAnimationFrame(recomputeOffsets);
+    });
+    window.addEventListener('load', recomputeOffsets);
 
     /* Gera botões dinamicamente */
     nav.innerHTML = '';
@@ -4345,7 +4232,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
             var best = firstOf('trocas');
             for (var i = 0; i < targets.length; i++) {
                 if (targets[i].layer === 'trocas' && targets[i].el &&
-                    targets[i].el.offsetTop <= mid) best = i;
+                    targets[i].offsetTop <= mid) best = i;
             }
             setActive(best);
             return;
@@ -4356,7 +4243,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
         var best = firstOf('content');
         for (var i = 0; i < targets.length; i++) {
             if (targets[i].layer === 'content' && targets[i].el &&
-                targets[i].el.offsetTop <= mid) best = i;
+                targets[i].offsetTop <= mid) best = i;
         }
         setActive(best);
     }
@@ -4373,6 +4260,10 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
             var t = targets[idx];
             if (!t) return;
 
+            /* Recomputa offsets antes do click — garante que destinos
+               estão atualizados mesmo se algum layout dinâmico mudou. */
+            recomputeOffsets();
+
             if (t.layer === 'hero') {
                 h.hideTrocas();
                 h.goToHero();
@@ -4380,7 +4271,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
             }
 
             if (t.layer === 'trocas') {
-                var dest = t.el.offsetTop;
+                var dest = t.offsetTop;
                 var go   = function () { h.scrollTrocasTo(dest); };
                 if (h.getInHero()) {
                     h.goToContent();
@@ -4399,7 +4290,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
             /* content layer */
             if (h.getTCur() > 0) h.hideTrocas();
-            var dest = t.el.offsetTop;
+            var dest = t.offsetTop;
             if (h.getInHero()) {
                 h.goToContent();
                 setTimeout(function () { h.scrollToTop(dest); }, h.FADE);
@@ -4962,17 +4853,17 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 /* ── depos-avatar random thumbs ────────────────────────────────────── */
 (function () {
     var thumbs = [
-        'media/depoimento-video-thumb-claudio.webp',
-        'media/depoimento-video-thumb-cleiton.webp',
-        'media/depoimento-video-thumb-daniel.webp',
-        'media/depoimento-video-thumb-edson.webp',
-        'media/depoimento-video-thumb-eduardo.webp',
-        'media/depoimento-video-thumb-ezequiel.webp',
-        'media/depoimento-video-thumb-gabriel.webp',
-        'media/depoimento-video-thumb-louiz.webp',
-        'media/depoimento-video-thumb-pedro.webp',
-        'media/depoimento-video-thumb-vinicius.webp',
-        'media/depoimento-video-thumb-vitoria.webp'
+        'media/depoimento-video-thumb/depoimento-video-thumb-claudio.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-cleiton.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-daniel.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-edson.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-eduardo.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-ezequiel.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-gabriel.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-louiz.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-pedro.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-vinicius.webp',
+        'media/depoimento-video-thumb/depoimento-video-thumb-vitoria.webp'
     ];
     for (var i = thumbs.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -5136,29 +5027,26 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 /* ── Logo grid rotation ────────────────────────────────────────────── */
 (function () {
     var logos = [
-        { src: 'media/logos/vale.svg',          alt: 'Vale' },
-        { src: 'media/logos/mercedes-benz.svg', alt: 'Mercedes-Benz' },
-        { src: 'media/logos/bradesco.svg',       alt: 'Bradesco' },
-        { src: 'media/logos/santander.svg',      alt: 'Santander' },
-        { src: 'media/logos/cpfl.svg',           alt: 'CPFL' },
-        { src: 'media/logos/ambev.svg',          alt: 'Ambev' },
-        { src: 'media/logos/magalu.svg',         alt: 'Magalu' },
-        { src: 'media/logos/nestle.svg',         alt: 'Nestlé' },
-        { src: 'media/logos/inter.svg',          alt: 'Inter' },
-        { src: 'media/logos/google-brasil.svg',  alt: 'Google Brasil' },
-        { src: 'media/logos/localiza.svg',       alt: 'Localiza' },
-        { src: 'media/logos/porto-seguro.svg',   alt: 'Porto Seguro' },
-        { src: 'media/logos/klabin.svg',         alt: 'Klabin' },
-        { src: 'media/logos/suzano.svg',         alt: 'Suzano' },
-        { src: 'media/logos/sicoob.svg',         alt: 'Sicoob' },
-        { src: 'media/logos/cbf.svg',            alt: 'CBF' },
-        { src: 'media/logos/air-liquide.svg',    alt: 'Air Liquide' },
-        { src: 'media/logos/3m.svg',             alt: '3M' },
-        { src: 'media/logos/cielo.svg',          alt: 'Cielo' },
-        { src: 'media/logos/globo.svg',          alt: 'Globo' },
-        { src: 'media/logos/neoway.svg',         alt: 'Neoway' },
-        { src: 'media/logos/natura.svg',         alt: 'Natura' },
-        { src: 'media/logos/claro.svg',          alt: 'Claro' }
+        { src: 'media/logos/logo-vale.webp',        alt: 'Vale' },
+        { src: 'media/logos/logo-mercedes.webp',    alt: 'Mercedes-Benz' },
+        { src: 'media/logos/logo-bradesco.webp',    alt: 'Bradesco' },
+        { src: 'media/logos/logo-santander.webp',   alt: 'Santander' },
+        { src: 'media/logos/logo-cpfl.webp',        alt: 'CPFL' },
+        { src: 'media/logos/logo-ambev.webp',       alt: 'Ambev' },
+        { src: 'media/logos/logo-magalu.webp',      alt: 'Magalu' },
+        { src: 'media/logos/logo-inter.webp',       alt: 'Inter' },
+        { src: 'media/logos/logo-google.webp',      alt: 'Google' },
+        { src: 'media/logos/logo-suzano.webp',      alt: 'Suzano' },
+        { src: 'media/logos/sicoob.webp',           alt: 'Sicoob' },
+        { src: 'media/logos/logo-cbf.webp',         alt: 'CBF' },
+        { src: 'media/logos/logo-airliquide.webp',  alt: 'Air Liquide' },
+        { src: 'media/logos/logo-3m.webp',          alt: '3M' },
+        { src: 'media/logos/logo-cielo.webp',       alt: 'Cielo' },
+        { src: 'media/logos/logo-globo.webp',       alt: 'Globo' },
+        { src: 'media/logos/logo-neoway.webp',      alt: 'Neoway' },
+        { src: 'media/logos/logo-natura.webp',      alt: 'Natura' },
+        { src: 'media/logos/logo-claro.webp',       alt: 'Claro' },
+        { src: 'media/logos/logo-piracanjuba.webp', alt: 'Piracanjuba' }
     ];
 
     var grid = document.getElementById('depos-logos-grid');
@@ -5492,6 +5380,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
     var eyebrow = section.querySelector('.faq-eyebrow');
     var title   = section.querySelector('.faq-title');
+    var grid    = section.querySelector('.faq-grid');
 
     function reveal() {
         if (eyebrow) {
@@ -5551,6 +5440,14 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
         reveal();
     }, { root: lt, rootMargin: '0px 0px -15% 0px', threshold: 0 }).observe(section);
 
+    if (grid) {
+        new IntersectionObserver(function (entries, obs) {
+            if (!entries[0].isIntersecting) return;
+            obs.disconnect();
+            grid.classList.add('is-entered');
+        }, { root: lt, rootMargin: '0px 0px -15% 0px', threshold: 0 }).observe(grid);
+    }
+
     /* Accordion */
     section.querySelectorAll('.faq-row').forEach(function (details) {
         var summary = details.querySelector('.faq-q');
@@ -5584,6 +5481,8 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
 
     var eyebrow = section.querySelector('.cta-eyebrow');
     var title   = section.querySelector('.cta-title');
+    var sub     = section.querySelector('.cta-sub');
+    var rightItems = section.querySelectorAll('.cta-right .tag-status, .cta-right .btn');
 
     function reveal() {
         if (eyebrow) {
@@ -5635,6 +5534,18 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                 }, idx * 10);
             });
         }
+        if (sub) {
+            setTimeout(function () {
+                sub.style.opacity   = '1';
+                sub.style.filter    = 'blur(0)';
+                sub.style.transform = 'translateY(0)';
+            }, 150);
+        }
+        rightItems.forEach(function (el, idx) {
+            setTimeout(function () {
+                el.classList.add('is-entered');
+            }, 250 + idx * 40);
+        });
     }
 
     new IntersectionObserver(function (entries, obs) {

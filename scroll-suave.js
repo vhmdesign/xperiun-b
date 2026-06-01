@@ -66,7 +66,11 @@
     }
 
     window.addEventListener('wheel', function (e) {
-        if (isInsideHorizontalScroller(e.target)) return;
+        // Só deixa o scroll horizontal nativo quando a intenção é horizontal
+        // (trackpad swipe com deltaX dominante ou shift+wheel). Wheel vertical sempre
+        // rola a página, mesmo sobre carrosséis com overflow-x: auto.
+        const horizontalIntent = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
+        if (horizontalIntent && isInsideHorizontalScroller(e.target)) return;
 
         e.preventDefault();
 
