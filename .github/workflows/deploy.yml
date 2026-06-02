@@ -39,7 +39,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./ed/
-          server-dir: /public_html/ed/
+          # No Hostinger compartilhado, ao logar via FTP o usuário cai em
+          # /home/uXXXX/ e public_html fica em domains/xperiun.com/public_html.
+          # O caminho aqui é relativo à raiz do FTP (sem /home/uXXXX).
+          server-dir: /domains/xperiun.com/public_html/ed/
           # Por padrão a action já ignora .git e .github. Adicione exclusões
           # extras aqui se precisar (ex.: arquivos de dev, screenshots, etc.):
           # exclude: |
