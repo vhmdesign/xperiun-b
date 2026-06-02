@@ -1,0 +1,26 @@
+RewriteEngine On
+
+# Força HTTPS (opcional — descomente se aplicável)
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# 1) Redireciona /caminho/index ou /caminho/index.html -> /caminho/ (301)
+#    Aplica-se também a /index e /index.html no root.
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index(\.html)?[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# 2) Redireciona /pagina.html -> /pagina (301, mantém query string)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# 3) Internamente serve /pagina como /pagina.html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Apache já serve index.html como default para /pasta/ via DirectoryIndex
+DirectoryIndex index.html
+
+# Página de erro 404 (opcional)
+# ErrorDocument 404 /404.html

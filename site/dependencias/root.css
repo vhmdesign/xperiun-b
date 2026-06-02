@@ -1,0 +1,1536 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap');
+
+   /* ==========================================
+       Base / Reset
+       Estilos padrão para tags sem classe,
+       alinhados ao Design System Xperiun.
+       As classes de componente (.btn, .input…)
+       sobrescrevem estes defaults por especificidade.
+       ========================================== */
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background-color: var(--dn900);
+        color: var(--bw);
+        font: var(--p);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+        color: var(--bw);
+    }
+    h1 { font: var(--h1); }
+    h2 { font: var(--h2); }
+    h3 { font: var(--h3); }
+    h4 { font: var(--h4); }
+    h5 { font: var(--h5); }
+    h6 { font: var(--h6); }
+
+    p {
+        font: var(--p);
+        color: var(--bw);
+        margin: 0;
+    }
+
+    a:not(.btn) {
+        color: var(--pc300);
+        text-decoration: none;
+    }
+    a:not(.btn):hover {
+        color: var(--pc100);
+        text-decoration: underline;
+    }
+
+    ul {
+        list-style-type: square;
+        margin: 0;
+        padding: 0 0 0 16px;
+    }
+
+    ol {
+        margin: 0;
+        padding: 0 0 0 16px;
+    }
+
+    li {
+        margin: 0 0 1rem 0;
+    }
+    li:last-child {
+        margin-bottom: 0;
+    }
+
+    button {
+        font: var(--btn);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--bw);
+        padding: 0;
+    }
+
+    input,
+    textarea,
+    select {
+        font: var(--p);
+        color: var(--bw);
+        background-color: var(--dn700);
+        border: none;
+        outline: none;
+        padding: 12px 16px;
+        box-sizing: border-box;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--bw-50);
+        opacity: 1;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+
+    svg {
+        display: block;
+        flex-shrink: 0;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid var(--bw-15);
+        margin: 0;
+    }
+
+    strong, b {
+        font-weight: 700;
+    }
+
+    em, i {
+        font-style: italic;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font: var(--p);
+        color: var(--bw);
+    }
+
+    th, td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 2px solid var(--bw-15);
+    }
+
+    th {
+        font: var(--label);
+        color: var(--bw-75);
+    }
+
+    code {
+        color: var(--pp100);
+        background-color: var(--pp500-15);
+    }
+
+    pre {
+        margin: 0;
+        overflow: auto;
+    }
+
+    :root {
+        --bw: #F5F5FF;
+        --bw-5:  rgba(245,245,255,0.05);
+        --bw-10: rgba(245,245,255,0.10);
+        --bw-15: rgba(245,245,255,0.15);
+        --bw-25: rgba(245,245,255,0.25);
+        --bw-50: rgba(245,245,255,0.50);
+        --bw-75: rgba(245,245,255,0.75);
+
+        --bw2: #F5F5FF;
+        --bw2-5: rgba(245,245,255,0.05);
+
+        --bb: #00000A;
+        --bb-5: rgba(0,0,10,0.05);
+        --bb-10: rgba(0,0,10,0.10);
+        --bb-15: rgba(0,0,10,0.15);
+        --bb-25: rgba(0,0,10,0.25);
+        --bb-50: rgba(0,0,10,0.50);
+        --bb-75: rgba(0,0,10,0.75);
+
+        --ln100: #EBEBF5;
+        --ln200: #E1E1EB;
+        --ln300: #D7D7E1;
+        --ln400: #CDCDD7;
+        --ln500: #C3C3CD;
+        --ln600: #B9B9C3;
+        --ln700: #AFAFB9;
+        --ln800: #A5A5AF;
+        --ln900: #9B9BA5;
+
+        --dn100: #5A5A64;
+        --dn200: #50505A;
+        --dn300: #464650;
+        --dn400: #3C3C46;
+        --dn500: #32323C;
+        --dn600: #282832;
+        --dn700: #1E1E28;
+        --dn800: #14141E;
+        --dn900: #0A0A14;
+        --dn900-75: rgba(10,10,20,0.75);
+
+        --pc100: #C8C8FF;
+        --pc200: #9696FF;
+        --pc300: #6464FF;
+        --pc400: #644BFF;
+        --pc500: #4B00FF;
+        --pc600: #3700C8;
+        --pc700: #230096;
+        --pc800: #0F0064;
+        --pc900: #000032;
+
+        --pp100: #C8AFFF;
+        --pp200: #AF96FF;
+        --pp300: #9664FF;
+        --pp300-10: rgba(150,100,255,0.10);
+        --pp300-25: rgba(150,100,255,0.25);
+        --pp400: #9632FF;
+        --pp500: #9600FF;
+        --pp600: #7D00C8;
+        --pp700: #640096;
+        --pp800: #320064;
+        --pp900: #190032;
+
+        --sg100: #FFF5E6;
+        --sg200: #FAE6CD;
+        --sg300: #F5D7B4;
+        --sg400: #EBC8A5;
+        --sg500: #D7B491;
+        --sg600: #CDA582;
+        --sg700: #C39B6E;
+        --sg800: #A57850;
+        --sg900: #785532;
+
+        /* ---- Alert colors ---- */
+        --nt100: #D5FFFF;
+        --nt300: #96FFFF;
+        --nt500: #00FFFF;
+        --nt700: #00C8C8;
+        --nt900: #004A4A;
+
+        --sc100: #D5FFF0;
+        --sc300: #96FFE1;
+        --sc500: #00FF96;
+        --sc700: #00C896;
+        --sc900: #00462D;
+
+        --wr100: #FFFAD5;
+        --wr300: #FFFF96;
+        --wr500: #FFFF00;
+        --wr700: #FFC800;
+        --wr900: #645000;
+
+        --er100: #FFD5D5;
+        --er300: #FF9196;
+        --er500: #FF0032;
+        --er700: #C80032;
+        --er900: #64001E;
+
+        /* ---- Transparências das cores 500 (5, 10, 15, 25, 50, 75%) ---- */
+        --pc500-5:  rgba(75,0,255,0.05);
+        --pc500-10: rgba(75,0,255,0.10);
+        --pc500-15: rgba(75,0,255,0.15);
+        --pc500-25: rgba(75,0,255,0.25);
+        --pc500-50: rgba(75,0,255,0.50);
+        --pc500-75: rgba(75,0,255,0.75);
+
+        --pc300-5:  rgba(100,100,255,0.05);
+        --pc300-10: rgba(100,100,255,0.10);
+        --pc300-15: rgba(100,100,255,0.15);
+        --pc300-25: rgba(100,100,255,0.25);
+        --pc300-50: rgba(100,100,255,0.50);
+        --pc300-75: rgba(100,100,255,0.75);
+
+        --pp500-5:  rgba(150,0,255,0.05);
+        --pp500-10: rgba(150,0,255,0.10);
+        --pp500-15: rgba(150,0,255,0.15);
+        --pp500-25: rgba(150,0,255,0.25);
+        --pp500-50: rgba(150,0,255,0.50);
+        --pp500-75: rgba(150,0,255,0.75);
+
+        --sg500-5:  rgba(215,180,145,0.05);
+        --sg500-10: rgba(215,180,145,0.10);
+        --sg500-15: rgba(215,180,145,0.15);
+        --sg500-25: rgba(215,180,145,0.25);
+        --sg500-50: rgba(215,180,145,0.50);
+        --sg500-75: rgba(215,180,145,0.75);
+
+        --nt500-5:  rgba(0,255,255,0.05);
+        --nt500-10: rgba(0,255,255,0.10);
+        --nt500-15: rgba(0,255,255,0.15);
+        --nt500-25: rgba(0,255,255,0.25);
+        --nt500-50: rgba(0,255,255,0.50);
+        --nt500-75: rgba(0,255,255,0.75);
+
+        --sc500-5:  rgba(0,255,150,0.05);
+        --sc500-10: rgba(0,255,150,0.10);
+        --sc500-15: rgba(0,255,150,0.15);
+        --sc500-25: rgba(0,255,150,0.25);
+        --sc500-50: rgba(0,255,150,0.50);
+        --sc500-75: rgba(0,255,150,0.75);
+
+        --wr500-5:  rgba(255,255,0,0.05);
+        --wr500-10: rgba(255,255,0,0.10);
+        --wr500-15: rgba(255,255,0,0.15);
+        --wr500-25: rgba(255,255,0,0.25);
+        --wr500-50: rgba(255,255,0,0.50);
+        --wr500-75: rgba(255,255,0,0.75);
+
+        --er500-5:  rgba(255,0,50,0.05);
+        --er500-10: rgba(255,0,50,0.10);
+        --er500-15: rgba(255,0,50,0.15);
+        --er500-25: rgba(255,0,50,0.25);
+        --er500-50: rgba(255,0,50,0.50);
+        --er500-75: rgba(255,0,50,0.75);
+
+        --dn500-5:  rgba(50,50,60,0.05);
+        --dn500-10: rgba(50,50,60,0.10);
+        --dn500-15: rgba(50,50,60,0.15);
+        --dn500-25: rgba(50,50,60,0.25);
+        --dn500-50: rgba(50,50,60,0.50);
+        --dn500-75: rgba(50,50,60,0.75);
+
+        --ln500-5:  rgba(195,195,205,0.05);
+        --ln500-10: rgba(195,195,205,0.10);
+        --ln500-15: rgba(195,195,205,0.15);
+        --ln500-25: rgba(195,195,205,0.25);
+        --ln500-50: rgba(195,195,205,0.50);
+        --ln500-75: rgba(195,195,205,0.75);
+
+        /* ---- Tipografia ----
+           Cada var combina os 3 itens (weight, size/line-height) + family: aplicar SEMPRE via `font: var(--xxx)`, nunca separar. */
+        --font-family:            "Poppins", sans-serif;
+        --font-family-vertical:   "Oswald",  sans-serif;
+        --font-family-horizontal: "Syne",    sans-serif;
+
+        /* Headings: Core Sans (Poppins) */
+        --h1: 700 clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem)/1.25 var(--font-family);
+        --h2: 700 clamp(2rem, 1.5rem + 1.39vw, 2.75rem)/1.25 var(--font-family);
+        --h3: 600 clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem)/1.25 var(--font-family);
+        --h4: 400 1.5rem/1.25 var(--font-family);
+        --h5: 400 1.25rem/1.25 var(--font-family);
+        --h6: 600 1.125rem/1.25 var(--font-family);
+
+        /* Headings: Vertical Condensed (Oswald) */
+        --h1-vertical: 700 clamp(3rem, 2.33rem + 1.85vw, 4rem)/1.25        var(--font-family-vertical);
+        --h2-vertical: 700 clamp(2.75rem, 2.33rem + 1.16vw, 3.375rem)/1.25 var(--font-family-vertical);
+        --h3-vertical: 400 clamp(2.5rem, 2.33rem + 0.46vw, 2.75rem)/1.25   var(--font-family-vertical);
+
+        /* Headings: Horizontal Display (Syne) */
+        --h1-horizontal: 700 clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem)/1.25 var(--font-family-horizontal);
+        --h2-horizontal: 700 clamp(2rem, 1.5rem + 1.39vw, 2.75rem)/1.25     var(--font-family-horizontal);
+        --h3-horizontal: 700 clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem)/1.25 var(--font-family-horizontal);
+
+        /* Parágrafos */
+        --p-l: 400 1.125rem/1.5 var(--font-family);
+        --p: 400 1rem/1.5 var(--font-family);
+        --p-s: 400 0.875rem/1.5 var(--font-family);
+        --p-xs: 400 0.75rem/1.5 var(--font-family);
+
+        /* Labels */
+        --label-l: 400 1.125rem/1.25 var(--font-family);
+        --label: 400 1rem/1.25 var(--font-family);
+        --label-s: 400 0.875rem/1.25 var(--font-family);
+        --label-xs: 400 0.75rem/1.25 var(--font-family);
+
+        /* Buttons */
+        --btn-xl: 400 1.25rem/1.25 var(--font-family);
+        --btn-l:  400 1.125rem/1.25 var(--font-family);
+        --btn:    400 1rem/1.25 var(--font-family);
+        --btn-s:  400 0.875rem/1.25 var(--font-family);
+
+        /* ---- Shadows / Elevação ----
+           3 níveis (s/m/l) × 3 opacidades (cheia, 75%, 50%).
+           Mesma proporção em cada nível: offset = blur/4, blur dobra a cada nível.
+           Aplicar via `box-shadow: var(--shadow-X[-NN])`. */
+        --shadow-s:    4px 4px 16px 0 var(--bb);
+        --shadow-s-75: 4px 4px 16px 0 var(--bb-75);
+        --shadow-s-50: 4px 4px 16px 0 var(--bb-50);
+
+        --shadow-m:    8px 8px 32px 0 var(--bb);
+        --shadow-m-75: 8px 8px 32px 0 var(--bb-75);
+        --shadow-m-50: 8px 8px 32px 0 var(--bb-50);
+
+        --shadow-l:    16px 16px 64px 0 var(--bb);
+        --shadow-l-75: 16px 16px 64px 0 var(--bb-75);
+        --shadow-l-50: 16px 16px 64px 0 var(--bb-50);
+
+        /* ---- Rings (inset 2px base white) ----
+           Stroke interno usado como "borda" sem afetar dimensões (ver hard-rule §0.3).
+           4 níveis de opacidade: 5, 10, 15, 25. Aplicar via `box-shadow: var(--ring-X)`. */
+        --ring-5:  inset 0 0 0 2px var(--bw-5);
+        --ring-10: inset 0 0 0 2px var(--bw-10);
+        --ring-15: inset 0 0 0 2px var(--bw-15);
+        --ring-25: inset 0 0 0 2px var(--bw-25);
+
+        /* ---- Text gradients ----
+           Aplicar via background-image + background-clip: text.
+           Ver utilitário .grad-text em root.css para o padrão de uso. */
+        --text-gradient-high:                 linear-gradient(90deg, var(--sg100), var(--sg500));
+        --text-gradient-medium-core:          linear-gradient(90deg, var(--pp200), var(--pc400));
+        --text-gradient-medium:               linear-gradient(90deg, var(--pc100), var(--pc300));
+        --text-gradient-low:                  linear-gradient(90deg, var(--bw),    var(--bw-50));
+        --text-gradient-special-success:      linear-gradient(90deg, var(--sc500), var(--sc500-50));
+        --text-gradient-special-notification: linear-gradient(90deg, var(--nt500), var(--nt500-50));
+        --text-gradient-special-warning:      linear-gradient(90deg, var(--wr500), var(--wr500-50));
+        --text-gradient-special-error:        linear-gradient(90deg, var(--er500), var(--er500-50));
+    }
+
+    /* ==========================================
+       Botões (.btn)
+       Base + tamanhos + ícone + 6 ênfases.
+       ========================================== */
+
+    .btn {
+        font: var(--btn);
+        border: 0;
+        border-radius: 1920px;
+        cursor: pointer;
+        transition: 0.2s;
+        display: inline-flex;
+        text-decoration: none;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 0.5em;
+        box-sizing: border-box;
+        background-color: transparent;
+        color: var(--bw);
+        box-shadow: var(--ring-25);
+    }
+
+    .btn[data-size="l-ico"]  { font: var(--btn-l);  padding: 16px 32px 16px 24px; }
+    .btn[data-size="l"]      { font: var(--btn-l);  padding: 16px 32px 16px 32px; }
+    .btn[data-size="m-ico"]  { font: var(--btn);    padding: 12px 24px 12px 16px; }
+    .btn[data-size="m"]      { font: var(--btn);    padding: 12px 24px 12px 24px; }
+    .btn[data-size="s-ico"]  { font: var(--btn-s);  padding: 8px 16px 8px 12px; }
+    .btn[data-size="s"]      { font: var(--btn-s);  padding: 8px 16px 8px 16px; }
+
+    /* Ícone solo: padding uniforme (top = bottom = left = right) */
+    .btn[data-size="l"][data-icon] { padding: 16px; }
+    .btn[data-size="m"][data-icon] { padding: 12px; }
+    .btn[data-size="s"][data-icon] { padding: 8px; }
+
+    .btn > .material-symbols-outlined {
+        font-size: 1.25em;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .btn[data-emphasis="high"] {
+        background-image: linear-gradient(90deg, var(--sg100), var(--sg500), var(--sg700));
+        background-size: 200%;
+        background-position: 0% 0%;
+        color: var(--bb);
+        transition: 0.5s;
+        box-shadow: inset 0 0 0 2px var(--sg100);
+    }
+    .btn[data-emphasis="high"].is-hover,
+    .btn[data-emphasis="high"]:hover {
+        background-position: 100% 0%;
+        color: var(--bb);
+    }
+
+    .btn[data-emphasis="medium-core"] {
+        background-image: linear-gradient(90deg, var(--pp300), var(--pc500), var(--pc300));
+        background-size: 200%;
+        background-position: 0% 0%;
+        color: var(--bw);
+        transition: 0.5s;
+    }
+    .btn[data-emphasis="medium-core"].is-hover,
+    .btn[data-emphasis="medium-core"]:hover {
+        background-position: 100% 0%;
+        color: var(--bw);
+    }
+
+    .btn[data-emphasis="medium"] {
+        background-image: linear-gradient(90deg, var(--pc100), var(--pc300), var(--pc500));
+        background-size: 200%;
+        background-position: 0% 0%;
+        color: var(--bb);
+        transition: 0.5s;
+    }
+    .btn[data-emphasis="medium"].is-hover,
+    .btn[data-emphasis="medium"]:hover {
+        background-position: 100% 0%;
+        color: var(--bw);
+    }
+
+    .btn[data-emphasis="neutral"] {
+        background-color: var(--bw);
+        color: var(--bb);
+        transition: 0.5s;
+    }
+    .btn[data-emphasis="neutral"].is-hover,
+    .btn[data-emphasis="neutral"]:hover {
+        background-color: var(--bw-75);
+        color: var(--bb);
+        box-shadow: inset 0 0 0 2px var(--bw);
+    }
+
+    .btn[data-emphasis="subtle"] {
+        background-color: var(--dn400);
+        color: var(--bw);
+        transition: 0.5s;
+        box-shadow: var(--ring-10);
+    }
+    .btn[data-emphasis="subtle"].is-hover,
+    .btn[data-emphasis="subtle"]:hover {
+        background-color: var(--bw-75);
+        color: var(--bb);
+        box-shadow: inset 0 0 0 2px var(--bw);
+    }
+
+    .btn[data-emphasis="subtle-dark"] {
+        background-color: var(--dn800);
+        color: var(--bw);
+        transition: 0.5s;
+        box-shadow: var(--ring-5);
+    }
+    .btn[data-emphasis="subtle-dark"].is-hover,
+    .btn[data-emphasis="subtle-dark"]:hover {
+        background-color: var(--bw-75);
+        color: var(--bb);
+        box-shadow: inset 0 0 0 2px var(--bw);
+    }
+
+    /* ==========================================
+       .scrim: overlay com gradiente cor → transparente via pseudo ::after.
+       4 custom properties controlam o look:
+         --scrim-color     (default var(--bb))  : qualquer token sólido
+         --scrim-direction (default `to bottom`): `to top|bottom|left|right` ou `Ndeg`
+         --scrim-opacity   (default 1)          : multiplica o gradiente inteiro
+         --scrim-z         (default 0)          : camada do pseudo:
+                                                    0 = sobre conteúdo (overlay/foreground)
+                                                   -1 = sob conteúdo (background)
+
+       Por que opacity em vez de alpha-token na cor:
+       evita criar `--pc300-25`, `--dn700-15`, etc. pra cada combinação. O
+       gradient é `cor-sólida → transparent` e a opacity dimma tudo
+       proporcionalmente.
+
+       Uso (overlay, sobre uma img):
+         <div class="scrim">
+           <img src="bg.jpg">
+           <h2 style="position: relative; z-index: 1;">Sobre o scrim</h2>
+         </div>
+
+       Uso (preset reutilizável aplicado num card):
+         <div class="mm-box scrim scrim-pc500-05">…</div>
+       ========================================== */
+    .scrim {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .scrim::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: var(--scrim-z, -1);
+        pointer-events: none;
+        opacity: var(--scrim-opacity, 1);
+        /* 3 stops com defaults que reduzem ao 2-stop quando --scrim-mid e
+           --scrim-mid-pos não são setados:
+             scrim-mid     fallback = --scrim-color (mesma cor do start)
+             scrim-mid-pos fallback = 0%             (colado no início, invisível)
+           Setar os dois ativa o 3-stop (ex.: .scrim-dn900-45). */
+        background: linear-gradient(
+            var(--scrim-direction, to top),
+            var(--scrim-color, var(--bb)) 0%,
+            var(--scrim-mid, var(--scrim-color, var(--bb))) var(--scrim-mid-pos, 0%),
+            transparent 100%
+        );
+    }
+
+    /* ---- Scrim presets ----
+       Combinações reutilizáveis de cor + opacity (direção e z layer omitidas
+       quando default).
+       Naming: .scrim-{color}-{opacity}[ -{direction} ].
+       Uso: <div class="scrim scrim-pc500-05">…</div>. */
+    .scrim-pc500-05 {
+        --scrim-color: var(--pc500);
+        --scrim-opacity: 0.05;
+    }
+
+    /* Preset 3-stop: dn900 → dn900-75 (50%) → transparent a 45°.
+       Cobre o canto inicial com uma camada densa pra deixar texto branco
+       legível sobre uma background-image qualquer. */
+    .scrim-dn900-45 {
+        --scrim-color: var(--dn900);
+        --scrim-direction: 45deg;
+        --scrim-mid: var(--dn900-75);
+        --scrim-mid-pos: 50%;
+    }
+
+    /* Preset 2-stop: dn700 sólido à direita, transparente à esquerda.
+       Usado em cards features pra esmaecer uma imagem decorativa lateral. */
+    .scrim-dn700-270 {
+        --scrim-color: var(--dn700);
+        --scrim-direction: 270deg;
+    }
+
+    /* ==========================================
+       .cards-capa-grid / .cards-feature-grid
+       Grids responsivos para cards capa e feature.
+       auto-fill com min(544px, 100%) garante wrap container-relativo:
+       abaixo de 544px o card ocupa 100% do container; a partir de 1088px
+       (2 × 544 + 32 de gap) dois cards cabem lado a lado.
+       .cards-capa-grid força 2 colunas a partir de 1152px pra baixo e
+       colapsa para 1 coluna em mobile.
+       ========================================== */
+    .cards-capa-grid,
+    .cards-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(544px, 100%), 1fr));
+        gap: 32px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    @media(max-width: 1152px) {
+        .cards-capa-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 864px) {
+        .cards-capa-grid,
+        .cards-feature-grid { gap: 24px; }
+    }
+
+    @media(max-width: 576px) {
+        .cards-capa-grid { gap: 16px; grid-template-columns: 1fr; }
+        .cards-feature-grid { gap: 16px; }
+    }
+
+    /* ==========================================
+       .check-features-grid
+       Grid responsivo para Cards Check Feature.
+       auto-fill com min(328px, 100%): a partir de 688px (2 × 328 + 32)
+       dois cards cabem lado a lado; a partir de 1048px três; e assim por
+       diante. Tracks crescem com 1fr para preencher o container sem sobra.
+       ========================================== */
+    .check-features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(328px, 100%), 1fr));
+        gap: 32px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    @media(max-width: 864px) {
+        .check-features-grid { gap: 24px; }
+    }
+
+    @media(max-width: 576px) {
+        .check-features-grid { gap: 16px; }
+    }
+
+    /* ==========================================
+       .glass: borda sutil de 2px via gradiente top + bottom.
+       Uso: adicionar .glass a qualquer container com position definida.
+       ========================================== */
+    .glass {
+        position: relative;
+    }
+
+    .glass::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right, transparent, var(--bw-5), transparent) top    / 100% 2px no-repeat,
+            linear-gradient(to right, transparent, var(--bw-5), transparent) bottom / 100% 2px no-repeat;
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    /* ==========================================
+       .wave: gradient animado pp500 → pc300 → pc500 recortado por
+       máscara SVG côncava com feGaussianBlur embutido.
+       Uso: adicionar .wave a qualquer container com tamanho definido.
+       ========================================== */
+    .wave {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wave::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -256px;
+        width: calc(100% + 512px);
+        height: 100%;
+        z-index: 0;
+        background: linear-gradient(90deg,
+            var(--pp500), var(--pc300), var(--pc500),
+            var(--pp500), var(--pc300), var(--pc500));
+        background-size: 600% 600%;
+        animation: wave-shift 10s ease infinite;
+        opacity: 0.5;
+        pointer-events: none;
+        mask-image: url("data:image/svg+xml,%3Csvg width='960' height='270' viewBox='0 0 960 270' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='b' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='64'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M480 240C214.9 240 0 132.55 0 0v270h960V0c0 132.55-214.9 240-480 240' fill='%23000' filter='url(%23b)'/%3E%3C/svg%3E");
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='960' height='270' viewBox='0 0 960 270' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='b' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='64'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M480 240C214.9 240 0 132.55 0 0v270h960V0c0 132.55-214.9 240-480 240' fill='%23000' filter='url(%23b)'/%3E%3C/svg%3E");
+        mask-size: 100% 100%;
+        -webkit-mask-size: 100% 100%;
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+    }
+
+    .wave > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==========================================
+       .wave-section: variante de .wave com altura máxima de 400px.
+       Uso: seções cujo height varia mas o efeito não deve ultrapassar 400px.
+       ========================================== */
+    .wave-section {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wave-section::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -256px;
+        width: calc(100% + 512px);
+        height: 400px;
+        z-index: 0;
+        background: linear-gradient(90deg,
+            var(--pp500), var(--pc300), var(--pc500),
+            var(--pp500), var(--pc300), var(--pc500));
+        background-size: 600% 600%;
+        animation: wave-shift 10s ease infinite;
+        opacity: 0.5;
+        pointer-events: none;
+        mask-image: url("data:image/svg+xml,%3Csvg width='960' height='270' viewBox='0 0 960 270' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='b' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='64'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M480 240C214.9 240 0 132.55 0 0v270h960V0c0 132.55-214.9 240-480 240' fill='%23000' filter='url(%23b)'/%3E%3C/svg%3E");
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='960' height='270' viewBox='0 0 960 270' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='b' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='64'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M480 240C214.9 240 0 132.55 0 0v270h960V0c0 132.55-214.9 240-480 240' fill='%23000' filter='url(%23b)'/%3E%3C/svg%3E");
+        mask-size: 100% 100%;
+        -webkit-mask-size: 100% 100%;
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+    }
+
+    .wave-section > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==========================================
+       .wave-section-top: wave-section ancorada no topo.
+       Path SVG espelhado em Y (y → 270−y) — sem transform.
+       ========================================== */
+    .wave-section-top {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wave-section-top::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -256px;
+        width: calc(100% + 512px);
+        height: 400px;
+        z-index: 0;
+        background: linear-gradient(90deg,
+            var(--pp500), var(--pc300), var(--pc500),
+            var(--pp500), var(--pc300), var(--pc500));
+        background-size: 600% 600%;
+        animation: wave-shift 10s ease infinite;
+        opacity: 1;
+        pointer-events: none;
+        mask-image: url("data:image/svg+xml,%3Csvg width='960' height='270' viewBox='0 0 960 270' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='b' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='64'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M480 30C214.9 30 0 137.45 0 270V0h960V270c0 -132.55-214.9 -240-480 -240' fill='%23000' filter='url(%23b)'/%3E%3C/svg%3E");
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='960' height='270' viewBox='0 0 960 270' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='b' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='64'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M480 30C214.9 30 0 137.45 0 270V0h960V270c0 -132.55-214.9 -240-480 -240' fill='%23000' filter='url(%23b)'/%3E%3C/svg%3E");
+        mask-size: 100% 100%;
+        -webkit-mask-size: 100% 100%;
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+    }
+
+    .wave-section-top > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes wave-shift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
+
+    /* ==========================================
+       Inputs: Text Input
+       ========================================== */
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input-group.is-disabled {
+        opacity: 0.25;
+        pointer-events: none;
+    }
+
+    .input-label {
+        font-family: var(--font-family);
+        font-weight: 400;
+        line-height: 1.25;
+        font-size: 1rem;
+        color: var(--bw);
+        margin-bottom: 8px;
+    }
+
+    .input-label-s  { font-size: 0.875rem; margin-bottom: 4px; }
+    .input-label-xs { font-size: 0.75rem;  margin-bottom: 4px; }
+
+    .input {
+        background-color: var(--dn700);
+        color: var(--bw);
+        padding: 12px 16px;
+        border: 0;
+        outline: 0;
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.25;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .input::placeholder {
+        color: var(--bw);
+        opacity: 0.5;
+    }
+
+    /* Wrapper para inputs com ícone */
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-wrap .input-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--bw-50);
+        pointer-events: none;
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .input-icon-right { right: 12px; }
+    .input-icon-left  { left: 12px;  }
+
+    .input.input-has-icon-right { padding-right: 48px; }
+    .input.input-has-icon-left  { padding-left: 48px;  }
+
+    /* Ícone clicável dentro de input-wrap (ex.: toggle de senha).
+       Especificidade igual a .input-wrap .input-icon mas declarado depois — sobrescreve pointer-events:none. */
+    .input-wrap .input-icon-btn {
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
+    /* Estados via inset shadow 2px */
+    .input:focus,
+    .input.is-active {
+        box-shadow: inset 0 0 0 2px var(--pc500);
+    }
+
+    .input-group.is-error    .input { box-shadow: inset 0 0 0 2px var(--er500); }
+    .input-group.is-error    .input-icon { color: var(--er300); }
+    .input-group.is-complete .input { box-shadow: inset 0 0 0 2px var(--sc500); }
+    .input-group.is-complete .input-icon { color: var(--sc300); }
+
+    .input-error-text {
+        font-family: var(--font-family);
+        font-size: 0.75rem;
+        line-height: 1.25;
+        color: var(--er300);
+        margin-top: 4px;
+    }
+
+    /* Lista de sugestões (autocomplete) */
+    .input-dropdown {
+        background-color: var(--dn700);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .input-dropdown-item {
+        padding: 12px 16px;
+        color: var(--bw);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        line-height: 1.25;
+        cursor: pointer;
+    }
+
+    .input-dropdown-item:hover,
+    .input-dropdown-item.is-hover {
+        background-color: var(--dn500);
+    }
+
+    /* Stepper numérico */
+    .input-value {
+        display: flex;
+        align-items: center;
+        background-color: var(--dn700);
+    }
+
+    .input-value-btn {
+        background-color: var(--dn500);
+        border: 0;
+        padding: 12px 16px;
+        cursor: pointer;
+        color: var(--bw-50);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .input-value-btn .material-symbols-outlined {
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .input-value-number {
+        flex: 1;
+        text-align: center;
+        padding: 12px 0;
+        color: var(--bw);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.25;
+    }
+
+    /* ==========================================
+       Inputs: Textarea
+       ========================================== */
+
+    .textarea-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .textarea-group.is-disabled {
+        opacity: 0.25;
+        pointer-events: none;
+    }
+
+    .textarea {
+        background-color: var(--dn700);
+        color: var(--bw);
+        padding: 12px 16px;
+        border: 0;
+        outline: 0;
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.5;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 200px;
+        resize: none;
+    }
+
+    .textarea::placeholder {
+        color: var(--bw);
+        opacity: 0.5;
+    }
+
+    .textarea:focus,
+    .textarea.is-active {
+        box-shadow: inset 0 0 0 2px var(--pc500);
+    }
+
+    .textarea-group.is-error    .textarea { box-shadow: inset 0 0 0 2px var(--er500); }
+    .textarea-group.is-complete .textarea { box-shadow: inset 0 0 0 2px var(--sc500); }
+
+    .textarea-counter {
+        font-family: var(--font-family);
+        font-size: 0.875rem;
+        line-height: 1.25;
+        color: var(--bw-50);
+        margin-top: 8px;
+    }
+
+    .textarea-group.is-complete .textarea-counter { color: var(--sc300); }
+    .textarea-group.is-error    .textarea-counter { color: var(--er300); }
+
+    /* ==========================================
+       Inputs: Dropdown
+       ========================================== */
+
+    .dropdown-group {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    /* Trigger */
+    .dropdown {
+        position: relative;
+        background-color: var(--dn700);
+        color: var(--bw);
+        padding: 12px 48px 12px 16px;
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.25;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .dropdown-placeholder {
+        color: var(--bw-50);
+        flex: 1;
+    }
+
+    .dropdown-value {
+        color: var(--bw);
+        flex: 1;
+    }
+
+    .dropdown-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        color: var(--bw-50);
+        pointer-events: none;
+    }
+
+    /* is-open: controlado por JS no dropdown-group */
+    .dropdown-group.is-open .dropdown {
+        box-shadow: inset 0 0 0 2px var(--pc500);
+    }
+
+    .dropdown-options {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 999;
+        background-color: var(--dn700);
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: none;
+        overflow-y: auto;
+    }
+
+    .dropdown-group.is-open .dropdown-options {
+        display: block;
+    }
+
+    /* Abre para cima quando não há espaço abaixo — JS adiciona is-open-up */
+    .dropdown-group.is-open-up .dropdown-options {
+        top: auto;
+        bottom: 100%;
+    }
+
+    .dropdown-group.is-open-up .dropdown-options-detached {
+        margin-top: 0;
+        margin-bottom: 8px;
+        border-radius: 16px 16px 0 16px;
+    }
+
+    .dropdown-option {
+        padding: 12px 16px;
+        color: var(--bw);
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.25;
+        cursor: pointer;
+    }
+
+    .dropdown-option:hover,
+    .dropdown-option.is-hover {
+        background-color: var(--dn500);
+    }
+
+    /* Modifier: separadores */
+    .dropdown-options-separators .dropdown-option + .dropdown-option {
+        border-top: 2px solid var(--bw-10);
+    }
+
+    /* Modifier: detached com shadow */
+    .dropdown-options-detached {
+        margin-top: 8px;
+        border-radius: 16px 0 16px 16px;
+        box-shadow: var(--shadow-m-50);
+        overflow: hidden;
+    }
+
+    /* ==========================================
+       .form-glass: modifier para formulários sobre fundos texturizados
+       (wave, glass, imagens). Inputs, dropdowns e textareas ganham
+       background bw-5 (5% branco) em vez de dn700, mantendo legibilidade
+       sobre gradientes sem perder a estrutura visual dos campos.
+       A lista de opções do dropdown mantém dn700 sólido para leitura.
+       Uso: <div class="card-glass glass wave form-glass">
+       ========================================== */
+    .form-glass .input,
+    .form-glass .dropdown,
+    .form-glass .textarea {
+        background-color: var(--bw-5);
+    }
+
+    .form-glass .dropdown-options {
+        background-color: var(--dn700);
+    }
+
+    .form-glass .input-value {
+        background-color: var(--bw-5);
+    }
+
+
+    /* ==========================================
+       .card-glass: superfície visual reutilizável com fundo translúcido,
+       backdrop-filter blur e border-radius 16px. Define todos os aspectos
+       visuais do card (padding, gap, radius, overflow). O conteúdo interno
+       (.form, h3, etc.) não precisa redefinir esses aspectos.
+       Combinar com .glass (borda sutil) e .wave (gradiente animado).
+       Ver Patterns/Cards para todas as variantes.
+       ========================================== */
+    .card-glass {
+        position: relative;
+        border-radius: 16px;
+        background-color: var(--dn500-10);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 32px;
+        box-sizing: border-box;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .card-glass h3 {
+        font: var(--h5);
+        color: var(--bw);
+        margin: 0;
+    }
+
+    @media(max-width: 576px) {
+        .card-glass { padding: 24px; }
+    }
+
+    /* ==========================================
+       .form: container de composição de campos. Padding 0 — o card-pai
+       define a superfície. Define gap 24px entre grupos de campos.
+       ========================================== */
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Linha de campos lado a lado (ex.: Nome + Sobrenome). */
+    .form-row {
+        display: flex;
+        gap: 16px;
+    }
+
+    .form-row > * {
+        flex: 1;
+        min-width: 0;
+    }
+
+    @media(max-width: 576px) {
+        .form-row { flex-direction: column; }
+    }
+
+    /* Linha das ações: CTAs alinhados à direita, gap 16px. */
+    .form-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    /* ==========================================
+       Button Tags
+       ========================================== */
+
+    .tag {
+        border: 0;
+        border-radius: 1920px;
+        cursor: pointer;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        color: var(--bw-75);
+        font-family: var(--font-family);
+        font-weight: 400;
+        line-height: 1.25;
+    }
+
+    .tag[data-size="l"] { padding: 8px 12px; font-size: 1rem; }
+    .tag[data-size="m"] { padding: 8px 12px; font-size: 0.875rem; }
+    .tag[data-size="s"] { padding: 4px 8px;  font-size: 0.75rem; }
+
+    .tag[data-color="grey"]  { background-color: var(--dn500); }
+    .tag[data-color="dark"]  { background-color: var(--dn800); }
+
+    .tag.is-hover,
+    .tag:hover     { background-color: var(--bw-75); color: var(--bb); }
+    .tag.is-active { background-color: var(--pc500); color: var(--bw); }
+
+    /* ==========================================
+       Links
+       ========================================== */
+
+    .link {
+        font: var(--p);
+        text-decoration: underline;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .link[data-color="purple"]              { color: var(--pp200); }
+    .link[data-color="purple"].is-hover,
+    .link[data-color="purple"]:hover        { color: var(--pp100); }
+    .link[data-color="purple"].is-active    { color: var(--sg500); }
+
+    .link[data-color="blue"]                { color: var(--pc200); }
+    .link[data-color="blue"].is-hover,
+    .link[data-color="blue"]:hover          { color: var(--pc100); }
+    .link[data-color="blue"].is-active      { color: var(--sg500); }
+
+    /* ==========================================
+       Controls
+       ========================================== */
+
+    .control-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+    }
+
+    .control-group.is-disabled {
+        opacity: 0.25;
+        pointer-events: none;
+    }
+
+    .control-group.is-vertical {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .control-label {
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.25;
+        color: var(--bw-75);
+    }
+
+    .control-value {
+        font: var(--label-xs);
+        color: var(--bw-50);
+    }
+
+    /* Checkbox */
+    .checkbox {
+        width: 24px;
+        height: 24px;
+        background-color: var(--dn700);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bw);
+        flex-shrink: 0;
+        box-sizing: border-box;
+    }
+
+    .checkbox .material-symbols-outlined {
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .checkbox.is-selected,
+    .checkbox.is-interminate { background-color: var(--pc500); }
+    .checkbox.is-hover       { background-color: var(--dn500); }
+    /* CSS-only checkbox: hidden <input type="checkbox"> + adjacent <span class="checkbox"> */
+    .control-group:hover input[type="checkbox"]:not(:checked) + .checkbox { background-color: var(--dn500); }
+    input[type="checkbox"]:checked + .checkbox { background-color: var(--pc500); }
+    input[type="checkbox"]:checked + .checkbox::after {
+        content: "check";
+        font-family: 'Material Symbols Outlined';
+        font-size: 20px;
+        color: var(--bw);
+        line-height: 1;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    input[type="checkbox"].is-indeterminate + .checkbox { background-color: var(--pc500); }
+    input[type="checkbox"].is-indeterminate + .checkbox::after {
+        content: "remove";
+        font-family: 'Material Symbols Outlined';
+        font-size: 20px;
+        color: var(--bw);
+        line-height: 1;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* CSS-only radio: hidden <input type="radio" name="..."> + adjacent <span class="radio"> */
+    .control-group:hover input[type="radio"]:not(:checked) + .radio { background-color: var(--dn500); }
+    input[type="radio"]:checked + .radio { background-color: var(--pc500); }
+    input[type="radio"]:checked + .radio::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: var(--bw);
+    }
+
+    /* Disabled state via :has() */
+    .control-group:has(input:disabled) { opacity: 0.25; pointer-events: none; }
+
+
+    /* Radio */
+    .radio {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--dn700);
+        flex-shrink: 0;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .radio.is-selected { background-color: var(--pc500); }
+
+    .radio.is-selected::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: var(--bw);
+    }
+
+    .radio.is-hover { background-color: var(--dn500); }
+
+    /* Switch */
+    .switch {
+        width: 48px;
+        height: 24px;
+        border-radius: 1920px;
+        background-color: var(--dn700);
+        position: relative;
+        flex-shrink: 0;
+        transition: 0.2s;
+    }
+
+    .switch::after {
+        content: "";
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--dn500);
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: 0.2s;
+    }
+
+    .switch.is-on              { background-color: var(--pc500); }
+    .switch.is-on::after       { left: 24px; background-color: var(--bw); }
+
+    /* Slider */
+    .slider {
+        width: 100%;
+        height: 4px;
+        background-color: var(--bw-10);
+        border-radius: 0;
+        position: relative;
+    }
+
+    .slider-fill  { height: 100%; background-color: var(--pc500); }
+
+    .slider-thumb {
+        width: 8px;
+        height: 8px;
+        background-color: var(--bw);
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    /* ==========================================
+       Tags de status
+       ========================================== */
+
+    .tag-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1920px;
+        font-family: var(--font-family);
+        font-weight: 400;
+        line-height: 1.25;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-sizing: border-box;
+    }
+
+    .tag-status[data-size="l"] { padding: 8px 12px; font-size: 1rem; }
+    .tag-status[data-size="m"] { padding: 8px 12px; font-size: 0.875rem; }
+    .tag-status[data-size="s"] { padding: 4px 8px;  font-size: 0.75rem; }
+
+    .tag-status[data-semantic="notification"] { background-color: var(--nt500-15); color: var(--nt500); }
+    .tag-status[data-semantic="success"]      { background-color: var(--sc500-15); color: var(--sc500); }
+    .tag-status[data-semantic="error"]        { background-color: var(--er500-15); color: var(--er500); }
+    .tag-status[data-semantic="warning"]      { background-color: var(--wr500-15); color: var(--wr500); }
+
+    .tag-status.is-gradient { background-color: transparent; }
+    .tag-status.is-gradient[data-semantic="notification"] { background-image: linear-gradient(90deg, var(--nt500-15), transparent); }
+    .tag-status.is-gradient[data-semantic="success"]      { background-image: linear-gradient(90deg, var(--sc500-15), transparent); }
+    .tag-status.is-gradient[data-semantic="error"]        { background-image: linear-gradient(90deg, var(--er500-15), transparent); }
+    .tag-status.is-gradient[data-semantic="warning"]      { background-image: linear-gradient(90deg, var(--wr500-15), transparent); }
+    .tag-status[data-semantic="neutral"]  { background-color: var(--pc300-15); color: var(--pc200); }
+    .tag-status.is-gradient[data-semantic="neutral"]  { background-color: transparent; background-image: linear-gradient(90deg, var(--pc300-15), transparent); }
+
+    /* ==========================================
+       Tooltips
+       ========================================== */
+
+    .tooltip {
+        display: inline-flex;
+        transition: opacity 0.5s ease;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+        color: var(--bw);
+        font-family: var(--font-family);
+        font-weight: 400;
+        line-height: 1.25;
+        border-radius: 0 8px 8px 8px;
+        box-shadow: var(--shadow-s-50);
+        box-sizing: border-box;
+    }
+
+    .tooltip[data-size="l"] { padding: 12px 16px; font-size: 1rem;     max-width: 384px; }
+    .tooltip[data-size="m"] { padding: 8px 12px;  font-size: 0.875rem; max-width: 256px; }
+    .tooltip[data-size="s"] { padding: 4px 8px;   font-size: 0.75rem;  max-width: 128px; }
+
+    .tooltip[data-bg="dn500"]    { background-color: var(--dn500); }
+    .tooltip[data-bg="dn800"]    { background-color: var(--dn800); }
+    .tooltip[data-bg="white-15"] { background-color: var(--bw-15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .tooltip[data-bg="black-25"] { background-color: var(--bb-25); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+    /* Tooltip positional border-radius: o canto que aponta para o trigger fica com radius 0. */
+    .tooltip[data-pos]      { border-radius: 8px; }
+    .tooltip[data-pos="t"]  { border-radius: 8px 8px 0 8px; }
+    .tooltip[data-pos="b"]  { border-radius: 0 8px 8px 8px; }
+    .tooltip[data-pos="r"]  { border-radius: 0 8px 8px 8px; }
+    .tooltip[data-pos="l"]  { border-radius: 8px 8px 0 8px; }
+
+    /* ==========================================
+       Section caps: transições onduladas de seção via pseudo-elemento.
+       data-cap-top    → ::before em top: -16px, cor --cap-color-top
+       data-cap-bottom → ::after em bottom: -16px, cor --cap-color-bottom
+       Formas top:    pointing-down | pointing-up-negative
+       Formas bottom: pointing-up   | pointing-down-negative
+       Uso: <section data-cap-top="pointing-down" data-cap-bottom="pointing-up"
+                     style="--cap-color-top:var(--dn900);--cap-color-bottom:var(--dn900)">
+       ========================================== */
+
+    [data-cap-top],
+    [data-cap-bottom] { position: relative; }
+
+    [data-cap-bottom] { z-index: 1; }
+
+    [data-cap-top]::before,
+    [data-cap-bottom]::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        pointer-events: none;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    [data-cap-top]::before   { top: -16px;    background-color: var(--cap-color-top,    var(--dn900)); }
+    [data-cap-bottom]::after { bottom: -16px; background-color: var(--cap-color-bottom, var(--dn900)); }
+
+    [data-cap-top="pointing-down"]::before,
+    [data-cap-bottom="pointing-down"]::after {
+        -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M0 16V0h1920v16c0 32-960 64-960 64S0 48 0 16'/></svg>");
+        mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M0 16V0h1920v16c0 32-960 64-960 64S0 48 0 16'/></svg>");
+    }
+
+    [data-cap-top="pointing-down-negative"]::before,
+    [data-cap-bottom="pointing-down-negative"]::after {
+        -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M0 80h1920V0c0 32-960 64-960 64S0 32 0 0z'/></svg>");
+        mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M0 80h1920V0c0 32-960 64-960 64S0 32 0 0z'/></svg>");
+    }
+
+    [data-cap-top="pointing-up"]::before,
+    [data-cap-bottom="pointing-up"]::after {
+        -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M1920 64v16H0V64C0 32 960 0 960 0s960 32 960 64'/></svg>");
+        mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M1920 64v16H0V64C0 32 960 0 960 0s960 32 960 64'/></svg>");
+    }
+
+    [data-cap-top="pointing-up-negative"]::before,
+    [data-cap-bottom="pointing-up-negative"]::after {
+        -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M1920 0H0v80c0-32 960-64 960-64s960 32 960 64z'/></svg>");
+        mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 80' preserveAspectRatio='none'><path fill='black' d='M1920 0H0v80c0-32 960-64 960-64s960 32 960 64z'/></svg>");
+    }
