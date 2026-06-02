@@ -1,7 +1,19 @@
   # BEGIN Site Estatico Xperiun
-  # A home (/) é servida por public_html/ed/index.html, mas a URL pública
-  # permanece "/" (não mostra /ed/). Apenas a home tem esse mapeamento — todas
-  # as outras URLs do site novo seguem com /ed/ visível (ex.: /ed/formacoes/X).
+  # COEXISTE COM WORDPRESS — esta seção SÓ captura 4 padrões específicos:
+  #   /ed/, /ed/index, /ed/index.html, e "/" (raiz vazia).
+  # Qualquer outra URL passa direto pelas regras de WordPress abaixo. Isso
+  # significa que páginas WP como /ed/marketplace/, /ed/postech/, /ed/mba/
+  # etc. continuam servidas pelo WP normalmente — não há conflito.
+  #
+  # Comportamento:
+  #   - "/"             -> serve site estático public_html/ed/index.html
+  #   - "/ed/"          -> 301 redirect para "/" (URL canônica da home)
+  #   - "/ed/index"     -> 301 redirect para "/"
+  #   - "/ed/index.html"-> 301 redirect para "/"
+  #   - "/ed/<resto>"   -> passa adiante (sem captura). Se /ed/<resto> for
+  #                        diretório estático (formacoes, site-dependencias,
+  #                        site-pos-graduacao) -> serve estático. Se não
+  #                        existir fisicamente -> WordPress assume.
   <IfModule mod_rewrite.c>
   RewriteEngine On
 

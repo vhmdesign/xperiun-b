@@ -1,4 +1,10 @@
 RewriteEngine On
+# CRÍTICO: herda regras do public_html/.htaccess pai (incluindo a catch-all
+# do WordPress). Sem isso, URLs como /ed/mba, /ed/minicursos/X, /ed/marketplace
+# que NÃO existem como arquivo estático cairiam em 404 em vez de irem pro WP.
+# Com 'inherit', as regras locais (.html stripping) rodam primeiro; se nada
+# casar, as regras do pai (WP catch-all) assumem.
+RewriteOptions inherit
 
 # Força HTTPS (opcional — descomente se aplicável)
 # RewriteCond %{HTTPS} !=on

@@ -1,4 +1,8 @@
 RewriteEngine On
+# Herda as regras do .htaccess pai (ed/.htaccess que por sua vez herda
+# public_html/.htaccess). Mesma razão do ed/.htaccess: garante que URLs
+# desconhecidas caiam no WP catch-all em vez de 404.
+RewriteOptions inherit
 RewriteBase /ed/formacoes/
 
 # 1) Redireciona /ed/formacoes/index ou /ed/formacoes/index.html -> /ed/formacoes/ (301)
