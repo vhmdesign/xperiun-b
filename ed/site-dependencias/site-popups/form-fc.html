@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xperiun Completa</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<div class="popup-form" id="popup-form-fc" style="--popup-accent-rgb: 100, 100, 255;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <div class="popup-form-icon-box">
+                    <svg class="popup-form-icon" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Símbolo Xperiun">
+                        <path d="M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z" fill="url(#popup-fc-grad)"/>
+                        <defs>
+                            <linearGradient id="popup-fc-grad" x1="42.11" y1="757.899" x2="757.9" y2="42.109" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#9600ff"/>
+                                <stop offset="1" stop-color="#4b00ff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="popup-form-eyebrow">
+                    <span class="tag-status" data-semantic="neutral" data-size="m">Xperiun Completa</span>
+                </div>
+            </div>
+            <p class="popup-form-label">Preencha seus dados abaixo:</p>
+            <form
+                class="popup-form-form _form _form_226 _inline-form _dark"
+                id="_form_226_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <input type="hidden" name="u" value="226">
+                <input type="hidden" name="f" value="226">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <!-- TODO: substituir 'or' pelo UUID real do form 226 na AC -->
+                <input type="hidden" name="or" value="">
+
+                <input type="hidden" name="field[4]"   value="">
+                <input type="hidden" name="field[5]"   value="">
+                <input type="hidden" name="field[2]"   value="">
+                <input type="hidden" name="field[3]"   value="">
+                <input type="hidden" name="field[60]"  value="">
+                <input type="hidden" name="field[103]" value="">
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="you@domain.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="g-recaptcha" data-sitekey="6LcwIw8TAAAAACP1ysM08EhCgzd6q5JAOUR1a0Go"></div>
+
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_226_submit">Confirmar</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Você será redirecionado para o checkout...</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>

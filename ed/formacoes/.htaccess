@@ -1,0 +1,18 @@
+RewriteEngine On
+RewriteBase /ed/formacoes/
+
+# 1) Redireciona /ed/formacoes/index ou /ed/formacoes/index.html -> /ed/formacoes/ (301)
+RewriteCond %{THE_REQUEST} \s/+ed/formacoes/index(\.html)?[\s?] [NC]
+RewriteRule ^ /ed/formacoes/ [R=301,L,NE]
+
+# 2) Redireciona /ed/formacoes/pagina.html -> /ed/formacoes/pagina (301)
+RewriteCond %{THE_REQUEST} \s/+ed/formacoes/(.+?)\.html[\s?] [NC]
+RewriteRule ^ /ed/formacoes/%1 [R=301,L,NE]
+
+# 3) Internamente serve /ed/formacoes/pagina como /ed/formacoes/pagina.html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+DirectoryIndex index.html

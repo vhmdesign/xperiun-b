@@ -1,0 +1,48 @@
+# Deploy via FTP para Hostinger.
+#
+# Dispara em cada push na branch main. Sincroniza o conteúdo de `ed/` (do
+# repositório local) para `public_html/ed/` no servidor. Usa git-ftp interno —
+# só transfere arquivos modificados desde o último deploy (mantém um arquivo
+# `.ftp-deploy-sync-state.json` no servidor pra controlar diff).
+#
+# Pré-requisitos: configure três secrets em
+#   GitHub repo > Settings > Secrets and variables > Actions > New repository secret
+#
+#   FTP_SERVER     — hostname FTP do Hostinger (ex.: ftp.seudominio.com ou
+#                    o host listado em hPanel > Arquivos > Contas FTP)
+#   FTP_USERNAME   — usuário FTP (ex.: u123456789.deploy)
+#   FTP_PASSWORD   — senha FTP
+#
+# Importante: o `.htaccess` da raiz de `public_html/` NÃO é tocado por este
+# workflow (sobe somente o conteúdo de `ed/`). Edite-o manualmente no servidor.
+
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: FTP sync ed/ -> public_html/ed/
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./ed/
+          server-dir: /public_html/ed/
+          # Por padrão a action já ignora .git e .github. Adicione exclusões
+          # extras aqui se precisar (ex.: arquivos de dev, screenshots, etc.):
+          # exclude: |
+          #   **/*.bak
+          #   **/.DS_Store
+          log-level: standard
