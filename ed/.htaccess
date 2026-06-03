@@ -10,6 +10,18 @@ RewriteOptions inherit
 # RewriteCond %{HTTPS} !=on
 # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
+# 0) PRIORIDADE: força o serve direto de ed/index.html quando a URL é
+#    EXATAMENTE /ed/ ou /ed. Sem isso, a WP catch-all herdada intercepta
+#    e serve a homepage do WordPress no lugar do hub estático.
+#    Match é estrito (`^/ed/?$`), então URLs como /ed/mba, /ed/minicursos/X,
+#    /ed/marketplace etc. NÃO casam aqui e continuam fluindo normalmente
+#    pra WP catch-all como antes (regras herdadas executam abaixo).
+#    [END] para TODAS as rewrites subsequentes (inclusive as herdadas)
+#    pra essa URL específica.
+RewriteCond %{REQUEST_URI} ^/ed/?$
+RewriteCond %{DOCUMENT_ROOT}/ed/index.html -f
+RewriteRule ^ /ed/index.html [L,END]
+
 # 1) Redireciona /caminho/index ou /caminho/index.html -> /caminho/ (301)
 #    Aplica-se também a /index e /index.html no root.
 RewriteCond %{THE_REQUEST} \s/+(.*/)?index(\.html)?[\s?] [NC]
