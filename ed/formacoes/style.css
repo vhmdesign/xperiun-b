@@ -1832,29 +1832,28 @@
                 position: relative;
                 height: 237.5vh;
             }
-            /* Override do desktop (position:fixed, translateY 100%, etc.).
-               No mobile sec-anuidade vive em flow + sticky. */
+            /* TODAS as propriedades com !important pra vencer o desktop
+               (position:fixed, inset:0, transform:translateY(100%), etc.).
+               NÃO usar shorthand `inset` aqui — ele resetaria `top: 0` mesmo
+               com !important devido à cascade ordering dentro do bloco.
+               iOS Safari implementa position:sticky desde 13.0. */
             .anuidade-sticky-wrap .sec-anuidade {
-                position: sticky;
-                top: 0;
-                inset: auto;
-                height: 100vh;
-                width: 100%;
-                transform: none;
-                transition: none;
-                pointer-events: auto;
-                z-index: 1;
+                position: -webkit-sticky !important;
+                position: sticky !important;
+                right: auto !important;
+                bottom: auto !important;
+                left: auto !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100vh !important;
+                transform: none !important;
+                transition: none !important;
+                pointer-events: auto !important;
+                will-change: auto !important;
+                z-index: 1 !important;
             }
-            /* O state machine desktop adiciona .is-active/.is-hidden.
-               Mobile ignora — mantém sticky-driven sempre. */
-            .anuidade-sticky-wrap .sec-anuidade.is-active,
-            .anuidade-sticky-wrap .sec-anuidade.is-hidden {
-                transform: none;
-                display: flex;
-                pointer-events: auto;
-            }
-            /* JS aplica opacity/filter/transform inline. Sem transições CSS
-               concorrentes — o scroll é a fonte de animação. */
+            /* JS aplica opacity/filter/transform inline nos filhos. Sem
+               transições CSS concorrentes. */
             .anuidade-sticky-wrap .anuidade-eyebrow,
             .anuidade-sticky-wrap .anuidade-title,
             .anuidade-sticky-wrap .anuidade-desc,

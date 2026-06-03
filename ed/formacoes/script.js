@@ -755,19 +755,22 @@ if (window.matchMedia) {
     }
 })();
 
-/* ── MOBILE (≤864px): sec-anuidade scroll-driven sticky ──
-   Substitui o state machine de popup do desktop. Funcionamento:
-     · .anuidade-sticky-wrap (237.5vh) define o "trilho" de scroll
-     · .sec-anuidade fica sticky no topo do viewport durante 137.5vh
-     · Esse handler computa progress relativo ao topo do wrap e aplica
-       opacity / filter blur / transform translateY nos elementos internos:
-        - 0   → 100vh : progress 0 → 1   (fade-in)
-        - 100 → 125vh : progress = 1     (hold)
-        - 125 → 150vh : progress 1 → 0   (fade-out)
-        - 150vh+      : progress = 0     (já saiu visualmente)
-     · Em 137.5vh o sticky termina (wrap.bottom toca viewport.bottom) e a
-       sec-faq seguinte entra naturalmente de baixo, "sobressaindo" sobre
-       a sec-anuidade que continua scrollando pra cima já invisível.
+/* ── MOBILE (≤864px): sec-anuidade scroll-driven pinning ──
+   Substitui o state machine de popup do desktop. JS controla 3 estados de
+   posição da section dentro do wrap (em vez de usar position:sticky direto,
+   que tem quirks em iOS):
+     · scrolled <= 0       → absolute top:0 (natural, no topo do wrap)
+     · 0 < scrolled < END  → fixed top:0 (pinada no topo do viewport, .is-pinned)
+     · scrolled >= END     → absolute bottom:0 (ancorada no fundo do wrap, .is-anchor-bottom)
+   END = wrap.height - section.height = 237.5vh - 100vh = 137.5vh
+
+   Animações dos elementos internos por progresso de scroll:
+     - 0   → 100vh : opacity 0 → 1   (fade-in)
+     - 100 → 125vh : opacity = 1     (hold)
+     - 125 → 150vh : opacity 1 → 0   (fade-out)
+     - 150vh+      : opacity = 0
+   Em 137.5vh (= END), opacity = 0.5 e a sec-faq seguinte começa a entrar
+   naturalmente de baixo enquanto sec-anuidade rola pra cima invisível.
 */
 (function () {
     var mq = window.matchMedia('(max-width: 864px)');
@@ -784,6 +787,58 @@ if (window.matchMedia) {
     var actions = section.querySelector('.anuidade-actions');
 
     function bf(px) { return 'blur(' + px + 'px)'; }
+
+    /* Reset opacity do title (CSS default = 0 pra esconder antes do reveal).
+       Como mobile usa scroll-driven nos chars individuais, o pai precisa
+       estar opaco senão a opacity:0 do pai zera a visibilidade dos chars. */
+    if (title) title.style.opacity = '1';
+
+    /* Title split char-by-char — mesma lógica do desktop revealSec2.
+       Cada letra vira <span style="display:inline-block"> envolto em
+       um wordWrap (white-space:nowrap) pra não quebrar dentro de palavra. */
+    var titleSpans = [];
+    if (title) {
+        (function walk(node) {
+            if (node.nodeType === 3) {
+                var words = node.textContent.split(/(\s+)/);
+                var frag = document.createDocumentFragment();
+                words.forEach(function (part) {
+                    if (/^\s+$/.test(part)) {
+                        frag.appendChild(document.createTextNode(part));
+                    } else if (part.length) {
+                        var wordWrap = document.createElement('span');
+                        wordWrap.style.display    = 'inline-block';
+                        wordWrap.style.whiteSpace = 'nowrap';
+                        part.split('').forEach(function (ch) {
+                            var sp = document.createElement('span');
+                            sp.textContent   = ch;
+                            sp.style.display = 'inline-block';
+                            wordWrap.appendChild(sp);
+                            titleSpans.push(sp);
+                        });
+                        frag.appendChild(wordWrap);
+                    }
+                });
+                node.parentNode.replaceChild(frag, node);
+            } else if (node.nodeType === 1) {
+                Array.from(node.childNodes).forEach(walk);
+            }
+        })(title);
+    }
+
+    /* Stagger igual ao desktop: 10ms entre letras, 500ms de anim por letra.
+       Cada letra tem sua "janela" de progresso normalizada pra fração [0,1]
+       do progresso geral de fade-in/fade-out. */
+    var STAGGER_MS = 10;
+    var ANIM_MS    = 500;
+    var totalChars = titleSpans.length;
+    var totalMs    = (totalChars - 1) * STAGGER_MS + ANIM_MS || ANIM_MS;
+    /* Para cada char i: start = i*STAGGER_MS, end = i*STAGGER_MS + ANIM_MS.
+       Normalizado: startN = (i*STAGGER_MS) / totalMs, endN = startN + ANIM_MS/totalMs */
+    var ANIM_FRACTION = ANIM_MS / totalMs;
+
+    /* Sticky positioning é 100% CSS (position: sticky !important).
+       JS só calcula opacity/filter/transform dos filhos. */
 
     var rafId = null;
     function update() {
@@ -807,9 +862,6 @@ if (window.matchMedia) {
             eyebrow.style.filter = bf(blur);
             eyebrow.style.transform = 'translateY(' + (-slide) + 'px)';
         }
-        if (title) {
-            title.style.opacity = p;
-        }
         if (desc) {
             desc.style.opacity = p;
             desc.style.filter = bf(blur);
@@ -819,6 +871,21 @@ if (window.matchMedia) {
             actions.style.opacity = p;
             actions.style.filter = bf(blur);
             actions.style.transform = 'translateY(' + slide + 'px)';
+        }
+        /* Title chars: cada letra com janela própria + stagger.
+           Letra i começa a animar em p = (i*STAGGER_MS)/totalMs e
+           termina em p = startN + ANIM_FRACTION. */
+        if (totalChars) {
+            for (var i = 0; i < totalChars; i++) {
+                var startN = (i * STAGGER_MS) / totalMs;
+                var pChar  = (p - startN) / ANIM_FRACTION;
+                if (pChar < 0) pChar = 0;
+                else if (pChar > 1) pChar = 1;
+                var sp = titleSpans[i];
+                sp.style.opacity   = pChar;
+                sp.style.filter    = bf(8 * (1 - pChar));
+                sp.style.transform = 'translateY(' + (32 * (1 - pChar)) + 'px)';
+            }
         }
     }
 
