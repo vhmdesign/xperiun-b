@@ -126,6 +126,19 @@
     });
 
     // ─── Âncoras: intercepta <a href="#..."> e anima via lerp ────────────────
+    // Usa offsetTop walk (não getBoundingClientRect) pra ignorar transforms
+    // aplicados ao alvo — ex: sec-oferta tem translateY(pin) quando o usuário
+    // está em anuidade. Com rect.top, o destino ficava deslocado pelo pin.
+    function getNaturalTop(el) {
+        let y = 0;
+        let cur = el;
+        while (cur) {
+            y += cur.offsetTop;
+            cur = cur.offsetParent;
+        }
+        return y;
+    }
+
     document.addEventListener('click', function (e) {
         const a = e.target.closest('a[href^="#"]');
         if (!a) return;
@@ -137,7 +150,7 @@
         if (!el) return;
 
         e.preventDefault();
-        const dest = clamp(el.getBoundingClientRect().top + window.scrollY);
+        const dest = clamp(getNaturalTop(el));
         target  = dest;
         current = window.scrollY;
         running = true;

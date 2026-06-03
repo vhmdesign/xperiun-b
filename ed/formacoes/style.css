@@ -1828,9 +1828,25 @@
               naturalmente, "sobressaindo" sobre sec-anuidade que sai pra cima.
            ════════════════════════════════════════════════════════════ */
         @media (max-width: 864px) {
+            /* Pin pattern: sec-oferta gruda no bottom do viewport quando seu
+               bottom natural alcança o vh, e anuidade-sticky-wrap (z:1) sobe
+               por cima com sec-anuidade. Mesma técnica de sec-projetos +
+               pilares-profs. overflow:visible no extras-oferta-wrap permite
+               o transform translateY do pin não ser clipado pelo parent. */
+            .extras-oferta-wrap {
+                position: relative;
+                overflow: visible;
+                z-index: 0;
+            }
+            .extras-oferta-wrap .sec-oferta {
+                position: relative;
+                z-index: 0;
+                will-change: transform;
+            }
             .anuidade-sticky-wrap {
                 position: relative;
                 height: 237.5vh;
+                z-index: 1;
             }
             /* TODAS as propriedades com !important pra vencer o desktop
                (position:fixed, inset:0, transform:translateY(100%), etc.).

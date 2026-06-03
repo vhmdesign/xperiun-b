@@ -899,6 +899,56 @@ if (window.matchMedia) {
     update();
 })();
 
+/* ── MOBILE (≤864px): sec-anuidade passa por cima de sec-oferta ──
+   Mesmo padrão do reveal pilares-profs / sec-projetos: pin de sec-oferta
+   via translateY quando seu BOTTOM atinge o rodapé do viewport, e
+   anuidade-sticky-wrap (z-index:1) sobe por cima na flow natural.
+   Cap em vh: depois de 1 viewport de overshoot, sec-oferta pode rolar
+   normalmente pra fora. */
+(function () {
+    if (!window.matchMedia('(max-width: 864px)').matches) return;
+
+    var oferta = document.querySelector('.sec-oferta');
+    var anuidadeWrap = document.querySelector('.anuidade-sticky-wrap');
+    if (!oferta || !anuidadeWrap) return;
+
+    var raf = null;
+
+    function getNaturalTop(el) {
+        var y = 0;
+        var cur = el;
+        while (cur) {
+            y += cur.offsetTop;
+            cur = cur.offsetParent;
+        }
+        return y;
+    }
+
+    function update() {
+        raf = null;
+        var ofertaBottomDoc = getNaturalTop(oferta) + oferta.offsetHeight;
+        var ofertaBottomVp = ofertaBottomDoc - (window.scrollY || 0);
+        var vh = window.innerHeight;
+        var overshoot = vh - ofertaBottomVp;
+
+        if (overshoot <= 0) {
+            if (oferta.style.transform) oferta.style.transform = '';
+        } else {
+            var pin = overshoot < vh ? overshoot : vh;
+            oferta.style.transform = 'translateY(' + pin + 'px)';
+        }
+    }
+
+    function schedule() {
+        if (raf) return;
+        raf = requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    schedule();
+})();
+
 /* ── Reveal: pilares-profs passa por cima de sec-projetos ──
    Mimica position:sticky bottom:0, mas via translateY pra funcionar em qualquer
    altura de sec-projetos (inclusive quando maior que o viewport). Quando o
