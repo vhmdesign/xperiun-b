@@ -781,6 +781,27 @@ if (window.matchMedia) {
     var section = wrap.querySelector('.sec-anuidade');
     if (!section) return;
 
+    /* --anuidade-vh: 1% do viewport visível REAL (não o "large viewport"
+       que `vh`/`dvh` reportam com delay no Chrome Android). Atualiza em
+       tempo real via window.visualViewport.resize — dispara assim que a
+       barra de endereço começa a mostrar/esconder, sem aguardar o scroll
+       parar. Section/wrap usam `calc(var(--anuidade-vh) * N)` pra ficar
+       sempre exatamente do tamanho do viewport visível.
+       Também chama schedule() pra re-renderizar a animação imediatamente. */
+    function updateAnuidadeVh() {
+        var vv = window.visualViewport;
+        var vh = vv ? vv.height : window.innerHeight;
+        document.documentElement.style.setProperty('--anuidade-vh', (vh / 100) + 'px');
+        if (typeof schedule === 'function') schedule();
+    }
+    updateAnuidadeVh();
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateAnuidadeVh);
+        window.visualViewport.addEventListener('scroll', updateAnuidadeVh);
+    }
+    window.addEventListener('resize', updateAnuidadeVh);
+    window.addEventListener('orientationchange', updateAnuidadeVh);
+
     var eyebrow = section.querySelector('.anuidade-eyebrow');
     var title   = section.querySelector('.anuidade-title');
     var desc    = section.querySelector('.anuidade-desc');
@@ -844,7 +865,9 @@ if (window.matchMedia) {
     function update() {
         rafId = null;
         var rect = wrap.getBoundingClientRect();
-        var vh = window.innerHeight;
+        /* Usa section.offsetHeight (= valor CSS resolvido de var(--anuidade-vh) * 100)
+           pra que vh do JS bata exatamente com vh do CSS, mesmo em tempo real. */
+        var vh = section.offsetHeight || window.innerHeight;
         var scrolled = -rect.top;
 
         var p;
