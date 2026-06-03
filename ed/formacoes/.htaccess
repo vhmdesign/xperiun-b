@@ -5,6 +5,15 @@ RewriteEngine On
 RewriteOptions inherit
 RewriteBase /ed/formacoes/
 
+# 0) PRIORIDADE: força o serve direto de index.html quando a URL é
+#    /ed/formacoes/ ou /ed/formacoes. Sem isso, a WP catch-all herdada
+#    de public_html/.htaccess intercepta a request e rota pro WordPress,
+#    que serve a homepage no lugar do hub estático. [END] para TODAS as
+#    rewrites subsequentes (incluindo as herdadas).
+RewriteCond %{REQUEST_URI} ^/ed/formacoes/?$
+RewriteCond %{DOCUMENT_ROOT}/ed/formacoes/index.html -f
+RewriteRule ^ /ed/formacoes/index.html [L,END]
+
 # 1) Redireciona /ed/formacoes/index ou /ed/formacoes/index.html -> /ed/formacoes/ (301)
 RewriteCond %{THE_REQUEST} \s/+ed/formacoes/index(\.html)?[\s?] [NC]
 RewriteRule ^ /ed/formacoes/ [R=301,L,NE]
