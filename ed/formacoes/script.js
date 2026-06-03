@@ -388,6 +388,10 @@ if (window.matchMedia) {
     var secFaq     = document.querySelector('.sec-faq');
     if (!secOferta || !secOverlay || !secFaq) return;
 
+    /* Mobile (≤864px): state machine não roda. sec-anuidade vira sticky
+       scroll-driven (ver IIFE separada abaixo). */
+    if (window.matchMedia('(max-width: 864px)').matches) return;
+
     var state    = 0;
     var exitAcc  = 0;
     var fading   = false;
@@ -749,6 +753,83 @@ if (window.matchMedia) {
             syncOverlayForState2();
         });
     }
+})();
+
+/* ── MOBILE (≤864px): sec-anuidade scroll-driven sticky ──
+   Substitui o state machine de popup do desktop. Funcionamento:
+     · .anuidade-sticky-wrap (237.5vh) define o "trilho" de scroll
+     · .sec-anuidade fica sticky no topo do viewport durante 137.5vh
+     · Esse handler computa progress relativo ao topo do wrap e aplica
+       opacity / filter blur / transform translateY nos elementos internos:
+        - 0   → 100vh : progress 0 → 1   (fade-in)
+        - 100 → 125vh : progress = 1     (hold)
+        - 125 → 150vh : progress 1 → 0   (fade-out)
+        - 150vh+      : progress = 0     (já saiu visualmente)
+     · Em 137.5vh o sticky termina (wrap.bottom toca viewport.bottom) e a
+       sec-faq seguinte entra naturalmente de baixo, "sobressaindo" sobre
+       a sec-anuidade que continua scrollando pra cima já invisível.
+*/
+(function () {
+    var mq = window.matchMedia('(max-width: 864px)');
+    if (!mq.matches) return;
+
+    var wrap = document.querySelector('.anuidade-sticky-wrap');
+    if (!wrap) return;
+    var section = wrap.querySelector('.sec-anuidade');
+    if (!section) return;
+
+    var eyebrow = section.querySelector('.anuidade-eyebrow');
+    var title   = section.querySelector('.anuidade-title');
+    var desc    = section.querySelector('.anuidade-desc');
+    var actions = section.querySelector('.anuidade-actions');
+
+    function bf(px) { return 'blur(' + px + 'px)'; }
+
+    var rafId = null;
+    function update() {
+        rafId = null;
+        var rect = wrap.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var scrolled = -rect.top;
+
+        var p;
+        if      (scrolled <= 0)         p = 0;
+        else if (scrolled <= vh)        p = scrolled / vh;
+        else if (scrolled <= vh * 1.25) p = 1;
+        else if (scrolled <= vh * 1.5)  p = 1 - (scrolled - vh * 1.25) / (vh * 0.25);
+        else                            p = 0;
+
+        var blur = 16 * (1 - p);
+        var slide = 16 * (1 - p);
+
+        if (eyebrow) {
+            eyebrow.style.opacity = p;
+            eyebrow.style.filter = bf(blur);
+            eyebrow.style.transform = 'translateY(' + (-slide) + 'px)';
+        }
+        if (title) {
+            title.style.opacity = p;
+        }
+        if (desc) {
+            desc.style.opacity = p;
+            desc.style.filter = bf(blur);
+            desc.style.transform = 'translateY(' + slide + 'px)';
+        }
+        if (actions) {
+            actions.style.opacity = p;
+            actions.style.filter = bf(blur);
+            actions.style.transform = 'translateY(' + slide + 'px)';
+        }
+    }
+
+    function schedule() {
+        if (rafId !== null) return;
+        rafId = requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
 })();
 
 /* ── Reveal: pilares-profs passa por cima de sec-projetos ──

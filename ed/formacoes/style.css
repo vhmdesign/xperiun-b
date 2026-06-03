@@ -1813,6 +1813,56 @@
             .anuidade-actions { align-self: flex-end; }
         }
 
+        /* ════════════════════════════════════════════════════════════
+           MOBILE (<=864px): sec-anuidade vira scroll-driven sticky
+           Comportamento:
+            - .anuidade-sticky-wrap reserva 237.5vh de scroll
+            - .sec-anuidade gruda no topo do viewport (sticky 100vh)
+            - JS controla opacity dos elementos internos por scroll:
+               · 0   → 100vh: fade-in   (opacity 0 → 1)
+               · 100 → 125vh: hold      (opacity 1)
+               · 125 → 150vh: fade-out  (opacity 1 → 0)
+            - Sticky range = 237.5 - 100 = 137.5vh.
+            - Em 137.5vh, opacity = 0.5 (metade do fade-out) e wrap.bottom
+              encontra viewport.bottom -> sec-faq começa a entrar de baixo
+              naturalmente, "sobressaindo" sobre sec-anuidade que sai pra cima.
+           ════════════════════════════════════════════════════════════ */
+        @media (max-width: 864px) {
+            .anuidade-sticky-wrap {
+                position: relative;
+                height: 237.5vh;
+            }
+            /* Override do desktop (position:fixed, translateY 100%, etc.).
+               No mobile sec-anuidade vive em flow + sticky. */
+            .anuidade-sticky-wrap .sec-anuidade {
+                position: sticky;
+                top: 0;
+                inset: auto;
+                height: 100vh;
+                width: 100%;
+                transform: none;
+                transition: none;
+                pointer-events: auto;
+                z-index: 1;
+            }
+            /* O state machine desktop adiciona .is-active/.is-hidden.
+               Mobile ignora — mantém sticky-driven sempre. */
+            .anuidade-sticky-wrap .sec-anuidade.is-active,
+            .anuidade-sticky-wrap .sec-anuidade.is-hidden {
+                transform: none;
+                display: flex;
+                pointer-events: auto;
+            }
+            /* JS aplica opacity/filter/transform inline. Sem transições CSS
+               concorrentes — o scroll é a fonte de animação. */
+            .anuidade-sticky-wrap .anuidade-eyebrow,
+            .anuidade-sticky-wrap .anuidade-title,
+            .anuidade-sticky-wrap .anuidade-desc,
+            .anuidade-sticky-wrap .anuidade-actions {
+                transition: none;
+            }
+        }
+
         /* ── Wrapper sec-extras + sec-oferta: gradient invertido do perfis-depos-wrap ── */
         .extras-oferta-wrap {
             position: relative;
@@ -1982,19 +2032,9 @@
             overflow: hidden;
             background: linear-gradient(135deg, var(--dn900), transparent);
             --card-accent: var(--bw-15);
-            box-shadow: inset 0 32px 64px -16px var(--card-accent);
-            transition: box-shadow 0.4s ease;
             box-sizing: border-box;
             opacity: 0;
         }
-        .oferta-card--full { box-shadow: inset 0 32px 64px -16px var(--pc300-25); }
-        .oferta-card--f1   { box-shadow: inset 0 32px 64px -16px rgba(225, 150, 50, 0.25); }
-        .oferta-card--f2   { box-shadow: inset 0 32px 64px -16px rgba(225, 100, 50, 0.25); }
-        .oferta-card--f3   { box-shadow: inset 0 32px 64px -16px rgba(50, 200, 150, 0.25); }
-        .oferta-card--f4   { box-shadow: inset 0 32px 64px -16px rgba(50, 200, 200, 0.25); }
-        .oferta-card--f5   { box-shadow: inset 0 32px 64px -16px rgba(100, 200, 50, 0.25); }
-        .oferta-card--f6   { box-shadow: inset 0 32px 64px -16px rgba(50, 100, 255, 0.25); }
-        .oferta-card--f7   { box-shadow: inset 0 32px 64px -16px rgba(225, 50, 50, 0.25); }
         .oferta-card.is-entered { animation: cta-card-enter 0.6s ease-out both; }
         /* ::before combina linha de 2px no topo + inset shadow.
            z-index: 1 fica acima da .oferta-card-img (z:0), garantindo que
@@ -2006,6 +2046,8 @@
             pointer-events: none;
             z-index: 1;
             background: linear-gradient(to right, transparent, var(--card-accent), transparent) top / 100% 2px no-repeat;
+            box-shadow: inset 0 32px 64px -16px var(--card-accent);
+            transition: box-shadow 0.4s ease;
         }
         .oferta-card::after {
             content: "";
@@ -3000,20 +3042,6 @@
             overflow: hidden;
             background: linear-gradient(135deg, var(--dn900), transparent);
             --card-accent: var(--bw-15);
-            box-shadow: inset 0 32px 64px -16px var(--card-accent);
-            transition: box-shadow 0.4s ease;
-        }
-
-        .oferta-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to right, transparent, var(--card-accent), transparent);
-            pointer-events: none;
-            z-index: 1;
         }
 
         .oferta-card::after {
@@ -3042,17 +3070,6 @@
             z-index: 2;
         }
 
-        .oferta-card--full {
-            box-shadow: inset 0 32px 64px -16px var(--pc300-25);
-        }
-
-        .oferta-card--full::before {
-            background: linear-gradient(to right, transparent, var(--pc300-25), transparent);
-        }
-
-        .oferta-card--full::after {
-            background: var(--pc300-25);
-        }
 
         .oferta-card .oferta-card-img {
             position: absolute;
