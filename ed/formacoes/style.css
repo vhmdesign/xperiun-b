@@ -7,17 +7,21 @@
             background: var(--bb);
         }
 
-        /* Reveal: pilares-profs (z:1, bg escuro) sobre sec-projetos (z:0) ao rolar.
-           Pin de sec-projetos quando seu BOTTOM atinge o rodapé do viewport é
-           controlado via JS (translateY) em formacoes/script.js — independe da
-           altura de sec-projetos. CSS aqui só define stacking + bg. */
+        /* Reveal: pilares-profs (z:1, bg) sobe sobre sec-projetos (z:0).
+           sec-projetos sticky-top com offset NEGATIVO calculado:
+             top = 100vh - sec.height  (= -(sec.height - 100vh))
+           Quando sticky engata, sec.top.vp = top, sec.bottom.vp = top + sec.height
+           = 100vh. Ou seja, sec.bottom fica grudada no rodapé do viewport.
+           Equivalente a sticky-bottom: 0, mas via top permite controle explícito
+           da altura via --sec-projetos-height (atualizado em tempo real pelo JS
+           em script.js usando ResizeObserver). */
         .projetos-pilares-track {
             position: relative;
         }
         .projetos-pilares-track .sec-projetos {
-            position: relative;
+            position: sticky;
+            top: calc(100vh - var(--sec-projetos-height, 100vh));
             z-index: 0;
-            will-change: transform;
         }
         .projetos-pilares-track .pilares-profs {
             position: relative;
@@ -266,10 +270,16 @@
             color: var(--bw);
             width: 100%;
             max-width: 36ch;
-            margin: 0;
+            margin: -64px;
             opacity: 0;
             -webkit-mask-image: var(--text-gradient-low);
             mask-image: var(--text-gradient-low);
+            padding: 64px;
+            /* content-box pra que padding NÃO reduza a área do conteúdo
+               (texto continua wrap-ando com a mesma largura efetiva).
+               Combinado com margin -64px, o layout externo fica idêntico ao
+               original — o padding+margin só dá folga pro halo do blur. */
+            box-sizing: content-box;
         }
 
         .hero-p {
@@ -424,10 +434,12 @@
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
-            margin: 0;
+            margin: -64px;
             opacity: 0;
             -webkit-mask-image: var(--text-gradient-low);
             mask-image: var(--text-gradient-low);
+            padding: 64px;
+            box-sizing: content-box;
         }
         .sec-title strong { font-weight: 700; }
         .sec-lede {
@@ -1692,43 +1704,28 @@
             .course-modal-stat { padding: 0 16px; }
         }
 
-        /* ── Section Anuidade: overlay fixo que SLIDE pra cima sobre sec-oferta
-           (translateY 100% → 0). .is-active toggled pelo state machine no script.js. */
+        /* ── Section Anuidade: sticky-top dentro de anuidade-sticky-wrap.
+           Mesmo comportamento em DESKTOP e MOBILE (sem state machine,
+           sem position:fixed, sem translateY animation). sec-anuidade
+           ocupa 100% do viewport visível (--anuidade-vh-based) e gruda
+           no topo enquanto o wrap fornece sticky-range. */
         .sec-anuidade {
-            position: fixed;
-            inset: 0;
+            position: sticky;
+            top: 0;
             isolation: isolate;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
-            pointer-events: none;
-            transform: translateY(100%);
-            transition: transform 0.6s ease;
-            z-index: 5;
-            will-change: transform;
+            width: 100%;
+            height: 100vh;                                          /* fallback */
+            height: calc(var(--anuidade-vh, 1vh) * 100);           /* real-time */
+            z-index: 1;
             padding: 64px 16px;
             box-sizing: border-box;
         }
         @media (min-width: 1440px) {
             .sec-anuidade { padding: 64px; }
-        }
-        /* Mobile/touch: sem slide-up. A transição de 600ms revela sec-faq por
-           baixo durante o snap pós-momentum. Aparição instantânea elimina o peek. */
-        @media (hover: none) and (pointer: coarse), (max-width: 864px) {
-            .sec-anuidade {
-                transition: none;
-            }
-        }
-        .sec-anuidade.is-active {
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        /* Em state 2 quando sec-faq já cobre viewport: remove sec-anuidade do layout
-           via display:none. visibility era ruim porque .btn tem `transition: 0.2s`
-           (all) e herdava visibility:hidden com atraso, deixando o botão flutuando. */
-        .sec-anuidade.is-hidden {
-            display: none;
         }
         /* gradiente usado como background da seção */
         .sec-gradient {
@@ -1770,21 +1767,31 @@
             flex-direction: column;
             gap: 16px;
         }
+        /* Estados iniciais — controlados em tempo real pelo JS scroll-driven
+           em script.js. transition: none pra que JS aplique direto sem latência.
+           translateY direction: eyebrow vem DE CIMA (-16), desc/actions vêm
+           DE BAIXO (+16). Title é animado char-by-char nas próprias spans
+           geradas via JS (translateY +32 com stagger). */
         .anuidade-actions {
             flex: 0 0 auto;
             opacity: 0;
             filter: blur(16px);
             transform: translateY(16px);
+            transition: none;
         }
-        /* Reveal animation: estados iniciais aplicados via inline JS
-           sempre que sec-anuidade é ativada vinda de sec-oferta (não vinda de sec-faq) */
         .anuidade-eyebrow {
             display: inline-block;
             color: var(--sg300);
             opacity: 0;
             filter: blur(16px);
             transform: translateY(-16px);
+            transition: none;
         }
+        /* Title sem mask aqui — mask fica no .anuidade-title-mask interno (criado
+           pelo JS na hora do char-split). O filter:blur da animação aplica em
+           .anuidade-title (camada externa), então o blur acontece DEPOIS da mask,
+           sem clipping. Char spans dentro do .anuidade-title-mask só animam
+           opacity + transform (o blur uniforme vem do parent). */
         .anuidade-title {
             font-family: var(--font-family);
             /* clamp 2.5rem (375px) → 4rem (1440px), interpolação linear */
@@ -1792,11 +1799,16 @@
             font-weight: 300;
             line-height: 1.1;
             color: var(--bw);
-            -webkit-mask-image: var(--text-gradient-low);
-            mask-image: var(--text-gradient-low);
             max-width: 20ch;
             margin: 0;
-            opacity: 0;
+        }
+        .anuidade-title-mask {
+            display: block;
+            -webkit-mask-image: var(--text-gradient-low);
+            mask-image: var(--text-gradient-low);
+            padding: 64px;
+            margin: -64px;
+            box-sizing: content-box;
         }
         .anuidade-desc {
             font: var(--p);
@@ -1806,6 +1818,7 @@
             opacity: 0;
             filter: blur(16px);
             transform: translateY(16px);
+            transition: none;
         }
         @media (max-width: 864px) {
             .sec-gradient { width: 960px; }
@@ -1814,69 +1827,61 @@
         }
 
         /* ════════════════════════════════════════════════════════════
-           MOBILE (<=864px): sec-anuidade vira scroll-driven sticky
-           Comportamento:
-            - .anuidade-sticky-wrap reserva 237.5vh de scroll
-            - .sec-anuidade gruda no topo do viewport (sticky 100vh)
-            - JS controla opacity dos elementos internos por scroll:
-               · 0   → 100vh: fade-in   (opacity 0 → 1)
-               · 100 → 125vh: hold      (opacity 1)
-               · 125 → 150vh: fade-out  (opacity 1 → 0)
-            - Sticky range = 237.5 - 100 = 137.5vh.
-            - Em 137.5vh, opacity = 0.5 (metade do fade-out) e wrap.bottom
-              encontra viewport.bottom -> sec-faq começa a entrar de baixo
-              naturalmente, "sobressaindo" sobre sec-anuidade que sai pra cima.
+           STACKED STICKY: sec-oferta → sec-anuidade → sec-faq
+           Mesmo comportamento em DESKTOP e MOBILE. CSS-only, zero JS de
+           transição (state machine antigo foi removido). Todas as alturas/
+           offsets usam --anuidade-vh (atualizado em tempo real pelo JS via
+           visualViewport.height) — robusto a mudanças de viewport.
+
+           Fluxo:
+            1. sec-oferta sticky-top com offset NEGATIVO calc(100vh - height)
+               → gruda com .bottom no rodapé do viewport.
+            2. anuidade-sticky-wrap (z:1, 200vh) sobe por cima de sec-oferta.
+            3. sec-anuidade dentro do wrap é sticky-top:0 (height 100vh) →
+               gruda no topo. Sticky-range = 100vh.
+            4. sec-faq (z:2, margin-top: -100vh) sticky-top:0 → engata
+               exatamente quando sec-anuidade desengata, cobrindo o "jump"
+               de unstuck via z-index.
            ════════════════════════════════════════════════════════════ */
-        @media (max-width: 864px) {
-            /* Pin pattern: sec-oferta gruda no bottom do viewport quando seu
-               bottom natural alcança o vh, e anuidade-sticky-wrap (z:1) sobe
-               por cima com sec-anuidade. Mesma técnica de sec-projetos +
-               pilares-profs. overflow:visible no extras-oferta-wrap permite
-               o transform translateY do pin não ser clipado pelo parent. */
-            .extras-oferta-wrap {
-                position: relative;
-                overflow: visible;
-                z-index: 0;
-            }
-            .extras-oferta-wrap .sec-oferta {
-                position: relative;
-                z-index: 0;
-                will-change: transform;
-            }
-            .anuidade-sticky-wrap {
-                position: relative;
-                height: 237.5vh;                                          /* fallback sem JS */
-                height: calc(var(--anuidade-vh, 1vh) * 237.5);           /* real-time vh via JS */
-                z-index: 1;
-            }
-            /* TODAS as propriedades com !important pra vencer o desktop.
-               --anuidade-vh: variável atualizada em tempo real via JS usando
-               window.visualViewport.height (sem o delay do `dvh` no Chrome Android).
-               Cada unidade da var = 1% do viewport real atual. */
-            .anuidade-sticky-wrap .sec-anuidade {
-                position: -webkit-sticky !important;
-                position: sticky !important;
-                right: auto !important;
-                bottom: auto !important;
-                left: auto !important;
-                top: 0 !important;
-                width: 100% !important;
-                height: 100vh !important;                                 /* fallback */
-                height: calc(var(--anuidade-vh, 1vh) * 100) !important;   /* real-time */
-                transform: none !important;
-                transition: none !important;
-                pointer-events: auto !important;
-                will-change: auto !important;
-                z-index: 1 !important;
-            }
-            /* JS aplica opacity/filter/transform inline nos filhos. Sem
-               transições CSS concorrentes. */
-            .anuidade-sticky-wrap .anuidade-eyebrow,
-            .anuidade-sticky-wrap .anuidade-title,
-            .anuidade-sticky-wrap .anuidade-desc,
-            .anuidade-sticky-wrap .anuidade-actions {
-                transition: none;
-            }
+        .oferta-anuidade-track {
+            position: relative;
+        }
+        .oferta-anuidade-track .sec-oferta {
+            position: sticky;
+            top: calc(var(--anuidade-vh, 1vh) * 100 - var(--sec-oferta-height, 100vh));
+            z-index: 0;
+        }
+        /* anuidade-sticky-wrap.height = 4x viewport pra dar sec-anuidade
+           um sticky-range de 300vh (= 3 viewports de scroll com sec-anuidade
+           grudada no topo). Animação scroll-driven dos elementos internos:
+            · 0    → 100vh : fade-in   (opacity 0 → 1)
+            · 100  → 200vh : hold      (opacity 1)
+            · 200  → 300vh : fade-out  (opacity 1 → 0)
+           Mesma altura em desktop e mobile. */
+        .anuidade-sticky-wrap {
+            position: relative;
+            height: 400vh;                                            /* fallback sem JS */
+            height: calc(var(--anuidade-vh, 1vh) * 400);             /* real-time vh via JS */
+            z-index: 1;
+        }
+        /* sec-faq sticky-top: gruda no topo do viewport e PASSA POR CIMA de
+           sec-anuidade graças ao margin-top negativo. Trace:
+            - wrap.height = 400vh, sec-anuidade.height = 100vh → sec-anuidade
+              sticky-range = 300vh.
+            - sec-anuidade deactivates em scrollY = sec-oferta.bottom + 300vh.
+            - sec-faq.flow.top sem margin = sec-oferta.bottom + 400vh.
+              Com margin-top: -100vh, sec-faq.flow.top = sec-oferta.bottom + 300vh.
+            - sec-faq sticky engata exatamente quando sec-anuidade desengata.
+              Z-index: 2 cobre o "jump" de unstuck de sec-anuidade.
+           Escopado em `.oferta-anuidade-track ~ .sec-faq` pra aplicar SÓ nas
+           páginas de formação (que têm o stacked-sticky setup). O hub usa
+           `.depos-faq-wrap > .sec-faq` que não deve ficar sticky. */
+        .oferta-anuidade-track ~ .sec-faq {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: var(--bb);
+            margin-top: calc(0px - var(--anuidade-vh, 1vh) * 100);
         }
 
         /* ── Wrapper sec-extras + sec-oferta: gradient invertido do perfis-depos-wrap ── */
@@ -2002,14 +2007,6 @@
         /* ── Section Oferta (planos) ─────────────────────────────── */
         .sec-oferta {
             padding: 128px 0;
-            transition: transform 0.6s ease, opacity 0.6s ease, filter 0.6s ease;
-            will-change: transform, opacity, filter;
-        }
-        /* .is-out: sec-oferta sai pra cima quando sec-anuidade slide-up entra */
-        .sec-oferta.is-out {
-            transform: translateY(-64px);
-            opacity: 0;
-            filter: blur(32px);
         }
         .oferta-inner {
             max-width: 1440px;
@@ -2272,16 +2269,6 @@
             z-index: 6;     /* > sec-anuidade (z 5): sec-faq desliza por cima do popup */
             background: var(--bb);
         }
-        /* Evita peek de sec-faq por baixo do popup em mobile momentum scroll
-           (state < 2). Toggled pelo state machine em script.js.
-           - visibility: hidden esconde renderização
-           - z-index: 0 garante que mesmo sem o hide, sec-faq não fique acima de
-             sec-anuidade (z 5) em qualquer browser que ignore visibility por
-             algum motivo (ex: backdrop GPU) */
-        .sec-faq.peek-hidden {
-            visibility: hidden;
-            z-index: 0;
-        }
         .faq-inner {
             max-width: 1440px;
             margin: 0 auto;
@@ -2355,7 +2342,16 @@
         }
 
         /* ── Section CTA Final ────────────────────────────────────── */
-        .sec-cta { padding: 128px max(16px, calc(50vw - 704px)); }
+        .sec-cta {
+            padding: 128px max(16px, calc(50vw - 704px));
+        }
+        /* z:3 + bg sólido pra passar por cima de sec-faq (z:2) na transição
+           — só nas páginas de formação onde o stacked-sticky existe. */
+        .oferta-anuidade-track ~ .sec-cta {
+            position: relative;
+            z-index: 3;
+            background: var(--bb);
+        }
         .cta-inner {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -2378,7 +2374,7 @@
             justify-content: flex-end;
         }
         .cta-header { display: flex; flex-direction: column; gap: 16px; }
-        .cta-title { margin: 0; }
+        /* .cta-title: margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         .cta-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .cta-right .tag-status,
         .cta-right .btn { opacity: 0; }
@@ -2447,7 +2443,9 @@
             font: var(--h2);
             font-weight: 300;
             color: var(--bw);
-            margin: 0;
+            margin: -64px;
+            padding: 64px;
+            box-sizing: content-box;
         }
         .hero-p {
             font: var(--p);
@@ -2675,8 +2673,8 @@
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
-            margin: 0;
             max-width: 680px;
+            /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         }
 
         .why-grid {
@@ -2787,8 +2785,8 @@
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
-            margin: 0;
             max-width: 680px;
+            /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         }
 
         .formacoes-nav-list {
@@ -3028,8 +3026,8 @@
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
-            margin: 0;
             max-width: 680px;
+            /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         }
 
         .oferta-subtitle {
@@ -3057,7 +3055,10 @@
             isolation: isolate;
             overflow: hidden;
             background: linear-gradient(135deg, var(--dn900), transparent);
-            --card-accent: var(--bw-15);
+            /* --card-accent NÃO redefinido aqui: o default vem da regra
+               global .oferta-card (var(--bw-15)) e os modifiers
+               .oferta-card--full e .oferta-card--fN sobrescrevem com suas
+               cores. Setar --card-accent aqui mata o modifier no hub. */
         }
 
         .oferta-card::after {
@@ -3380,13 +3381,7 @@
             .hero-tags .tag-status,
             .hero-p,
             .depos-social-proof,
-            .depos-stars,
-            .anuidade-actions,
-            .anuidade-eyebrow,
-            .anuidade-desc {
-                filter: none;
-            }
-            .sec-oferta.is-out {
+            .depos-stars {
                 filter: none;
             }
         }

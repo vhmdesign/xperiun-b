@@ -1,0 +1,24 @@
+<!-- ============================================================
+     MENU XPERIUN — snippet para WordPress
+     ============================================================
+     COMO USAR:
+     1. Na página/post do WordPress, adicione um bloco "HTML personalizado"
+        (Custom HTML) e cole TODO o conteúdo abaixo.
+     2. Pronto. O menu é carregado dinamicamente a partir de
+        xperiun.com/ed/site-dependencias/site-menu/menu.html
+        Sempre que o menu.html for editado, todas as páginas que usam
+        este snippet refletem a mudança no próximo carregamento.
+
+     OBS.: usa URLs absolutas (https://xperiun.com/...) porque as páginas
+     do WordPress podem estar em qualquer caminho. O menu-include.js
+     resolve sozinho os links internos do menu a partir do próprio endereço.
+     ============================================================ -->
+
+<!-- 1) Tokens do Design System (cores, fontes, espaçamentos do menu). -->
+<link rel="stylesheet" href="https://xperiun.com/ed/site-dependencias/root.css">
+
+<!-- 2) Placeholder onde o menu é injetado. -->
+<div data-menu></div>
+
+<!-- 3) Loader do menu compartilhado (auto-detecta menu.html / menu.css / menu.js). -->
+<script src="https://xperiun.com/ed/site-dependencias/site-menu/menu-include.js"></script>

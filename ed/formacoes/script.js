@@ -374,656 +374,234 @@ if (window.matchMedia) {
     updateButtons();
 })();
 
-/* ── Transição sec-oferta → sec-anuidade → sec-faq.
-   Padrão portado de transicao.html:
-     state 0 = sec-oferta (e tudo acima dela em flow)
-     state 1 = sec-anuidade (popup, overlay fixo)
-     state 2 = sec-faq (e tudo abaixo dela em flow)
-   Trigger = bottom de sec-oferta toca bottom do viewport (= sec-faq.offsetTop - vh). */
+/* sec-oferta / sec-anuidade / sec-faq: comportamento UNIFICADO entre
+   desktop e mobile via position: sticky puro em CSS (style.css).
+   O antigo state machine + scroll-driven animation foi removido pra
+   evitar a seção sumir ao alternar viewport e pra eliminar a animação
+   de translate. Tudo é controlado por CSS sticky + z-index agora. */
+
+/* ── --anuidade-vh: 1% do viewport visível REAL em pixels ──
+   Atualizado em tempo real via visualViewport.resize (sem o delay do `dvh`
+   no Chrome Android quando a barra de endereço aparece/some). Usado pelo CSS
+   pra calcular position/height de sec-oferta/sec-anuidade/anuidade-sticky-wrap
+   sem depender do `vh` "large viewport" estático do browser.
+   Roda em DESKTOP e MOBILE — desktop também pode ter mudanças de viewport
+   (resize de janela, pinch zoom, dev tools, etc.). */
 (function () {
-    var FADE       = 600;
-    var EXIT_THR   = 200;   // px de "resistência" no edge antes do auto-trigger
-    var secOferta  = document.querySelector('.sec-oferta');
-    var secOverlay = document.querySelector('.sec-anuidade');
-    var secFaq     = document.querySelector('.sec-faq');
-    if (!secOferta || !secOverlay || !secFaq) return;
-
-    /* Mobile (≤864px): state machine não roda. sec-anuidade vira sticky
-       scroll-driven (ver IIFE separada abaixo). */
-    if (window.matchMedia('(max-width: 864px)').matches) return;
-
-    var state    = 0;
-    var exitAcc  = 0;
-    var fading   = false;
-
-    /* Inicia sec-faq escondido (state < 2). syncOverlayForState2 vai retoggla
-       conforme transições. Evita peek antes do JS reagir a qualquer scroll. */
-    secFaq.classList.add('peek-hidden');
-
-    /* Lerp inline */
-    var EASE = 0.12, THR = 0.4;
-    var lCur = 0, lTgt = 0, lRun = false;
-    var lEndedAt = 0;
-
-    function trigger() {
-        var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-        return secFaq.offsetTop - vh;
-    }
-    function docMax()  { return document.documentElement.scrollHeight - window.innerHeight; }
-
-    function lockFade() {
-        fading = true;
-        setTimeout(function () { fading = false; }, FADE);
-    }
-    function lockFadeHard() {
-        fading = true;
-        document.body.style.overflow = 'hidden';
-        setTimeout(function () {
-            fading = false;
-            document.body.style.overflow = '';
-        }, FADE);
-    }
-
-    function lTick() {
-        var diff = lTgt - lCur;
-        if (Math.abs(diff) < THR) {
-            lCur = lTgt;
-            window.scrollTo(0, lCur);
-            lRun = false;
-            lEndedAt = Date.now();
-            return;
-        }
-        lCur += diff * EASE;
-        window.scrollTo(0, lCur);
-        requestAnimationFrame(lTick);
-    }
-    function startLerp() {
-        if (!lRun) {
-            lRun = true;
-            lCur = window.scrollY || 0;
-            requestAnimationFrame(lTick);
-        }
-    }
-
-    function setOverlay(active) {
-        secOferta.classList.toggle('is-out', active);
-        secOverlay.classList.toggle('is-active', active);
-    }
-
-    /* Em state 2, depois que sec-faq cobre o viewport (y >= secFaq.offsetTop),
-       toggla .is-hidden (visibility:hidden) em sec-anuidade. visibility não
-       transiciona, então NÃO há slide-down/slide-up visível ao cruzar a
-       fronteira. .is-active fica preservado (transform stays translateY 0). */
-    function syncOverlayForState2() {
-        var hide = (state === 2) && ((window.scrollY || 0) >= secFaq.offsetTop);
-        secOverlay.classList.toggle('is-hidden', hide);
-        /* sec-faq tem z-index 6 (acima do popup z:5) pra slidar por cima.
-           Em mobile com momentum scroll, scrollY pode passar do trigger antes
-           do state machine reagir, expondo o topo de sec-faq no fundo do
-           viewport. Hidar sec-faq enquanto state < 2 elimina esse peek. */
-        secFaq.classList.toggle('peek-hidden', state < 2);
-    }
-
-    /* Reveal anuidade: eyebrow + title char-by-char + lede.
-       Dispara só quando vem de state 0 (sec-oferta → popup). */
-    var titleSpans = null;
-    var revealQueue = [];
-
-    function setupTitleSplit() {
-        if (titleSpans !== null) return;
-        var title = secOverlay.querySelector('.anuidade-title');
-        if (!title) return;
-        titleSpans = [];
-        function walk(node) {
-            if (node.nodeType === 3) {
-                var words = node.textContent.split(/(\s+)/);
-                var frag = document.createDocumentFragment();
-                words.forEach(function (part) {
-                    if (/^\s+$/.test(part)) {
-                        frag.appendChild(document.createTextNode(part));
-                    } else if (part.length) {
-                        var wordWrap = document.createElement('span');
-                        wordWrap.style.display    = 'inline-block';
-                        wordWrap.style.whiteSpace = 'nowrap';
-                        part.split('').forEach(function (ch) {
-                            var sp = document.createElement('span');
-                            sp.textContent   = ch;
-                            sp.style.display = 'inline-block';
-                            wordWrap.appendChild(sp);
-                            titleSpans.push(sp);
-                        });
-                        frag.appendChild(wordWrap);
-                    }
-                });
-                node.parentNode.replaceChild(frag, node);
-            } else if (node.nodeType === 1) {
-                Array.from(node.childNodes).forEach(walk);
-            }
-        }
-        Array.from(title.childNodes).forEach(walk);
-    }
-
-    function revealSec2() {
-        setupTitleSplit();
-        var eyebrow = secOverlay.querySelector('.anuidade-eyebrow');
-        var title   = secOverlay.querySelector('.anuidade-title');
-        var desc    = secOverlay.querySelector('.anuidade-desc');
-        var actions = secOverlay.querySelector('.anuidade-actions');
-        var T       = 'opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease';
-
-        revealQueue.forEach(function (id) { clearTimeout(id); });
-        revealQueue = [];
-
-        if (eyebrow) {
-            eyebrow.style.transition = 'none';
-            eyebrow.style.opacity    = '0';
-            eyebrow.style.filter     = bf(16);
-            eyebrow.style.transform  = 'translateY(-16px)';
-        }
-        if (title) title.style.opacity = '0';
-        if (desc) {
-            desc.style.transition = 'none';
-            desc.style.opacity    = '0';
-            desc.style.filter     = bf(16);
-            desc.style.transform  = 'translateY(16px)';
-        }
-        if (actions) {
-            actions.style.transition = 'none';
-            actions.style.opacity    = '0';
-            actions.style.filter     = bf(16);
-            actions.style.transform  = 'translateY(16px)';
-        }
-        if (titleSpans) {
-            titleSpans.forEach(function (sp) {
-                sp.style.transition = 'none';
-                sp.style.opacity    = '0';
-                sp.style.filter     = bf(8);
-                sp.style.transform  = 'translateY(32px)';
-            });
-        }
-
-        void secOverlay.offsetWidth;
-
-        /* Delay = FADE: anim só dispara quando sec-anuidade está 100% no viewport */
-        revealQueue.push(setTimeout(function () {
-            if (eyebrow) {
-                eyebrow.style.transition = T;
-                eyebrow.style.opacity    = '1';
-                eyebrow.style.filter     = bf(0);
-                eyebrow.style.transform  = 'translateY(0)';
-            }
-            if (actions) {
-                actions.style.transition = T;
-                actions.style.opacity    = '1';
-                actions.style.filter     = bf(0);
-                actions.style.transform  = 'translateY(0)';
-            }
-            if (title) title.style.opacity = '1';
-            if (titleSpans) {
-                titleSpans.forEach(function (sp) { sp.style.transition = T; });
-                void secOverlay.offsetWidth;
-                titleSpans.forEach(function (sp, idx) {
-                    revealQueue.push(setTimeout(function () {
-                        sp.style.opacity   = '1';
-                        sp.style.filter    = bf(0);
-                        sp.style.transform = 'translateY(0)';
-                    }, idx * 10));
-                });
-            }
-            revealQueue.push(setTimeout(function () {
-                if (desc) {
-                    desc.style.transition = T;
-                    desc.style.opacity    = '1';
-                    desc.style.filter     = bf(0);
-                    desc.style.transform  = 'translateY(0)';
-                }
-            }, 150));
-        }, FADE));
-    }
-
-    window.addEventListener('wheel', function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        if (fading) return;
-
-        var dy = e.deltaY;
-        if (e.deltaMode === 1) dy *= 40;
-        if (e.deltaMode === 2) dy *= window.innerHeight;
-        var t = trigger();
-
-        if (state === 0) {
-            if (dy > 0) {
-                if (lTgt >= t - 1) {
-                    /* Já no edge — acumula */
-                    exitAcc += dy;
-                    if (exitAcc >= EXIT_THR) {
-                        exitAcc = 0;
-                        state = 1;
-                        setOverlay(true);
-                        revealSec2();
-                        lockFade();
-                    }
-                    return;
-                }
-                lTgt = Math.min(lTgt + dy, t);
-                startLerp();
-            } else if (dy < 0) {
-                /* Dreno do acumulador antes de mover pra cima */
-                if (exitAcc > 0) {
-                    exitAcc = Math.max(0, exitAcc + dy);
-                    return;
-                }
-                lTgt = Math.max(0, lTgt + dy);
-                startLerp();
-            }
-        } else if (state === 1) {
-            if (dy > 0) {
-                /* popup → sec-faq: 1 wheel já avança body proporcional ao dy */
-                state = 2;
-                lCur = Math.max(window.scrollY || 0, t);
-                lTgt = Math.min(t + 1 + dy, docMax());
-                lRun = false;
-                startLerp();
-                lockFade();
-            } else if (dy < 0) {
-                /* popup → sec-oferta: auto slide-down + sec-oferta restaura */
-                state = 0;
-                setOverlay(false);
-                lockFade();
-            }
-        } else if (state === 2) {
-            /* Wheel up cruzando o trigger: snap exato + state 1 (popup volta) */
-            if (dy < 0 && lTgt + dy <= t) {
-                state = 1;
-                window.scrollTo(0, t);
-                lCur = t; lTgt = t; lRun = false;
-                lockFade();
-                return;
-            }
-            lTgt = Math.max(0, Math.min(lTgt + dy, docMax()));
-            startLerp();
-            syncOverlayForState2();
-        }
-    }, { passive: false });
-
-    window.addEventListener('scroll', function () {
-        /* syncOverlayForState2 SEMPRE roda — precisa atualizar mesmo durante o
-           lerp (senão atravessar secFaq.offsetTop com wheel não esconde a popup). */
-        syncOverlayForState2();
-
-        if (fading) return;
-        if (lRun || Date.now() - lEndedAt < 150) return;
-
-        var y = window.scrollY || 0;
-        var t = trigger();
-
-        if (!lRun) {
-            lCur = y;
-            lTgt = y;
-        }
-
-        var newState = (y < t - 0.5) ? 0 : (y > t + 0.5) ? 2 : 1;
-        if (newState !== state) {
-            var prevState = state;
-
-            /* Mobile/touch transitions — snap exato pro trigger e trava body
-               com overflow:hidden, absorvendo o momentum do swipe. */
-
-            if (prevState === 0 && newState !== 0) {
-                /* Mobile: momentum nativo passou do trigger. Snapa de volta
-                   SEM transicionar — a transição pra popup é responsabilidade
-                   do touchend handler (gesto deliberado). */
-                window.scrollTo(0, t);
-                lCur = t; lTgt = t; lRun = false;
-                return;
-            }
-
-            if (prevState === 2 && newState !== 2) {
-                state = 1;
-                window.scrollTo(0, t);
-                lCur = t; lTgt = t; lRun = false;
-                setOverlay(true);
-                lockFadeHard();
-                return;
-            }
-
-            if (prevState === 1 && newState === 0) {
-                state = 0;
-                window.scrollTo(0, t);
-                lCur = t; lTgt = t; lRun = false;
-                setOverlay(false);
-                lockFadeHard();
-                return;
-            }
-
-            state = newState;
-            setOverlay(newState === 1 || newState === 2);
-            exitAcc = 0;
-        }
-
-        /* Em state 2 (qualquer mudança de scrollY): sec-anuidade some quando
-           sec-faq já está completamente cobrindo, evitando sobrepor as seções
-           que vêm abaixo de sec-faq. */
-        syncOverlayForState2();
-    }, { passive: true });
-
-    /* Init: define lTgt/lCur com scrollY atual */
-    lCur = window.scrollY || 0;
-    lTgt = lCur;
-
-    /* Estado inicial sincronizado caso a página carregue já após o trigger */
-    window.addEventListener('load', function () {
-        var y = window.scrollY || 0;
-        var t = trigger();
-        if (y >= t + 0.5) {
-            state = 2;
-            setOverlay(true);
-        } else if (y >= t - 0.5) {
-            state = 1;
-            setOverlay(true);
-        }
-        syncOverlayForState2();
-    });
-
-    /* Resize: secFaq.offsetTop muda → re-avalia state + .is-hidden de sec-anuidade.
-       Senão sec-anuidade reaparece sobre seções abaixo de sec-faq ao redimensionar. */
-    window.addEventListener('resize', function () {
-        var y = window.scrollY || 0;
-        var t = trigger();
-        var newState = (y < t - 0.5) ? 0 : (y > t + 0.5) ? 2 : 1;
-        if (newState !== state) {
-            state = newState;
-            setOverlay(newState === 1 || newState === 2);
-        }
-        syncOverlayForState2();
-    });
-
-    /* Mobile: visual viewport muda quando a URL bar colapsa/aparece.
-       Sem isso, trigger() recalcula só em wheel/scroll e a popup pode
-       ficar fora de sync entre frames de redimensionamento. */
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', function () {
-            var y = window.scrollY || 0;
-            var t = trigger();
-            var newState = (y < t - 0.5) ? 0 : (y > t + 0.5) ? 2 : 1;
-            if (newState !== state) {
-                state = newState;
-                setOverlay(newState === 1 || newState === 2);
-            }
-            syncOverlayForState2();
-        });
-    }
-})();
-
-/* ── MOBILE (≤864px): sec-anuidade scroll-driven pinning ──
-   Substitui o state machine de popup do desktop. JS controla 3 estados de
-   posição da section dentro do wrap (em vez de usar position:sticky direto,
-   que tem quirks em iOS):
-     · scrolled <= 0       → absolute top:0 (natural, no topo do wrap)
-     · 0 < scrolled < END  → fixed top:0 (pinada no topo do viewport, .is-pinned)
-     · scrolled >= END     → absolute bottom:0 (ancorada no fundo do wrap, .is-anchor-bottom)
-   END = wrap.height - section.height = 237.5vh - 100vh = 137.5vh
-
-   Animações dos elementos internos por progresso de scroll:
-     - 0   → 100vh : opacity 0 → 1   (fade-in)
-     - 100 → 125vh : opacity = 1     (hold)
-     - 125 → 150vh : opacity 1 → 0   (fade-out)
-     - 150vh+      : opacity = 0
-   Em 137.5vh (= END), opacity = 0.5 e a sec-faq seguinte começa a entrar
-   naturalmente de baixo enquanto sec-anuidade rola pra cima invisível.
-*/
-(function () {
-    var mq = window.matchMedia('(max-width: 864px)');
-    if (!mq.matches) return;
-
-    var wrap = document.querySelector('.anuidade-sticky-wrap');
-    if (!wrap) return;
-    var section = wrap.querySelector('.sec-anuidade');
-    if (!section) return;
-
-    /* --anuidade-vh: 1% do viewport visível REAL (não o "large viewport"
-       que `vh`/`dvh` reportam com delay no Chrome Android). Atualiza em
-       tempo real via window.visualViewport.resize — dispara assim que a
-       barra de endereço começa a mostrar/esconder, sem aguardar o scroll
-       parar. Section/wrap usam `calc(var(--anuidade-vh) * N)` pra ficar
-       sempre exatamente do tamanho do viewport visível.
-       Também chama schedule() pra re-renderizar a animação imediatamente. */
-    function updateAnuidadeVh() {
+    function update() {
         var vv = window.visualViewport;
         var vh = vv ? vv.height : window.innerHeight;
         document.documentElement.style.setProperty('--anuidade-vh', (vh / 100) + 'px');
-        if (typeof schedule === 'function') schedule();
     }
-    updateAnuidadeVh();
+    update();
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', updateAnuidadeVh);
-        window.visualViewport.addEventListener('scroll', updateAnuidadeVh);
+        window.visualViewport.addEventListener('resize', update);
+        window.visualViewport.addEventListener('scroll', update);
     }
-    window.addEventListener('resize', updateAnuidadeVh);
-    window.addEventListener('orientationchange', updateAnuidadeVh);
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+})();
+
+/* ── Animação scroll-driven dos elementos de sec-anuidade ──
+   sec-anuidade fica sticky por 300vh (anuidade-sticky-wrap.height = 400vh).
+   Fases (scrolled = -wrap.getBoundingClientRect().top, normalizada por vh):
+     · 0    → 100vh : fade-in   (opacity 0 → 1, blur 16 → 0, translate → 0)
+     · 100  → 200vh : hold      (estável)
+     · 200  → 300vh : fade-out  (reverte tudo)
+   Title é animado char-by-char com stagger: cada letra tem sua janela de
+   animação dentro da fase de fade-in/out. Eyebrow/desc/actions usam
+   translateY tradicional. */
+(function () {
+    var wrap    = document.querySelector('.anuidade-sticky-wrap');
+    if (!wrap) return;
+    var section = wrap.querySelector('.sec-anuidade');
+    if (!section) return;
 
     var eyebrow = section.querySelector('.anuidade-eyebrow');
     var title   = section.querySelector('.anuidade-title');
     var desc    = section.querySelector('.anuidade-desc');
     var actions = section.querySelector('.anuidade-actions');
 
-    function bf(px) { return 'blur(' + px + 'px)'; }
-
-    /* Reset opacity do title (CSS default = 0 pra esconder antes do reveal).
-       Como mobile usa scroll-driven nos chars individuais, o pai precisa
-       estar opaco senão a opacity:0 do pai zera a visibilidade dos chars. */
-    if (title) title.style.opacity = '1';
-
-    /* Title split char-by-char — mesma lógica do desktop revealSec2.
-       Cada letra vira <span style="display:inline-block"> envolto em
-       um wordWrap (white-space:nowrap) pra não quebrar dentro de palavra. */
+    /* Split do título em char-spans. Estrutura criada:
+         <h2 class="anuidade-title">            ← recebe filter:blur (sem mask)
+           <span class="anuidade-title-mask">   ← tem mask-image (sem filter)
+             [wordWraps com char spans dentro]
+           </span>
+         </h2>
+       A separação evita que a mask clippe o halo do blur. char spans só animam
+       opacity + transform (o blur uniforme vem do .anuidade-title parent). */
     var titleSpans = [];
-    if (title) {
+    if (title && !title.dataset.split) {
+        title.dataset.split = '1';
+
+        /* Move todos os children do title pra dentro de um novo wrapper de mask */
+        var maskLayer = document.createElement('span');
+        maskLayer.className = 'anuidade-title-mask';
+        while (title.firstChild) {
+            maskLayer.appendChild(title.firstChild);
+        }
+        title.appendChild(maskLayer);
+
         (function walk(node) {
             if (node.nodeType === 3) {
-                var words = node.textContent.split(/(\s+)/);
+                var text = node.textContent;
+                if (!text) return;
+                var words = text.split(/(\s+)/);
                 var frag = document.createDocumentFragment();
-                words.forEach(function (part) {
-                    if (/^\s+$/.test(part)) {
-                        frag.appendChild(document.createTextNode(part));
-                    } else if (part.length) {
-                        var wordWrap = document.createElement('span');
-                        wordWrap.style.display    = 'inline-block';
-                        wordWrap.style.whiteSpace = 'nowrap';
-                        part.split('').forEach(function (ch) {
-                            var sp = document.createElement('span');
-                            sp.textContent   = ch;
-                            sp.style.display = 'inline-block';
-                            wordWrap.appendChild(sp);
-                            titleSpans.push(sp);
-                        });
-                        frag.appendChild(wordWrap);
+                words.forEach(function (word) {
+                    if (/^\s+$/.test(word)) {
+                        frag.appendChild(document.createTextNode(word));
+                        return;
                     }
+                    var wordWrap = document.createElement('span');
+                    wordWrap.style.cssText = 'display:inline-block;white-space:nowrap;';
+                    for (var c = 0; c < word.length; c++) {
+                        var charSpan = document.createElement('span');
+                        charSpan.textContent = word[c];
+                        charSpan.style.cssText = 'display:inline-block;will-change:opacity,transform;opacity:0;transform:translateY(32px);';
+                        wordWrap.appendChild(charSpan);
+                        titleSpans.push(charSpan);
+                    }
+                    frag.appendChild(wordWrap);
                 });
                 node.parentNode.replaceChild(frag, node);
             } else if (node.nodeType === 1) {
-                Array.from(node.childNodes).forEach(walk);
+                /* Recursão em element nodes (ex: <span style="font-weight:700">,
+                   ou o nosso .anuidade-title-mask wrapper) */
+                var children = Array.prototype.slice.call(node.childNodes);
+                children.forEach(walk);
             }
         })(title);
     }
 
-    /* Stagger igual ao desktop: 10ms entre letras, 500ms de anim por letra.
-       Cada letra tem sua "janela" de progresso normalizada pra fração [0,1]
-       do progresso geral de fade-in/fade-out. */
+    /* Stagger config: cada char começa 10ms "após" o anterior (em tempo
+       fictício). Char anima por 300ms. Total = (N-1)*10 + 300. A fração
+       de cada char no total = 300/total. */
     var STAGGER_MS = 10;
-    var ANIM_MS    = 500;
+    var ANIM_MS = 300;
     var totalChars = titleSpans.length;
-    var totalMs    = (totalChars - 1) * STAGGER_MS + ANIM_MS || ANIM_MS;
-    /* Para cada char i: start = i*STAGGER_MS, end = i*STAGGER_MS + ANIM_MS.
-       Normalizado: startN = (i*STAGGER_MS) / totalMs, endN = startN + ANIM_MS/totalMs */
+    var totalMs = totalChars ? (totalChars - 1) * STAGGER_MS + ANIM_MS : ANIM_MS;
     var ANIM_FRACTION = ANIM_MS / totalMs;
 
-    /* Sticky positioning é 100% CSS (position: sticky !important).
-       JS só calcula opacity/filter/transform dos filhos. */
-
     var rafId = null;
-    function update() {
+    function tick() {
         rafId = null;
         var rect = wrap.getBoundingClientRect();
-        /* Usa section.offsetHeight (= valor CSS resolvido de var(--anuidade-vh) * 100)
-           pra que vh do JS bata exatamente com vh do CSS, mesmo em tempo real. */
-        var vh = section.offsetHeight || window.innerHeight;
         var scrolled = -rect.top;
+        var vh = section.offsetHeight || window.innerHeight;
 
         var p;
-        if      (scrolled <= 0)         p = 0;
-        else if (scrolled <= vh)        p = scrolled / vh;
-        else if (scrolled <= vh * 1.25) p = 1;
-        else if (scrolled <= vh * 1.5)  p = 1 - (scrolled - vh * 1.25) / (vh * 0.25);
-        else                            p = 0;
+        if      (scrolled <= 0)        p = 0;
+        else if (scrolled <= vh)       p = scrolled / vh;
+        else if (scrolled <= 2 * vh)   p = 1;
+        else if (scrolled <= 3 * vh)   p = 1 - (scrolled - 2 * vh) / vh;
+        else                           p = 0;
 
         var blur = 16 * (1 - p);
+        var blurStr = 'blur(' + blur + 'px)';
         var slide = 16 * (1 - p);
 
         if (eyebrow) {
             eyebrow.style.opacity = p;
-            eyebrow.style.filter = bf(blur);
+            eyebrow.style.filter = blurStr;
             eyebrow.style.transform = 'translateY(' + (-slide) + 'px)';
         }
         if (desc) {
             desc.style.opacity = p;
-            desc.style.filter = bf(blur);
+            desc.style.filter = blurStr;
             desc.style.transform = 'translateY(' + slide + 'px)';
         }
         if (actions) {
             actions.style.opacity = p;
-            actions.style.filter = bf(blur);
+            actions.style.filter = blurStr;
             actions.style.transform = 'translateY(' + slide + 'px)';
         }
-        /* Title chars: cada letra com janela própria + stagger.
-           Letra i começa a animar em p = (i*STAGGER_MS)/totalMs e
-           termina em p = startN + ANIM_FRACTION. */
+
+        /* Title: filter uniforme no elemento externo (pra não ser clippado
+           pela mask que vive no .anuidade-title-mask interno). Char spans
+           só animam opacity + translate. */
+        if (title) {
+            title.style.filter = 'blur(' + (8 * (1 - p)) + 'px)';
+        }
         if (totalChars) {
             for (var i = 0; i < totalChars; i++) {
                 var startN = (i * STAGGER_MS) / totalMs;
                 var pChar  = (p - startN) / ANIM_FRACTION;
-                if (pChar < 0) pChar = 0;
+                if      (pChar < 0) pChar = 0;
                 else if (pChar > 1) pChar = 1;
                 var sp = titleSpans[i];
                 sp.style.opacity   = pChar;
-                sp.style.filter    = bf(8 * (1 - pChar));
                 sp.style.transform = 'translateY(' + (32 * (1 - pChar)) + 'px)';
             }
         }
     }
-
     function schedule() {
         if (rafId !== null) return;
-        rafId = requestAnimationFrame(update);
+        rafId = requestAnimationFrame(tick);
     }
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', schedule);
+        window.visualViewport.addEventListener('scroll', schedule);
+    }
+    tick();
+})();
+
+/* ── Reveal: sec-anuidade sobe sobre sec-oferta (mobile ≤864px) ──
+   sec-oferta é position: sticky; top: calc(100vh - var(--sec-oferta-height)),
+   mesmo padrão de sec-projetos. CSS faz o pin. Esse IIFE só mantém
+   --sec-oferta-height atualizada em tempo real. */
+(function () {
+    var oferta = document.querySelector('.oferta-anuidade-track .sec-oferta');
+    if (!oferta) return;
+
+    function update() {
+        oferta.style.setProperty('--sec-oferta-height', oferta.offsetHeight + 'px');
+    }
+
     update();
+
+    if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(update).observe(oferta);
+    }
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', update);
+    }
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
 })();
 
-/* ── MOBILE (≤864px): sec-anuidade passa por cima de sec-oferta ──
-   Mesmo padrão do reveal pilares-profs / sec-projetos: pin de sec-oferta
-   via translateY quando seu BOTTOM atinge o rodapé do viewport, e
-   anuidade-sticky-wrap (z-index:1) sobe por cima na flow natural.
-   Cap em vh: depois de 1 viewport de overshoot, sec-oferta pode rolar
-   normalmente pra fora. */
+/* ── Reveal: pilares-profs sobe sobre sec-projetos ──
+   sec-projetos é position: sticky; top: calc(100vh - var(--sec-projetos-height)).
+   O CSS precisa saber a altura REAL de sec-projetos em pixels pra calcular o
+   offset negativo. Esse IIFE atualiza --sec-projetos-height em tempo real:
+    - ResizeObserver: dispara quando sec-projetos muda de tamanho (mudança de
+      conteúdo, font load, breakpoint, etc.)
+    - visualViewport.resize / window.resize: pra mudanças de vh (barra de
+      endereço no mobile, rotação, redimensionamento de janela) — quando o vh
+      muda, elementos dentro de sec-projetos que usam vh recalculam altura, o
+      RO pega automaticamente, mas escutar aqui também garante atualização
+      mesmo se a altura de sec não mudar (caso raro). */
 (function () {
-    if (!window.matchMedia('(max-width: 864px)').matches) return;
-
-    var oferta = document.querySelector('.sec-oferta');
-    var anuidadeWrap = document.querySelector('.anuidade-sticky-wrap');
-    if (!oferta || !anuidadeWrap) return;
-
-    var raf = null;
-
-    function getNaturalTop(el) {
-        var y = 0;
-        var cur = el;
-        while (cur) {
-            y += cur.offsetTop;
-            cur = cur.offsetParent;
-        }
-        return y;
-    }
+    var sec = document.querySelector('.projetos-pilares-track .sec-projetos');
+    if (!sec) return;
 
     function update() {
-        raf = null;
-        var ofertaBottomDoc = getNaturalTop(oferta) + oferta.offsetHeight;
-        var ofertaBottomVp = ofertaBottomDoc - (window.scrollY || 0);
-        var vh = window.innerHeight;
-        var overshoot = vh - ofertaBottomVp;
-
-        if (overshoot <= 0) {
-            if (oferta.style.transform) oferta.style.transform = '';
-        } else {
-            var pin = overshoot < vh ? overshoot : vh;
-            oferta.style.transform = 'translateY(' + pin + 'px)';
-        }
+        sec.style.setProperty('--sec-projetos-height', sec.offsetHeight + 'px');
     }
 
-    function schedule() {
-        if (raf) return;
-        raf = requestAnimationFrame(update);
+    update();
+
+    if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(update).observe(sec);
     }
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-    schedule();
-})();
-
-/* ── Reveal: pilares-profs passa por cima de sec-projetos ──
-   Mimica position:sticky bottom:0, mas via translateY pra funcionar em qualquer
-   altura de sec-projetos (inclusive quando maior que o viewport). Quando o
-   BOTTOM natural de sec-projetos atinge o rodapé do viewport, sec-projetos é
-   "pinado" ali via transform; pilares-profs (sibling, z-index 1, bg escuro)
-   continua na flow natural e sobe por cima cobrindo. Cap de 1 viewport: depois
-   do reveal completo, sec-projetos rola normalmente pra fora. */
-(function () {
-    var track = document.querySelector('.projetos-pilares-track');
-    if (!track) return;
-    var sec = track.querySelector('.sec-projetos');
-    var pilares = track.querySelector('.pilares-profs');
-    if (!sec || !pilares) return;
-
-    var raf = null;
-
-    /* offsetTop traversal: posição natural sem incluir transforms aplicados */
-    function getNaturalTop(el) {
-        var y = 0;
-        var cur = el;
-        while (cur) {
-            y += cur.offsetTop;
-            cur = cur.offsetParent;
-        }
-        return y;
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', update);
     }
-
-    function update() {
-        raf = null;
-        var secBottomDoc = getNaturalTop(sec) + sec.offsetHeight;
-        var secBottomVp = secBottomDoc - (window.scrollY || 0);
-        var vh = window.innerHeight;
-        var overshoot = vh - secBottomVp;
-
-        if (overshoot <= 0) {
-            if (sec.style.transform) sec.style.transform = '';
-        } else {
-            /* Cap em vh: depois disso, pilares-profs já cobriu totalmente,
-               sec pode rolar pra fora naturalmente */
-            var pin = overshoot < vh ? overshoot : vh;
-            sec.style.transform = 'translateY(' + pin + 'px)';
-        }
-    }
-
-    function schedule() {
-        if (raf) return;
-        raf = requestAnimationFrame(update);
-    }
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-    schedule();
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
 })();
 
 /* ── Reveal animation: sec-eyebrow + sec-title (char-by-char) + sec-lede ──

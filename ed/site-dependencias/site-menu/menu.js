@@ -8,6 +8,18 @@
     var isMobile = function () { return window.innerWidth <= 896; };
     var isMobileSm = function () { return window.innerWidth <= 576; };
 
+    /* Link externo (WordPress / app) = href absoluto http(s). Links internos
+       do site estático (formações) são relativos ou começam com '/'. Todos
+       os externos abrem em nova aba. */
+    var isExternal = function (href) { return /^https?:\/\//i.test(href || ''); };
+
+    root.querySelectorAll('a[href]').forEach(function (a) {
+        if (isExternal(a.getAttribute('href'))) {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener');
+        }
+    });
+
     /* ── Painel dinâmico — muda ao hover/click ────────────────────── */
     function activatePanel(dropdown, panelId) {
         dropdown.querySelectorAll('.dm-item').forEach(function (i) {
@@ -30,7 +42,9 @@
         if (!dropdown) return;
         var panel = dropdown.querySelector('.dm-panel[data-id="' + item.dataset.panel + '"]');
         if (!panel) return;
-        var cta = panel.querySelector('.dm-panel-cta');
+        /* O CTA do painel é o .btn (ex.: "Conhecer Pós Tech"). Em mobile
+           (≤576px) o dm-panel some, então o próprio dm-item navega pra cá. */
+        var cta = panel.querySelector('.dm-panel-cta') || panel.querySelector('.btn');
         if (cta) item.dataset.href = cta.getAttribute('href') || '';
     });
 
@@ -62,7 +76,11 @@
                     return;
                 }
                 if (item.dataset.href) {
-                    window.location.href = item.dataset.href;
+                    if (isExternal(item.dataset.href)) {
+                        window.open(item.dataset.href, '_blank', 'noopener');
+                    } else {
+                        window.location.href = item.dataset.href;
+                    }
                 }
                 return;
             }

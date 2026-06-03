@@ -660,9 +660,14 @@
         color: var(--bw-75);
     }
     #site-menu .nav .nav-list .nav-btn--highlight:hover,
-    #site-menu .nav .nav-list button.nav-btn--highlight:hover,
-    #site-menu .nav .nav-list .nav-item.open .nav-btn--highlight {
+    #site-menu .nav .nav-list button.nav-btn--highlight:hover {
         background-color: var(--bw-5);
+        color: var(--bw);
+    }
+    /* Aberto: mesma cor (dn800) dos demais nav-itens abertos em mobile,
+       senão o "Aprenda" destoava com bw-5. */
+    #site-menu .nav .nav-list .nav-item.open .nav-btn--highlight {
+        background-color: var(--dn800);
         color: var(--bw);
     }
     #site-menu .nav .nav-list .nav-btn--cta:hover,

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xperiun — A escola de dados para profissionais de negócio</title>
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
     <style>
@@ -210,11 +211,18 @@
             font-weight: 300;
             color: var(--bw);
             width: 100%;
-            margin: 0 auto;
+            margin: -64px;
             max-width: 24ch;
             opacity: 0;
             -webkit-mask-image: var(--text-gradient-low);
             mask-image: var(--text-gradient-low);
+            padding: 64px;
+            box-sizing: content-box;
+            /* Centralização via flex alignment (em vez de margin: auto):
+               .hero-content é flex column, então align-self: center centra
+               horizontalmente sem depender do leftover-space que margin auto
+               distribui. Funciona limpo com margin: -64px flat. */
+            align-self: center;
         }
 
 
@@ -364,10 +372,12 @@
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
-            margin: 0;
+            margin: -64px;
             opacity: 0;
             -webkit-mask-image: var(--text-gradient-low);
             mask-image: var(--text-gradient-low);
+            padding: 64px;
+            box-sizing: content-box;
         }
 
         .sec-title strong { font-weight: 700; }
@@ -2005,8 +2015,10 @@ black 0%, transparent 100%);
             color: var(--bw);
             -webkit-mask-image: var(--text-gradient-low);
             mask-image: var(--text-gradient-low);
-            margin: 0;
+            margin: -64px;
             opacity: 0;
+            padding: 64px;
+            box-sizing: content-box;
         }
         .completa-body {
             display: grid;
@@ -2572,7 +2584,7 @@ black 0%, transparent 100%);
             justify-content: flex-end;
         }
         .cta-header { display: flex; flex-direction: column; gap: 16px; }
-        .cta-title { margin: 0; }
+        /* .cta-title: margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         .cta-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .cta-right .tag-status,
         .cta-right .btn { opacity: 0; }
@@ -2960,7 +2972,7 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
         <div class="formacoes-cta-card">
             <div style="display:flex;flex-direction:column;gap:24px;align-items:flex-start;">
                 <p style="margin:0;color:var(--bw-75)">Você não precisa decidir tudo agora. Só precisa enxergar o caminho. Acesse o HUB de Formações, conheça cada trilha por competência e descubra qual delas pode ser o seu próximo passo em dados.</p>
-                <a class="btn" data-size="m" data-emphasis="medium-core" href="/ed/formacoes/index.html">Conhecer o HUB de Formações</a>
+                <a class="btn" data-size="m" data-emphasis="medium-core" href="/ed/formacoes/">Conhecer o HUB de Formações</a>
             </div>
         <div class="formacoes-cta">
             <div class="formacoes-cta-layer">
@@ -3110,20 +3122,6 @@ Você não precisa virar dev para crescer com dados. Precisa transformar planilh
                     <div>
                         <h3 class="completa-tile-name">Biblioteca Na Prática</h3>
                         <p class="completa-tile-meta">45 business cases de empresas brasileiras</p>
-                    </div>
-                </div>
-                <div class="completa-tile enter-card">
-                    <div class="completa-tile-icon"><span class="material-symbols-outlined">groups</span></div>
-                    <div>
-                        <h3 class="completa-tile-name">Comunidade Xperiun</h3>
-                        <p class="completa-tile-meta">Troca com gente de negócio, dúvidas e projetos</p>
-                    </div>
-                </div>
-                <div class="completa-tile enter-card">
-                    <div class="completa-tile-icon"><span class="material-symbols-outlined">groups</span></div>
-                    <div>
-                        <h3 class="completa-tile-name">Comunidade Xperiun</h3>
-                        <p class="completa-tile-meta">Troca com gente de negócio, dúvidas e projetos</p>
                     </div>
                 </div>
                 <div class="completa-tile enter-card">

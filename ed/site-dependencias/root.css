@@ -14,6 +14,15 @@
         box-sizing: border-box;
     }
 
+    html {
+        /* clipa overflow horizontal pra que padding/margin negativo
+           (usado nos títulos com mask pra dar folga ao halo do blur) não
+           gere scrollbar horizontal. `clip` ≠ `hidden`: não cria scroll
+           container, então sticky em descendants continua funcionando
+           normal contra o viewport. */
+        overflow-x: clip;
+    }
+
     body {
         margin: 0;
         background-color: var(--dn900);
