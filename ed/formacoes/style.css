@@ -1845,14 +1845,18 @@
             }
             .anuidade-sticky-wrap {
                 position: relative;
-                height: 237.5vh;
+                height: 237.5vh;        /* fallback */
+                height: 237.5dvh;       /* dynamic viewport — ajusta com barra de endereço */
                 z-index: 1;
             }
             /* TODAS as propriedades com !important pra vencer o desktop
                (position:fixed, inset:0, transform:translateY(100%), etc.).
                NÃO usar shorthand `inset` aqui — ele resetaria `top: 0` mesmo
                com !important devido à cascade ordering dentro do bloco.
-               iOS Safari implementa position:sticky desde 13.0. */
+               iOS Safari implementa position:sticky desde 13.0.
+               height: 100dvh evita que o botão saia do viewport quando a barra
+               de endereço do mobile reaparece (vh tradicional = "large viewport"
+               sempre = espaço incluindo área da barra colapsada). */
             .anuidade-sticky-wrap .sec-anuidade {
                 position: -webkit-sticky !important;
                 position: sticky !important;
@@ -1861,7 +1865,8 @@
                 left: auto !important;
                 top: 0 !important;
                 width: 100% !important;
-                height: 100vh !important;
+                height: 100vh !important;       /* fallback */
+                height: 100dvh !important;      /* dynamic */
                 transform: none !important;
                 transition: none !important;
                 pointer-events: auto !important;
