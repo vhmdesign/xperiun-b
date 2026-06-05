@@ -1,9 +1,10 @@
 # Deploy via FTP para Hostinger.
 #
-# Dispara em cada push na branch main. Sincroniza o conteúdo de `ed/` (do
-# repositório local) para `public_html/ed/` no servidor. Usa git-ftp interno —
-# só transfere arquivos modificados desde o último deploy (mantém um arquivo
-# `.ftp-deploy-sync-state.json` no servidor pra controlar diff).
+# Dispara em cada push na branch main. Roda build (npm run build) que minifica
+# HTML/CSS/JS de ed/ em dist/ed/, e sincroniza dist/ed/ para public_html/ed/
+# no servidor via FTPS. Usa git-ftp interno — só transfere arquivos modificados
+# desde o último deploy (mantém um arquivo `.ftp-deploy-sync-state-vN.json` no
+# servidor pra controlar diff).
 #
 # Pré-requisitos: configure três secrets em
 #   GitHub repo > Settings > Secrets and variables > Actions > New repository secret
@@ -14,7 +15,7 @@
 #   FTP_PASSWORD   — senha FTP
 #
 # Importante: o `.htaccess` da raiz de `public_html/` NÃO é tocado por este
-# workflow (sobe somente o conteúdo de `ed/`). Edite-o manualmente no servidor.
+# workflow (sobe somente o conteúdo de `dist/ed/`). Edite-o manualmente no servidor.
 
 name: Deploy to Hostinger
 
@@ -25,12 +26,24 @@ on:
 
 jobs:
   deploy:
-    name: FTP sync ed/ -> public_html/ed/
+    name: Build + FTP sync dist/ed/ -> public_html/ed/
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (minify HTML/CSS/JS → dist/ed/)
+        run: npm run build
 
       - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -38,7 +51,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./ed/
+          local-dir: ./dist/ed/
           # No Hostinger compartilhado, ao logar via FTP o usuário cai em
           # /home/uXXXX/ e public_html fica em domains/xperiun.com/public_html.
           # O caminho aqui é relativo à raiz do FTP (sem /home/uXXXX).
@@ -57,7 +70,9 @@ jobs:
           # state-name versionado: incrementa quando precisar forçar re-deploy
           # completo (action procura state pelo nome — se não achar, sobe tudo).
           # Útil quando um arquivo ficou dessincronizado no servidor.
-          state-name: .ftp-deploy-sync-state-v5.json
+          # v6: bump pq mudou source path (ed → dist/ed) — todos os arquivos
+          # são "novos" do ponto de vista da action.
+          state-name: .ftp-deploy-sync-state-v6.json
           # Por padrão a action já ignora .git e .github. Adicione exclusões
           # extras aqui se precisar (ex.: arquivos de dev, screenshots, etc.):
           # exclude: |
