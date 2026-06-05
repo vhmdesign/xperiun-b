@@ -1,21 +1,25 @@
-# Deploy via lftp (FTPS explícito + size-based diff) para Hostinger.
+# Deploy via rsync over SSH para Hostinger.
 #
-# Por que NÃO SamKirkland/FTP-Deploy-Action:
-#   - Action escreve state file (.ftp-deploy-sync-state.json) só no FIM do
-#     deploy. Quando Hostinger derruba control socket no meio do upload
-#     (timeout ~30s em transfers grandes), state nunca é escrito.
-#   - Próximo deploy: state está vazio/antigo → action re-faz full upload →
-#     timeout de novo. Loop infinito.
+# Substitui FTP (que tava com timeout crônico no control socket).
+# rsync mantém UMA conexão SSH durável com keepalive, delta-transfer
+# (só envia diferenças dentro dos arquivos), e tem retry/resume nativos.
 #
-# Por que lftp:
-#   - Sem state file. Mirror faz diff live a cada execução, comparando
-#     local vs remoto direto.
-#   - `--ignore-time`: compara só SIZE (não mtime). Minify de source
-#     idêntico produz output idêntico em bytes → mesmo size → skip.
-#     Só arquivos que realmente mudaram sobem.
-#   - Reconexão automática + retry com backoff exponencial em falhas
-#     do control socket.
-#   - --parallel=2: 2 uploads simultâneos, suficiente sem sobrecarregar.
+# Esperado: deploy completo em 1-3 min (primeiro), <30s (incrementais).
+#
+# Pré-requisitos — adicionar 4 secrets em
+#   GitHub repo > Settings > Secrets and variables > Actions
+#
+#   SSH_HOST      — hostname SSH do Hostinger (hPanel > Avançado > Acesso SSH)
+#                    típico: bash.hostinger.com ou IP do servidor
+#   SSH_USER      — username SSH (mesmo do hPanel, ex: u123456789)
+#   SSH_PORT      — porta SSH (65002 por padrão no Hostinger)
+#   SSH_PASSWORD  — senha SSH (geralmente igual à senha da conta Hostinger)
+#
+# Pra autenticar com chave SSH (mais seguro) em vez de senha:
+#   1) gera chave: ssh-keygen -t ed25519 -f ~/.ssh/hostinger_deploy -N ""
+#   2) cola .pub no hPanel > Acesso SSH > Gerenciar chaves SSH
+#   3) substitui SSH_PASSWORD por SSH_PRIVATE_KEY (conteúdo da chave privada)
+#   4) troca o step rsync abaixo pelo da action easingthemes/ssh-deploy@v5
 
 name: Deploy to Hostinger
 
@@ -26,7 +30,7 @@ on:
 
 jobs:
   deploy:
-    name: Build + lftp sync dist/ed/ -> public_html/ed/
+    name: Build + rsync dist/ed/ -> public_html/ed/
     runs-on: ubuntu-latest
 
     steps:
@@ -45,43 +49,25 @@ jobs:
       - name: Build (minify HTML/CSS/JS → dist/ed/)
         run: npm run build
 
-      - name: Install lftp
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+      - name: Install rsync + sshpass
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync sshpass
 
-      - name: Deploy via lftp (FTPS explícito + size-based diff)
+      - name: Deploy via rsync over SSH
         env:
-          FTP_HOST: ${{ secrets.FTP_SERVER }}
-          FTP_USER: ${{ secrets.FTP_USERNAME }}
-          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
         run: |
-          # Escreve script lftp em arquivo separado pra evitar issues de
-          # escaping no shell (passwords com $ ou aspas).
-          cat > /tmp/lftp.cmd <<'LFTP_SCRIPT'
-          set ssl:verify-certificate no
-          set ftp:ssl-protect-data true
-          set ftp:ssl-force true
-          set ftp:ssl-auth TLS
-          set ftp:passive-mode true
-          set net:timeout 30
-          set net:max-retries 5
-          set net:reconnect-interval-base 5
-          set net:reconnect-interval-multiplier 1.5
-          set mirror:set-permissions false
-          set cmd:fail-exit true
-          pwd
-          mirror \
-            --reverse \
-            --delete \
-            --ignore-time \
-            --verbose=1 \
-            --parallel=2 \
-            --exclude-glob '.ftp-deploy-sync-state-*.json' \
+          # -r recursive; -l preserve symlinks; -p preserve perms;
+          # -t preserve mtimes (crucial pra delta funcionar bem);
+          # -D preserve devices; -v verbose; -z compress
+          # --delete remove arquivos órfãos no servidor (escopo: só /ed/)
+          # --exclude .ftp-deploy-sync-state-*.json: legacy do FTP-Deploy-Action
+          # -o StrictHostKeyChecking=no aceita host key automaticamente
+          # -o UserKnownHostsFile=/dev/null não persiste known_hosts
+          sshpass -p "$SSH_PASS" rsync -rlptDvz --delete \
+            --exclude='.ftp-deploy-sync-state-*.json' \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=30" \
             dist/ed/ \
-            /domains/xperiun.com/public_html/ed/
-          bye
-          LFTP_SCRIPT
-
-          # -e: execute o script.
-          # -u user,pass: credenciais (lftp escapa automaticamente).
-          # ftp://host:21: explicit FTPS (set ftp:ssl-force true força TLS).
-          lftp -e "source /tmp/lftp.cmd" -u "$FTP_USER,$FTP_PASS" "ftp://$FTP_HOST:21"
+            "$SSH_USER@$SSH_HOST:~/domains/xperiun.com/public_html/ed/"
