@@ -25,6 +25,8 @@ CHECKLIST DE PROTEÇÃO (já incluído — NÃO REMOVER)
     [x] Comment HTML de fingerprint antes do </body>
     [x] Anti-copy como <script src> externo (URL bloqueada via .htaccess
         + Sec-Fetch-Dest header check pra evitar acesso direto)
+    [x] Origin self-destruct inline no <head> (após meta charset) — detecta
+        file:// e desconfigura a página se aberta como cópia salva local
 
 CAMADAS QUE JÁ APLICAM AUTOMATICAMENTE (sem ação por página)
     - .htaccess (UA block, hotlink protection, security headers)
@@ -37,6 +39,30 @@ CAMADAS QUE JÁ APLICAM AUTOMATICAMENTE (sem ação por página)
 <head>
     <!-- ─── Meta básicos ─────────────────────────────────────── -->
     <meta charset="UTF-8">
+    <script>
+    /* Origin self-destruct: detecta cópia local (file://) e bloqueia
+       rendering. Inline pra rodar antes de qualquer outra coisa e ser
+       inseparável do HTML (atacante precisa editar o arquivo, não só
+       remover um <script src>). */
+    (function () {
+        var p = location.protocol;
+        var o = location.origin;
+        if (p === 'file:' || o === 'null' || location.hostname === '' ||
+            (p !== 'https:' && p !== 'http:')) {
+            document.documentElement.innerHTML =
+                '<head><title>Indisponível offline</title><meta charset="UTF-8"></head>' +
+                '<body style="margin:0;font-family:system-ui,sans-serif;background:#00000a;color:#f5faff;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:32px;">' +
+                '<div>' +
+                '<h1 style="font-size:2rem;font-weight:600;margin:0;">Página indisponível offline</h1>' +
+                '<p style="margin:16px 0 0;font-size:1.125rem;opacity:0.75;">' +
+                'Esse conteúdo só funciona acessado em ' +
+                '<a href="https://xperiun.com/" style="color:#64c8ff;text-decoration:underline;">xperiun.com</a>' +
+                '</p>' +
+                '</div></body>';
+            throw new Error('offline-blocked');
+        }
+    })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
