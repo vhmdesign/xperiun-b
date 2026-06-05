@@ -50,18 +50,32 @@
 
     root.querySelectorAll('.dm-item[data-panel]').forEach(function (item) {
         item.addEventListener('mouseenter', function () {
-            if (isMobileSm()) return;
+            if (isMobile()) return;
             var dropdown = item.closest('.dropdown');
             if (dropdown) activatePanel(dropdown, item.dataset.panel);
         });
         item.addEventListener('click', function (e) {
-            /* ≤576px: dm-panels escondido. Item ou navega (data-href)
-               ou alterna accordion (.dm-item-sub irmão). */
-            if (isMobileSm()) {
-                var sub = item.nextElementSibling;
-                if (sub && sub.classList.contains('dm-item-sub')) {
+            var sub = item.nextElementSibling;
+            var hasSub = sub && sub.classList.contains('dm-item-sub');
+
+            if (isMobile()) {
+                /* Mobile: item sem sub-list navega DIRETO pra URL do CTA
+                   do seu panel (data-href setado no setup acima). Same-tab
+                   sempre — window.open('_blank') é frequentemente bloqueado
+                   em iOS Safari mesmo com user gesture, e a URL do CTA é
+                   sempre do mesmo domínio xperiun.com (não justifica nova aba). */
+                if (!hasSub) {
+                    if (item.dataset.href) {
+                        e.preventDefault();
+                        window.location.href = item.dataset.href;
+                    }
+                    return;
+                }
+                /* Item COM sub-list (ex: Aprenda > Formações):
+                   ≤576px: alterna accordion (panels escondidos pelo CSS).
+                   577-864: ativa o panel (dm-panels ainda visível). */
+                if (isMobileSm()) {
                     e.preventDefault();
-                    /* Fecha outros accordions do mesmo dropdown */
                     var dd = item.closest('.dropdown');
                     if (dd) {
                         dd.querySelectorAll('.dm-item-sub.open').forEach(function (s) {
@@ -75,15 +89,11 @@
                     item.classList.toggle('open');
                     return;
                 }
-                if (item.dataset.href) {
-                    if (isExternal(item.dataset.href)) {
-                        window.open(item.dataset.href, '_blank', 'noopener');
-                    } else {
-                        window.location.href = item.dataset.href;
-                    }
-                }
+                var ddPanel = item.closest('.dropdown');
+                if (ddPanel) activatePanel(ddPanel, item.dataset.panel);
                 return;
             }
+            /* Desktop: ativa o panel pra mostrar descrição */
             var dropdown = item.closest('.dropdown');
             if (dropdown) activatePanel(dropdown, item.dataset.panel);
         });
