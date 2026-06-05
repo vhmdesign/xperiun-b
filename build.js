@@ -41,7 +41,14 @@ const HTML_OPTS = {
 };
 
 const cleanCSS = new CleanCSS({
-    level: 2,
+    /* level 1 (safe): whitespace, comments, color shortening, sem
+       transformações estruturais.
+       NÃO usar level 2 — ele faz "structural optimizations" que NÃO
+       entendem CSS Nesting Module e acabam strippando @keyframes
+       quando aparecem dentro de seletores aninhados (ex: o bloco
+       body.formacoes-hub {} em formacoes/style.css). Browsers toleram
+       o nesting, mas level 2 reescreve a CSS de forma errada. */
+    level: 1,
     returnPromise: false,
 });
 
