@@ -109,10 +109,17 @@
 
         e.preventDefault();
         const dest = clamp(computeDest(el, a.dataset.scrollTo));
-        target  = dest;
+
+        /* Para qualquer tick() de lerp em andamento (de scroll por wheel anterior).
+           Se ficar rodando, sobrescreveria o scrollTo nativo abaixo. */
+        target  = window.scrollY;
         current = window.scrollY;
-        running = true;
-        requestAnimationFrame(tick);
+        running = false;
+
+        /* Usa scrollTo nativo do browser com behavior:smooth. Mais robusto
+           que RAF lerp próprio — não tem como ficar com state stuck, e o
+           browser cancela/retoma automaticamente em wheel/touch durante. */
+        window.scrollTo({ top: dest, behavior: 'smooth' });
     });
 
     // Wheel + keyboard só fazem sentido em devices com fine pointer.
