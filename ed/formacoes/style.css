@@ -2373,7 +2373,7 @@
     
 
         /* ════════════════════════════════════════════════════════════
-           INDEX HUB (formacoes/index.html) — migrado do inline <style>
+           INDEX HUB (formacoes/index.html) — migrado do inline \3c style>
            Escopado por body.formacoes-hub para não afetar as páginas de
            formação que compartilham style.css mas usam alguns mesmos
            seletores (.hero-wave, .sec-cta, .sec-oferta) com regras próprias.
@@ -2381,14 +2381,29 @@
         body.formacoes-hub {
         /* Hero do hub — overrides do .hero-wave de style.css (formacao pages têm
            hero diferente). Mantido inline temporariamente; será movido depois. */
-        .hero-wave {
+
+        /* Animação de entrada do deck: marquee-boxes fadeiam em ordem
+           aleatória, hero-box entra por último com fade + translateY. */
+
+        /* Bloco "conta" embutido dentro de sec-oferta (full-width, edge-to-edge).
+           Por isso sec-oferta perdeu o padding horizontal (mudou para 128px 0) e
+           .oferta-inner herdou o padding 0 16px. .conta-grid ocupa 100% da .sec-oferta. */
+
+        /* Wrapper que envolve sec-depos + sec-faq no HUB — mesmo padrão visual de
+           .perfis-depos-wrap (background blur de gradientes radiais + fade
+           scrim nas bordas).
+           Override: .sec-faq na base do style.css tem background: var(--bb)
+           sólido que cobriria o pseudo-element do wrap. Aqui zera pra que o
+           gradiente do wrap se estenda também sobre o sec-faq. */
+        }
+        body.formacoes-hub .hero-wave {
             display: flex;
             flex-direction: column;
             align-items: center;
             padding-top: 0;
             padding-bottom: 128px;
         }
-        .hero-content {
+        body.formacoes-hub .hero-content {
             width: 100%;
             max-width: 832px;
             padding: 0 16px;
@@ -2399,10 +2414,10 @@
             align-items: center;
             gap: 24px;
         }
-        .hero-actions {
+        body.formacoes-hub .hero-actions {
             justify-content: center;
         }
-        .hero-h1 {
+        body.formacoes-hub .hero-h1 {
             font: var(--h2);
             font-weight: 300;
             color: var(--bw);
@@ -2410,13 +2425,12 @@
             padding: 64px;
             box-sizing: content-box;
         }
-        .hero-p {
+        body.formacoes-hub .hero-p {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .hero-box::before {
+        body.formacoes-hub .hero-box::before {
             content: "";
             position: absolute;
             top: 40%;
@@ -2429,8 +2443,7 @@
             pointer-events: none;
             filter: blur(16px);
         }
-
-        .hero-box {
+        body.formacoes-hub .hero-box {
             width: 128px;
             height: 128px;
             border-radius: 32px;
@@ -2447,8 +2460,7 @@
             justify-content: center;
             z-index: 2;
         }
-
-        .hero-box::after {
+        body.formacoes-hub .hero-box::after {
             content: "";
             position: absolute;
             inset: 0;
@@ -2457,35 +2469,29 @@
             pointer-events: none;
             z-index: 3;
         }
-
-        .hero-deck {
+        body.formacoes-hub .hero-deck {
             width: 100%;
             height: calc(3 * 96px + 3 * 16px);
             position: relative;
             margin-top: 48px;
         }
-
-        /* Animação de entrada do deck: marquee-boxes fadeiam em ordem
-           aleatória, hero-box entra por último com fade + translateY. */
-        .marquee-box {
+        body.formacoes-hub .marquee-box {
             opacity: 0;
             transition: opacity 0.6s ease-out;
         }
-        .marquee-box.is-visible { opacity: 1; }
-
-        .hero-box {
+        body.formacoes-hub .marquee-box.is-visible { opacity: 1; }
+        body.formacoes-hub .hero-box {
             opacity: 0;
             transform: translate(-50%, calc(-50% + 32px));
             filter: blur(8px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out;
         }
-        .hero-box.is-visible {
+        body.formacoes-hub .hero-box.is-visible {
             opacity: 1;
             transform: translate(-50%, -50%);
             filter: blur(0);
         }
-
-        .hero-marquees {
+        body.formacoes-hub .hero-marquees {
             position: absolute;
             top: 50%;
             left: 0;
@@ -2508,27 +2514,22 @@
             mask-repeat: no-repeat;
             -webkit-mask-repeat: no-repeat;
         }
-
-        .marquee {
+        body.formacoes-hub .marquee {
             overflow: hidden;
             width: 100%;
         }
-
-        .marquee-track {
+        body.formacoes-hub .marquee-track {
             display: flex;
             gap: 16px;
             width: max-content;
         }
-
-        .marquee--rtl .marquee-track {
+        body.formacoes-hub .marquee--rtl .marquee-track {
             animation: marquee-rtl 48s linear infinite;
         }
-
-        .marquee--ltr .marquee-track {
+        body.formacoes-hub .marquee--ltr .marquee-track {
             animation: marquee-ltr 48s linear infinite;
         }
-
-        .marquee-box {
+        body.formacoes-hub .marquee-box {
             width: 96px;
             height: 96px;
             border-radius: 24px;
@@ -2538,17 +2539,15 @@
             align-items: center;
             justify-content: center;
         }
-
-        .sec-stats {
+        body.formacoes-hub .sec-stats {
             margin-top: 64px;
             padding: 0 16px;
             overflow: hidden;
             box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
             opacity: 0;
         }
-        .sec-stats.is-entered { animation: cta-card-enter 0.6s ease-out both; }
-
-        .stats-grid {
+        body.formacoes-hub .sec-stats.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+        body.formacoes-hub .stats-grid {
             max-width: 1408px;
             margin: 0 auto;
             box-sizing: border-box;
@@ -2556,9 +2555,7 @@
             position: relative;
             box-shadow: inset -2px 0 0 0 var(--bw-10);
         }
-
-
-        .stat-card {
+        body.formacoes-hub .stat-card {
             flex: 1;
             padding: 32px;
             position: relative;
@@ -2569,84 +2566,72 @@
             gap: 8px 16px;
             box-shadow: inset 2px 0 0 0 var(--bw-10);
         }
-
-
         @media (max-width: 1152px) {
-            .stat-card {
+            body.formacoes-hub .stat-card {
                 flex-direction: column;
             }
         }
-
         @media (max-width: 576px) {
-            .why-card {
+            body.formacoes-hub .why-card {
                 min-width: 0;
             }
 
-            .stats-grid {
+            body.formacoes-hub .stats-grid {
                 flex-direction: column;
                 box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
             }
 
-            .stat-card {
+            body.formacoes-hub .stat-card {
                 padding: 16px;
                 box-shadow: none;
                 flex-direction: row;
             }
-            .stat-card + .stat-card {
+            body.formacoes-hub .stat-card + .stat-card {
                 box-shadow: inset 0 2px 0 0 var(--bw-10);
             }
         }
-
-        .stat-number {
+        body.formacoes-hub .stat-number {
             font: var(--h2);
             color: var(--bw);
             margin: 0;
         }
-
-        .stat-label {
+        body.formacoes-hub .stat-label {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .sec-why {
+        body.formacoes-hub .sec-why {
             padding: 128px 16px;
         }
-
-        .why-inner {
+        body.formacoes-hub .why-inner {
             max-width: 1408px;
             margin: 0 auto;
         }
-
-        .why-header {
+        body.formacoes-hub .why-header {
             margin-bottom: 64px;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-
-        .why-sub {
+        body.formacoes-hub .why-sub {
             font: var(--p);
             color: var(--bw);
             margin: 0;
             max-width: 544px;
         }
-
-        .why-title {
+        body.formacoes-hub .why-title {
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
             max-width: 680px;
             /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         }
-
-        .why-grid {
+        body.formacoes-hub .why-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 32px;
         }
-
-        .why-card {
+        body.formacoes-hub .why-card {
             flex: 1;
             min-width: 400px;
             padding: 32px;
@@ -2656,37 +2641,31 @@
             gap: 16px;
             opacity: 0;
         }
-        .why-card.is-entered { animation: cta-card-enter 0.6s ease-out both; }
-
+        body.formacoes-hub .why-card.is-entered { animation: cta-card-enter 0.6s ease-out both; }
         @media (max-width: 576px) {
-            .why-card {
+            body.formacoes-hub .why-card {
                 min-width: 0;
                 flex: 0 0 100%;
             }
         }
-
-        .why-card:nth-child(1) { background: linear-gradient(135deg, var(--er500-10),  transparent); }
-        .why-card:nth-child(2) { background: linear-gradient(135deg, var(--pc300-15),  transparent); }
-        .why-card:nth-child(3) { background: linear-gradient(135deg, var(--sc500-10),  transparent); }
-
-        .why-card .tag-status {
+        body.formacoes-hub .why-card:nth-child(1) { background: linear-gradient(135deg, var(--er500-10),  transparent); }
+        body.formacoes-hub .why-card:nth-child(2) { background: linear-gradient(135deg, var(--pc300-15),  transparent); }
+        body.formacoes-hub .why-card:nth-child(3) { background: linear-gradient(135deg, var(--sc500-10),  transparent); }
+        body.formacoes-hub .why-card .tag-status {
             align-self: flex-start;
         }
-
-        .why-card-title {
+        body.formacoes-hub .why-card-title {
             font: var(--h6);
             font-weight: 400;
             color: var(--bw);
             margin: 0;
         }
-
-        .why-card-body {
+        body.formacoes-hub .why-card-body {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .why-card-list {
+        body.formacoes-hub .why-card-list {
             list-style: none;
             margin: 0;
             padding: 0;
@@ -2694,15 +2673,13 @@
             flex-direction: column;
             gap: 16px;
         }
-
-        .why-card-list li {
+        body.formacoes-hub .why-card-list li {
             font: var(--p);
             color: var(--bw-75);
             padding-right: 12px;
             position: relative;
         }
-
-        .why-card-list li::before {
+        body.formacoes-hub .why-card-list li::before {
             content: "";
             position: absolute;
             left: -32px;
@@ -2711,25 +2688,20 @@
             height: 1.5rem;
             background: var(--sc500);
         }
-
-
-        .sec-formacoes {
+        body.formacoes-hub .sec-formacoes {
             padding: 128px 16px;
         }
-
-        .formacoes-inner {
+        body.formacoes-hub .formacoes-inner {
             max-width: 1408px;
             margin: 0 auto;
         }
-
-        .formacoes-layout {
+        body.formacoes-hub .formacoes-layout {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             gap: 32px;
             align-items: start;
         }
-
-        .formacoes-nav {
+        body.formacoes-hub .formacoes-nav {
             grid-column: span 3;
             position: sticky;
             top: 32px;
@@ -2737,27 +2709,23 @@
             flex-direction: column;
             gap: 32px;
         }
-
-        .formacoes-header {
+        body.formacoes-hub .formacoes-header {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-
-        .formacoes-title {
+        body.formacoes-hub .formacoes-title {
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
             max-width: 680px;
             /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         }
-
-        .formacoes-nav-list {
+        body.formacoes-hub .formacoes-nav-list {
             display: flex;
             flex-direction: column;
         }
-
-        .formacoes-nav-item {
+        body.formacoes-hub .formacoes-nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -2774,18 +2742,15 @@
             position: relative;
             transition: color 0.3s, background-position 0.3s;
         }
-
-        .formacoes-nav-item:hover {
+        body.formacoes-hub .formacoes-nav-item:hover {
             color: var(--bw-75);
             background-position: 50% center;
         }
-
-        .formacoes-nav-item.is-active {
+        body.formacoes-hub .formacoes-nav-item.is-active {
             color: var(--bw);
             background-position: 0% center;
         }
-
-        .formacoes-nav-item.is-active::after {
+        body.formacoes-hub .formacoes-nav-item.is-active::after {
             content: "";
             position: absolute;
             top: 0;
@@ -2794,27 +2759,22 @@
             height: 100%;
             background-color: var(--pc400);
         }
-
-        .formacoes-nav-label {
+        body.formacoes-hub .formacoes-nav-label {
             font: var(--p);
         }
-
-        .formacao-label {
+        body.formacoes-hub .formacao-label {
             font: var(--label-s);
             color: var(--bw-75);
         }
-
-        .formacao-title-group {
+        body.formacoes-hub .formacao-title-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
-        .formacoes-nav-item .formacao-title-group {
+        body.formacoes-hub .formacoes-nav-item .formacao-title-group {
             gap: 0;
         }
-
-        .formacao-card {
+        body.formacoes-hub .formacao-card {
             position: relative;
             isolation: isolate;
             overflow: hidden;
@@ -2824,8 +2784,7 @@
             padding: 48px;
             border-radius: 16px;
         }
-
-        .formacao-card::before {
+        body.formacoes-hub .formacao-card::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -2834,20 +2793,17 @@
             z-index: 1;
             pointer-events: none;
         }
-
-        .formacao-card > :not(.formacao-card-img) {
+        body.formacoes-hub .formacao-card > :not(.formacao-card-img) {
             position: relative;
             z-index: 2;
         }
-
-        .formacao-body {
+        body.formacoes-hub .formacao-body {
             display: flex;
             flex-direction: column;
             gap: 16px;
             max-width: 400px;
         }
-
-        .formacao-card-img {
+        body.formacoes-hub .formacao-card-img {
             position: absolute;
             top: 50%;
             right: -48px;
@@ -2865,149 +2821,131 @@
             mask-image: linear-gradient(to right, transparent, black);
             -webkit-mask-image: linear-gradient(to right, transparent, black);
         }
-
-        .formacao-card.is-revealed .formacao-card-img {
+        body.formacoes-hub .formacao-card.is-revealed .formacao-card-img {
             transform: translateY(-50%) rotate(-15deg) scale(1);
             filter: blur(0);
             opacity: 0.5;
         }
-
-        .formacao-title {
+        body.formacoes-hub .formacao-title {
             font: var(--h6);
             font-weight: 400;
             color: var(--bw);
             margin: 0;
         }
-
-        .formacao-desc {
+        body.formacoes-hub .formacao-desc {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .formacao-tags {
+        body.formacoes-hub .formacao-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 16px;
         }
-
-        .formacao-divider {
+        body.formacoes-hub .formacao-divider {
             width: 100%;
             height: 2px;
             background: var(--bw-10);
             flex-shrink: 0;
         }
-
-        .formacao-footer {
+        body.formacoes-hub .formacao-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .formacao-price {
+        body.formacoes-hub .formacao-price {
             font: var(--p);
             font-weight: 400;
             color: var(--bw);
         }
-
-        .formacoes-cards {
+        body.formacoes-hub .formacoes-cards {
             grid-column: span 7;
             display: flex;
             flex-direction: column;
             gap: 32px;
             padding-top: 152px;
         }
-
         @media (max-width: 1439px) {
-            .formacoes-layout {
+            body.formacoes-hub .formacoes-layout {
                 grid-template-columns: repeat(8, 1fr);
             }
 
-            .formacoes-cards {
+            body.formacoes-hub .formacoes-cards {
                 grid-column: span 5;
             }
         }
-
         @media (max-width: 864px) {
-            .formacoes-nav {
+            body.formacoes-hub .formacoes-nav {
                 position: static;
                 grid-column: span 1;
             }
 
-            .formacoes-nav-list {
+            body.formacoes-hub .formacoes-nav-list {
                 display: none;
             }
 
-            .formacoes-layout {
+            body.formacoes-hub .formacoes-layout {
                 grid-template-columns: 1fr;
                 gap: 24px;
             }
 
-            .formacoes-cards {
+            body.formacoes-hub .formacoes-cards {
                 grid-column: span 1;
                 padding-top: 0;
             }
 
-            .formacao-card {
+            body.formacoes-hub .formacao-card {
                 padding: 32px;
             }
         }
-
         @media (max-width: 576px) {
-            .formacoes-layout {
+            body.formacoes-hub .formacoes-layout {
                 grid-template-columns: 1fr;
             }
 
-            .formacao-card {
+            body.formacoes-hub .formacao-card {
                 padding: 24px;
             }
 
-            .formacao-card.is-revealed .formacao-card-img {
+            body.formacoes-hub .formacao-card.is-revealed .formacao-card-img {
                 opacity: 0.25;
             }
         }
-
-        .sec-oferta {
+        body.formacoes-hub .sec-oferta {
             padding: 128px 0;
         }
-
-        .oferta-inner {
+        body.formacoes-hub .oferta-inner {
             max-width: 1408px;
             margin: 0 auto;
             padding: 0 16px;
         }
-
-        .oferta-header {
+        body.formacoes-hub .oferta-header {
             max-width: 832px;
             margin-bottom: 32px;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-
-        .oferta-title {
+        body.formacoes-hub .oferta-title {
             font: var(--h3);
             font-weight: 300;
             color: var(--bw);
             max-width: 680px;
             /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
         }
-
-        .oferta-subtitle {
+        body.formacoes-hub .oferta-subtitle {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .oferta-grid {
+        body.formacoes-hub .oferta-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             grid-template-rows: auto 1fr auto;
             column-gap: 32px;
             row-gap: 24px;
         }
-
-        .oferta-card {
+        body.formacoes-hub .oferta-card {
             grid-column: span 5;
             grid-row: span 3;
             display: grid;
@@ -3023,8 +2961,7 @@
                .oferta-card--full e .oferta-card--fN sobrescrevem com suas
                cores. Setar --card-accent aqui mata o modifier no hub. */
         }
-
-        .oferta-card::after {
+        body.formacoes-hub .oferta-card::after {
             content: "";
             position: absolute;
             top: -128px;
@@ -3038,20 +2975,16 @@
             z-index: 1;
             transition: background 0.4s ease;
         }
-
-        .oferta-card-top {
+        body.formacoes-hub .oferta-card-top {
             display: flex;
             flex-direction: column;
             gap: 24px;
         }
-
-        .oferta-card > :not(.oferta-card-img) {
+        body.formacoes-hub .oferta-card > :not(.oferta-card-img) {
             position: relative;
             z-index: 2;
         }
-
-
-        .oferta-card .oferta-card-img {
+        body.formacoes-hub .oferta-card .oferta-card-img {
             position: absolute;
             top: 0;
             right: 0;
@@ -3065,45 +2998,37 @@
             mask-image: linear-gradient(to right, transparent, black);
             -webkit-mask-image: linear-gradient(to right, transparent, black);
         }
-
-
-        .oferta-card-label {
+        body.formacoes-hub .oferta-card-label {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .oferta-price-block {
+        body.formacoes-hub .oferta-price-block {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-
-        .oferta-price {
+        body.formacoes-hub .oferta-price {
             font: var(--h2);
             color: var(--bw);
             margin: 0;
         }
-
-        .currency {
+        body.formacoes-hub .currency {
             font-size: 1rem;
             font-weight: 400;
             vertical-align: 0.2em;
         }
-
-        .oferta-price-detail {
+        body.formacoes-hub .oferta-price-detail {
             font: var(--p-s);
             color: var(--bw-50);
             margin: 0;
         }
-
-        .oferta-card-desc {
+        body.formacoes-hub .oferta-card-desc {
             font: var(--p);
             color: var(--bw-75);
             margin: 0;
         }
-
-        .oferta-icon-box {
+        body.formacoes-hub .oferta-icon-box {
             width: 64px;
             height: 64px;
             border-radius: 16px;
@@ -3114,21 +3039,18 @@
             background: var(--bw-5);
             transition: background 0.4s ease;
         }
-
-        .oferta-icon {
+        body.formacoes-hub .oferta-icon {
             width: 48px;
             height: 48px;
             object-fit: contain;
         }
-
-        .oferta-divider {
+        body.formacoes-hub .oferta-divider {
             width: 100%;
             height: 2px;
             background: var(--bw-15);
             flex-shrink: 0;
         }
-
-        .oferta-checks {
+        body.formacoes-hub .oferta-checks {
             list-style: none;
             margin: 0;
             padding: 0;
@@ -3138,15 +3060,13 @@
             flex: 1;
             align-content: start;
         }
-
-        .oferta-check {
+        body.formacoes-hub .oferta-check {
             font: var(--p);
             color: var(--bw);
             padding-right: 12px;
             position: relative;
         }
-
-        .oferta-check::before {
+        body.formacoes-hub .oferta-check::before {
             content: "";
             position: absolute;
             left: -48px;
@@ -3155,67 +3075,51 @@
             height: 1.5rem;
             background: var(--sc500);
         }
-
-        .oferta-card > .btn {
+        body.formacoes-hub .oferta-card > .btn {
             align-self: start;
             justify-self: start;
         }
-
-        .oferta-card-action {
+        body.formacoes-hub .oferta-card-action {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-
-        .oferta-btn-group {
+        body.formacoes-hub .oferta-btn-group {
             display: flex;
             gap: 16px;
         }
-
         @media (max-width: 864px) {
-            .oferta-grid {
+            body.formacoes-hub .oferta-grid {
                 grid-template-columns: 1fr;
             }
 
-            .oferta-card {
+            body.formacoes-hub .oferta-card {
                 grid-column: span 1;
             }
         }
-
         @media (max-width: 576px) {
-            .oferta-card {
+            body.formacoes-hub .oferta-card {
                 padding: 32px;
             }
 
-            .oferta-check::before {
+            body.formacoes-hub .oferta-check::before {
                 left: -32px;
             }
         }
-
-        /* Bloco "conta" embutido dentro de sec-oferta (full-width, edge-to-edge).
-           Por isso sec-oferta perdeu o padding horizontal (mudou para 128px 0) e
-           .oferta-inner herdou o padding 0 16px. .conta-grid ocupa 100% da .sec-oferta. */
-        .conta-grid {
+        body.formacoes-hub .conta-grid {
             margin-top: 64px;
             overflow: hidden;
             box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
             opacity: 0;
         }
-        .conta-grid.is-entered { animation: cta-card-enter 0.6s ease-out both; }
-
-        /* Wrapper que envolve sec-depos + sec-faq no HUB — mesmo padrão visual de
-           .perfis-depos-wrap (background blur de gradientes radiais + fade
-           scrim nas bordas).
-           Override: .sec-faq na base do style.css tem background: var(--bb)
-           sólido que cobriria o pseudo-element do wrap. Aqui zera pra que o
-           gradiente do wrap se estenda também sobre o sec-faq. */
-        .depos-faq-wrap .sec-faq { background: transparent; }
-        .depos-faq-wrap {
+        body.formacoes-hub .conta-grid.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+        body.formacoes-hub .depos-faq-wrap .sec-faq { background: transparent; }
+        body.formacoes-hub .depos-faq-wrap {
             position: relative;
             z-index: 0;
             overflow: hidden;
         }
-        .depos-faq-wrap::before {
+        body.formacoes-hub .depos-faq-wrap::before {
             content: "";
             position: absolute;
             top: -64px;
@@ -3235,7 +3139,7 @@
             filter: blur(64px);
             transform: scale(-1, -1);
         }
-        .depos-faq-wrap::after {
+        body.formacoes-hub .depos-faq-wrap::after {
             content: "";
             position: absolute;
             inset: 0;
@@ -3249,16 +3153,13 @@
                 var(--bb) 100%
             );
         }
-
-        .conta-row {
+        body.formacoes-hub .conta-row {
             padding: 0 16px;
         }
-
-        .conta-row + .conta-row {
+        body.formacoes-hub .conta-row + .conta-row {
             box-shadow: inset 0 2px 0 0 var(--bw-10);
         }
-
-        .conta-row-inner {
+        body.formacoes-hub .conta-row-inner {
             max-width: 1408px;
             margin: 0 auto;
             padding: 28px 16px;
@@ -3268,54 +3169,50 @@
             gap: 32px;
             box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
         }
-
-        .conta-label {
+        body.formacoes-hub .conta-label {
             flex: 1;
             font: var(--p);
             color: var(--bw-75);
         }
-
-        .conta-label-sub {
+        body.formacoes-hub .conta-label-sub {
             font: var(--p-s);
             color: var(--bw-50);
             display: block;
             margin-top: 4px;
         }
-
-        .conta-value {
+        body.formacoes-hub .conta-value {
             font: var(--h5);
             color: var(--bw-75);
             white-space: nowrap;
         }
-
-        .conta-row--savings .conta-label,
-        .conta-row--savings .conta-value {
+        body.formacoes-hub .conta-row--savings .conta-label,
+        body.formacoes-hub .conta-row--savings .conta-value {
             color: var(--sc500);
         }
-
         @media (max-width: 576px) {
-            .conta-row-inner {
+            body.formacoes-hub .conta-row-inner {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 4px;
             }
 
-            .conta-value {
+            body.formacoes-hub .conta-value {
                 font: var(--h6);
             }
         }
-
         @media (max-width: 864px) {
-            .sec-why,
-            .sec-formacoes,
-            .sec-oferta,
-            .sec-depos,
-            .sec-faq,
-            .sec-cta {
+            body.formacoes-hub .sec-why,
+            body.formacoes-hub .sec-formacoes,
+            body.formacoes-hub .sec-oferta,
+            body.formacoes-hub .sec-depos,
+            body.formacoes-hub .sec-faq,
+            body.formacoes-hub .sec-cta {
                 padding-top: 96px;
                 padding-bottom: 96px;
             }
-        }
+        } /* ← fecha body.formacoes-hub aberto na L2381. Será removido junto
+              com toda a estrutura aninhada quando rodarmos postcss-nested
+              pra desaninhar. Por enquanto: source válido pro browser. */
 
         @keyframes marquee-rtl {
             from { transform: translateX(0); }
