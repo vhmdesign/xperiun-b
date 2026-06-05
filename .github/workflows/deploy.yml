@@ -1,21 +1,27 @@
-# Deploy via FTP para Hostinger.
+# Deploy via lftp para Hostinger.
 #
 # Dispara em cada push na branch main. Roda build (npm run build) que minifica
 # HTML/CSS/JS de ed/ em dist/ed/, e sincroniza dist/ed/ para public_html/ed/
-# no servidor via FTPS. Usa git-ftp interno — só transfere arquivos modificados
-# desde o último deploy (mantém um arquivo `.ftp-deploy-sync-state-vN.json` no
-# servidor pra controlar diff).
+# no servidor via FTPS usando lftp.
+#
+# Por que lftp em vez de SamKirkland/FTP-Deploy-Action:
+#   - Action anterior usava basic-ftp (Node lib) que tinha "Timeout (control
+#     socket)" recorrente em Hostinger durante uploads grandes (>100 arquivos).
+#   - lftp é o cliente FTP industrial — tem reconnect automático em idle
+#     timeout, retry com backoff exponencial, e uploads paralelos. Lida bem
+#     com Hostinger's idle disconnect de ~30s no control socket.
 #
 # Pré-requisitos: configure três secrets em
 #   GitHub repo > Settings > Secrets and variables > Actions > New repository secret
 #
-#   FTP_SERVER     — hostname FTP do Hostinger (ex.: ftp.seudominio.com ou
-#                    o host listado em hPanel > Arquivos > Contas FTP)
+#   FTP_SERVER     — hostname FTP do Hostinger (ex.: ftp.seudominio.com)
 #   FTP_USERNAME   — usuário FTP (ex.: u123456789.deploy)
 #   FTP_PASSWORD   — senha FTP
 #
 # Importante: o `.htaccess` da raiz de `public_html/` NÃO é tocado por este
-# workflow (sobe somente o conteúdo de `dist/ed/`). Edite-o manualmente no servidor.
+# workflow (sync escopado em /public_html/ed/). Edite-o manualmente no servidor.
+# lftp mirror --delete remove files do servidor que não existem em dist/ed/
+# — válido pra /public_html/ed/ porque essa pasta é nossa exclusiva.
 
 name: Deploy to Hostinger
 
@@ -26,7 +32,7 @@ on:
 
 jobs:
   deploy:
-    name: Build + FTP sync dist/ed/ -> public_html/ed/
+    name: Build + lftp sync dist/ed/ -> public_html/ed/
     runs-on: ubuntu-latest
 
     steps:
@@ -39,43 +45,40 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: npm ci
 
       - name: Build (minify HTML/CSS/JS → dist/ed/)
         run: npm run build
 
-      - name: Deploy via FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/ed/
-          # No Hostinger compartilhado, ao logar via FTP o usuário cai em
-          # /home/uXXXX/ e public_html fica em domains/xperiun.com/public_html.
-          # O caminho aqui é relativo à raiz do FTP (sem /home/uXXXX).
-          server-dir: /domains/xperiun.com/public_html/ed/
-          # FTPS (TLS sobre porta 21, AUTH TLS explicit) é mais robusto que
-          # FTP simples contra "Timeout (control socket)" — o Hostinger
-          # derruba conexões FTP idle de ~30s, e re-deploys grandes deixam
-          # o control socket esperando enquanto os data sockets sobem files.
-          # FTPS mantém keepalives no TLS layer e sobrevive a transferências
-          # longas.
-          protocol: ftps
-          port: 21
-          # Timeout do client por operação. Default 30000ms → muito curto
-          # pra full re-deploy. 60s dá folga em uploads grandes.
-          timeout: 60000
-          # state-name versionado: incrementa quando precisar forçar re-deploy
-          # completo (action procura state pelo nome — se não achar, sobe tudo).
-          # Útil quando um arquivo ficou dessincronizado no servidor.
-          # v6: bump pq mudou source path (ed → dist/ed) — todos os arquivos
-          # são "novos" do ponto de vista da action.
-          state-name: .ftp-deploy-sync-state-v6.json
-          # Por padrão a action já ignora .git e .github. Adicione exclusões
-          # extras aqui se precisar (ex.: arquivos de dev, screenshots, etc.):
-          # exclude: |
-          #   **/*.bak
-          #   **/.DS_Store
-          log-level: standard
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Deploy via lftp (FTPS)
+        env:
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -c "
+          set ftp:ssl-protect-data true;
+          set ftp:ssl-force true;
+          set ftp:ssl-auth TLS;
+          set ssl:verify-certificate no;
+          set ftp:passive-mode true;
+          set net:timeout 30;
+          set net:max-retries 8;
+          set net:reconnect-interval-base 5;
+          set net:reconnect-interval-multiplier 1.5;
+          set mirror:use-pget-n 2;
+          set cmd:fail-exit true;
+          open -u $FTP_USER,$FTP_PASS -p 21 $FTP_HOST;
+          mirror \
+            --reverse \
+            --delete \
+            --verbose=1 \
+            --parallel=3 \
+            --exclude-glob '.ftp-deploy-sync-state-*.json' \
+            dist/ed/ \
+            /domains/xperiun.com/public_html/ed/;
+          "
