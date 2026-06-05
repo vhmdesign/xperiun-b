@@ -23,7 +23,8 @@ CHECKLIST DE PROTEÇÃO (já incluído — NÃO REMOVER)
     [x] <div data-footer> + footer-include.js (copyright legal no rodapé)
     [x] <div data-menu> + menu-include.js (menu navegação)
     [x] Comment HTML de fingerprint antes do </body>
-    [ ] Quando criarmos anti-copy.js: incluir o <script>
+    [x] Anti-copy INLINE no <script> (sem arquivo externo — URL inacessível
+        no servidor por design)
 
 CAMADAS QUE JÁ APLICAM AUTOMATICAMENTE (sem ação por página)
     - .htaccess (UA block, hotlink protection, security headers)
@@ -97,7 +98,23 @@ CAMADAS QUE JÁ APLICAM AUTOMATICAMENTE (sem ação por página)
      imagem. REMOVER esta linha em páginas futuras de leitura/conteúdo
      do aluno (player de aula, PDF, exercícios) — quebra acessibilidade
      e citação legítima. -->
-<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+<script>
+(function () {
+    var host = location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '' || host.endsWith('.local')) return;
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    document.addEventListener('keydown', function (e) {
+        var mod = e.ctrlKey || e.metaKey;
+        var k = (e.key || '').toLowerCase();
+        if (e.key === 'F12') { e.preventDefault(); return; }
+        if (mod && (k === 'u' || k === 's')) { e.preventDefault(); return; }
+        if (mod && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) { e.preventDefault(); return; }
+    });
+    document.addEventListener('dragstart', function (e) {
+        if (e.target && e.target.tagName === 'IMG') e.preventDefault();
+    });
+})();
+</script>
 
 <!-- ═══════════════════════════════════════════════════════════
      SCRIPTS ESPECÍFICOS DESTA PÁGINA (TROCAR)
