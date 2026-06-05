@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via FTP
+      - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -43,10 +43,21 @@ jobs:
           # /home/uXXXX/ e public_html fica em domains/xperiun.com/public_html.
           # O caminho aqui é relativo à raiz do FTP (sem /home/uXXXX).
           server-dir: /domains/xperiun.com/public_html/ed/
+          # FTPS (TLS sobre porta 21, AUTH TLS explicit) é mais robusto que
+          # FTP simples contra "Timeout (control socket)" — o Hostinger
+          # derruba conexões FTP idle de ~30s, e re-deploys grandes deixam
+          # o control socket esperando enquanto os data sockets sobem files.
+          # FTPS mantém keepalives no TLS layer e sobrevive a transferências
+          # longas.
+          protocol: ftps
+          port: 21
+          # Timeout do client por operação. Default 30000ms → muito curto
+          # pra full re-deploy. 60s dá folga em uploads grandes.
+          timeout: 60000
           # state-name versionado: incrementa quando precisar forçar re-deploy
           # completo (action procura state pelo nome — se não achar, sobe tudo).
           # Útil quando um arquivo ficou dessincronizado no servidor.
-          state-name: .ftp-deploy-sync-state-v3.json
+          state-name: .ftp-deploy-sync-state-v4.json
           # Por padrão a action já ignora .git e .github. Adicione exclusões
           # extras aqui se precisar (ex.: arquivos de dev, screenshots, etc.):
           # exclude: |
