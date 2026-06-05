@@ -5,6 +5,48 @@ RewriteEngine On
 RewriteOptions inherit
 RewriteBase /ed/formacoes/
 
+# ──────────────────────────────────────────────────────────────────
+# BLOCOS DE PROTEÇÃO (duplicados do ed/.htaccess pai pq rule 0 abaixo
+# usa [END] e terminaria o processamento das regras herdadas).
+# Manter sincronizado com ed/.htaccess.
+# ──────────────────────────────────────────────────────────────────
+
+# Bloqueia métodos HTTP não usados em site estático.
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|DELETE|PUT|PATCH|CONNECT)$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Bloqueia user-agent vazio.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+    RewriteCond %{HTTP_USER_AGENT} ^-?$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Bloqueia scrapers, AI training bots, SEO crawlers ruins, etc.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} (HTTrack|WebCopier|WebReaper|WebStripper|Offline\ Explorer|SiteSucker|Teleport|Wget|GrabNet|libwww|BlackWidow|CFNetwork) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (scrapy|python-requests|Go-http-client|httpx|curl/|aiohttp|node-fetch|axios|Java/) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (GPTBot|ChatGPT-User|ClaudeBot|anthropic-ai|Claude-Web|PerplexityBot|cohere-ai|CCBot|Bytespider|Amazonbot|Diffbot|Omgilibot|FacebookBot|meta-externalagent) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (SemrushBot|AhrefsBot|MJ12Bot|DotBot|BLEXBot|DataForSeoBot|MegaIndex|serpstatbot|sistrix|linkfluence) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (YandexBot|Baiduspider|SogouSpider|SeznamBot)
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Anti-hotlinking de imagens.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
+    RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
+    RewriteRule \.(jpe?g|png|gif|webp|svg|avif)$ - [F,NC,L]
+</IfModule>
+
+# Bloqueia acesso direto a arquivos internos (prefixo "_").
+<IfModule mod_rewrite.c>
+    RewriteRule (^|/)_[^/]*\.html?$ - [F,NC,L]
+</IfModule>
+
 # 0) PRIORIDADE: força o serve direto de index.html quando a URL é
 #    /ed/formacoes/ ou /ed/formacoes. Sem isso, a WP catch-all herdada
 #    de public_html/.htaccess intercepta a request e rota pro WordPress,

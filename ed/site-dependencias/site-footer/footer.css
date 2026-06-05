@@ -254,6 +254,7 @@ body {
     font: var(--footer-p-s);
     color: var(--footer-bb-75);
     margin: 0;
+    max-width: 80ch;
 }
 /* btn S Medium Emphasis: gradient pc100→pc300→pc500, hover desliza */
 #sec-footer .footer-cta {

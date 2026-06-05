@@ -6,6 +6,108 @@ RewriteEngine On
 # casar, as regras do pai (WP catch-all) assumem.
 RewriteOptions inherit
 
+# ──────────────────────────────────────────────────────────────────
+# OPTIONS DIRECTIVES — endurecer comportamento do Apache em /ed/*
+# ──────────────────────────────────────────────────────────────────
+
+# Desabilita listagem automática de diretório. Sem isso, alguém acessando
+# /ed/site-dependencias/ veria todos os arquivos da pasta. Com Indexes off,
+# retorna 403 a menos que tenha um index.html dentro.
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Desabilita MultiViews (content negotiation). Em sites estáticos, é fonte
+# de surpresas e abre vetores de info disclosure.
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────
+# ARQUIVOS SENSÍVEIS — bloqueia acesso direto a extensões internas
+# que podem subir por acidente (configs, backups, source files,
+# arquivos de design, executáveis, etc.).
+# ──────────────────────────────────────────────────────────────────
+<FilesMatch "\.(md|markdown|log|bak|backup|tmp|swp|swo|orig|psd|fig|sketch|xd|ai|indd|zip|tar|gz|tgz|7z|rar|env|config|ini|conf|yml|yaml|sql|sqlite|db|sh|ps1|bat|exe|htpasswd|DS_Store)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Bloqueia também Thumbs.db (Windows) e qualquer arquivo começando com . (dotfiles)
+<FilesMatch "^(Thumbs\.db|\.htaccess|\.htpasswd|\.git.*|\.env.*)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ──────────────────────────────────────────────────────────────────
+# BLOCOS DE PROTEÇÃO (precisam vir ANTES das rewrites — rule 0 abaixo
+# usa [END] e terminaria o processamento, impedindo essas regras de
+# rodar se viessem depois).
+# ──────────────────────────────────────────────────────────────────
+
+# Bloqueia métodos HTTP não usados em site estático. GET/POST/HEAD/OPTIONS
+# bastam; TRACE/TRACK em particular são vetores históricos de XSS.
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|DELETE|PUT|PATCH|CONNECT)$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Bloqueia user-agent vazio ou "-". Todo browser/bot legítimo envia UA.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+    RewriteCond %{HTTP_USER_AGENT} ^-?$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Bloqueia user-agents conhecidos de:
+#  (a) scrapers de download de site inteiro (HTTrack, Wget, SiteSucker…)
+#  (b) CLI HTTP clients usados em scraping (scrapy, curl, python-requests…)
+#  (c) AI training crawlers (GPTBot, ClaudeBot, CCBot, Bytespider…)
+#  (d) SEO/marketing crawlers que vendem dados sobre o site
+#      (SemrushBot, AhrefsBot, MJ12Bot, DotBot, BLEXBot, DataForSeoBot…)
+#  (e) crawlers de mercados que o site não atende (YandexBot, Baiduspider —
+#      remover dessas linhas se for expandir audiência pra Rússia/China)
+# NÃO bloqueia Googlebot, Bingbot, DuckDuckBot, Applebot user-facing.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} (HTTrack|WebCopier|WebReaper|WebStripper|Offline\ Explorer|SiteSucker|Teleport|Wget|GrabNet|libwww|BlackWidow|CFNetwork) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (scrapy|python-requests|Go-http-client|httpx|curl/|aiohttp|node-fetch|axios|Java/) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (GPTBot|ChatGPT-User|ClaudeBot|anthropic-ai|Claude-Web|PerplexityBot|cohere-ai|CCBot|Bytespider|Amazonbot|Diffbot|Omgilibot|FacebookBot|meta-externalagent) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (SemrushBot|AhrefsBot|MJ12Bot|DotBot|BLEXBot|DataForSeoBot|MegaIndex|serpstatbot|sistrix|linkfluence) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (YandexBot|Baiduspider|SogouSpider|SeznamBot)
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Anti-hotlinking: imagens só carregam quando referer é xperiun.com.
+# Referer vazio (acesso direto / abrir em nova aba) é permitido.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
+    RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
+    RewriteRule \.(jpe?g|png|gif|webp|svg|avif)$ - [F,NC,L]
+</IfModule>
+
+# Bloqueia acesso direto a arquivos internos (prefixo "_").
+# Convenção do projeto: arquivos com underscore na frente são templates,
+# snippets, ou recursos internos que não devem ser servidos como página.
+# Ex: /ed/site-dependencias/_template-pagina.html → 403.
+<IfModule mod_rewrite.c>
+    RewriteRule (^|/)_[^/]*\.html?$ - [F,NC,L]
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────
+# REWRITES de URL pretty + WP fallback
+# ──────────────────────────────────────────────────────────────────
+
 # Força HTTPS (opcional — descomente se aplicável)
 # RewriteCond %{HTTPS} !=on
 # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
@@ -42,3 +144,38 @@ DirectoryIndex index.html
 
 # Página de erro 404 (opcional)
 # ErrorDocument 404 /404.html
+
+# ──────────────────────────────────────────────────────────────────
+# SECURITY HEADERS (cascateiam pra subpastas automaticamente)
+# Aplicam independente de rewrite — não precisam estar antes das
+# rewrites. mod_headers precisa estar enabled no servidor (padrão em
+# cPanel/hosting moderno).
+# ──────────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Previne iframe embedding cross-origin (clickjacking + clone wrappers)
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Limita referrer enviado em links externos
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Bloqueia APIs de clipboard via permissions policy
+    Header set Permissions-Policy "clipboard-read=(), clipboard-write=()"
+
+    # MIME sniffing off (defesa contra type confusion)
+    Header set X-Content-Type-Options "nosniff"
+
+    # Cross-Origin Resource Policy: assets só servem same-origin
+    Header set Cross-Origin-Resource-Policy "same-origin"
+
+    # Remove headers que revelam stack/versão
+    Header unset X-Powered-By
+    Header unset Server
+
+    # CSP em modo Report-Only (NÃO bloqueia nada, só reporta violações
+    # no console do browser). 'unsafe-inline' é necessário enquanto
+    # pages tiverem <style>/<script> inline — Fase 2 (Vite build) pode
+    # remover inline e endurecer pra 'self' apenas.
+    # Quando confirmar que não tem regressão, trocar o header pra
+    # "Content-Security-Policy" (sem -Report-Only) pra ativar enforcement.
+    Header set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+</IfModule>

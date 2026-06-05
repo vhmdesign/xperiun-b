@@ -1,0 +1,114 @@
+<!--
+═══════════════════════════════════════════════════════════════════
+TEMPLATE DE PÁGINA · Xperiun /ed/*
+
+PROPÓSITO
+    Ponto de partida pra qualquer página nova em /ed/. Já vem com
+    tudo de proteção (meta tags + fingerprint + footer + paths) e
+    com a estrutura padrão do projeto.
+
+COMO USAR
+    1. COPIE este arquivo (nunca edite o original).
+    2. Renomeie pro slug da nova página (ex: workshop-bi.html).
+    3. Mova pra subpasta correta (ed/, ed/formacoes/, ed/pos-graduacoes/, ...).
+    4. Procure todos os marcadores "TROCAR" abaixo e substitua pelo conteúdo
+       real.
+    5. Atualize <meta name="xperiun-build"> pro YYYY-MM-DD do dia.
+    6. Adicione conteúdo dentro de <body>.
+
+CHECKLIST DE PROTEÇÃO (já incluído — NÃO REMOVER)
+    [x] 3 meta tags de copyright/author/build
+    [x] <link rel="icon"> com favicon Xperiun
+    [x] <link rel="stylesheet"> pro root.css (design system)
+    [x] <div data-footer> + footer-include.js (copyright legal no rodapé)
+    [x] <div data-menu> + menu-include.js (menu navegação)
+    [x] Comment HTML de fingerprint antes do </body>
+    [ ] Quando criarmos anti-copy.js: incluir o <script>
+
+CAMADAS QUE JÁ APLICAM AUTOMATICAMENTE (sem ação por página)
+    - .htaccess (UA block, hotlink protection, security headers)
+    - Footer copyright reforçado (vem do footer.html via include)
+
+═══════════════════════════════════════════════════════════════════
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <!-- xperiun-build deve refletir o YYYY-MM-DD do deploy atual.
+         Vira evidência legal de origem se aparecer clone. -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-06-05">
+
+    <!-- ─── Título e SEO (TROCAR) ────────────────────────────── -->
+    <title>TROCAR · Xperiun</title>
+    <meta name="description" content="TROCAR — descrição curta da página (até 160 chars, aparece no Google).">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <!-- Opção A: inline (páginas pequenas, performance crítica)
+         Opção B: arquivo externo (páginas grandes, reuso entre páginas):
+         <link rel="stylesheet" href="style.css"> -->
+    <style>
+        /* TROCAR — adicionar estilos específicos desta página aqui */
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CONTEÚDO DA PÁGINA (TROCAR — substituir pelo conteúdo real)
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Exemplo de estrutura mínima — apagar e substituir: -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Título principal</h1>
+        <p>Subtítulo / lead.</p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INCLUDES PADRÃO (não remover, mantêm consistência do site)
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Menu de navegação (carregado dinamicamente via JS) -->
+<div data-menu></div>
+<script src="/ed/site-dependencias/site-menu/menu-include.js"></script>
+
+<!-- Footer com copyright legal (carregado dinamicamente via JS).
+     Edição do texto vive em ed/site-dependencias/site-footer/footer.html
+     — qualquer mudança lá propaga automaticamente pra todas as páginas. -->
+<div data-footer></div>
+<script src="/ed/site-dependencias/site-footer/footer-include.js"></script>
+
+<!-- Smooth scroll global (links âncora com behavior: smooth) -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de
+     imagem. REMOVER esta linha em páginas futuras de leitura/conteúdo
+     do aluno (player de aula, PDF, exercícios) — quebra acessibilidade
+     e citação legítima. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS ESPECÍFICOS DESTA PÁGINA (TROCAR)
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Adicionar aqui os <script> que pertencem só a esta página.
+     Exemplos:
+     <script src="script.js"></script>
+     <script> (function () { ... })(); </script> -->
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+</body>
+</html>
