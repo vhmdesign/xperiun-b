@@ -34,11 +34,22 @@ RewriteBase /ed/formacoes/
     RewriteRule .* - [F,L]
 </IfModule>
 
-# Anti-hotlinking RIGOROSO + 404 disguise (mesma regra do ed/.htaccess).
+# Proteção 2 camadas (hotlink + Sec-Fetch-Dest) — mirror do ed/.htaccess.
 <IfModule mod_rewrite.c>
+    # (A) Hotlink referer
     RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
     RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
     RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js)$ - [R=404,NC,L]
+
+    # (B) Sec-Fetch-Dest type check pra .css
+    RewriteCond %{HTTP:Sec-Fetch-Dest} ^.+$
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !^style$ [NC]
+    RewriteRule \.css$ - [R=404,NC,L]
+
+    # (B') Sec-Fetch-Dest type check pra .js
+    RewriteCond %{HTTP:Sec-Fetch-Dest} ^.+$
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !^script$ [NC]
+    RewriteRule \.js$ - [R=404,NC,L]
 </IfModule>
 
 # Bloqueia acesso direto a arquivos internos (prefixo "_").

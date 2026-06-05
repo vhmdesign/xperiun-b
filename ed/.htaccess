@@ -87,21 +87,39 @@ RewriteOptions inherit
     RewriteRule .* - [F,L]
 </IfModule>
 
-# Anti-hotlinking RIGOROSO + 404 disguise:
-# Imagens, CSS e JS só carregam quando o referer é xperiun.com ou
-# app.xperiun.com. Referer vazio TAMBÉM é bloqueado (acesso direto via
-# URL, saved-pages locais, scrapers sem referer).
-# Retorna 404 (em vez de 403) pra fingir que o arquivo nem existe —
-# scrapers e usuários casuais vão concluir "arquivo não está aí" em
-# vez de "está aí mas proibido" (que sinaliza algo interessante).
-# Páginas HTML NÃO são afetadas (regra só pega assets).
+# Proteção em 2 camadas pra .css/.js/imagens. Ambas retornam 404 (fingem
+# que arquivo não existe — scrapers concluem "não está aí" em vez de
+# "está aí, proibido"). HTML pages NÃO são afetadas (regras só pegam assets).
+#
+# (A) Hotlink: referer não-xperiun.com → 404
+#     Pega scrapers externos, curl, wget, ferramentas que não enviam
+#     referer válido, e saved-pages locais (file:// não tem referer).
+#
+# (B) Sec-Fetch-Dest type check: browser moderno requisitando .css/.js
+#     mas o header indica que NÃO é carregamento via <link>/<script>
+#     (ex: address bar = "document"; open in new tab = "document") → 404.
+#     Header ausente (browser antigo, cliente custom) NÃO força bloqueio
+#     — esses caem só na Camada A. Sec-Fetch-Dest tem suporte amplo
+#     em browsers 2020+ (Chrome 80, Firefox 90, Safari 16).
+#
 # Tradeoff: usuários em modo de privacidade extrema (Tor, Firefox que
-# strip Referer) veem página sem styling/imagens. Aceitável pra marketing
-# pages onde a audiência é mainstream.
+# strip Referer) podem ver página sem styling/imagens. Aceitável pra
+# marketing pages onde audiência é mainstream.
 <IfModule mod_rewrite.c>
+    # ── (A) Hotlink referer ──────────────────────────────────────
     RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
     RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
     RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js)$ - [R=404,NC,L]
+
+    # ── (B) Sec-Fetch-Dest type check pra .css ──────────────────
+    RewriteCond %{HTTP:Sec-Fetch-Dest} ^.+$
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !^style$ [NC]
+    RewriteRule \.css$ - [R=404,NC,L]
+
+    # ── (B') Sec-Fetch-Dest type check pra .js ──────────────────
+    RewriteCond %{HTTP:Sec-Fetch-Dest} ^.+$
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !^script$ [NC]
+    RewriteRule \.js$ - [R=404,NC,L]
 </IfModule>
 
 # Bloqueia acesso direto a arquivos internos (prefixo "_").

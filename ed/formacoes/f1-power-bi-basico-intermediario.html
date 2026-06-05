@@ -882,23 +882,7 @@
 <script src="script.js?v=4"></script>
 <script src="../site-dependencias/scroll-suave.js"></script>
 
-<script>
-(function () {
-    var host = location.hostname;
-    if (host === 'localhost' || host === '127.0.0.1' || host === '' || host.endsWith('.local')) return;
-    document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-    document.addEventListener('keydown', function (e) {
-        var mod = e.ctrlKey || e.metaKey;
-        var k = (e.key || '').toLowerCase();
-        if (e.key === 'F12') { e.preventDefault(); return; }
-        if (mod && (k === 'u' || k === 's')) { e.preventDefault(); return; }
-        if (mod && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) { e.preventDefault(); return; }
-    });
-    document.addEventListener('dragstart', function (e) {
-        if (e.target && e.target.tagName === 'IMG') e.preventDefault();
-    });
-})();
-</script>
+<script src="../site-dependencias/anti-copy.js" defer></script>
 
 <!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
 </body>
