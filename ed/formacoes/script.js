@@ -497,13 +497,16 @@ if (window.matchMedia) {
         else if (scrolled <= 3 * vh)   p = 1 - (scrolled - 2 * vh) / vh;
         else                           p = 0;
 
-        /* Toggle .is-active no section enquanto sticky está engajado
-           (fade-in + hold + fade-out). menu.js observa essa classe
-           e recolhe o nav. Guard idempotente pra não disparar
-           MutationObserver toda frame. */
+        /* Toggle .is-active no section + body.anuidade-active enquanto
+           sticky está engajado. menu.js observa essa classe e recolhe
+           o nav. body class é usada pelo CSS pra desativar pointer-events
+           de sec-faq durante a sobreposição (sec-faq z:2 fica por cima
+           do botão "Garantir minha vaga" no final do sticky range).
+           Guard idempotente pra não disparar MutationObserver toda frame. */
         var shouldBeActive = scrolled > 0 && scrolled < 3 * vh;
         if (shouldBeActive !== section.classList.contains('is-active')) {
             section.classList.toggle('is-active', shouldBeActive);
+            document.body.classList.toggle('anuidade-active', shouldBeActive);
         }
 
         var blur = 16 * (1 - p);
