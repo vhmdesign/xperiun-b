@@ -497,6 +497,15 @@ if (window.matchMedia) {
         else if (scrolled <= 3 * vh)   p = 1 - (scrolled - 2 * vh) / vh;
         else                           p = 0;
 
+        /* Toggle .is-active no section enquanto sticky está engajado
+           (fade-in + hold + fade-out). menu.js observa essa classe
+           e recolhe o nav. Guard idempotente pra não disparar
+           MutationObserver toda frame. */
+        var shouldBeActive = scrolled > 0 && scrolled < 3 * vh;
+        if (shouldBeActive !== section.classList.contains('is-active')) {
+            section.classList.toggle('is-active', shouldBeActive);
+        }
+
         var blur = 16 * (1 - p);
         var blurStr = 'blur(' + blur + 'px)';
         var slide = 16 * (1 - p);
@@ -571,6 +580,34 @@ if (window.matchMedia) {
     }
     window.addEventListener('resize', update);
     window.addEventListener('orientationchange', update);
+})();
+
+/* ── Click handler especial: a[href="#sec-oferta"] (botão "Garantir minha vaga") ──
+   scroll-suave.js scrolla pra el.offsetTop, que pousa no TOPO natural de
+   sec-oferta — mostra o intro, não os cards de oferta. Como sec-oferta tem
+   sticky-top NEGATIVO (calc(100vh - height)), os cards só ficam visíveis
+   quando o sticky engata, em:
+     scrollY = track.offsetTop + sec-oferta.height - viewport.height
+   Esse handler roda em CAPTURE PHASE pra preceder o listener bubble-phase
+   do scroll-suave em document, e chama stopPropagation pra impedir o
+   scroll padrão. */
+(function () {
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest('a[href="#sec-oferta"]');
+        if (!a) return;
+        var track = document.querySelector('.oferta-anuidade-track');
+        var sec = track && track.querySelector('.sec-oferta');
+        if (!track || !sec) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var trackTop = track.getBoundingClientRect().top + window.scrollY;
+        var dest = trackTop + sec.offsetHeight - window.innerHeight;
+        if (dest < 0) dest = 0;
+
+        window.scrollTo({ top: dest, behavior: 'smooth' });
+    }, true);
 })();
 
 /* ── Reveal: pilares-profs sobe sobre sec-projetos ──

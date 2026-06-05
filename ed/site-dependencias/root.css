@@ -23,6 +23,18 @@
         overflow-x: clip;
     }
 
+    /* Smooth scroll nativo pra âncoras (<a href="#id">) em mobile.
+       Escopado em `(pointer: coarse)` (devices touch-only — celular, tablet
+       sem mouse) porque scroll-behavior:smooth afeta TODA chamada de
+       scrollTo (inclusive o lerp legacy `scrollTo(0, y)` do scroll-suave
+       em RAF). Em desktop, isso transformava cada frame do lerp em smooth
+       individual, deixando o scroll absurdamente lento.
+       `pointer: coarse` ≈ não-fine-pointer = exatamente o conjunto de
+       devices onde o scroll-suave faz early-return. */
+    @media (prefers-reduced-motion: no-preference) and (pointer: coarse) {
+        html { scroll-behavior: smooth; }
+    }
+
     body {
         margin: 0;
         background-color: var(--dn900);

@@ -1864,63 +1864,26 @@
             height: calc(var(--anuidade-vh, 1vh) * 400);             /* real-time vh via JS */
             z-index: 1;
         }
-        /* sec-faq sticky-top: gruda no topo do viewport e PASSA POR CIMA de
-           sec-anuidade graças ao margin-top negativo. Trace:
+        /* sec-faq cobre a transição de unstuck de sec-anuidade graças ao
+           margin-top negativo (entra exatamente no momento em que sec-anuidade
+           desengata, evitando flicker). z-index:2 + bg sólido. Trace:
             - wrap.height = 400vh, sec-anuidade.height = 100vh → sec-anuidade
               sticky-range = 300vh.
-            - sec-anuidade deactivates em scrollY = sec-oferta.bottom + 300vh.
+            - sec-anuidade desativa em scrollY = sec-oferta.bottom + 300vh.
             - sec-faq.flow.top sem margin = sec-oferta.bottom + 400vh.
               Com margin-top: -100vh, sec-faq.flow.top = sec-oferta.bottom + 300vh.
-            - sec-faq sticky engata exatamente quando sec-anuidade desengata.
-              Z-index: 2 cobre o "jump" de unstuck de sec-anuidade.
+              No exato momento do unstuck, sec-faq.viewport.top = 0 — cobre o jump.
            Escopado em `.oferta-anuidade-track ~ .sec-faq` pra aplicar SÓ nas
            páginas de formação (que têm o stacked-sticky setup). O hub usa
-           `.depos-faq-wrap > .sec-faq` que não deve ficar sticky. */
+           `.depos-faq-wrap > .sec-faq` que não deve ter o margin negativo.
+           NÃO usar position:sticky aqui — o containing block é o body, e o
+           sticky-range ficaria extendido até body.bottom, fazendo sec-faq
+           cobrir sec-cta e footer (que têm z-index menor). */
         .oferta-anuidade-track ~ .sec-faq {
-            position: sticky;
-            top: 0;
+            position: relative;
             z-index: 2;
             background: var(--bb);
             margin-top: calc(0px - var(--anuidade-vh, 1vh) * 100);
-        }
-
-        /* ── Wrapper sec-extras + sec-oferta: gradient invertido do perfis-depos-wrap ── */
-        .extras-oferta-wrap {
-            position: relative;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .extras-oferta-wrap::before {
-            content: "";
-            position: absolute;
-            top: -64px;
-            left: -64px;
-            width: calc(100% + 128px);
-            height: calc(100% + 128px);
-            min-width: 960px;
-            z-index: -1;
-            background:
-            radial-gradient(ellipse at 20% 60%, var(--pc800) 0%, transparent 70%),
-            radial-gradient(ellipse at 60% 40%, var(--bb) 0%, transparent 70%),
-            radial-gradient(ellipse at 80% 40%, var(--bb) 0%, transparent 50%),
-            radial-gradient(ellipse at 70% 20%, var(--pc900) 0%, transparent 70%),
-            radial-gradient(ellipse at 20% 100%, var(--bb) 0%, transparent 100%),
-            radial-gradient(ellipse at 100% 100%, var(--bb) 0%, transparent 70%);
-            background-size: 100% 100%;
-            filter: blur(64px);
-            transform: scale(-1, -1);
-        }
-        .extras-oferta-wrap::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-            background: linear-gradient(
-                to bottom,
-                var(--bb) 0,
-                transparent 400px
-            );
         }
 
         /* ── Section Extras (o que vem junto) ────────────────────── */
@@ -3240,9 +3203,9 @@
         }
         .conta-grid.is-entered { animation: cta-card-enter 0.6s ease-out both; }
 
-        /* Wrapper que envolve sec-depos + sec-faq — mesmo padrão visual de
-           .extras-oferta-wrap em f1-power-bi-basico-intermediario.html (background blur de gradientes
-           radiais + fade-out gradient no topo).
+        /* Wrapper que envolve sec-depos + sec-faq no HUB — mesmo padrão visual de
+           .perfis-depos-wrap (background blur de gradientes radiais + fade
+           scrim nas bordas).
            Override: .sec-faq na base do style.css tem background: var(--bb)
            sólido que cobriria o pseudo-element do wrap. Aqui zera pra que o
            gradiente do wrap se estenda também sobre o sec-faq. */
