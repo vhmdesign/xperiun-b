@@ -6,12 +6,15 @@
     "type": "module",
     "scripts": {
         "build": "node build.js",
-        "preview": "npx --yes http-server . -p 8080 -c-1 --silent"
+        "preview": "npx --yes http-server . -p 8080 -c-1 --silent",
+        "deploy": "node build.js && node deploy.js"
     },
     "devDependencies": {
         "clean-css": "^5.3.3",
+        "dotenv": "^17.4.2",
         "glob": "^11.0.0",
         "html-minifier-terser": "^7.2.0",
+        "ssh2-sftp-client": "^12.1.1",
         "terser": "^5.36.0"
     }
 }

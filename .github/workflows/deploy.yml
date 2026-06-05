@@ -1,39 +1,36 @@
-# Deploy via rsync over SSH para Hostinger.
+# Deploy DESABILITADO em CI — Hostinger SSH está bloqueando IPs do
+# GitHub Actions runner consistentemente (Connection timed out em todas
+# as tentativas). Tentamos FTP, FTPS, rsync, retry — todos falham.
 #
-# Substitui FTP (que tava com timeout crônico no control socket).
-# rsync mantém UMA conexão SSH durável com keepalive, delta-transfer
-# (só envia diferenças dentro dos arquivos), e tem retry/resume nativos.
+# Solução adotada: DEPLOY LOCAL via `npm run deploy` no PC do user.
+# Conexão SSH do PC do user funciona normal — só o GA runner é bloqueado.
+# Setup: copiar .env.example pra .env, preencher credenciais, rodar
+# `npm run deploy`. Build + upload SFTP roda direto da máquina local
+# (~30s pro full deploy).
 #
-# Esperado: deploy completo em 1-3 min (primeiro), <30s (incrementais).
+# Esse workflow agora roda APENAS via trigger manual (workflow_dispatch).
+# Push em main NÃO dispara mais auto-deploy — porque ia falhar mesmo.
 #
-# Pré-requisitos — adicionar 4 secrets em
-#   GitHub repo > Settings > Secrets and variables > Actions
-#
-#   SSH_HOST      — hostname SSH do Hostinger (hPanel > Avançado > Acesso SSH)
-#                    típico: bash.hostinger.com ou IP do servidor
-#   SSH_USER      — username SSH (mesmo do hPanel, ex: u123456789)
-#   SSH_PORT      — porta SSH (65002 por padrão no Hostinger)
-#   SSH_PASSWORD  — senha SSH (geralmente igual à senha da conta Hostinger)
-#
-# Pra autenticar com chave SSH (mais seguro) em vez de senha:
-#   1) gera chave: ssh-keygen -t ed25519 -f ~/.ssh/hostinger_deploy -N ""
-#   2) cola .pub no hPanel > Acesso SSH > Gerenciar chaves SSH
-#   3) substitui SSH_PASSWORD por SSH_PRIVATE_KEY (conteúdo da chave privada)
-#   4) troca o step rsync abaixo pelo da action easingthemes/ssh-deploy@v5
+# Se um dia voltarmos a confiar no CI (ex: Hostinger destravar, ou usar
+# self-hosted runner), basta voltar o trigger `push: branches: [main]`.
 
-name: Deploy to Hostinger
+name: Deploy to Hostinger (DESABILITADO — use npm run deploy local)
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  workflow_dispatch:  # só rodar manualmente quando user clicar "Run workflow"
 
 jobs:
   deploy:
-    name: Build + rsync dist/ed/ -> public_html/ed/
+    name: Build + rsync (best-effort, geralmente falha)
     runs-on: ubuntu-latest
 
     steps:
+      - name: Aviso
+        run: |
+          echo "::warning::Este workflow geralmente falha por bloqueio de IP"
+          echo "::warning::do GitHub Actions runner pelo Hostinger SSH."
+          echo "::warning::Use 'npm run deploy' local em vez disso."
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -52,49 +49,23 @@ jobs:
       - name: Install rsync + sshpass
         run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync sshpass
 
-      - name: Deploy via rsync over SSH (with retry)
+      - name: Deploy via rsync over SSH (best effort)
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
         run: |
-          # rsync flags: -r recursive; -l symlinks; -p perms; -t mtimes
-          # (crucial pra delta-transfer); -D devices; -v verbose; -z compress.
-          # --delete remove órfãos no servidor (escopo: /ed/).
-          # --exclude .ftp-deploy-sync-state-*.json: legacy do FTP-Deploy-Action.
-          # ssh flags:
-          #   -p porta
-          #   -o ConnectTimeout=30: falha em 30s se SSH não responder
-          #                        (em vez de esperar default ~75s)
-          #   -o ServerAliveInterval=30: ping a cada 30s pra manter
-          #                              conexão viva durante uploads longos
-          #   -o StrictHostKeyChecking=no: aceita host key automático
-          #   -o UserKnownHostsFile=/dev/null: não persiste known_hosts
-          #
-          # Retry loop: até 3 tentativas com backoff 30s/60s. Cobre
-          # glitches transitórios do SSH do Hostinger (Connection timed
-          # out, network blip, etc). rsync com -t reusa mtimes do
-          # servidor → tentativas subsequentes só sobem o que faltou.
           set +e
           for attempt in 1 2 3; do
             echo "──────── Attempt $attempt of 3 ────────"
             sshpass -p "$SSH_PASS" rsync -rlptDvz --delete \
-              --exclude='.ftp-deploy-sync-state-*.json' \
               -e "ssh -p $SSH_PORT -o ConnectTimeout=30 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
               dist/ed/ \
               "$SSH_USER@$SSH_HOST:~/domains/xperiun.com/public_html/ed/"
             EXIT=$?
-            if [ $EXIT -eq 0 ]; then
-              echo "Deploy succeeded on attempt $attempt"
-              exit 0
-            fi
-            echo "Attempt $attempt failed with exit $EXIT"
-            if [ $attempt -lt 3 ]; then
-              WAIT=$((attempt * 30))
-              echo "Waiting ${WAIT}s before retry..."
-              sleep $WAIT
-            fi
+            if [ $EXIT -eq 0 ]; then exit 0; fi
+            if [ $attempt -lt 3 ]; then sleep $((attempt * 30)); fi
           done
-          echo "All 3 attempts failed"
+          echo "::warning::CI deploy falhou (esperado). Rode 'npm run deploy' local."
           exit 1
