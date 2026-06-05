@@ -52,22 +52,49 @@ jobs:
       - name: Install rsync + sshpass
         run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync sshpass
 
-      - name: Deploy via rsync over SSH
+      - name: Deploy via rsync over SSH (with retry)
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
         run: |
-          # -r recursive; -l preserve symlinks; -p preserve perms;
-          # -t preserve mtimes (crucial pra delta funcionar bem);
-          # -D preserve devices; -v verbose; -z compress
-          # --delete remove arquivos órfãos no servidor (escopo: só /ed/)
-          # --exclude .ftp-deploy-sync-state-*.json: legacy do FTP-Deploy-Action
-          # -o StrictHostKeyChecking=no aceita host key automaticamente
-          # -o UserKnownHostsFile=/dev/null não persiste known_hosts
-          sshpass -p "$SSH_PASS" rsync -rlptDvz --delete \
-            --exclude='.ftp-deploy-sync-state-*.json' \
-            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=30" \
-            dist/ed/ \
-            "$SSH_USER@$SSH_HOST:~/domains/xperiun.com/public_html/ed/"
+          # rsync flags: -r recursive; -l symlinks; -p perms; -t mtimes
+          # (crucial pra delta-transfer); -D devices; -v verbose; -z compress.
+          # --delete remove órfãos no servidor (escopo: /ed/).
+          # --exclude .ftp-deploy-sync-state-*.json: legacy do FTP-Deploy-Action.
+          # ssh flags:
+          #   -p porta
+          #   -o ConnectTimeout=30: falha em 30s se SSH não responder
+          #                        (em vez de esperar default ~75s)
+          #   -o ServerAliveInterval=30: ping a cada 30s pra manter
+          #                              conexão viva durante uploads longos
+          #   -o StrictHostKeyChecking=no: aceita host key automático
+          #   -o UserKnownHostsFile=/dev/null: não persiste known_hosts
+          #
+          # Retry loop: até 3 tentativas com backoff 30s/60s. Cobre
+          # glitches transitórios do SSH do Hostinger (Connection timed
+          # out, network blip, etc). rsync com -t reusa mtimes do
+          # servidor → tentativas subsequentes só sobem o que faltou.
+          set +e
+          for attempt in 1 2 3; do
+            echo "──────── Attempt $attempt of 3 ────────"
+            sshpass -p "$SSH_PASS" rsync -rlptDvz --delete \
+              --exclude='.ftp-deploy-sync-state-*.json' \
+              -e "ssh -p $SSH_PORT -o ConnectTimeout=30 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+              dist/ed/ \
+              "$SSH_USER@$SSH_HOST:~/domains/xperiun.com/public_html/ed/"
+            EXIT=$?
+            if [ $EXIT -eq 0 ]; then
+              echo "Deploy succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "Attempt $attempt failed with exit $EXIT"
+            if [ $attempt -lt 3 ]; then
+              WAIT=$((attempt * 30))
+              echo "Waiting ${WAIT}s before retry..."
+              sleep $WAIT
+            fi
+          done
+          echo "All 3 attempts failed"
+          exit 1
