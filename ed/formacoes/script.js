@@ -582,33 +582,11 @@ if (window.matchMedia) {
     window.addEventListener('orientationchange', update);
 })();
 
-/* ── Click handler especial: a[href="#sec-oferta"] (botão "Garantir minha vaga") ──
-   scroll-suave.js scrolla pra el.offsetTop, que pousa no TOPO natural de
-   sec-oferta — mostra o intro, não os cards de oferta. Como sec-oferta tem
-   sticky-top NEGATIVO (calc(100vh - height)), os cards só ficam visíveis
-   quando o sticky engata, em:
-     scrollY = track.offsetTop + sec-oferta.height - viewport.height
-   Esse handler roda em CAPTURE PHASE pra preceder o listener bubble-phase
-   do scroll-suave em document, e chama stopPropagation pra impedir o
-   scroll padrão. */
-(function () {
-    document.addEventListener('click', function (e) {
-        var a = e.target.closest('a[href="#sec-oferta"]');
-        if (!a) return;
-        var track = document.querySelector('.oferta-anuidade-track');
-        var sec = track && track.querySelector('.sec-oferta');
-        if (!track || !sec) return;
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        var trackTop = track.getBoundingClientRect().top + window.scrollY;
-        var dest = trackTop + sec.offsetHeight - window.innerHeight;
-        if (dest < 0) dest = 0;
-
-        window.scrollTo({ top: dest, behavior: 'smooth' });
-    }, true);
-})();
+/* O botão "Garantir minha vaga" (a[href="#sec-oferta"]) agora usa o
+   atributo data-scroll-to="end" — scroll-suave.js cuida do destino
+   sticky-engage (bottom de sec-oferta alinhado com bottom do viewport,
+   mostrando os cards). Lógica centralizada lá pra evitar briga entre
+   meu handler aqui e o tick() do scroll-suave. */
 
 /* ── Reveal: pilares-profs sobe sobre sec-projetos ──
    sec-projetos é position: sticky; top: calc(100vh - var(--sec-projetos-height)).

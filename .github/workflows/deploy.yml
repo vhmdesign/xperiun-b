@@ -57,7 +57,7 @@ jobs:
           # state-name versionado: incrementa quando precisar forçar re-deploy
           # completo (action procura state pelo nome — se não achar, sobe tudo).
           # Útil quando um arquivo ficou dessincronizado no servidor.
-          state-name: .ftp-deploy-sync-state-v4.json
+          state-name: .ftp-deploy-sync-state-v5.json
           # Por padrão a action já ignora .git e .github. Adicione exclusões
           # extras aqui se precisar (ex.: arquivos de dev, screenshots, etc.):
           # exclude: |

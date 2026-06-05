@@ -5,10 +5,13 @@
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    // Não intercepta touch-only (trackpad/mouse fine pointer = mantém)
+    // Touch-only (sem mouse) NÃO precisa de wheel/keyboard handlers — esses
+    // eventos não disparam. Mas o CLICK handler precisa rodar em todos os
+    // devices pra dar smooth nas âncoras com lerp controlado (e ainda
+    // respeitar `data-scroll-to="end"`).
     const hasFinePonter = window.matchMedia('(pointer: fine)').matches;
     const isTouch = 'ontouchstart' in window;
-    if (isTouch && !hasFinePonter) return;
+    const isTouchOnly = isTouch && !hasFinePonter;
 
     // ─── Configuração ────────────────────────────────────────────────────────
     const EASE      = 0.12;   // 0.05 = mais suave / 0.15 = mais direto
@@ -52,6 +55,68 @@
             requestAnimationFrame(tick);
         }
     }
+
+    // ─── Sincroniza quando scroll muda por fonte externa (âncoras, JS) ───────
+    window.addEventListener('scroll', function () {
+        if (!running) {
+            current = window.scrollY;
+            target  = window.scrollY;
+        }
+    }, { passive: true });
+
+    // ─── Resize: reclampa para não ultrapassar novo limite ───────────────────
+    window.addEventListener('resize', function () {
+        target  = clamp(target);
+        current = clamp(current);
+    });
+
+    // ─── Âncoras: intercepta <a href="#..."> e anima via lerp ────────────────
+    // Sempre ativo (desktop + mobile) pra dar comportamento uniforme.
+    // Usa offsetTop walk (não getBoundingClientRect) pra ignorar transforms
+    // aplicados ao alvo — ex: sec-oferta tem translateY(pin) quando o usuário
+    // está em anuidade. Com rect.top, o destino ficava deslocado pelo pin.
+    function getNaturalTop(el) {
+        let y = 0;
+        let cur = el;
+        while (cur) {
+            y += cur.offsetTop;
+            cur = cur.offsetParent;
+        }
+        return y;
+    }
+
+    // Suporte a data-scroll-to no link:
+    //   "start" (default)   → topo natural do elemento
+    //   "end"               → scrollY em que o BOTTOM do elemento alinha com
+    //                          o bottom do viewport (= ponto onde sticky-top
+    //                          NEGATIVO engata, mostrando o conteúdo de baixo
+    //                          da seção; ex: cards de oferta em sec-oferta).
+    function computeDest(el, mode) {
+        const top = getNaturalTop(el);
+        if (mode === 'end') return top + el.offsetHeight - window.innerHeight;
+        return top;
+    }
+
+    document.addEventListener('click', function (e) {
+        const a = e.target.closest('a[href^="#"]');
+        if (!a) return;
+
+        const id = a.getAttribute('href').slice(1);
+        if (!id) return;
+
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        e.preventDefault();
+        const dest = clamp(computeDest(el, a.dataset.scrollTo));
+        target  = dest;
+        current = window.scrollY;
+        running = true;
+        requestAnimationFrame(tick);
+    });
+
+    // Wheel + keyboard só fazem sentido em devices com fine pointer.
+    if (isTouchOnly) return;
 
     // ─── Wheel ───────────────────────────────────────────────────────────────
     function isInsideHorizontalScroller(el) {
@@ -109,52 +174,6 @@
                 if (!running) { running = true; current = window.scrollY; requestAnimationFrame(tick); }
                 break;
         }
-    });
-
-    // ─── Sincroniza quando scroll muda por fonte externa (âncoras, JS) ───────
-    window.addEventListener('scroll', function () {
-        if (!running) {
-            current = window.scrollY;
-            target  = window.scrollY;
-        }
-    }, { passive: true });
-
-    // ─── Resize: reclampa para não ultrapassar novo limite ───────────────────
-    window.addEventListener('resize', function () {
-        target  = clamp(target);
-        current = clamp(current);
-    });
-
-    // ─── Âncoras: intercepta <a href="#..."> e anima via lerp ────────────────
-    // Usa offsetTop walk (não getBoundingClientRect) pra ignorar transforms
-    // aplicados ao alvo — ex: sec-oferta tem translateY(pin) quando o usuário
-    // está em anuidade. Com rect.top, o destino ficava deslocado pelo pin.
-    function getNaturalTop(el) {
-        let y = 0;
-        let cur = el;
-        while (cur) {
-            y += cur.offsetTop;
-            cur = cur.offsetParent;
-        }
-        return y;
-    }
-
-    document.addEventListener('click', function (e) {
-        const a = e.target.closest('a[href^="#"]');
-        if (!a) return;
-
-        const id = a.getAttribute('href').slice(1);
-        if (!id) return;
-
-        const el = document.getElementById(id);
-        if (!el) return;
-
-        e.preventDefault();
-        const dest = clamp(getNaturalTop(el));
-        target  = dest;
-        current = window.scrollY;
-        running = true;
-        requestAnimationFrame(tick);
     });
 
 })();
