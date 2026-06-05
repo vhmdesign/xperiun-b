@@ -34,12 +34,11 @@ RewriteBase /ed/formacoes/
     RewriteRule .* - [F,L]
 </IfModule>
 
-# Anti-hotlinking RIGOROSO: imagens, CSS e JS só carregam com referer
-# xperiun.com. Empty referer bloqueado pra quebrar saved-pages locais.
+# Anti-hotlinking RIGOROSO + 404 disguise (mesma regra do ed/.htaccess).
 <IfModule mod_rewrite.c>
     RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
     RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
-    RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js)$ - [F,NC,L]
+    RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js)$ - [R=404,NC,L]
 </IfModule>
 
 # Bloqueia acesso direto a arquivos internos (prefixo "_").

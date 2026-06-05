@@ -87,19 +87,21 @@ RewriteOptions inherit
     RewriteRule .* - [F,L]
 </IfModule>
 
-# Anti-hotlinking RIGOROSO: imagens, CSS e JS só carregam quando o referer
-# é xperiun.com ou app.xperiun.com. Referer vazio TAMBÉM é bloqueado —
-# isso quebra saved-pages locais (file:// não envia referer válido) e
-# acesso direto via URL pra .css/.js. Páginas HTML em si NÃO são afetadas
-# (a regra só pega assets) — usuário continua navegando normal a partir
-# de Google, redes, link direto, etc.
+# Anti-hotlinking RIGOROSO + 404 disguise:
+# Imagens, CSS e JS só carregam quando o referer é xperiun.com ou
+# app.xperiun.com. Referer vazio TAMBÉM é bloqueado (acesso direto via
+# URL, saved-pages locais, scrapers sem referer).
+# Retorna 404 (em vez de 403) pra fingir que o arquivo nem existe —
+# scrapers e usuários casuais vão concluir "arquivo não está aí" em
+# vez de "está aí mas proibido" (que sinaliza algo interessante).
+# Páginas HTML NÃO são afetadas (regra só pega assets).
 # Tradeoff: usuários em modo de privacidade extrema (Tor, Firefox que
 # strip Referer) veem página sem styling/imagens. Aceitável pra marketing
 # pages onde a audiência é mainstream.
 <IfModule mod_rewrite.c>
     RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
     RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
-    RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js)$ - [F,NC,L]
+    RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js)$ - [R=404,NC,L]
 </IfModule>
 
 # Bloqueia acesso direto a arquivos internos (prefixo "_").
