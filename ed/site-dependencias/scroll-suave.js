@@ -108,17 +108,22 @@
         if (!el) return;
 
         e.preventDefault();
-        const dest = clamp(computeDest(el, a.dataset.scrollTo));
+        const naturalTop = getNaturalTop(el);
+        let dest = clamp(computeDest(el, a.dataset.scrollTo));
 
-        /* Para qualquer tick() de lerp em andamento (de scroll por wheel anterior).
-           Se ficar rodando, sobrescreveria o scrollTo nativo abaixo. */
+        /* Se o destino calculado é igual à posição atual (user já está
+           no engagement point do sticky-top negativo), fallback pro natural
+           top do elemento. Sem isso, clicks sucessivos no botão "Garantir
+           minha vaga" depois do primeiro scroll davam movement=0 e o user
+           pensava que botão não funcionava. */
+        if (Math.abs(dest - window.scrollY) < 10) {
+            dest = clamp(naturalTop);
+        }
+
         target  = window.scrollY;
         current = window.scrollY;
         running = false;
 
-        /* Usa scrollTo nativo do browser com behavior:smooth. Mais robusto
-           que RAF lerp próprio — não tem como ficar com state stuck, e o
-           browser cancela/retoma automaticamente em wheel/touch durante. */
         window.scrollTo({ top: dest, behavior: 'smooth' });
     });
 
