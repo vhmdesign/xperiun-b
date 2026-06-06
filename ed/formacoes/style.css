@@ -1885,15 +1885,6 @@
             background: var(--bb);
             margin-top: calc(0px - var(--anuidade-vh, 1vh) * 100);
         }
-        /* Durante sec-anuidade sticky engaged, sec-faq fica entrando de
-           baixo (margin-top negativo) e cobre a metade inferior do viewport.
-           sec-faq tem z:2 > sec-anuidade z:1 → cobre visualmente E captura
-           clicks. body.anuidade-active (setado por script.js) desativa
-           pointer-events de sec-faq durante esse período pra que clicks
-           passem pro botão "Garantir minha vaga" dentro de sec-anuidade. */
-        body.anuidade-active .oferta-anuidade-track ~ .sec-faq {
-            pointer-events: none;
-        }
 
         /* ── Section Extras (o que vem junto) ────────────────────── */
         .sec-extras { padding: 128px 0; }

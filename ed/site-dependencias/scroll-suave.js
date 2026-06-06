@@ -85,26 +85,6 @@
         return y;
     }
 
-    // Suporte a data-scroll-to no link:
-    //   "start" (default)   → topo natural do elemento
-    //   "end"               → scrollY em que o BOTTOM do elemento alinha com
-    //                          o bottom do viewport (= ponto onde sticky-top
-    //                          NEGATIVO engata, mostrando o conteúdo de baixo
-    //                          da seção; ex: cards de oferta em sec-oferta).
-    function computeDest(el, mode) {
-        const top = getNaturalTop(el);
-        if (mode === 'end') {
-            /* Engagement point com 64px de buffer abaixo. Isso garante que
-               o anuidade-sticky-wrap (sibling logo após el em DOM) fique
-               claramente abaixo do viewport — não na borda exata, evitando
-               qualquer sticky engagement marginal. Cards de sec-oferta
-               continuam visíveis (sec-oferta sticky-engaged ou bem
-               próximo). */
-            return top + el.offsetHeight - window.innerHeight - 64;
-        }
-        return top;
-    }
-
     document.addEventListener('click', function (e) {
         const a = e.target.closest('a[href^="#"]');
         if (!a) return;
@@ -116,20 +96,7 @@
         if (!el) return;
 
         e.preventDefault();
-        const naturalTop = getNaturalTop(el);
-        let dest = clamp(computeDest(el, a.dataset.scrollTo));
-
-        /* Se o destino é igual à posição atual (user já no engagement),
-           fallback pro natural top. Sem isso, clicks sucessivos dão
-           movement=0 e o user pensa que botão não funciona. */
-        if (Math.abs(dest - window.scrollY) < 10) {
-            dest = clamp(naturalTop);
-        }
-
-        /* Usa o lerp RAF próprio do scroll-suave (a versão original que
-           funcionava). window.scrollTo({behavior:smooth}) tava com algum
-           problema nesse contexto que não consegui diagnosticar — voltar
-           pro lerp dá garantia de movimento. */
+        const dest = clamp(getNaturalTop(el));
         target  = dest;
         current = window.scrollY;
         running = true;
