@@ -93,7 +93,15 @@
     //                          da seção; ex: cards de oferta em sec-oferta).
     function computeDest(el, mode) {
         const top = getNaturalTop(el);
-        if (mode === 'end') return top + el.offsetHeight - window.innerHeight;
+        if (mode === 'end') {
+            /* Engagement point com 64px de buffer abaixo. Isso garante que
+               o anuidade-sticky-wrap (sibling logo após el em DOM) fique
+               claramente abaixo do viewport — não na borda exata, evitando
+               qualquer sticky engagement marginal. Cards de sec-oferta
+               continuam visíveis (sec-oferta sticky-engaged ou bem
+               próximo). */
+            return top + el.offsetHeight - window.innerHeight - 64;
+        }
         return top;
     }
 
