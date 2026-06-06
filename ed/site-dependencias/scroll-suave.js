@@ -119,20 +119,21 @@
         const naturalTop = getNaturalTop(el);
         let dest = clamp(computeDest(el, a.dataset.scrollTo));
 
-        /* Se o destino calculado é igual à posição atual (user já está
-           no engagement point do sticky-top negativo), fallback pro natural
-           top do elemento. Sem isso, clicks sucessivos no botão "Garantir
-           minha vaga" depois do primeiro scroll davam movement=0 e o user
-           pensava que botão não funcionava. */
+        /* Se o destino é igual à posição atual (user já no engagement),
+           fallback pro natural top. Sem isso, clicks sucessivos dão
+           movement=0 e o user pensa que botão não funciona. */
         if (Math.abs(dest - window.scrollY) < 10) {
             dest = clamp(naturalTop);
         }
 
-        target  = window.scrollY;
+        /* Usa o lerp RAF próprio do scroll-suave (a versão original que
+           funcionava). window.scrollTo({behavior:smooth}) tava com algum
+           problema nesse contexto que não consegui diagnosticar — voltar
+           pro lerp dá garantia de movimento. */
+        target  = dest;
         current = window.scrollY;
-        running = false;
-
-        window.scrollTo({ top: dest, behavior: 'smooth' });
+        running = true;
+        requestAnimationFrame(tick);
     });
 
     // Wheel + keyboard só fazem sentido em devices com fine pointer.
