@@ -44,6 +44,7 @@ html, body { margin: 0; padding: 0; }
     top: -40%;
     left: -30%;
     background: radial-gradient(ellipse, var(--pc500) 0%, transparent 50%);
+    filter: blur(64px);
 }
 .mba-orb--2 {
     height: 80%;
@@ -52,6 +53,7 @@ html, body { margin: 0; padding: 0; }
     bottom: -20%;
     left: 30%;
     background: radial-gradient(ellipse, var(--pc500) 0%, transparent 50%);
+    filter: blur(64px);
 }
 .mba-orb--3 {
     height: 170%;
@@ -60,6 +62,7 @@ html, body { margin: 0; padding: 0; }
     top: -70%;
     right: 0%;
     background: radial-gradient(ellipse, var(--pc500) 0%, transparent 50%);
+    filter: blur(64px);
 }
 
 /* Laptop — ≤1439px. Só overrides do desktop. */
