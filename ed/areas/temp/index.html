@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-06-10">
+
+    <title>Aprenda por Área de Negócio · Xperiun</title>
+    <meta name="description" content="Aprenda análise de dados pela área onde você trabalha , ou onde quer entrar: Logística, Financeiro, Vendas ou RH , com os indicadores e business cases reais dela.">
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <!-- v1: reaproveita o CSS do HUB de Formações. TODO v2: forkar style.css próprio de /areas. -->
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=4">
+    <!-- Componente da pasta 3D + lightbox (estilo course-modal) -->
+    <link rel="stylesheet" href="pata-teste.css">
+    <!-- Painéis empilhados 3D (background do hero) -->
+    <link rel="stylesheet" href="hero-teste.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
+
+    <style>
+        /* ── Overrides específicos do HUB de Áreas (v1) ──────────── */
+        /* Ícones de área usam Material Symbols como placeholder até
+           virem os SVGs próprios em site-media/areas/icones/. */
+        body.areas-hub .marquee-box .material-symbols-outlined { font-size: 56px; color: var(--pc300); }
+        body.areas-hub .formacoes-nav-item .area-icon { font-size: 24px; color: var(--bw-75); font-variation-settings: 'wght' 200; }
+        body.areas-hub .formacoes-nav-item.is-active .area-icon { color: var(--pc300); }
+
+        /* Hero no estilo das páginas de formação — grid Desktop do DS (1152 / 8 colunas) */
+        body.areas-hub.formacoes-hub .hero-wave { padding-top: 176px; padding-bottom: 208px; }
+        @media (max-width: 864px) { body.areas-hub.formacoes-hub .hero-wave { padding-top: 256px; } }
+        body.areas-hub .hero-content {
+            max-width: 1152px; text-align: left;
+            display: grid; grid-template-columns: repeat(8, 1fr);
+            column-gap: 32px; row-gap: 24px;
+        }
+        body.areas-hub .hero-actions { justify-content: flex-start; }
+        /* título + texto na faixa esquerda, empilhados (título acima do texto) */
+        body.areas-hub .hero-content > .hero-title-group,
+        body.areas-hub .hero-content > .hero-bottom { grid-column: 1 / span 5; }
+        @media (max-width: 864px) {
+            body.areas-hub .hero-content { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+            body.areas-hub .hero-content > .hero-title-group,
+            body.areas-hub .hero-content > .hero-bottom { grid-column: 1 / -1; }
+        }
+        @media (max-width: 576px) {
+            body.areas-hub .hero-content { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+        }
+        /* Painéis empilhados 3D no fundo do hero (no lugar do hero-bg-float) */
+        body.areas-hub .hero-stacked {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: -25%; left: 256px;
+            z-index: -1;
+            pointer-events: none; overflow: hidden;
+        }
+        body.areas-hub .hero-stacked .sp-scene-wrap { height: 100%; min-height: 0; }
+        body.areas-hub .hero-stacked::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(-135deg, transparent 25%, var(--bb) 75%);
+        }
+        @media (max-width: 864px) {
+            body.areas-hub .hero-stacked { width: 200%; top: -50%; left: -75%; }
+        }
+        /* sec-áreas: layout de 10 colunas (nav 3 + cards 7) → container Wide do DS
+           (1440), corrigindo o 1408 */
+        body.areas-hub .formacoes-inner { max-width: 1440px; }
+        body.areas-hub .formacao-card > .area-icon { font-size: 48px; color: var(--pc300); position: relative; z-index: 1; }
+        body.areas-hub .oferta-icon-box .area-icon { font-size: 40px; color: var(--pc300); }
+
+        /* KPIs por área (linha discreta abaixo da descrição do card) */
+        body.areas-hub .area-kpis { margin: 0; font-size: 13px; line-height: 1.45; color: var(--bw-50); }
+
+        /* Footer do card vira seletor com 2 opções (avulso / pack) */
+        body.areas-hub .area-footer { flex-direction: column; align-items: stretch; gap: 8px; }
+        body.areas-hub .area-opcao {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 10px 14px; border-radius: 12px;
+            border: 1px solid var(--bw-10); background: var(--bw-5);
+            text-decoration: none; color: inherit;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        body.areas-hub .area-opcao:hover { border-color: var(--pc300); background: var(--bw-10); }
+        body.areas-hub .area-opcao--pack { border-color: var(--pc300-25); background: var(--pc300-10); }
+        body.areas-hub .area-opcao--pack:hover { border-color: var(--pc300); }
+        body.areas-hub .area-opcao-info { display: flex; flex-direction: column; gap: 2px; }
+        body.areas-hub .area-opcao-title { font: var(--p-s); font-weight: 600; color: var(--bw-75); }
+        body.areas-hub .area-opcao--pack .area-opcao-title { color: var(--pc100); }
+        body.areas-hub .area-opcao-sub { font-size: 12px; line-height: 1.2; color: var(--bw-50); }
+        body.areas-hub .area-opcao-price { font: var(--p); font-weight: 700; color: var(--bw-75); white-space: nowrap; }
+        body.areas-hub .area-opcao--pack .area-opcao-price { color: var(--pc100); }
+
+        /* ── Card de área no estilo entrada-card ──
+           (formacoes-cards mantém o padding-top:152px do HUB pra alinhar com a nav-list) */
+        body.areas-hub .area-card {
+            border-radius: 16px;
+            background: linear-gradient(to bottom, var(--dn800), transparent);
+        }
+        /* Mídia (topo): imagem com fade na base, integrando ao corpo */
+        body.areas-hub .area-card-media {
+            position: relative;
+            height: 240px; overflow: hidden;
+            border-radius: 16px 16px 0 0;
+        }
+        body.areas-hub .area-card-media img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+        }
+        /* Ícone da área (badge estilo oferta-icon-box), alinhado ao padding do corpo */
+        body.areas-hub .area-icon-box {
+            position: absolute; left: 48px; bottom: 16px;
+            width: 64px; height: 64px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--bb-25);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        body.areas-hub .area-icon-box .area-icon { font-size: 24px; color: var(--bw); font-variation-settings: 'wght' 200; }
+        /* Corpo: texto+CTA (esquerda, empilhados) e pasta 3D (direita) */
+        body.areas-hub .area-card-body {
+            padding: 0 48px 48px 48px;
+            display: flex; flex-direction: row; align-items: stretch; gap: 48px;
+        }
+        body.areas-hub .area-card-cols { flex: 1; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+        body.areas-hub .area-card-col { display: flex; flex-direction: column; gap: 16px; }
+        body.areas-hub .area-card-col--cta { gap: 16px; align-items: flex-start; border-top: 2px solid var(--bw-15); padding-top: 24px; }
+        body.areas-hub .area-cta-text { font: var(--p-s); color: var(--bw-75); margin: 0; }
+        body.areas-hub .area-cta-price {
+            font-weight: 700; font-size: 24px; line-height: 1;
+            background: linear-gradient(180deg, var(--bw) 0%, var(--bw-50) 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+        }
+        body.areas-hub .area-card .area-folder { flex-shrink: 0; }
+        /* Horizontal (padrão): pasta ocupa 100% da altura */
+        body.areas-hub .area-card .folder3d { height: 100%; }
+        @media (max-width: 1152px) {
+            /* Vertical: pasta 100% da largura */
+            body.areas-hub .area-card-body { flex-direction: column; }
+            body.areas-hub .area-card .folder3d { width: 100%; height: auto; }
+        }
+        @media (max-width: 864px) {
+            /* Horizontal de novo: pasta 100% da altura */
+            body.areas-hub .area-card-body { flex-direction: row; }
+            body.areas-hub .area-card .folder3d { width: auto; height: 100%; }
+        }
+        @media (max-width: 768px) {
+            body.areas-hub .area-card-body { padding: 0 24px 32px; gap: 24px; }
+            body.areas-hub .area-icon-box { left: 24px; }
+        }
+        @media (max-width: 576px) {
+            /* Vertical: pasta 100% da largura */
+            body.areas-hub .area-card-body { flex-direction: column; }
+            body.areas-hub .area-card .folder3d { width: 100%; height: auto; }
+        }
+    </style>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body class="formacoes-hub areas-hub">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero"
+         data-cap-bottom="pointing-down-negative"
+         style="--cap-color-bottom: var(--bb);">
+    <div class="hero-wave wave-section">
+        <div class="hero-top-tag" aria-hidden="true">
+            <div class="hero-top-tag-body">
+                <h3 class="hero-top-tag-label">Aprenda por Área de Negócio</h3>
+            </div>
+        </div>
+        <div class="hero-stacked" data-stacked-panels aria-hidden="true"></div>
+
+        <div class="hero-content">
+            <div class="hero-title-group">
+                <div class="hero-tags">
+                    <span class="tag-status" data-semantic="neutral" data-size="s">4 áreas de negócio</span>
+                    <span class="tag-status" data-semantic="neutral" data-size="s">A partir de R$ 19</span>
+                </div>
+                <h1 class="hero-h1">Aprenda análise de dados com <span style="font-weight:700">os indicadores reais da sua área de negócio</span></h1>
+            </div>
+            <div class="hero-bottom">
+                <p class="hero-p">Aprenda com os dados, KPIs e business cases reais da sua área, não com planilha-exemplo genérica.</p>
+                <div class="hero-actions">
+                    <a class="btn" data-size="m" data-emphasis="neutral" href="#areas-inner">Encontrar minha área</a>
+                    <a class="btn" data-size="m" data-emphasis="subtle" href="#sec-why">Como funciona</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ ÁREAS ═══════════════ -->
+<section class="sec-formacoes">
+    <div class="formacoes-inner" id="areas-inner">
+        <div class="formacoes-layout">
+            <nav class="formacoes-nav">
+                <div class="formacoes-header">
+                    <span class="formacoes-eyebrow sec-eyebrow">As 4 áreas</span>
+                    <h2 class="formacoes-title sec-title">Escolha <span style="font-weight:700">a área onde você trabalha</span> , ou onde quer entrar</h2>
+                </div>
+                <div class="formacoes-nav-list">
+                    <button class="formacoes-nav-item is-active" data-target="a1">
+                        <span class="material-symbols-outlined area-icon">local_shipping</span>
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Área</span>
+                            <span class="formacoes-nav-label">Logística</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="a2">
+                        <span class="material-symbols-outlined area-icon">account_balance</span>
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Área</span>
+                            <span class="formacoes-nav-label">Financeiro</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="a3">
+                        <span class="material-symbols-outlined area-icon">trending_up</span>
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Área</span>
+                            <span class="formacoes-nav-label">Vendas</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="a4">
+                        <span class="material-symbols-outlined area-icon">groups</span>
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Área</span>
+                            <span class="formacoes-nav-label">RH</span>
+                        </div>
+                    </button>
+                </div>
+            </nav>
+
+            <div class="formacoes-cards">
+                <div class="area-card" id="a1">
+                    <div class="area-card-media">
+                        <img src="/ed/site-dependencias/site-media/areas/area-card-media-logistica.webp" alt="">
+                        <div class="area-icon-box"><span class="material-symbols-outlined area-icon">local_shipping</span></div>
+                    </div>
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                                    <span class="formacao-label">Área</span>
+                                    <h3 class="formacao-title">Logística</h3>
+                                </div>
+                                <p class="formacao-desc">Do achismo na operação ao painel que mostra ruptura, OTIF e custo logístico em tempo real.</p>
+                                <p class="area-kpis">Entregas no prazo, OTIF, Giro de estoque, Ruptura, Custo logístico, Tempo médio de entrega, Nível de serviço...</p>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">A partir de R$ <span class="area-cta-price">19</span> até R$ <span class="area-cta-price">49</span> aprenda análise de dados em cenários práticos reais do mercado desenvolvendo habilidades utilizadas diariamente por Analistas de Logística.</p>
+                                <a class="btn" data-size="s" data-emphasis="neutral" href="/ed/areas/logistica/">Ver área</a>
+                            </div>
+                        </div>
+                        <div class="area-folder" data-area="a1"></div>
+                    </div>
+                </div>
+
+                <div class="area-card" id="a2">
+                    <div class="area-card-media">
+                        <img src="/ed/site-dependencias/site-media/areas/area-card-media-financeiro.webp" alt="">
+                        <div class="area-icon-box"><span class="material-symbols-outlined area-icon">account_balance</span></div>
+                    </div>
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                                    <span class="formacao-label">Área</span>
+                                    <h3 class="formacao-title">Financeiro</h3>
+                                </div>
+                                <p class="formacao-desc">Do fechamento no Excel ao DRE, fluxo de caixa e margem vivos num dashboard que a diretoria abre sozinha.</p>
+                                <p class="area-kpis">Fluxo de caixa, DRE, Margem, EBITDA, Orçado vs Realizado, Contas a pagar e receber, Análise vertical e horizontal...</p>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">A partir de R$ <span class="area-cta-price">19</span> até R$ <span class="area-cta-price">49</span> aprenda análise de dados em cenários práticos reais do mercado desenvolvendo habilidades utilizadas diariamente por Analistas Financeiros.</p>
+                                <a class="btn" data-size="s" data-emphasis="neutral" href="/ed/areas/financeiro/">Ver área</a>
+                            </div>
+                        </div>
+                        <div class="area-folder" data-area="a2"></div>
+                    </div>
+                </div>
+
+                <div class="area-card" id="a3">
+                    <div class="area-card-media">
+                        <img src="/ed/site-dependencias/site-media/areas/area-card-media-vendas.webp" alt="">
+                        <div class="area-icon-box"><span class="material-symbols-outlined area-icon">trending_up</span></div>
+                    </div>
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                                    <span class="formacao-label">Área</span>
+                                    <h3 class="formacao-title">Vendas</h3>
+                                </div>
+                                <p class="formacao-desc">Da planilha de meta ao painel de faturamento, ticket médio e ranking que o time olha todo dia.</p>
+                                <p class="area-kpis">Faturamento, Meta vs Realizado, Ticket médio, Ranking de vendedores, Volume por produto, Crescimento mês a mês...</p>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">A partir de R$ <span class="area-cta-price">19</span> até R$ <span class="area-cta-price">49</span> aprenda análise de dados em cenários práticos reais do mercado desenvolvendo habilidades utilizadas diariamente por Analistas de Vendas.</p>
+                                <a class="btn" data-size="s" data-emphasis="neutral" href="/ed/areas/vendas/">Ver área</a>
+                            </div>
+                        </div>
+                        <div class="area-folder" data-area="a3"></div>
+                    </div>
+                </div>
+
+                <div class="area-card" id="a4">
+                    <div class="area-card-media">
+                        <img src="/ed/site-dependencias/site-media/areas/area-card-media-rh.webp" alt="">
+                        <div class="area-icon-box"><span class="material-symbols-outlined area-icon">groups</span></div>
+                    </div>
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                                    <span class="formacao-label">Área</span>
+                                    <h3 class="formacao-title">Recursos Humanos</h3>
+                                </div>
+                                <p class="formacao-desc">Dos números soltos de pessoas ao painel de turnover, headcount e absenteísmo que sustenta decisão.</p>
+                                <p class="area-kpis">Turnover, Headcount, Absenteísmo, Tempo médio de contratação, Desempenho por área, Evolução do quadro...</p>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">A partir de R$ <span class="area-cta-price">19</span> até R$ <span class="area-cta-price">49</span> aprenda análise de dados em cenários práticos reais do mercado desenvolvendo habilidades utilizadas diariamente por Analistas de RH.</p>
+                                <a class="btn" data-size="s" data-emphasis="neutral" href="/ed/areas/rh/">Ver área</a>
+                            </div>
+                        </div>
+                        <div class="area-folder" data-area="a4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ FILOSOFIA (POR QUE PELA SUA ÁREA) ═══════════════ -->
+<section class="sec-why" id="sec-why">
+    <div class="why-inner">
+        <div class="why-header">
+            <span class="why-eyebrow sec-eyebrow">Nossa filosofia</span>
+            <h2 class="why-title sec-title">Por que a Xperiun ensina dados <span style="font-weight:700">pela sua área de negócio</span></h2>
+        </div>
+        <div class="why-grid">
+            <div class="why-card">
+                <span class="tag-status is-gradient" data-size="m" data-semantic="error">O problema</span>
+                <h3 class="why-card-title">O curso de dados padrão</h3>
+                <p class="why-card-body">Ensina a ferramenta no abstrato: importa um CSV genérico, faz um gráfico de exemplo. No trabalho real, o dado é outro e a dor continua.</p>
+            </div>
+            <div class="why-card">
+                <span class="tag-status is-gradient" data-size="m" data-semantic="neutral">A Xperiun</span>
+                <h3 class="why-card-title">Aprenda com o seu mundo</h3>
+                <p class="why-card-body">Cada área tem business cases construídos com dados e indicadores reais do departamento. Você importa uma base de verdade, trata, cria as medidas e sai com um dashboard replicável , pronto pra empresa ou pro portfólio.</p>
+            </div>
+            <div class="why-card">
+                <span class="tag-status is-gradient" data-size="m" data-semantic="success">O caminho</span>
+                <h3 class="why-card-title">Nossa sugestão</h3>
+                <ul class="why-card-list">
+                    <li><span style="color:var(--sc300)">Comece pela sua área:</span> escolha Logística, Financeiro, Vendas ou RH , a que você já vive ou a que quer destravar , e resolva a dor mais concreta primeiro.</li>
+                    <li><span style="color:var(--sc300)">Aprofunde quando quiser:</span> quando a vontade for dominar a ferramenta a fundo, as <a href="/ed/formacoes/" style="color:var(--sc300)">Formações por competência</a> são o passo natural.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ OFERTA ═══════════════ -->
+<section class="sec-oferta">
+    <div class="oferta-inner">
+        <div class="oferta-header">
+            <span class="oferta-eyebrow sec-eyebrow">Como adquirir</span>
+            <h2 class="oferta-title sec-title">Leve <span style="font-weight:700">um curso</span> ou a <span style="font-weight:700">área completa</span></h2>
+            <p class="oferta-subtitle sec-lede">Escolha a área, escolha a profundidade. Você sai com dashboard rodando nos dois.</p>
+        </div>
+        <div class="oferta-grid">
+
+            <div class="oferta-card">
+                <div class="oferta-card-top">
+                    <div class="oferta-icon-box"><span class="material-symbols-outlined area-icon">play_lesson</span></div>
+                    <p class="oferta-card-label">Leve um curso se…</p>
+                    <div class="oferta-price-block">
+                        <span class="oferta-price"><span class="multi">R$</span><span class="value">19</span></span>
+                        <span class="oferta-price-detail">à vista, um curso da área.</span>
+                    </div>
+                    <p class="oferta-card-desc">Você quer destravar um indicador específico , montar aquele painel que te cobram e aplicar já.</p>
+                </div>
+                <div class="oferta-card-action">
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Escolher área</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-target="a1">Logística</li>
+                            <li class="dropdown-option" data-target="a2">Financeiro</li>
+                            <li class="dropdown-option" data-target="a3">Vendas</li>
+                            <li class="dropdown-option" data-target="a4">RH</li>
+                        </ul>
+                    </div>
+                    <div class="oferta-btn-group">
+                        <a class="btn" data-size="m" data-emphasis="subtle" href="#areas-inner">Ver áreas</a>
+                        <a class="btn" data-size="m" data-emphasis="neutral" href="#" style="display:none">Garantir curso</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oferta-card oferta-card--full">
+                <div class="oferta-card-top">
+                    <div class="oferta-icon-box" style="background:var(--pc300-10)"><span class="material-symbols-outlined area-icon">workspace_premium</span></div>
+                    <p class="oferta-card-label">Leve a área completa se…</p>
+                    <div class="oferta-price-block">
+                        <span class="oferta-price"><span class="multi">R$</span><span class="value">49</span></span>
+                        <span class="oferta-price-detail">à vista, todos os cases da área.</span>
+                    </div>
+                    <p class="oferta-card-desc">Você quer o conjunto de business cases da sua área inteiro , do operacional ao executivo, num modelo replicável.</p>
+                    <div class="oferta-divider"></div>
+                </div>
+                <ul class="oferta-checks">
+                    <li class="oferta-check">Todos os cases da área</li>
+                    <li class="oferta-check">Dados reais, dashboard do zero</li>
+                    <li class="oferta-check">Modelo replicável pra empresa ou portfólio</li>
+                </ul>
+                <div class="oferta-card-action">
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Escolher área</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-target="a1">Logística</li>
+                            <li class="dropdown-option" data-target="a2">Financeiro</li>
+                            <li class="dropdown-option" data-target="a3">Vendas</li>
+                            <li class="dropdown-option" data-target="a4">RH</li>
+                        </ul>
+                    </div>
+                    <a class="btn oferta-pack-cta" data-size="m" data-emphasis="medium-core" href="#areas-inner">Garantir minha área</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ DEPOIMENTOS (reaproveitado do HUB de Formações) ═══════════════ -->
+<div class="depos-faq-wrap">
+<section class="sec-depos" id="sec-depos">
+    <div class="depos-inner">
+    <div class="depos-header">
+        <div class="depos-header-left">
+            <div class="depos-social-proof">
+                <div class="depos-avatar-stack">
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                </div>
+                <p class="depos-eyebrow">+35 mil alunos</p>
+            </div>
+            <h2 class="depos-title sec-title">Quem <span style="font-weight:700">aprendeu na Xperiun</span> está dizendo</h2>
+            <div class="depos-stars">
+                <div class="depos-star-stack">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                </div>
+                <p class="depos-rating">Avaliação média 4,9 estrelas</p>
+            </div>
+        </div>
+        <div class="depos-nav">
+            <button class="btn" data-size="m" data-icon data-emphasis="subtle" id="depos-prev" aria-label="Anterior" disabled>
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button class="btn" data-size="m" data-icon data-emphasis="subtle" id="depos-next" aria-label="Próximo">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+    </div>
+    </div>
+    <div class="depos-carousel-wrap">
+        <div class="depos-track" id="depos-track">
+            <div class="depos-card"><div class="depos-video" data-vid="rfp3nnEuQic"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-edson.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Edson</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="5fjerKKTGGs"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-eduardo.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Eduardo</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="vfbwoyCyv9Y"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-claudio.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cláudio</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="9xt3-AQcH80"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-cleiton.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cleiton</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="bPFL_QZYiwg"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-daniel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Daniel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="kHV7Tqnv1nY"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-vinicius.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vinícius</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="fwOgSvKf5fA"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-gabriel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Gabriel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="CkKg8x9ADC4"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-ezequiel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Ezequiel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="Jdi6xmjSqPc"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-louiz.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Louiz</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="i_OWt-A5kDg"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-pedro.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Pedro</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="FPi0RUmpmb8"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-vitoria.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vitória</p></div></div></div></div>
+        </div>
+    </div>
+
+    <div class="depos-employers">
+        <div class="depos-employers-inner">
+        <div class="depos-employers-header">
+            <span class="depos-employers-eyebrow sec-eyebrow">Empresas que reconhecem</span>
+            <h2 class="depos-employers-title sec-title">Quem já é <span style="font-weight:700">Incomparável</span> trabalha aqui</h2>
+        </div>
+        </div>
+        <div class="depos-logos-section">
+            <div class="depos-logos-grid" id="depos-logos-grid">
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ FAQ ═══════════════ -->
+<section class="sec-faq" id="sec-faq">
+    <div class="faq-inner">
+    <div class="faq-header">
+        <span class="faq-eyebrow sec-eyebrow">Dúvidas frequentes</span>
+        <h2 class="faq-title sec-title">Perguntas que a gente recebe <span style="font-weight:700">toda semana</span></h2>
+    </div>
+    </div>
+    <div class="faq-grid">
+
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Não sei qual área escolher. Como decido?</span>
+                <span class="material-symbols-outlined faq-q-icon">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Vá pela área que você quer destravar , a de hoje ou a que você mira. Qual número define aquela área? Se é prazo de entrega e estoque, Logística. Se é caixa, margem e fechamento, Financeiro. Se é meta e faturamento, Vendas. Se é turnover e headcount, RH.</p>
+                </div>
+            </div>
+        </details>
+
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Preciso saber Power BI antes?</span>
+                <span class="material-symbols-outlined faq-q-icon">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Não. Cada área parte do zero: você importa a base, trata os dados, cria as medidas e monta o dashboard junto com a aula. O foco é aplicar nos dados da sua área, não decorar teoria.</p>
+                </div>
+            </div>
+        </details>
+
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Qual a diferença entre "área" e "formação"?</span>
+                <span class="material-symbols-outlined faq-q-icon">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Área te ensina a resolver os problemas do seu departamento com business cases reais dele. Formação te ensina a competência (Power BI, SQL, Python) a fundo, do básico ao avançado. Muita gente começa pela área e migra pra formação depois.</p>
+                </div>
+            </div>
+        </details>
+
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Os dados dos cases são reais?</span>
+                <span class="material-symbols-outlined faq-q-icon">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">São bases reais de cada área (anonimizadas). Você sai com um modelo replicável , leva o mesmo dashboard pra empresa onde trabalha ou pro seu portfólio.</p>
+                </div>
+            </div>
+        </details>
+
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Trabalho numa área que não está na lista. Serve pra mim?</span>
+                <span class="material-symbols-outlined faq-q-icon">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Os fundamentos (tratar dado, criar medida, montar painel) servem pra qualquer área. Comece pela mais próxima da sua , e as competências viajam pra qualquer departamento.</p>
+                </div>
+            </div>
+        </details>
+
+    </div>
+</section>
+
+</div><!-- /.depos-faq-wrap -->
+
+<!-- ═══════════════ CTA FINAL ═══════════════ -->
+<section class="sec-cta" id="sec-cta">
+    <div class="cta-inner">
+        <div class="cta-left">
+            <div class="cta-header">
+                <span class="cta-eyebrow sec-eyebrow">Próximo passo</span>
+                <h2 class="cta-title sec-title"><span style="font-weight:700">Comece pela área</span> onde você trabalha , ou onde quer chegar</h2>
+            </div>
+            <p class="cta-sub">É assim que você vira analista de dados na prática: começando pelos números reais da área, com um dashboard de verdade , não com a base-exemplo de sempre.</p>
+        </div>
+        <div class="cta-right">
+            <div class="cta-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="m">Dados reais</span>
+                <span class="tag-status" data-semantic="neutral" data-size="m">Dashboard do zero</span>
+                <span class="tag-status" data-semantic="neutral" data-size="m">Modelo replicável</span>
+            </div>
+            <div class="cta-actions">
+                <a href="#areas-inner" class="btn" data-size="m" data-emphasis="subtle">Ver as 4 áreas</a>
+                <a href="/" class="btn" data-size="m" data-emphasis="medium-core">Conhecer a Xperiun Completa</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ SCRIPTS / INCLUDES ═══════════════ -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+<!-- v1 (temp): cópia local do script.js de Formações com caminhos absolutos
+     (depoimentos, logos, carrossel). Original em /ed/formacoes/script.js. -->
+<script src="script.js"></script>
+<script src="index.js"></script>
+
+<!-- Painéis empilhados 3D no fundo do hero -->
+<script src="hero-teste.js"></script>
+<!-- Componente da pasta 3D + lightbox, e montagem por área -->
+<script src="pata-teste.js"></script>
+<script>
+(function () {
+    if (!window.XpFolder) return;
+    var FB = '/ed/site-dependencias/site-media/formacoes/bg/';
+    var AB = '/ed/site-dependencias/site-media/areas/';
+    /* Placeholder (áreas ainda sem conteúdo: vendas, rh) */
+    function bc(image, title, href) {
+        return { image: FB + image, title: title, nivel: ',', duracao: ',', aulas: ',', professor: ',',
+                 desc: 'Descrição do business case (placeholder).', allHref: href };
+    }
+    /* Business case real (mentor: Leonardo Karpinski; nível derivado do caminho da imagem) */
+    function cs(img, title, dur, aulas, desc, href) {
+        var nivel = /\/iniciante\//.test(img) ? 'Iniciante'
+                  : /\/intermediario\//.test(img) ? 'Intermediário'
+                  : /\/avancado\//.test(img) ? 'Avançado' : '';
+        return { image: AB + img, title: title, nivel: nivel, duracao: dur, aulas: aulas,
+                 professor: 'Leonardo Karpinski', desc: desc, allHref: href };
+    }
+    var L = '/ed/areas/logistica/', F = '/ed/areas/financeiro/', V = '/ed/areas/vendas/';
+    var AREAS = {
+        a1: { unit: 'Business Cases', projects: [
+            cs('logistica/iniciante/Desempenho Logístico.webp', 'Desempenho Logístico', '2 h', '2', 'Colabore com uma empresa de logística para melhorar o desempenho de sua cadeia de suprimentos. Identifique atrasos, otimize rotas de entrega e reduza custos operacionais.', L),
+            cs('logistica/iniciante/Gestão de Frotas para Logística.webp', 'Gestão de Frotas para Logística', '2 h', '2', 'Ajude uma empresa de logística a gerenciar sua frota de veículos com eficiência, reduzindo custos e melhorando o planejamento de rotas.', L),
+            cs('logistica/intermediario/Indicadores de Desempenho Logístico.webp', 'Indicadores de Desempenho Logístico', '3 h', '2', 'Analise indicadores de desempenho logístico, como pontualidade de entregas e eficiência de armazenamento, para uma empresa de transporte.', L),
+            cs('logistica/intermediario/Logística com Cálculo de OTIF.webp', 'Logística com Cálculo de OTIF', '2 h', '2', 'Realize análises logísticas com cálculo de OTIF (On-Time In-Full), avaliando desempenho de entregas e cumprimento de prazos.', L)
+        ] },
+        a2: { unit: 'Business Cases', projects: [
+            cs('financeira/iniciante/Análise Financeira.webp', 'Análise Financeira', '2 h', '2', 'Colabore com uma empresa financeira para analisar sua saúde financeira, identificar riscos e oportunidades de investimento, aprofundando-se em demonstrativos financeiros.', F),
+            cs('financeira/iniciante/Controle Financeiro.webp', 'Controle Financeiro', '2 h', '2', 'Auxilie uma pequena empresa a manter um controle financeiro sólido, criando sistemas de acompanhamento de despesas e receitas.', F),
+            cs('financeira/iniciante/Dashboard Financeiro da Xperia Automotive.webp', 'Dashboard Financeiro da Xperia Automotive', '1 h', '8', 'Ajude Carlos, assistente administrativo da Xperia Automotive, a modernizar os processos da empresa, ainda dependentes do Excel.', F),
+            cs('financeira/intermediario/Case de Controladoria com DRE.webp', 'Case de Controladoria com DRE', '4 h', '32', 'Trabalhe com um departamento de controladoria para desenvolver um dashboard que exiba a Demonstração de Resultados (DRE) de forma clara e eficaz.', F),
+            cs('financeira/intermediario/Dashboard Financeiro Xperia Automotive.webp', 'Dashboard Financeiro Xperia Automotive', '2 h', '9', 'Transforme um dashboard financeiro mal elaborado em um de alto impacto para uma indústria automotiva, com ajustes visuais e organizacionais.', F),
+            cs('financeira/intermediario/Fluxo de Caixa com Simulador Financeiro.webp', 'Fluxo de Caixa com Simulador Financeiro', '10 h', '7', 'Colabore com uma startup financeira para criar um simulador de fluxo de caixa que ajude os clientes a planejar seus negócios.', F),
+            cs('financeira/avancado/Análise Financeira com Fluxo de Caixa.webp', 'Análise Financeira com Fluxo de Caixa', '7 h', '6', 'Trabalhe com uma startup para criar um fluxo de caixa robusto e prever cenários financeiros, destacando gestão financeira e análise de riscos.', F),
+            cs('financeira/avancado/Demonstrativo Financeiro da Ambev.webp', 'Demonstrativo Financeiro da Ambev', '3 h', '2', 'Analise o demonstrativo financeiro da Ambev para identificar áreas de otimização de recursos e melhorias no desempenho financeiro.', F),
+            cs('financeira/avancado/Demonstrativo de Resultados e Análise de Títulos.webp', 'Demonstrativo de Resultados e Análise de Títulos', '3 h', '4', 'Colabore com uma empresa para analisar demonstrativos financeiros e identificar títulos de investimento promissores.', F)
+        ] },
+        a3: { unit: 'Business Cases', projects: [
+            cs('vendas/iniciante/Dashboard de Vendas da PBIDist.webp', 'Dashboard de Vendas da PBIDist', '2 h', '13', 'Ajude Frederico, gerente da PBIDist, a automatizar a análise de desempenho dos vendedores, criando um painel de controle eficiente que economiza tempo e aumenta a produtividade.', V),
+            cs('vendas/iniciante/Desafio Toy & Play.webp', 'Desafio Toy & Play', '2 h', '2', 'Analise dados de brinquedos e jogos para identificar tendências de mercado e oportunidades de marketing no entretenimento infantil.', V),
+            cs('vendas/intermediario/Carpinski - Infográfico Comercial.webp', 'Carpinski , Infográfico Comercial', '57 min', '4', 'Desenvolva um infográfico comercial para a Carpinski, destacando realizações e dados-chave com comunicação visual e storytelling.', V),
+            cs('vendas/intermediario/Desafio Bitrix24.webp', 'Desafio Bitrix24', '2 h', '2', 'Implemente o Bitrix24 em uma empresa, personalizando-o para gerenciamento de projetos e colaboração.', V),
+            cs('vendas/intermediario/Performance de Vendas.webp', 'Performance de Vendas', '2 h', '2', 'Avalie o desempenho das equipes de vendas, identifique tendências de mercado e recomende estratégias para impulsionar o crescimento.', V),
+            cs('vendas/intermediario/Realizado vs Meta.webp', 'Realizado vs Meta', '2 h', '2', 'Compare os resultados realizados com as metas estabelecidas, analise os desvios e recomende estratégias para atingir os objetivos.', V),
+            cs('vendas/intermediario/Vendas x Meta Conectando em SQL Server.webp', 'Vendas x Meta Conectando em SQL Server', '2 h', '2', 'Conecte dados de vendas ao SQL Server e faça análises avançadas: tendências de mercado, desempenho vs metas e estratégias de vendas.', V),
+            cs('vendas/avancado/Análises Comerciais com Storytelling.webp', 'Análises Comerciais com Storytelling', '8 h', '5', 'Aprimore as estratégias de vendas de uma empresa de varejo, usando previsões avançadas para recomendar produtos e ações de marketing.', V),
+            cs('vendas/avancado/Análise Comercial com Simulador de Metas.webp', 'Análise Comercial com Simulador de Metas', '1 h', '2', 'Ajude uma equipe de vendas a bater metas com um simulador que permite ajustar estratégias em tempo real.', V),
+            cs('vendas/avancado/Varejo com Análises Avançadas da Loja Pinski.webp', 'Varejo com Análises Avançadas da Loja Pinski', '5 h', '3', 'Aprimore a operação de varejo da loja Pinski: identifique padrões de compra, segmente clientes e otimize o mix de produtos.', V),
+            cs('vendas/avancado/Sistema de Recomendação.webp', 'Sistema de Recomendação', '10 h', '61', 'Ajude o gestor da Pinski Modas a superar o caos das planilhas: acompanhamento de metas mensais, desempenho da equipe e performance dos produtos.', V)
+        ] },
+        a4: { unit: 'Business Cases', projects: [
+            bc('formacao-pbi.webp',      'Turnover',           '/ed/areas/rh/'),
+            bc('formacao-fabric.webp',   'Headcount',          '/ed/areas/rh/'),
+            bc('formacao-bdsql.webp',    'Absenteísmo',        '/ed/areas/rh/')
+        ] }
+    };
+    Object.keys(AREAS).forEach(function (id) {
+        var el = document.querySelector('#' + id + ' .area-folder');
+        if (el) window.XpFolder.mount(el, AREAS[id]);
+    });
+})();
+</script>
+
+<div data-footer></div>
+<script src="/ed/site-dependencias/site-footer/footer-include.js"></script>
+<div data-menu></div>
+<script src="/ed/site-dependencias/site-menu/menu-include.js"></script>
+
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+</body>
+</html>

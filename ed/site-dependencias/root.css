@@ -37,7 +37,7 @@
 
     body {
         margin: 0;
-        background-color: var(--dn900);
+        background-color: var(--bb);
         color: var(--bw);
         font: var(--p);
         -webkit-font-smoothing: antialiased;
@@ -1037,6 +1037,9 @@
         align-items: center;
         cursor: pointer;
         user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
 
     .dropdown-placeholder {
@@ -1103,6 +1106,8 @@
         font-size: 1rem;
         line-height: 1.25;
         cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
 
     .dropdown-option:hover,

@@ -141,4 +141,16 @@
     color: var(--sc500);
     font: var(--label);
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+/* display: flex acima sobrescreve o attribute [hidden] (que faz
+   display:none por default). Re-aplica display:none quando hidden. */
+.popup-form .popup-form-success[hidden] {
+    display: none;
+}
+.popup-form .popup-form-success p {
+    margin: 0;
 }

@@ -979,15 +979,16 @@
     var sec  = document.querySelector('.sec-trocas');
     if (!lt || !grid || !sec) return;
 
-    /* Detecta touch device (mesmo critério do CSS @media): aplica column
-       layout em qualquer viewport touch, não só ≤864px. */
-    function isTouchOrSmall() {
-        if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return true;
+    /* Apenas largura — touch detection (hover: none + pointer: coarse)
+       foi removida porque DevTools Responsive Design Mode emula touch
+       por default e quebrava o horizontal scroll em viewports desktop
+       emuladas. O CSS @media já faz o switch visual por largura. */
+    function isSmall() {
         return window.innerWidth < 865;
     }
 
     function maxTranslate() {
-        if (isTouchOrSmall()) return 0;
+        if (isSmall()) return 0;
         var cards = grid.querySelectorAll('.troca-card');
         if (!cards.length) return Math.max(0, grid.scrollWidth - lt.clientWidth);
         var last = cards[cards.length - 1];
@@ -996,9 +997,9 @@
     }
 
     function updateHeight() {
-        if (isTouchOrSmall()) {
-            /* Touch / ≤864px: layout em coluna — sec-trocas cresce
-               livremente com o conteúdo, sem sticky nem translate horizontal. */
+        if (isSmall()) {
+            /* ≤864px: layout em coluna — sec-trocas cresce livremente
+               com o conteúdo, sem sticky nem translate horizontal. */
             sec.style.height = '';
             return;
         }
@@ -1015,8 +1016,46 @@
     lt.addEventListener('scroll', applyTranslate, { passive: true });
     window.addEventListener('resize', function () { updateHeight(); applyTranslate(); });
     window._trocasMax = maxTranslate;
+    /* Expõe pra IIFE de relocate-header forçar recalc após mover o
+       header pra dentro do grid (muda offsetLeft do último card). */
+    window._trocasRecalc = function () { updateHeight(); applyTranslate(); };
     updateHeight();
     applyTranslate();
+})();
+
+/* Relocate .trocas-header pra dentro de .trocas-grid em viewport
+   wide-short (vw > 864 + vh < 864) — vira "primeiro card" no scroll
+   horizontal, libera a altura completa do stage pros cards reais.
+   Em qualquer outro caso, header volta pro topo do stage. */
+(function () {
+    var stage  = document.querySelector('.trocas-stage');
+    var grid   = document.querySelector('.trocas-grid');
+    var header = document.querySelector('.trocas-header');
+    if (!stage || !grid || !header) return;
+
+    var mq = window.matchMedia('(min-width: 865px) and (max-height: 864px)');
+
+    function relocate() {
+        if (mq.matches) {
+            if (header.parentNode !== grid) {
+                grid.insertBefore(header, grid.firstChild);
+                header.classList.add('trocas-header--inline');
+            }
+        } else {
+            if (header.parentNode !== stage) {
+                stage.insertBefore(header, grid);
+                header.classList.remove('trocas-header--inline');
+            }
+        }
+        if (typeof window._trocasRecalc === 'function') {
+            window._trocasRecalc();
+        }
+    }
+
+    relocate();
+    if (mq.addEventListener) mq.addEventListener('change', relocate);
+    else mq.addListener(relocate);
+    window.addEventListener('orientationchange', relocate);
 })();
 
 /* ── Formações: timeline lines, sweep, entrance animations ── */

@@ -21,7 +21,11 @@ dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LOCAL_DIR = path.join(__dirname, 'dist', 'ed');
-const REMOTE_DIR = '/domains/xperiun.com/public_html/ed';
+/* SFTP usa paths absolutos do FILESYSTEM (não do home do user).
+   Hostinger user home = /home/USERNAME — derivamos automaticamente do
+   SSH_USER. Se sua estrutura for diferente, sobrescreva REMOTE_DIR no .env. */
+const REMOTE_DIR = process.env.REMOTE_DIR ||
+    `/home/${process.env.SSH_USER}/domains/xperiun.com/public_html/ed`;
 
 const REQUIRED_ENV = ['SSH_HOST', 'SSH_PORT', 'SSH_USER', 'SSH_PASSWORD'];
 for (const k of REQUIRED_ENV) {

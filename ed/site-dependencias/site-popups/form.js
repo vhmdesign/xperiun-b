@@ -54,7 +54,7 @@
         modal.dataset.wired = '1';
 
         const form     = modal.querySelector('form');
-        const cancel   = modal.querySelector('.popup-form-cancel');
+        const cancels  = modal.querySelectorAll('.popup-form-cancel');
         const backdrop = modal.querySelector('.popup-form-backdrop');
         const success  = modal.querySelector('.popup-form-success');
         const phoneIn  = modal.querySelector('input[name="phone"]');
@@ -62,8 +62,104 @@
 
         const recaptchaEl = initRecaptcha(modal);
 
+        // Dropdowns (design system) — cada .dropdown-group seta o hidden input
+        // do seu .input-group ao selecionar uma opção (data-value ou texto).
+        const dropdowns = [];
+        modal.querySelectorAll('.dropdown-group').forEach((group) => {
+            const trigger = group.querySelector('.dropdown');
+            const opts    = group.querySelector('.dropdown-options');
+            const label   = trigger?.querySelector('.dropdown-placeholder, .dropdown-value');
+            const icon    = trigger?.querySelector('.dropdown-icon');
+            const hidden  = group.closest('.input-group')?.querySelector('input[type="hidden"]');
+            const gap     = 8;
+            if (!trigger || !opts || !label) return;
+            dropdowns.push({ group, hidden });
+
+            function getClipContainer() {
+                let el = group.parentElement;
+                while (el && el !== document.body) {
+                    const s = getComputedStyle(el);
+                    if (s.overflow === 'hidden' || s.overflowY === 'hidden') return el;
+                    el = el.parentElement;
+                }
+                return document.documentElement;
+            }
+
+            function openDropdown() {
+                const container = getClipContainer();
+                const cRect = container.getBoundingClientRect();
+                const gRect = group.getBoundingClientRect();
+                opts.style.maxHeight  = '';
+                opts.style.visibility = 'hidden';
+                opts.style.display    = 'block';
+                const optH = opts.offsetHeight;
+                opts.style.display    = '';
+                opts.style.visibility = '';
+                const spaceBelow = cRect.bottom - gRect.bottom - gap;
+                const spaceAbove = gRect.top - cRect.top - gap;
+                if (spaceBelow >= optH) {
+                    group.classList.remove('is-open-up');
+                    opts.style.maxHeight = '';
+                } else if (spaceAbove >= optH) {
+                    group.classList.add('is-open-up');
+                    opts.style.maxHeight = '';
+                } else {
+                    group.classList.remove('is-open-up');
+                    opts.style.maxHeight = Math.max(spaceBelow, 40) + 'px';
+                }
+                group.classList.add('is-open');
+                if (icon) icon.textContent = 'expand_less';
+            }
+
+            function closeDropdown() {
+                group.classList.remove('is-open', 'is-open-up');
+                opts.style.maxHeight = '';
+                if (icon) icon.textContent = 'expand_more';
+            }
+
+            /* Safari iOS: elementos não-padrão (<div>/<li>) só recebem
+               click reliably com role="button" + tabindex. Sem isso,
+               taps na trigger podem não disparar o handler. */
+            trigger.setAttribute('role', 'button');
+            trigger.setAttribute('tabindex', '0');
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                group.classList.contains('is-open') ? closeDropdown() : openDropdown();
+            });
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    group.classList.contains('is-open') ? closeDropdown() : openDropdown();
+                }
+            });
+
+            group.querySelectorAll('.dropdown-option').forEach((opt) => {
+                opt.setAttribute('role', 'option');
+                opt.setAttribute('tabindex', '0');
+                const select = (e) => {
+                    e.stopPropagation();
+                    label.textContent = opt.textContent.trim();
+                    label.className   = 'dropdown-value';
+                    if (hidden) hidden.value = opt.dataset.value ?? opt.textContent.trim();
+                    const ig = group.closest('.input-group');
+                    if (ig) ig.classList.remove('is-error');
+                    const err = ig?.querySelector('.input-error-text');
+                    if (err) err.style.display = 'none';
+                    closeDropdown();
+                };
+                opt.addEventListener('click', select);
+                opt.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        select(e);
+                    }
+                });
+            });
+        });
+
         function close() { modal.classList.remove('is-open'); }
-        cancel?.addEventListener('click', close);
+        cancels.forEach(b => b.addEventListener('click', close));
         backdrop?.addEventListener('click', close);
 
         // UTM capture (preenche field[N] a partir da URL atual)
@@ -125,6 +221,15 @@
                 ok = ok && captchaOk;
             }
 
+            for (const d of dropdowns) {
+                const dropOk = !!(d.hidden && d.hidden.value);
+                const ig = d.group.closest('.input-group');
+                if (ig) ig.classList.toggle('is-error', !dropOk);
+                const err = ig?.querySelector('.input-error-text');
+                if (err) err.style.display = dropOk ? 'none' : '';
+                ok = ok && dropOk;
+            }
+
             return ok;
         }
 
@@ -153,6 +258,7 @@
     }
 
     let escWired = false;
+    let docClickWired = false;
     function init() {
         document.querySelectorAll('.popup-form').forEach(initModal);
         if (!escWired) {
@@ -161,6 +267,17 @@
                 document.querySelectorAll('.popup-form.is-open').forEach(m => m.classList.remove('is-open'));
             });
             escWired = true;
+        }
+        // Clique fora fecha qualquer dropdown aberto (trigger/opção usam stopPropagation).
+        if (!docClickWired) {
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-group.is-open').forEach((g) => {
+                    g.classList.remove('is-open', 'is-open-up');
+                    const o = g.querySelector('.dropdown-options'); if (o) o.style.maxHeight = '';
+                    const ic = g.querySelector('.dropdown-icon');   if (ic) ic.textContent = 'expand_more';
+                });
+            });
+            docClickWired = true;
         }
     }
 

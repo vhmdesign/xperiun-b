@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-06-12">
+
+    <title>Playground de feature · Áreas · Xperiun</title>
+    <meta name="description" content="Página de teste — protótipo de feature para o HUB Aprenda por Área.">
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <!-- Mesmo CSS do HUB de Áreas, pra a feature já nascer no DS certo. -->
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=4">
+    <!-- CSS da feature em protótipo -->
+    <link rel="stylesheet" href="pata-teste.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
+
+    <style>
+        /* ── Mesmos overrides do index de Áreas (mantém paridade) ── */
+        body.areas-hub .marquee-box .material-symbols-outlined { font-size: 56px; color: var(--pc300); }
+        body.areas-hub .formacoes-nav-item .area-icon { font-size: 32px; color: var(--pc300); }
+        body.areas-hub .formacao-card > .area-icon { font-size: 48px; color: var(--pc300); position: relative; z-index: 1; }
+        body.areas-hub .oferta-icon-box .area-icon { font-size: 40px; color: var(--pc300); }
+        body.areas-hub .area-kpis { margin: 0; font-size: 13px; line-height: 1.45; color: var(--bw-50); }
+
+        /* ── Layout do playground (só desta página de teste) ── */
+        .pt-shell { max-width: 1152px; margin: 0 auto; padding: 64px 16px 96px; }
+        .pt-head { margin-bottom: 32px; }
+        .pt-eyebrow { font: var(--p-s); font-weight: 600; color: var(--pc300); text-transform: uppercase; letter-spacing: 0.08em; }
+        .pt-title { font: var(--h2); color: var(--bw-75); margin: 4px 0 0; }
+        .pt-note { font: var(--p-s); color: var(--bw-50); margin: 8px 0 0; }
+        /* Caixa onde o protótipo da feature vai morar */
+        .pt-stage {
+            margin-top: 24px; padding: 32px;
+            border: 1px dashed var(--bw-15); border-radius: 16px;
+            background: var(--bw-5);
+            min-height: 240px;
+            display: flex; align-items: center; justify-content: center;
+        }
+    </style>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body class="formacoes-hub areas-hub">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<main class="pt-shell">
+    <div class="pt-head">
+        <span class="pt-eyebrow">Playground · Áreas</span>
+        <h1 class="pt-title">Protótipo de feature</h1>
+        <p class="pt-note">Página de teste. A feature construída aqui será portada pro <code>/ed/areas/</code> depois.</p>
+    </div>
+
+    <!-- ═══ A FEATURE EM PROTÓTIPO VAI AQUI ═══ -->
+    <section class="pt-stage" id="pt-stage">
+        <!-- aguardando definição da feature -->
+    </section>
+</main>
+
+<!-- Feature em protótipo: pasta 3D + lightbox (JS/CSS puro) -->
+<script src="pata-teste.js"></script>
+
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+</body>
+</html>

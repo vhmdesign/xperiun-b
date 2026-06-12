@@ -1,0 +1,2573 @@
+/* Garante que viewport units funcionem 100% — sem margem residual */
+html, body { margin: 0; padding: 0; }
+
+/* Fonte display da página (Pós-Graduação) — fora do design system.
+   DEVE ficar em :root (não no escopo de .mba-hero) pra descer pra
+   TODAS as seções da página, não só os descendentes do hero.
+
+   --mba-target-pad-bot: padding-bottom do .mba-target, exposto via
+   :root pra ser consumido também pela fórmula do sticky reveal do
+   .mba-light-how-track. Sincroniza com o padding-bottom real. */
+:root {
+    --font-display: 'Cormorant Infant', serif;
+    --mba-target-pad-top: 128px;
+    --mba-target-pad-bot: 128px;
+}
+/* ≤1152: padding-top reduzido pra 96. */
+@media (max-width: 1152px) {
+    :root { --mba-target-pad-top: 96px; }
+}
+/* ≤864: padding-bottom sobe pra 256 (espaço extra abaixo dos cards
+   quando sticky está desativado). Cascade pega ≤576 também. */
+@media (max-width: 864px) {
+    :root { --mba-target-pad-bot: 256px; }
+}
+/* ≤576: padding-top vira 64. */
+@media (max-width: 576px) {
+    :root { --mba-target-pad-top: 64px; }
+}
+
+/* ── Hero MBA FPEA: 100vw, background gradient/orbs
+   (mesmo padrão do .depos-faq-wrap::before em formacoes/style.css). */
+.mba-hero {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    /* overflow-x: clip (não hidden) — clipa horizontal pra orbs não
+       criarem scroll lateral, mas deixa Y livre pras orbs com bottom
+       negativo (orb--2) vazarem pra baixo. `clip` permite que o eixo
+       oposto fique `visible` (hidden não permite, vira auto). */
+    overflow-x: clip;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 96px 0 224px;
+    box-sizing: border-box;
+    background-color: var(--bb);
+}
+
+/* 3 orbs decorativas atrás dos stripes. Cada uma é uma elipse com
+   radial-gradient da cor → transparente. Posicionadas em pontos
+   diferentes do hero. */
+.mba-hero-orbs {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: visible;
+}
+.mba-orb {
+    position: absolute;
+    transition: transform 0.35s ease-out;
+}
+.mba-orb--1 {
+    height: 120%;
+    aspect-ratio: 2 / 1.5;
+    transform: translate(var(--mx, 0px), var(--my, 0px)) rotate(15deg);
+    top: -40%;
+    left: -30%;
+    background: radial-gradient(ellipse, var(--pc500-50) 0%, transparent 50%);
+    filter: blur(64px);
+}
+.mba-orb--2 {
+    height: 80%;
+    aspect-ratio: 2 / 1.5;
+    transform: translate(var(--mx, 0px), var(--my, 0px)) rotate(-45deg);
+    bottom: -20%;
+    left: 30%;
+    background: radial-gradient(ellipse, var(--pc500) 0%, transparent 50%);
+    filter: blur(64px);
+}
+.mba-orb--3 {
+    height: 170%;
+    aspect-ratio: 1 / 2;
+    transform: translate(var(--mx, 0px), var(--my, 0px)) rotate(135deg);
+    top: -70%;
+    right: 0%;
+    background: radial-gradient(ellipse, var(--pc500) 0%, transparent 50%);
+    filter: blur(64px);
+}
+
+/* Scrim bottom 128px: gradient bb (bottom) → transparent (top).
+   Fica em z-index 0 — acima das orbs (-1) e dos stripes, abaixo do
+   conteúdo principal (z 1). Cria fade pra preto no fim do hero. */
+.mba-hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 128px;
+    background: linear-gradient(to top, var(--bb), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Layer de stripes entre o ::before e o conteúdo: vignette ripple. */
+.mba-hero-stripes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    gap: 0;
+    pointer-events: none;
+}
+.mba-hero-stripes > div {
+    flex: 1 1 0;
+    height: 100%;
+    background: radial-gradient(ellipse, transparent 0%, var(--bb) 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+}
+
+/* ── Grid DS Xperiun.
+   Container fixo em 1120px (= 1152 − 16 − 16 de margem DS).
+   - Desktop (≥865): 8 cols / gutter 32px  → bp ≤1152 do DS
+   - Tablet  (≤864): 6 cols / gutter 24px
+   - Mobile  (≤576): 4 cols / gutter 16px
+   Implementação obrigatória (DS rule): repeat(M, 1fr) + grid-column: span N. */
+.mba-hero-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1152px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 32px;
+}
+
+/* Lead (logo + H1) — span 6 de 8. */
+.mba-lead {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+}
+.mba-lead-logo {
+    width: 294px;
+    height: auto;
+    display: block;
+}
+.mba-lead-h1 {
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2rem, 1.5rem + 1.39vw, 2.75rem);
+    line-height: 1;
+    margin: 0;
+    background-image: var(--text-gradient-high);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.mba-lead-h1-bold { font-weight: 700; font-style: italic; }
+
+/* Bloco abaixo do título — span 8 (full row).
+   margin-top 32 + grid gap 32 = 64px do final do título. */
+.mba-block {
+    grid-column: span 8;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Action row: sub-grid 8 cols → texto span 4 + 2 vazias + CTA span 2. */
+.mba-action {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 32px;
+    align-items: center;
+}
+.mba-action-p {
+    grid-column: span 4;
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* CTA especial — Cormorant italic 700, gradient prata bw→ln600→ln900,
+   orb roxo atrás. Estende .btn[data-size="l"] (use .btn.mba-cta para
+   vencer a especificidade 0,2,0 de .btn[data-size="l"] em root.css).
+   Hover segue padrão DS: apenas background-position shift (transition
+   0.5s), sem transform custom. */
+.btn.mba-cta {
+    grid-column: 7 / span 2;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background-image: linear-gradient(90deg, var(--bw), var(--ln600), var(--ln900));
+    background-size: 200%;
+    background-position: 0% 0%;
+    color: var(--bb);
+    box-shadow: inset 0 0 0 2px var(--bw);
+    font-family: var(--font-display) !important;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.25;
+    transition: 0.5s;
+}
+.btn.mba-cta.is-hover,
+.btn.mba-cta:hover {
+    background-position: 100% 0%;
+    color: var(--bb);
+}
+/* Orb 100%×100% pc500-25 ancorada bottom -50% left 0, blur 32px.
+   Glow roxo subindo por trás do conteúdo. */
+.mba-cta-orb {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: -50%;
+    left: 0;
+    background-color: var(--pc500-25);
+    filter: blur(32px);
+    pointer-events: none;
+    z-index: -1;
+}
+.mba-cta-label {
+    position: relative;
+    z-index: 1;
+}
+
+/* Divider 100% × 2px, cor bw-15. */
+.mba-divider {
+    border: none;
+    border-top: 2px solid var(--bw-15);
+    margin: 0;
+    width: 100%;
+}
+
+/* Meta cards: 4 lado a lado, cada span 2 (= 8 cols cheias).
+   Divididos por linhas bw-15 2px desenhadas no centro do gap via
+   pseudo-elements: ::after = linha VERTICAL à direita (entre cards
+   horizontais); ::before = linha HORIZONTAL embaixo (entre rows
+   quando o layout quebra em múltiplas linhas). A variável
+   `--mba-meta-gap` muda por breakpoint pra alinhar a linha ao gap. */
+.mba-meta {
+    --mba-meta-gap: 64px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--mba-meta-gap);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.mba-meta-card {
+    position: relative;
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+}
+.mba-meta-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: calc(var(--mba-meta-gap) / -2 - 1px);
+    width: 2px;
+    height: 100%;
+    background-color: var(--bw-15);
+    pointer-events: none;
+}
+/* Desktop: 1 row × 4 cards → só o último não tem linha à direita. */
+.mba-meta-card:last-child::after { display: none; }
+/* Título do card: estilo H4 do DS (1.5rem / 1.25) mas Cormorant 700. */
+.mba-meta-title {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--bw);
+    margin: 0;
+}
+.mba-meta-text {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.mba-meta-card--lead .mba-meta-text { font: var(--p-l); color: var(--bw-75); }
+
+/* ── Sub-seção stats: 4 cards divididos por linhas verticais,
+   com linhas horizontais 100vw em cima e embaixo. Padrão do
+   sec-stats do hub de formações (ed/formacoes/index.html).
+   `.mba-stats` ocupa 100% do hero (= 100vw) e carrega o padding
+   lateral; `.mba-stats-grid` centraliza no max 1120 igual ao inner. */
+.mba-stats {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    margin-top: 256px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    /* overflow: hidden removido — cortaria o ::before absolute do
+       grid (logo "X" posicionado acima do grid, fora do bbox dele).
+       Margin-top 128 garante espaço vazio acima do .mba-stats onde
+       o logo (≈ -52px) aparece sem conflitar com o .mba-intro. */
+    box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+}
+.mba-stats-grid {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    display: flex;
+    box-shadow: inset -2px 0 0 0 var(--bw-10);
+    /* position: relative — ancora o ::before absolute (logo "X" acima
+       do grid, fora do bbox). */
+    position: relative;
+}
+/* Logo "X" branco acima do grid, fora do bbox dele (position absolute
+   ancorado no próprio .mba-stats-grid). Aparece em todas viewports.
+   bottom: calc(100% + 16px) → 16px de gap entre o logo e a linha
+   superior do grid. */
+.mba-stats-grid::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 16px);
+    right: 0;
+    width: 120px;
+    height: 36px;
+    opacity: 0.5;
+    pointer-events: none;
+    background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 96'><path fill='%23F5F5FF' d='M24.73 17.08c-4.55 4.55-2.71 13.78 4.12 20.61l4.12 4.12c3.86 3.86 8.43 5.78 11.12 4.88l-7-9 9 7c.9-2.69-1.01-7.26-4.88-11.12L24.72 17.08zm21.38 34.25c.88 2.69-1.03 7.25-4.88 11.1L28.86 74.8C17.47 86.18 4.55 91.71 0 87.16l32.98-32.98c3.85-3.85 8.41-5.77 11.1-4.88L28.86 66.55zm7.48 11.1c-3.86-3.86-5.78-8.43-4.88-11.12l9 7-7-9c2.69-.9 7.26 1.01 11.12 4.88l4.12 4.12c6.83 6.83 8.68 16.06 4.12 20.61L53.58 62.43zm-4.88-17.76c-.88-2.69 1.03-7.25 4.88-11.1L65.96 21.2C77.34 9.82 90.26 4.28 94.82 8.83L61.84 41.81c-3.85 3.85-8.41 5.77-11.1 4.88l15.22-17.25-17.25 15.22zm223.88 15.18c-7.47 0-13.54-6.08-13.54-13.54V36.15h3.39v10.16c0 5.6 4.56 10.16 10.16 10.16s10.16-4.56 10.16-10.16V36.15h3.39v10.16c0 7.47-6.08 13.54-13.54 13.54zm-138.83 0h-3.39V37.84c0-.94.76-1.69 1.69-1.69h20.16c4.62 0 8.51 3.64 8.62 8.26s-3.73 8.67-8.46 8.67h-18.62zm0-10.16h18.62c2.8 0 5.08-2.28 5.08-5.08s-2.28-5.08-5.08-5.08h-18.62zm115.13 10.16h-3.39v-23.7h3.39zm47.41 0h-3.39V37.84c0-.94.76-1.69 1.69-1.69h1.91c.45 0 .88.18 1.2.5l18.9 18.9v-19.4H320v22.01c0 .94-.76 1.69-1.69 1.69h-1.47c-.45 0-.88-.18-1.2-.5L296.3 40.01zM110.84 48l12.76 11.85h-4.96l-10.28-9.55-10.28 9.55h-4.96L105.88 48 93.12 36.15h4.96l10.28 9.55 10.28-9.55h4.96zm60.17-3.39v1.69h23.7v3.39h-23.7v1.69c0 2.8 2.28 5.08 5.08 5.08h18.62v3.39h-18.62c-4.67 0-8.47-3.8-8.47-8.47v-6.77c0-4.67 3.8-8.47 8.47-8.47h18.62v3.39h-18.62c-2.8 0-5.08 2.28-5.08 5.08m59.1 15.24h5.23l-8.32-6.78c4.67-.08 8.43-3.95 8.32-8.67-.11-4.62-4-8.26-8.62-8.26h-20.16c-.94 0-1.69.76-1.69 1.69v22.01h3.39v-6.77h13.54l8.31 6.77zm-21.86-20.32h18.62c2.8 0 5.08 2.28 5.08 5.08s-2.28 5.08-5.08 5.08h-18.62z'/></svg>") no-repeat left center / contain;
+}
+.mba-stat-card {
+    flex: 1;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: inset 2px 0 0 0 var(--bw-10);
+}
+.mba-stat-number {
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(2rem, 1.5rem + 1.39vw, 2.75rem);
+    line-height: 1.25;
+    background-image: var(--text-gradient-high);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.mba-stat-label {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+
+/* ── Bridge entre hero e intro: section com height 0 (não ocupa
+   flow) carregando um card 176×208 absolute na extrema direita do
+   container (max-width 1408 DS Wide). top: -80 faz o card sair
+   80px pra dentro do hero, deixando 128px (208-80) entrar no intro.
+   z-index: 2 mantém o card acima do scrim e dos pseudos do intro. */
+.mba-card-bridge {
+    position: relative;
+    width: 100%;
+    max-width: 1440px;
+    height: 0;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    z-index: 2;
+    pointer-events: none;
+}
+.mba-bridge-card {
+    position: absolute;
+    top: -80px;
+    right: 16px;
+    width: 176px;
+    height: 208px;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 16px;
+    background: linear-gradient(180deg, var(--ln200), var(--bw));
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+/* Topo: ícone + label "e-Mec" em pc500, centralizados. */
+.mba-bridge-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.mba-bridge-emec-icon {
+    width: 24px;
+    height: auto;
+    flex-shrink: 0;
+}
+.mba-bridge-emec-label {
+    font: var(--label);
+    color: var(--pc500);
+}
+/* Selo MEC: tamanho natural, ancorado no bottom via space-between. */
+.mba-bridge-selo {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+}
+
+/* ── Seção 2: intro com bg gradient claro. Header replica o
+   sec-courses::before/::after (ed/formacoes/style.css), mas com
+   o data URL invertido verticalmente (scaleY -1), top: 0 (dentro
+   da seção, não fora), e cor `--bb` — fazendo a curva escura do
+   hero "entrar" pelo topo da seção clara. */
+/* Wrapper claro englobando todas seções com tema light (intro + target).
+   Bg gradient + textura PNG aplicados aqui pra ser único pra todas as
+   sub-seções. `overflow-x: clip` permite Y visible (pseudos do .mba-intro
+   saem 32 pra cima sem clip vertical). */
+.mba-light {
+    position: relative;
+    width: 100%;
+    background:
+        url("../site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-bg-texture.png") 0 0 / 8px 8px repeat,
+        linear-gradient(180deg, var(--ln200), var(--ln100), var(--ln200));
+    overflow-x: clip;
+    isolation: isolate;
+}
+
+.mba-intro {
+    position: relative;
+    width: 100%;
+    padding: 320px 0 128px;
+    overflow: hidden;
+    isolation: isolate;
+}
+.mba-intro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(50% + 128px);
+    right: 0;
+    height: 160px;
+    background: var(--bb);
+    pointer-events: none;
+}
+.mba-intro::after {
+    content: '';
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%) scaleY(-1);
+    width: 320px;
+    height: 192px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48' viewBox='0 0 80 48' fill='none'%3E%3Cpath d='M80 0V48H0V40H2.74516C11.2321 40 19.3714 36.6286 25.3726 30.6274L46.6274 9.3726C52.6286 3.3714 60.7679 0 69.2548 0H80Z' fill='%2300000A'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    pointer-events: none;
+}
+/* Grid 10 cols com 100% width em ≤1439 (Desktop DS = "Plataforma").
+   Wide ≥1440 centraliza com max-width 1408. Tablet/mobile colapsam
+   pra 6 e 4 cols nas media queries abaixo. */
+.mba-intro-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 16px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+/* Título span 5 + grid-row: 1 — cols 6-10 ficam vazias na row 1,
+   textos forçados pra row 2. CTA segue auto-flow (-3/-1). */
+.mba-intro-title {
+    grid-column: span 5;
+    grid-row: 1;
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0 0 32px;
+    background-image: linear-gradient(90deg, var(--bb), var(--pc500));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+/* Logo "Pós Graduação" acima do título — SVG inline em data URL com
+   fill #00000a (bb) já trocado no próprio markup, sem mask. Reseta
+   background-clip pra não herdar o `text` do title parent. */
+.mba-intro-title::before {
+    content: "";
+    display: block;
+    width: 117px;
+    aspect-ratio: 546 / 112;
+    margin-bottom: 16px;
+    background: url("data:image/svg+xml;charset=utf-8,<svg width='546' height='112' viewBox='0 0 546 112' fill='none' xmlns='http://www.w3.org/2000/svg'><g clip-path='url(%23clip0_7020_1878)'><path d='M269.23 29.25H276.83C278.04 29.25 279.17 29.06 280.23 28.68C281.28 28.3 282.2 27.75 283 27.02C283.79 26.29 284.41 25.4 284.86 24.35C285.31 23.3 285.53 22.1 285.53 20.75C285.53 19.4 285.31 18.2 284.86 17.15C284.42 16.1 283.8 15.21 283 14.48C282.21 13.75 281.28 13.2 280.23 12.82C279.18 12.44 278.05 12.25 276.83 12.25H266V38.52H269.23V29.22V29.25ZM269.23 15.31H276.83C278.45 15.31 279.76 15.8 280.77 16.78C281.78 17.76 282.29 19.09 282.29 20.76C282.29 22.43 281.78 23.69 280.77 24.7C279.76 25.71 278.45 26.22 276.83 26.22H269.23V15.31ZM293.08 37.7C294.59 38.54 296.21 38.95 297.93 38.95C299.65 38.95 301.26 38.53 302.76 37.7C304.25 36.87 305.46 35.66 306.38 34.08C307.3 32.5 307.76 30.64 307.76 28.48C307.76 26.32 307.3 24.46 306.38 22.88C305.46 21.3 304.26 20.09 302.76 19.22C301.26 18.36 299.65 17.93 297.93 17.93C296.21 17.93 294.59 18.36 293.08 19.22C291.57 20.08 290.35 21.3 289.42 22.88C288.49 24.46 288.03 26.32 288.03 28.48C288.03 30.64 288.49 32.5 289.42 34.08C290.35 35.66 291.57 36.86 293.08 37.7ZM292.23 24.38C292.88 23.26 293.71 22.41 294.72 21.83C295.73 21.25 296.8 20.96 297.93 20.96C299.06 20.96 300.13 21.26 301.12 21.85C302.12 22.44 302.93 23.3 303.57 24.42C304.2 25.54 304.52 26.89 304.52 28.48C304.52 30.07 304.2 31.43 303.57 32.54C302.94 33.66 302.12 34.5 301.12 35.07C300.12 35.63 299.06 35.92 297.93 35.92C296.8 35.92 295.72 35.64 294.7 35.07C293.68 34.5 292.85 33.66 292.21 32.54C291.58 31.42 291.26 30.07 291.26 28.48C291.26 26.89 291.58 25.5 292.23 24.38ZM304.84 7.75H300.6L296.32 14.26H299.19L304.85 7.75H304.84ZM324.79 36.18C325.32 35.3 325.58 34.3 325.58 33.17C325.58 32.23 325.41 31.44 325.08 30.81C324.74 30.18 324.29 29.64 323.73 29.21C323.16 28.78 322.52 28.4 321.79 28.08C321.06 27.76 320.31 27.43 319.53 27.11C318.75 26.79 318.01 26.47 317.33 26.16C316.64 25.85 316.08 25.5 315.65 25.11C315.22 24.72 315 24.23 315 23.64C315 22.83 315.3 22.18 315.89 21.7C316.48 21.22 317.33 20.97 318.44 20.97C319.55 20.97 320.35 21.25 320.93 21.8C321.51 22.35 321.89 23.23 322.08 24.45H324.87C324.84 23.16 324.58 22.02 324.08 21.03C323.58 20.05 322.87 19.29 321.94 18.75C321.01 18.21 319.87 17.94 318.53 17.94C317.53 17.94 316.62 18.09 315.8 18.38C314.98 18.68 314.26 19.09 313.66 19.61C313.05 20.13 312.59 20.76 312.27 21.47C311.95 22.18 311.78 22.94 311.78 23.75C311.78 24.72 312 25.55 312.43 26.24C312.86 26.93 313.43 27.51 314.15 27.98C314.86 28.45 315.63 28.86 316.45 29.19C317.27 29.53 318.07 29.84 318.86 30.14C319.53 30.36 320.13 30.59 320.66 30.83C321.19 31.07 321.6 31.37 321.91 31.74C322.22 32.1 322.37 32.6 322.37 33.21C322.37 33.72 322.25 34.19 322.01 34.6C321.77 35.02 321.38 35.35 320.86 35.59C320.33 35.83 319.61 35.95 318.7 35.95C317.19 35.95 316.04 35.59 315.24 34.86C314.45 34.13 314.01 33.19 313.93 32.03H310.94C310.89 32.43 310.91 32.93 311.02 33.53C311.13 34.12 311.35 34.73 311.69 35.35C312.03 35.97 312.5 36.56 313.12 37.11C313.74 37.66 314.52 38.11 315.44 38.44C316.37 38.78 317.49 38.95 318.82 38.95C320.27 38.95 321.51 38.71 322.52 38.22C323.53 37.74 324.3 37.06 324.82 36.18H324.79ZM342.02 26.14H330.3V29.13H342.02V26.14ZM369.06 32.12C368.98 33.28 368.92 34.42 368.88 35.54C368.84 36.66 368.82 37.66 368.82 38.55H371.97V25.98H360.37V29.01H367.4C367.14 30.4 366.72 31.6 366.11 32.59C365.44 33.68 364.55 34.51 363.46 35.08C362.37 35.64 361.1 35.93 359.64 35.93C357.75 35.93 356.12 35.5 354.75 34.64C353.38 33.78 352.33 32.57 351.6 31.02C350.87 29.47 350.51 27.67 350.51 25.63C350.51 23.59 350.91 21.75 351.72 20.13C352.53 18.51 353.64 17.24 355.05 16.31C356.47 15.38 358.1 14.91 359.96 14.91C361.31 14.91 362.53 15.16 363.62 15.66C364.71 16.16 365.65 16.87 366.43 17.8C367.21 18.73 367.78 19.84 368.13 21.13H370.88C370.69 19.27 370.11 17.65 369.14 16.26C368.17 14.87 366.9 13.79 365.34 13.03C363.78 12.26 361.98 11.88 359.96 11.88C358.1 11.88 356.4 12.22 354.85 12.89C353.3 13.56 351.96 14.51 350.83 15.74C349.7 16.97 348.82 18.42 348.2 20.11C347.58 21.79 347.27 23.63 347.27 25.63C347.27 27.63 347.55 29.4 348.12 31.04C348.69 32.68 349.51 34.09 350.59 35.26C351.67 36.43 352.97 37.34 354.49 37.99C356.01 38.64 357.73 38.96 359.64 38.96C362.25 38.96 364.43 38.1 366.19 36.37C367.65 34.93 368.64 32.88 369.19 30.22C369.15 30.82 369.11 31.44 369.06 32.12ZM380.26 26.92C380.45 26.27 380.72 25.6 381.09 24.91C381.62 23.93 382.34 23.09 383.27 22.4C384.2 21.71 385.35 21.37 386.73 21.37V17.94C385.63 17.94 384.68 18.16 383.9 18.59C383.12 19.02 382.48 19.57 381.98 20.23C381.48 20.89 381.08 21.58 380.79 22.29C380.55 22.88 380.38 23.41 380.27 23.89V18.35H377.04V38.56H380.27V26.93L380.26 26.92ZM393.61 37.6C394.94 38.5 396.41 38.95 398 38.95C399.48 38.95 400.69 38.61 401.64 37.92C402.58 37.23 403.32 36.34 403.84 35.25C404.31 34.27 404.65 33.25 404.87 32.19V34.5C404.87 34.93 404.9 35.47 404.95 36.12C405 36.77 405.07 37.58 405.15 38.55H408.1V18.34H404.87V23.92C404.82 23.68 404.78 23.43 404.73 23.19C404.37 21.6 403.69 20.33 402.71 19.37C401.73 18.41 400.29 17.94 398.41 17.94C396.69 17.94 395.13 18.4 393.74 19.31C392.35 20.23 391.25 21.48 390.45 23.07C389.64 24.66 389.24 26.47 389.24 28.48C389.24 30.49 389.64 32.3 390.43 33.88C391.22 35.46 392.29 36.7 393.62 37.6H393.61ZM394.12 23.13C395.22 21.71 396.79 21.01 398.81 21.01C400.16 21.01 401.28 21.33 402.18 21.96C403.08 22.59 403.76 23.47 404.2 24.59C404.64 25.71 404.87 27.01 404.87 28.49C404.87 29.84 404.65 31.07 404.22 32.19C403.79 33.31 403.12 34.2 402.22 34.88C401.32 35.55 400.18 35.89 398.81 35.89C397.6 35.89 396.51 35.57 395.56 34.94C394.6 34.31 393.85 33.43 393.3 32.31C392.75 31.19 392.47 29.92 392.47 28.49C392.47 26.34 393.02 24.55 394.13 23.14L394.12 23.13ZM416.57 37.6C417.9 38.5 419.38 38.95 421 38.95C422.48 38.95 423.69 38.61 424.64 37.92C425.58 37.23 426.32 36.34 426.84 35.25C427.31 34.27 427.65 33.25 427.87 32.19V34.5C427.87 34.99 427.9 35.63 427.97 36.44C428.04 37.25 428.1 37.95 428.15 38.54H431.1V10.26H427.87V23.89C427.66 22.84 427.34 21.88 426.9 21.05C426.39 20.08 425.65 19.32 424.7 18.77C423.74 18.22 422.51 17.94 421 17.94C419.3 17.94 417.79 18.4 416.47 19.31C415.15 20.23 414.11 21.48 413.36 23.07C412.61 24.66 412.23 26.47 412.23 28.48C412.23 30.49 412.62 32.3 413.4 33.88C414.18 35.46 415.24 36.7 416.57 37.6ZM417.11 23.13C418.21 21.71 419.78 21.01 421.8 21.01C423.15 21.01 424.27 21.33 425.17 21.96C426.07 22.59 426.75 23.47 427.19 24.59C427.63 25.71 427.86 27.01 427.86 28.49C427.86 29.84 427.64 31.07 427.21 32.19C426.78 33.31 426.11 34.2 425.21 34.88C424.31 35.55 423.17 35.89 421.8 35.89C420.59 35.89 419.5 35.57 418.55 34.94C417.59 34.31 416.84 33.43 416.29 32.31C415.74 31.19 415.46 29.92 415.46 28.49C415.46 26.34 416.01 24.55 417.12 23.14L417.11 23.13ZM450.86 30.18C450.7 30.8 450.48 31.43 450.17 32.08C449.69 33.1 448.98 33.97 448.07 34.67C447.15 35.37 446.01 35.72 444.64 35.72C443.8 35.72 443.05 35.57 442.38 35.27C441.71 34.98 441.17 34.48 440.78 33.8C440.39 33.11 440.19 32.16 440.19 30.95V18.34H436.96V31.76C436.96 33.16 437.17 34.33 437.61 35.27C438.04 36.21 438.61 36.95 439.31 37.47C440.01 38 440.77 38.37 441.59 38.6C442.41 38.83 443.21 38.94 443.99 38.94C445.2 38.94 446.22 38.7 447.04 38.21C447.86 37.73 448.54 37.11 449.06 36.35C449.58 35.6 449.99 34.81 450.27 33.99C450.54 33.2 450.73 32.49 450.86 31.84V38.54H454.09V18.33H450.86V30.17V30.18ZM462.6 37.6C463.93 38.5 465.4 38.95 466.99 38.95C468.47 38.95 469.68 38.61 470.63 37.92C471.57 37.23 472.31 36.34 472.83 35.25C473.3 34.27 473.64 33.25 473.86 32.19V34.5C473.86 34.93 473.89 35.47 473.94 36.12C473.99 36.77 474.06 37.58 474.14 38.55H477.09V18.34H473.86V23.92C473.81 23.68 473.77 23.43 473.72 23.19C473.36 21.6 472.68 20.33 471.7 19.37C470.72 18.41 469.28 17.94 467.4 17.94C465.68 17.94 464.12 18.4 462.73 19.31C461.34 20.23 460.24 21.48 459.44 23.07C458.63 24.66 458.23 26.47 458.23 28.48C458.23 30.49 458.63 32.3 459.42 33.88C460.21 35.46 461.28 36.7 462.61 37.6H462.6ZM463.11 23.13C464.21 21.71 465.78 21.01 467.8 21.01C469.15 21.01 470.27 21.33 471.17 21.96C472.07 22.59 472.75 23.47 473.19 24.59C473.63 25.71 473.86 27.01 473.86 28.49C473.86 29.84 473.64 31.07 473.21 32.19C472.78 33.31 472.11 34.2 471.21 34.88C470.31 35.55 469.17 35.89 467.8 35.89C466.59 35.89 465.5 35.57 464.55 34.94C463.59 34.31 462.84 33.43 462.29 32.31C461.74 31.19 461.46 29.92 461.46 28.49C461.46 26.34 462.01 24.55 463.12 23.14L463.11 23.13ZM487.84 21.86C488.86 21.27 489.95 20.97 491.11 20.97C492.54 20.97 493.82 21.41 494.95 22.28C496.08 23.16 496.88 24.36 497.33 25.9H500.28C500.06 24.26 499.52 22.84 498.64 21.66C497.76 20.48 496.67 19.56 495.37 18.91C494.06 18.26 492.64 17.94 491.11 17.94C489.39 17.94 487.77 18.37 486.26 19.23C484.75 20.09 483.53 21.31 482.6 22.89C481.67 24.47 481.21 26.33 481.21 28.49C481.21 30.65 481.67 32.51 482.6 34.09C483.53 35.67 484.75 36.87 486.26 37.71C487.27 38.27 488.34 38.63 489.45 38.81V41.14C490.12 41.41 490.63 41.72 490.96 42.07C491.3 42.42 491.53 42.76 491.65 43.1C491.77 43.44 491.83 43.75 491.83 44.05C491.83 44.4 491.72 44.77 491.49 45.16C491.26 45.55 490.81 45.75 490.14 45.75C489.55 45.75 489.1 45.62 488.79 45.37C488.48 45.11 488.27 44.83 488.16 44.52C488.05 44.21 487.98 43.96 487.96 43.77H485.62C485.48 44.52 485.58 45.24 485.9 45.93C486.22 46.62 486.73 47.18 487.44 47.61C488.14 48.04 488.98 48.26 489.95 48.26C491.49 48.26 492.62 47.85 493.35 47.03C494.08 46.21 494.44 45.31 494.44 44.34C494.44 43.53 494.29 42.86 494 42.32C493.7 41.78 493.31 41.34 492.83 41.01C492.8 40.99 492.77 40.98 492.75 40.96V38.83C493.68 38.68 494.57 38.42 495.42 38.02C496.74 37.39 497.84 36.47 498.71 35.27C499.58 34.07 500.12 32.64 500.31 30.97H497.4C496.94 32.53 496.19 33.75 495.16 34.63C494.12 35.51 492.78 35.94 491.14 35.94C489.95 35.94 488.86 35.65 487.85 35.07C486.84 34.49 486.02 33.64 485.4 32.52C484.78 31.4 484.47 30.06 484.47 28.5C484.47 26.94 484.78 25.56 485.4 24.44C486.02 23.32 486.84 22.47 487.87 21.87L487.84 21.86ZM508.05 13.09C508.16 12.69 508.35 12.34 508.62 12.06C508.89 11.78 509.29 11.63 509.83 11.63C510.37 11.63 510.89 11.76 511.33 12.01C511.76 12.27 512.18 12.57 512.6 12.92C513.02 13.27 513.48 13.57 513.99 13.83C514.5 14.09 515.11 14.21 515.81 14.21C516.67 14.21 517.41 13.96 518.03 13.46C518.65 12.96 519.13 12.3 519.47 11.48C519.81 10.66 520.02 9.75 520.1 8.75H517.43C517.38 9.1 517.29 9.48 517.19 9.9C517.08 10.32 516.89 10.67 516.6 10.95C516.32 11.23 515.92 11.37 515.41 11.37C514.95 11.37 514.51 11.24 514.1 10.99C513.68 10.73 513.25 10.43 512.81 10.08C512.37 9.73 511.87 9.43 511.31 9.17C510.76 8.91 510.13 8.79 509.43 8.79C508.54 8.79 507.79 9.04 507.19 9.54C506.58 10.04 506.11 10.7 505.76 11.52C505.41 12.34 505.21 13.25 505.15 14.25H507.82C507.87 13.87 507.96 13.48 508.06 13.08L508.05 13.09ZM512.05 38.95C513.53 38.95 514.74 38.61 515.69 37.92C516.63 37.23 517.37 36.34 517.89 35.25C518.36 34.27 518.7 33.25 518.92 32.19V34.5C518.92 34.93 518.95 35.47 519 36.12C519.05 36.77 519.12 37.58 519.2 38.55H522.15V18.34H518.92V23.92C518.87 23.68 518.83 23.43 518.78 23.19C518.42 21.6 517.74 20.33 516.76 19.37C515.78 18.41 514.34 17.94 512.46 17.94C510.74 17.94 509.18 18.4 507.79 19.31C506.4 20.23 505.3 21.48 504.5 23.07C503.69 24.66 503.29 26.47 503.29 28.48C503.29 30.49 503.69 32.3 504.48 33.88C505.27 35.46 506.34 36.7 507.67 37.6C509 38.5 510.47 38.95 512.06 38.95H512.05ZM506.51 28.48C506.51 26.33 507.06 24.54 508.17 23.13C509.27 21.71 510.84 21.01 512.86 21.01C514.21 21.01 515.33 21.33 516.23 21.96C517.13 22.59 517.81 23.47 518.25 24.59C518.69 25.71 518.92 27.01 518.92 28.49C518.92 29.84 518.7 31.07 518.27 32.19C517.84 33.31 517.17 34.2 516.27 34.88C515.37 35.55 514.23 35.89 512.86 35.89C511.65 35.89 510.56 35.57 509.61 34.94C508.65 34.31 507.9 33.43 507.35 32.31C506.8 31.19 506.52 29.92 506.52 28.49L506.51 28.48ZM531.33 37.7C532.84 38.54 534.45 38.95 536.18 38.95C537.91 38.95 539.51 38.53 541.01 37.7C542.5 36.87 543.71 35.66 544.63 34.08C545.55 32.5 546 30.64 546 28.48C546 26.32 545.54 24.46 544.63 22.88C543.71 21.3 542.51 20.09 541.01 19.22C539.51 18.36 537.9 17.93 536.18 17.93C534.46 17.93 532.84 18.36 531.33 19.22C529.82 20.08 528.6 21.3 527.67 22.88C526.74 24.46 526.28 26.32 526.28 28.48C526.28 30.64 526.74 32.5 527.67 34.08C528.6 35.66 529.82 36.86 531.33 37.7ZM530.48 24.38C531.13 23.26 531.95 22.41 532.97 21.83C533.98 21.25 535.05 20.96 536.18 20.96C537.31 20.96 538.38 21.26 539.37 21.85C540.37 22.44 541.18 23.3 541.81 24.42C542.44 25.54 542.76 26.89 542.76 28.48C542.76 30.07 542.44 31.43 541.81 32.54C541.18 33.66 540.36 34.5 539.37 35.07C538.37 35.63 537.31 35.92 536.18 35.92C535.05 35.92 533.97 35.64 532.95 35.07C531.93 34.5 531.1 33.66 530.46 32.54C529.83 31.42 529.51 30.07 529.51 28.48C529.51 26.89 529.83 25.5 530.48 24.38ZM313.28 54.71H302.32L289.85 70.03L277.64 54.71H266.68L284.65 76.27L266 98.47H276.96L289.68 82.45L302.06 98.47H313.49L294.86 76.2L313.28 54.71ZM353.79 66.35C351.08 64.86 348.04 64.12 344.66 64.12C341.64 64.12 339.08 64.57 336.98 65.47C334.88 66.37 333.18 67.62 331.87 69.22C330.56 70.82 329.6 72.68 329 74.8C328.99 74.85 328.98 74.89 328.97 74.94V73.79L328.56 64.86H320.17V112H328.96V87.53C328.98 87.61 329 87.7 329.03 87.78C329.66 89.85 330.63 91.76 331.94 93.49C333.25 95.23 334.95 96.62 337.05 97.68C339.15 98.74 341.68 99.27 344.66 99.27C348 99.27 351.02 98.55 353.72 97.11C356.43 95.67 358.59 93.63 360.21 90.99C361.83 88.35 362.64 85.25 362.64 81.69C362.64 78.13 361.84 75.16 360.24 72.53C358.64 69.89 356.49 67.83 353.78 66.34L353.79 66.35ZM352.2 87.35C351.23 88.95 349.86 90.2 348.07 91.1C346.29 92 344.2 92.45 341.81 92.45C339.2 92.45 336.92 92 334.98 91.1C333.04 90.2 331.55 88.95 330.52 87.35C329.48 85.75 328.96 83.87 328.96 81.7C328.96 79.4 329.52 77.45 330.65 75.85C331.78 74.25 333.32 73.02 335.28 72.16C337.24 71.3 339.42 70.87 341.81 70.87C345.6 70.87 348.52 71.86 350.57 73.85C352.62 75.83 353.65 78.45 353.65 81.69C353.65 83.86 353.17 85.74 352.2 87.34V87.35ZM400.12 66.21C397.19 64.81 393.51 64.11 389.1 64.11C384.69 64.11 380.99 64.81 377.77 66.21C374.55 67.61 372.03 69.63 370.23 72.26C368.43 74.9 367.52 78.07 367.52 81.76C367.52 85.45 368.44 88.61 370.29 91.23C372.14 93.85 374.71 95.84 378 97.22C381.29 98.59 385.08 99.28 389.36 99.28C393.19 99.28 396.44 98.76 399.1 97.73C401.76 96.69 403.87 95.27 405.42 93.47C406.98 91.67 407.93 89.61 408.3 87.31H399.78C399.24 88.84 398.03 90.1 396.16 91.06C394.29 92.03 391.95 92.51 389.16 92.51C386.63 92.51 384.46 92.11 382.63 91.29C380.8 90.48 379.36 89.37 378.3 87.98C377.24 86.58 376.6 85.03 376.37 83.31H408.43C408.65 78.94 408.06 75.34 406.64 72.52C405.22 69.7 403.04 67.59 400.11 66.2L400.12 66.21ZM376.85 78.18C377.44 76.11 378.74 74.36 380.77 72.94C382.8 71.52 385.44 70.81 388.68 70.81C391.92 70.81 394.57 71.48 396.49 72.81C398.41 74.14 399.48 75.93 399.7 78.19H376.84L376.85 78.18ZM427.71 68C426.67 69.15 425.84 70.35 425.21 71.59C424.58 72.83 424.1 73.98 423.79 75.04V64.86H415V98.47H423.79V80.03C424.25 79.08 424.88 78.1 425.68 77.1C426.81 75.7 428.29 74.52 430.14 73.55C431.99 72.58 434.17 72.1 436.7 72.1V64.12C434.72 64.12 432.98 64.48 431.49 65.2C430 65.92 428.74 66.86 427.7 68.01L427.71 68ZM441.98 57.83H452.19V50.12H441.98V57.83ZM442.66 98.47H451.45V64.86H442.66V98.47ZM490.34 83.6C489.91 84.6 489.32 85.64 488.55 86.71C487.44 88.24 486.01 89.54 484.26 90.6C482.5 91.66 480.4 92.19 477.97 92.19C476.12 92.19 474.52 91.94 473.17 91.44C471.82 90.94 470.79 90.08 470.09 88.84C469.39 87.6 469.04 85.9 469.04 83.73V64.86H460.25V85.22C460.25 87.97 460.68 90.25 461.53 92.05C462.39 93.85 463.54 95.29 464.98 96.34C466.42 97.4 468.03 98.16 469.82 98.61C471.6 99.06 473.41 99.29 475.26 99.29C477.6 99.29 479.63 98.89 481.35 98.11C483.06 97.32 484.51 96.31 485.68 95.07C486.85 93.83 487.81 92.53 488.55 91.18C489.29 89.83 489.85 88.55 490.21 87.36C490.26 87.2 490.3 87.05 490.35 86.89V98.48H499.14V64.87H490.35V83.61L490.34 83.6ZM541.88 67.43C540.57 66.3 539.04 65.47 537.28 64.93C535.52 64.39 533.6 64.12 531.53 64.12C529.14 64.12 527 64.48 525.1 65.2C523.21 65.92 521.57 66.9 520.2 68.14C518.82 69.38 517.73 70.74 516.92 72.23C516.5 72.99 516.17 73.77 515.91 74.56V64.86H507.12V98.47H515.91V78.53C516.26 77.66 516.76 76.81 517.47 75.98C518.64 74.61 520.18 73.47 522.07 72.57C523.96 71.67 526.08 71.22 528.43 71.22C531.54 71.22 533.78 71.89 535.16 73.21C536.53 74.54 537.22 76.63 537.22 79.47V98.48H546.01V77.92C546.01 75.53 545.65 73.47 544.93 71.73C544.21 69.99 543.19 68.56 541.89 67.44L541.88 67.43ZM0 0V112H252L224 56L252 0H0ZM48.92 71.02L40.08 79.86C30.31 89.63 18.44 93.58 13.55 88.7L40.08 62.17C44.21 58.04 49.1 55.99 51.98 56.93L35.65 75.43L54.15 59.1C55.1 61.98 53.04 66.87 48.91 71L48.92 71.02ZM54.15 52L44.5 44.49L52.01 54.14C49.13 55.11 44.23 53.05 40.08 48.91L35.66 44.49C28.34 37.17 26.36 27.27 31.24 22.39L48.92 40.07C53.06 44.21 55.11 49.12 54.15 52ZM79.86 88.71L62.18 71.03C58.04 66.89 55.99 61.98 56.95 59.1L66.6 66.61L59.09 56.96C61.97 55.99 66.87 58.05 71.02 62.19L75.44 66.61C82.76 73.93 84.74 83.83 79.86 88.71ZM71.02 48.92C66.89 53.05 62 55.1 59.12 54.16L75.44 35.66L56.94 51.98C55.99 49.09 58.05 44.21 62.18 40.08L71.02 31.24C80.79 21.47 92.66 17.52 97.55 22.4L71.02 48.93V48.92Z' fill='%2300000a'/></g><defs><clipPath id='clip0_7020_1878'><rect width='546' height='112' fill='white'/></clipPath></defs></svg>") no-repeat left center / contain;
+    background-clip: border-box;
+    -webkit-background-clip: border-box;
+}
+.mba-intro-title-bold { font-weight: 700; font-style: italic; }
+.mba-intro-text {
+    grid-column: span 4;
+    grid-row: 2;
+    font: var(--p);
+    color: var(--dn500);
+    margin: 0;
+}
+/* CTA secundária — Cormorant 700 SEM italic, gradient prata.
+   `.btn.mba-intro-cta` (0,2,0) vence .btn[data-size="l"] do root.
+   `grid-column: -3 / -1` = 2 últimas cols (8 → 7-8; 10 → 9-10). */
+.btn.mba-intro-cta {
+    grid-column: -3 / -1;
+    grid-row: 2;
+    align-self: end;
+    width: 100%;
+    background-image: linear-gradient(90deg, var(--ln400), var(--ln300), var(--ln200));
+    background-size: 200%;
+    background-position: 0% 0%;
+    color: var(--bb);
+    box-shadow: inset 0 0 0 2px var(--bb-15);
+    font-family: var(--font-display) !important;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: normal;
+    line-height: 1;
+    transition: 0.5s;
+}
+.btn.mba-intro-cta.is-hover,
+.btn.mba-intro-cta:hover {
+    background-position: 100% 0%;
+    color: var(--bb);
+}
+
+/* Wide ≥1440: centraliza com max-width 1408 (= 1440 − 32 margens). */
+@media (min-width: 1440px) {
+    .mba-intro-inner { max-width: 1440px; }
+    .mba-gains-inner { max-width: 1440px; }
+    .mba-offer-inner { max-width: 1440px; }
+    .mba-faq-inner { max-width: 1440px; }
+}
+
+/* ── Seção 3 (dentro de .mba-light): "Para quem é este MBA?"
+   Grid DS 10 cols dividido em 2 grandes colunas: lead (span 5) +
+   cards (span 5). Cada card ocupa 100% da grande coluna. */
+.mba-target {
+    position: relative;
+    width: 100%;
+    padding: var(--mba-target-pad-top) 0 var(--mba-target-pad-bot);
+}
+.mba-target-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 16px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+/* Lead: container sticky que agrupa title-wrap + text. Usa subgrid
+   pra herdar as cols do grid pai (.mba-target-inner) — assim text
+   continua span 4 das cols do grid principal, e title-wrap span full
+   do lead. `position: sticky; top: 32px` deixa o lead colado no topo
+   enquanto os cards rolam. */
+.mba-target-lead {
+    grid-column: 1 / span 5;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 32px;
+    padding-bottom: 32px;
+    position: sticky;
+    top: 128px;
+    align-self: start;
+    align-content: end;
+}
+.mba-target-title-wrap {
+    grid-column: 1 / -1;
+    align-self: start;
+}
+.mba-target-title {
+    width: fit-content;
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0;
+    background-image: linear-gradient(90deg, var(--bb), var(--pc500));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.mba-target-title-bold { font-weight: 700; font-style: italic; }
+.mba-target-text {
+    grid-column: 1 / span 4;
+    align-self: start;
+    font: var(--p);
+    color: var(--dn500);
+    margin: 0;
+}
+.mba-target-cards {
+    grid-column: 6 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+/* Card: sticky com top escalonado — cada card "para" 96px abaixo
+   do anterior, expondo só o header (título). z-index crescente faz
+   o card N+1 sobrepor o N. bg gradient bw→ln100 horizontal, drop
+   shadow roxo, inner ring branco. */
+.mba-target-card {
+    position: sticky;
+    padding: 32px 32px 64px 160px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, var(--bw), var(--ln100));
+    box-shadow:
+        16px 16px 32px 0 rgba(35, 0, 150, 0.10),
+        inset 0 0 4px 0 var(--bw);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    overflow: hidden;
+}
+/* Tops escalonados a partir de 128 (= padding-top do .mba-target).
+   Cada card para 96px abaixo do anterior, expondo só o header. */
+.mba-target-card:nth-child(1) { top: 128px; z-index: 1; }
+.mba-target-card:nth-child(2) { top: 224px; z-index: 2; }
+.mba-target-card:nth-child(3) { top: 320px; z-index: 3; }
+.mba-target-card:nth-child(4) { top: 416px; z-index: 4; }
+/* Numeração 1-4: 16rem Cormorant italic 700, gradient vertical
+   pc500-25 → transparent. Width 100% — o `right: 0` é necessário pra
+   o 100% expandir junto com `left: 32px` (absolute). Texto alinhado
+   à esquerda. Centralizado verticalmente via top 50% + translateY. */
+.mba-target-card::before {
+    content: attr(data-number);
+    position: absolute;
+    left: 32px;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: 16rem;
+    line-height: 1;
+    background-image: linear-gradient(180deg, var(--pc500-25), transparent);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+}
+.mba-target-card-title {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    color: var(--pc700);
+    margin: 0;
+}
+.mba-target-card-text {
+    font: var(--p);
+    color: var(--dn500);
+    margin: 0;
+}
+
+/* Desktop compacto ≤1152 (DS): grid 8 cols. Título mantém span 5
+   (cols 6-8 vazias); texto1+texto2 row 2 (cols 1-4 + 5-8 = full);
+   CTA cai pra row 3 cols 7-8 (não cabe 4+4+2 em 8 cols). */
+@media (max-width: 1152px) {
+    .mba-intro-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-intro-title { grid-column: span 5; }
+    .mba-intro-text { grid-column: span 4; grid-row: auto; }
+    .btn.mba-intro-cta { grid-column: -3 / -1; grid-row: auto; }
+
+    /* Intro ≤1152: pseudos voltam pra metade (revert do dobro do
+       desktop), padding 192/96 igual ao tablet — antecipa pra esse
+       breakpoint a transição mais compacta. */
+    .mba-intro::before { left: calc(50% + 64px); height: 80px; }
+    .mba-intro::after { top: -16px; width: 160px; height: 96px; }
+    .mba-intro { padding: 192px 0 96px; }
+
+    /* Target ≤1152: 8 cols. Lead span 8 (full) + cards span 8 (full).
+       Padding-top reduzido pra 96 (vem da var --mba-target-pad-top).
+       Sticky tops recalculados a partir dessa base (96 em vez de
+       128 do desktop). Lead segue sticky (top 96), card 1 logo
+       abaixo (96 + lead_h + 24 gap). */
+    .mba-target-inner { grid-template-columns: repeat(8, 1fr); }
+    /* Lead com altura fixa 128 — assim os tops sticky dos cards
+       abaixo podem ser absolutos (não dependem de medir o lead). */
+    .mba-target-lead { grid-column: 1 / span 8; top: 96px; height: 128px; }
+    /* Lead horizontal: title-wrap span 3 (cols 1-3) + text span 5
+       (cols 4-8) na mesma row. Em ≤864 ambos voltam a span 6 full. */
+    .mba-target-title-wrap { grid-column: 1 / span 3; }
+    .mba-target-text { grid-column: 4 / span 5; }
+    .mba-target-cards { grid-column: 1 / span 8; }
+    /* Tops respeitam a altura do lead (medida via JS) + gap 24.
+       Base = 96 (padding-top). Fallback 200px caso o JS não rode. */
+    /* Tops absolutos = base do card sticky + 128 (altura fixa do lead).
+       Card 1: 120 + 128 = 248. Cada card seguinte: +96. */
+    .mba-target-card:nth-child(1) { top: 248px; }
+    .mba-target-card:nth-child(2) { top: 344px; }
+    .mba-target-card:nth-child(3) { top: 440px; }
+    .mba-target-card:nth-child(4) { top: 536px; }
+
+}
+
+/* Reveal: .mba-how (z:1, bg) sobe sobre .mba-light (z:0).
+   .mba-light sticky-top calculado a partir de:
+     100vh - card_4_height - 128 - target_pad_bot - mba_light_height
+   `--mba-card-4-h` setada via JS (altura do .mba-target-card:nth-child(4));
+   `--mba-target-pad-bot` exposta em :root acima (sincroniza com o
+   padding-bottom real da .mba-target — mudar lá NÃO bagunça aqui);
+   `--mba-light-height` setada via JS (altura real da .mba-light).
+   Em ≤864 (cards do target não são sticky) volta pro reveal padrão
+   `top = 100vh - mba_light_height` (padrão f6 puro). */
+.mba-light-how-track {
+    position: relative;
+}
+.mba-light-how-track .mba-light {
+    position: sticky;
+    top: calc(100vh
+        - var(--mba-card-4-h, 0px)
+        - 128px
+        - var(--mba-target-pad-bot, 128px)
+        - var(--mba-light-height, 100vh));
+    z-index: 0;
+}
+.mba-light-how-track .mba-how {
+    position: relative;
+    z-index: 1;
+    background: var(--bb);
+}
+
+/* ── Seção 4 (dark): "Como funciona o MBA". Grid 10 cols.
+   Title + text ocupam 5 cols cada (row 1 + row 2). 4 cards no
+   grid 10: row 3 → card 1 (6) + card 2 (4); row 4 → card 3 (4) +
+   card 4 (6). */
+/* .mba-how — bg/padding base. Position/z-index do reveal vêm da
+   regra `.mba-light-how-track .mba-how` acima. */
+.mba-how {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    width: 100%;
+    padding: 128px 0;
+    background-color: var(--bb);
+}
+/* Background pseudo: gradient radial pc500-75 com blur (mesmo do
+   .sec-pilares::before em ed/formacoes/style.css:871-883). */
+.mba-how::before {
+    content: "";
+    position: absolute;
+    top: -64px;
+    left: -64px;
+    width: calc(100% + 128px);
+    height: calc(100% + 128px);
+    z-index: -1;
+    background: radial-gradient(ellipse at 20% 0%, var(--pc500-75) 0%, transparent 45%);
+    background-size: 100% 100%;
+    filter: blur(64px);
+}
+.mba-how-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 16px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+/* Header: container do title-wrap + text. margin-bottom -128 puxa
+   a row dos cards pra cima (cards entram 128 dentro do espaço do
+   header). padding-bottom 32 dá respiro interno entre o text e o
+   ponto onde os cards começam a sobrepor. */
+.mba-how-header {
+    grid-column: 1 / span 5;
+    margin-bottom: -128px;
+    padding-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.mba-how-title-wrap {
+    align-self: start;
+}
+.mba-how-title {
+    width: fit-content;
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0;
+    background-image: var(--text-gradient-high);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.mba-how-title-bold { font-weight: 700; font-style: italic; }
+.mba-how-text {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.mba-how-cards {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    /* Sem align-items: start — deixa stretch (default), assim
+       cards 2 e 3 esticam pra altura completa da row (= altura
+       dos wraps 1 e 4 vizinhos, que carregam o padding extra). */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.mba-how-card {
+    position: relative;
+    padding: 0;
+    border-radius: 16px;
+    /* bg trocado com o curriculum-card: agora 135deg dn800 → transparent. */
+    background: linear-gradient(135deg, var(--dn800), transparent);
+    display: flex;
+    /* flex-direction varia por card (ver regras :nth-child abaixo) */
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.mba-how-card-img {
+    display: block;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.mba-how-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Layouts (lógica de 3 e 4 trocada):
+   Card 1: row, img 256×100 (esquerda)
+   Card 2: column, img 100×256 (topo)
+   Card 3: column, img 100×256 (topo)
+   Card 4: row, img 256×100 (esquerda) */
+.mba-how-card-wrap--1 > .mba-how-card,
+.mba-how-card-wrap--4 > .mba-how-card {
+    flex-direction: row;
+}
+.mba-how-card:nth-child(2),
+.mba-how-card:nth-child(3) {
+    flex-direction: column;
+}
+.mba-how-card-wrap--1 > .mba-how-card > .mba-how-card-img,
+.mba-how-card-wrap--4 > .mba-how-card > .mba-how-card-img {
+    width: 384px;  /* 256 + 128 */
+    height: 100%;
+    object-fit: cover;
+    /* Máscara opacity 1 → 0 da esquerda pra direita (img some
+       conforme se aproxima do content). */
+    -webkit-mask-image: linear-gradient(to right, black, transparent);
+    mask-image: linear-gradient(to right, black, transparent);
+}
+.mba-how-card:nth-child(2) > .mba-how-card-img,
+.mba-how-card:nth-child(3) > .mba-how-card-img {
+    width: 100%;
+    height: 256px;
+    /* Máscara opacity 1 → 0 de cima pra baixo. */
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+/* Paddings do content (top right bottom left).
+   Cards row (1 e 4): 32 32 32 0 — content cola na img esquerda.
+   margin-left -128 puxa o content pra cima da img (que tem máscara
+   gradient esq→dir, então sobreposição se mistura visualmente).
+   Cards column (2 e 3): 0 32 32 32 — content cola na img topo. */
+.mba-how-card-wrap--1 > .mba-how-card > .mba-how-card-content,
+.mba-how-card-wrap--4 > .mba-how-card > .mba-how-card-content {
+    padding: 32px 32px 32px 0;
+    margin-left: -32px;
+    /* Altura natural (override do stretch default em row layout),
+       centralizado verticalmente. */
+    align-self: center;
+}
+/* Cards 2 e 3 (column): content com altura natural (sem flex 1)
+   pra ficar colado embaixo da img, sem espaço vazio esticando. */
+.mba-how-card:nth-child(2) > .mba-how-card-content,
+.mba-how-card:nth-child(3) > .mba-how-card-content {
+    padding: 0 32px 32px 32px;
+    flex: none;
+}
+/* Layout 2×2 zigue-zague: wrap1 (6) + card 2 (4) na row 1;
+   card 3 (4) + wrap4 (6) na row 2. Cards 1 e 4 ficam dentro de
+   wrappers que adicionam padding extra (top/bottom 128). Em grid
+   stretch (default), os wraps esticam pra altura da row; o card
+   dentro (flex: 1) ocupa o restante. Resultado: cards 2 e 3 são
+   visualmente "128 mais altos" que os cards 1 e 4 (devido aos
+   paddings dos wraps). Sem margin negativo nos cards. */
+.mba-how-card-wrap {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    list-style: none;
+    box-sizing: border-box;
+}
+.mba-how-card-wrap > .mba-how-card {
+    flex: 1;  /* cresce pra ocupar todo o height do wrap */
+    margin: 0;
+}
+.mba-how-card-wrap--1 {
+    grid-column: span 6;
+    padding-top: 128px;
+    /* Card 1 ancorado no bottom do wrap (= depois do padding-top). */
+    justify-content: end;
+}
+.mba-how-card-wrap--4 {
+    grid-column: span 6;
+    padding-bottom: 128px;
+}
+.mba-how-card:nth-child(2),
+.mba-how-card:nth-child(3) {
+    grid-column: span 4;
+    /* Stretch (default do grid) → cards esticam pra altura row =
+       altura dos wraps vizinhos (que carregam padding 128). */
+}
+.mba-how-card-title {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--bw);
+    margin: 0;
+}
+.mba-how-card-text {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* How ≤1152: header sem margin-bottom -128, wraps sem padding extra,
+   cards iguais (cada um span 4 do grid 8). Esse @media tem que vir
+   DEPOIS das regras base acima — cascade resolve por order quando
+   specificity é igual, e antes dele as regras base venceriam. */
+@media (max-width: 1152px) {
+    .mba-how { padding: 96px 0; }
+    .mba-how-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-how-header { grid-column: 1 / span 5; margin-bottom: 0; }
+    .mba-how-cards { grid-template-columns: repeat(8, 1fr); }
+    .mba-how-card-wrap--1,
+    .mba-how-card-wrap--4 {
+        grid-column: span 4;
+        padding: 0;
+    }
+    .mba-how-card:nth-child(2),
+    .mba-how-card:nth-child(3) {
+        grid-column: span 4;
+    }
+    /* ≤1152: todos cards viram column (img em cima 100% × 256),
+       content padding único 0 32 32 32 (consistente entre cards). */
+    .mba-how-card-wrap--1 > .mba-how-card,
+    .mba-how-card:nth-child(2),
+    .mba-how-card:nth-child(3),
+    .mba-how-card-wrap--4 > .mba-how-card {
+        flex-direction: column;
+    }
+    .mba-how-card-wrap--1 > .mba-how-card > .mba-how-card-img,
+    .mba-how-card:nth-child(2) > .mba-how-card-img,
+    .mba-how-card:nth-child(3) > .mba-how-card-img,
+    .mba-how-card-wrap--4 > .mba-how-card > .mba-how-card-img {
+        width: 100%;
+        height: 256px;
+        -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+        mask-image: linear-gradient(to bottom, black, transparent);
+    }
+    .mba-how-card-wrap--1 > .mba-how-card > .mba-how-card-content,
+    .mba-how-card:nth-child(2) > .mba-how-card-content,
+    .mba-how-card:nth-child(3) > .mba-how-card-content,
+    .mba-how-card-wrap--4 > .mba-how-card > .mba-how-card-content {
+        padding: 0 32px 32px 32px;
+        margin-left: 0;  /* reset do -128 do desktop */
+    }
+
+    /* Gains ≤1152: grid vira 8 cols. Card span 5 (1 col a mais que
+       o título span 3) — mesma proporção do desktop wide (4+6). */
+    .mba-gains-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-gains-title-wrap { grid-column: span 3; }
+    .mba-gains-cards { grid-column: span 5; }
+
+    /* Offer ≤1152: 8 cols, card span 6 centralizado (cols 2-7). */
+    .mba-offer-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-offer-card { grid-column: 2 / span 6; }
+
+    /* FAQ ≤1152: 8 cols, header span 4. */
+    .mba-faq-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-faq-header { grid-column: span 4; }
+}
+
+/* ── Seção 5: Curriculum — scroll horizontal sticky stage.
+   Padrão idêntico ao sec-trocas da home (ed/site-dependencias/
+   home.css:942-1020 + home.js:976-1020): section com altura
+   dinâmica via JS (= 100vh + maxTranslate), stage sticky top 0
+   ocupando 100vh, grid horizontal de cards que se move
+   horizontalmente conforme o scroll vertical. */
+.mba-curriculum {
+    position: relative;
+    z-index: 2;
+    background: var(--bb);
+    /* height definida via JS pra criar espaço de scroll */
+}
+.mba-curriculum-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+/* Container único do background animado da seção: particles, orb,
+   elipse (::before) e scrim (::after). position absolute, top 0,
+   left 0, 100% w/h = cobre toda a .mba-curriculum. */
+.mba-curriculum-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Height = (width × 9/16) + 256. 9/16 = 56.25%. Usa 100vw como
+       proxy do width do bg (= width do stage = viewport em desktop). */
+    height: calc(100vw * 9 / 16 + 256px);
+    pointer-events: none;
+    overflow: hidden;
+    isolation: isolate;
+}
+/* Orb decorativo: 30% width × 512 height, centralizado, top 0.
+   z-index -2 mesmo das partículas, mas vem DEPOIS no DOM order →
+   renderiza acima delas. Atrás da elipse (-1) e do scrim (-1). */
+.mba-curriculum-orb {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: max(30%, 768px);
+    height: 512px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, var(--pc300), transparent 50%);
+    pointer-events: none;
+    z-index: -2;
+    filter: blur(16px);
+    animation: mba-orb-pulse 4s ease-in-out infinite;
+}
+@keyframes mba-orb-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.75; }
+}
+
+/* Partículas subindo infinitamente atrás da elipse (z-index -2 <
+   elipse -1). Quadradinhos 4x4 e 2x2 com opacidades variadas;
+   posição/duração/delay setados via JS pra distribuição aleatória.
+   Container limitado a 100vh — em viewports largos o bg fica mais
+   alto que o viewport (calc 16:9 + 256) e particles com inset 0
+   sairiam do range visível. */
+.mba-curriculum-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    height: 100dvh;
+    pointer-events: none;
+    z-index: -2;
+    overflow: hidden;
+}
+.mba-particle {
+    position: absolute;
+    bottom: -16px;
+    background-color: var(--bw);
+    animation: mba-particle-rise linear infinite;
+    will-change: transform;
+}
+.mba-particle--4 { width: 4px; height: 4px; }
+.mba-particle--2 { width: 2px; height: 2px; }
+@keyframes mba-particle-rise {
+    from { transform: translateY(0); }
+    /* sobe além do top do container pra particle "passar" completamente
+       — antes ela morria pouco antes de cruzar o top. */
+    to   { transform: translateY(-120vh); }
+}
+
+/* Elipse decorativa: width 125%, centralizada horizontal, top 256
+   do bg container. */
+.mba-curriculum-bg::before {
+    content: '';
+    position: absolute;
+    top: 256px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* width/height em vw (não % + aspect-ratio) — assim o pseudo
+       não depende do tamanho do bg parent e evita o ciclo
+       width-do-pai → height-via-aspect → afeta layout. */
+    width: 125vw;
+    height: 125vw;
+    border-radius: 50%;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, var(--pc500-15), transparent, transparent),
+        var(--bb);
+    box-shadow:
+        0 0 16px 0 color-mix(in srgb, var(--pc200) 50%, transparent),
+        inset 0 0 8px 0 color-mix(in srgb, var(--pc200) 25%, transparent),
+        inset 0 0 64px 0 var(--pc500-75),
+        0 -64px 128px 0 var(--pc500);
+    pointer-events: none;
+    z-index: -1;
+}
+/* Scrim por cima da elipse — 2 layers:
+   1) Top: gradient bb → transparent nos primeiros 256px (no-repeat)
+   2) Horizontal: bb → transparent → bb (cobre todo o bg)
+   Layers em background: a PRIMEIRA listada fica em cima. */
+.mba-curriculum-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, var(--bb), transparent) top left / 100% 256px no-repeat,
+        linear-gradient(90deg, var(--bb), transparent, var(--bb));
+    pointer-events: none;
+    z-index: -1;
+}
+.mba-curriculum-header {
+    padding: 0 16px 32px;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+.mba-curriculum-header-inner {
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    align-items: end;
+}
+.mba-curriculum-title {
+    grid-column: 1 / span 5;
+}
+.mba-curriculum-header-cta {
+    grid-column: 6 / span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+}
+.mba-curriculum-header-cta-logo {
+    width: 196px;
+    height: auto;
+    display: block;
+}
+.mba-curriculum-header-cta-text {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+    text-align: right;
+}
+/* Botão clone do .btn.mba-cta (Quero Aplicar) mas tamanho S e
+   sem width 100% — fica do tamanho do conteúdo. */
+.btn.mba-curriculum-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background-image: linear-gradient(90deg, var(--bw), var(--ln600), var(--ln900));
+    background-size: 200%;
+    background-position: 0% 0%;
+    color: var(--bb);
+    box-shadow: inset 0 0 0 2px var(--bw);
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    transition: 0.5s;
+}
+.btn.mba-curriculum-cta.is-hover,
+.btn.mba-curriculum-cta:hover {
+    background-position: 100% 0%;
+    color: var(--bb);
+}
+.mba-curriculum-cta-orb {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: -50%;
+    left: 0;
+    background-color: var(--pc500-25);
+    filter: blur(32px);
+    pointer-events: none;
+    z-index: -1;
+}
+.mba-curriculum-cta-label {
+    position: relative;
+    z-index: 1;
+}
+.mba-curriculum-title {
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0;
+    background-image: var(--text-gradient-high);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    width: fit-content;
+}
+.mba-curriculum-title-bold { font-weight: 700; font-style: italic; }
+.mba-curriculum-lede {
+    font: var(--p-l);
+    color: var(--bw-75);
+    margin: 0;
+}
+.mba-curriculum-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    padding: 0 max(16px, calc(50vw - 688px)) 24px max(16px, calc(50vw - 704px));
+    flex: 0 0 auto;
+    /* stretch (default) faz todos cards terem a mesma altura
+       (= altura do maior conteúdo). */
+    align-items: stretch;
+    will-change: transform;
+    position: relative;
+    z-index: 1;
+}
+/* Card width + estrutura clonada do sec-trocas (.troca-card em
+   home.css:1012-1046 + .troca-meta:1303 + .troca-num:1315). */
+.mba-curriculum-card {
+    flex-shrink: 0;
+    width: 832px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    isolation: isolate;
+    /* Inset shadow no card todo (não no meta) — cobre demo + meta
+       nos cards --with-img. */
+    box-shadow: inset 0 0 4px 0 var(--bw-10);
+}
+.mba-curriculum-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* bg trocado com o how-card: agora 90deg dn500-25 → transparent. */
+    background: linear-gradient(90deg, var(--dn500-50), transparent);
+    border-radius: inherit;
+    z-index: -1;
+    pointer-events: none;
+}
+.mba-curriculum-card::after {
+    content: "";
+    position: absolute;
+    top: -128px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 256px;
+    height: 256px;
+    border-radius: 50%;
+    background: var(--pc300);
+    filter: blur(256px);
+    pointer-events: none;
+    z-index: -1;
+}
+.mba-curriculum-card-demo {
+    padding: 32px 32px 32px 0;
+    flex: 0 0 calc(50% - 32px);
+    display: flex;
+}
+.mba-curriculum-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+}
+.mba-curriculum-card-meta {
+    padding: 128px 64px 64px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 0 0 calc(50% + 32px);
+    justify-content: flex-end;
+    order: -1;
+    position: relative;
+}
+/* Cards sem img: meta ocupa toda a largura do card */
+.mba-curriculum-card:not(.mba-curriculum-card--with-img) .mba-curriculum-card-meta {
+    flex: 0 0 100%;
+}
+.mba-curriculum-card-num {
+    position: absolute;
+    left: -32px;
+    top: -32px;
+    width: 100%;
+    font-family: var(--font-display) !important;
+    font-size: 16rem;
+    line-height: 1em;
+    font-weight: 700;
+    font-style: italic;
+    background: linear-gradient(180deg, var(--pc300-25), transparent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    pointer-events: none;
+    user-select: none;
+    z-index: -1;
+}
+/* Título acima do .mba-curriculum-card-title — clone do
+   .mba-how-card-title (Cormorant Infant 700 24px) em itálico
+   com cor sg300. */
+.mba-curriculum-card-phase {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--sg300);
+    margin: 0;
+}
+/* Mesmo estilo de .mba-how-card-title (Cormorant Infant 700 24px). */
+.mba-curriculum-card-title {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--bw);
+    margin: 0 0 16px;
+}
+.mba-curriculum-card-date {
+    font: var(--label);
+    color: var(--sg300);
+    margin: 0;
+}
+.mba-curriculum-card-desc,
+.mba-curriculum-card-obj {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+/* Label "Objetivo:" no .mba-curriculum-card-obj — substitui o
+   <strong> anterior por <span class> pra evitar negrito implícito
+   do <strong> e padronizar a cor sg300. */
+.mba-curriculum-card-obj-label {
+    color: var(--sg300);
+}
+/* Lista de tópicos no estilo .oferta-checks do hub de formações
+   (ed/formacoes/style.css:2115-2126): cada <li> ganha uma linha
+   pc300 2×24 à esquerda via ::before. `--check-offset` = padding-left
+   do .meta — assim a linha cola na borda interna do card.
+   Desktop padding-left 64 → offset 64; ≤864 padding-left 32 → offset 32. */
+.mba-curriculum-card-list {
+    --check-offset: 64px;
+    list-style: none;
+    font: var(--p);
+    color: var(--bw);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.mba-curriculum-card-list li {
+    margin: 0;
+    padding-right: 12px;
+    position: relative;
+}
+.mba-curriculum-card-list li::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--check-offset));
+    top: 0;
+    width: 2px;
+    height: 1.5rem;
+    background: var(--pc300);
+}
+
+/* Mobile/touch (≤864): layout vertical normal — grid vira column,
+   section sem altura forçada, stage sem sticky. JS detecta touch
+   ou ≤864 e desativa o translate horizontal. */
+@media (max-width: 864px) {
+    .mba-curriculum-stage {
+        position: relative;
+        height: auto;
+        padding: 96px 0 256px;
+    }
+    /* Em mobile o stage cresce com o conteúdo. Limita o container
+       das partículas aos primeiros 100vh (em vez de inset: 0 que
+       esticava verticalmente) — fica absolute, sem quebrar o flow
+       nem afetar a altura do stage. */
+    .mba-curriculum-particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: auto;
+        height: 100vh;
+        height: 100dvh;
+    }
+    /* Scrim horizontal em mobile: bb-75 transparent transparent bb-75
+       (4 stops = bb-75 nos 25% iniciais e finais, transparent no meio
+       50%). Top scrim bb 256 continua igual. */
+    .mba-curriculum-bg::after {
+        background:
+            linear-gradient(180deg, var(--bb), transparent) top left / 100% 256px no-repeat,
+            linear-gradient(90deg, var(--bb-75), transparent, transparent, var(--bb-75));
+    }
+    /* Padding do meta reduzido em mobile: 128 32 32 32 (era 128 64 64 64). */
+    .mba-curriculum-card-meta {
+        padding: 128px 32px 32px 32px;
+    }
+    /* Padding-left do meta cai pra 32 — re-ancora --check-offset
+       pra linha colar na borda interna do card. */
+    .mba-curriculum-card-list {
+        --check-offset: 32px;
+    }
+    .mba-curriculum-header-inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .mba-curriculum-title,
+    .mba-curriculum-header-cta { grid-column: 1 / -1; }
+    .mba-curriculum-grid {
+        flex-direction: column;
+        padding: 0 16px;
+    }
+    .mba-curriculum-card {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* ── Reveal: .mba-gains sobre sobre .mba-curriculum ──
+   Clone do padrão de ed/formacoes/style.css:18-30 (pilares-profs
+   sobe sobre sec-projetos). `--mba-curriculum-height` é exposto via
+   JS (mede .mba-curriculum.offsetHeight com ResizeObserver — a
+   altura é dinâmica por causa do horizontal scroll que define
+   sec.style.height = '100dvh + maxTranslate'). */
+.mba-curriculum-gains-track {
+    position: relative;
+}
+.mba-curriculum-gains-track .mba-curriculum {
+    position: sticky;
+    top: calc(100vh - var(--mba-curriculum-height, 100vh));
+    z-index: 0;
+}
+.mba-curriculum-gains-track .mba-gains {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── .mba-gains: section light com título metade + card metade.
+   Mesmo bg do .mba-light (textura + gradient ln200→ln100→ln200). */
+.mba-gains {
+    width: 100%;
+    min-height: 100vh;
+    padding: 128px 0;
+    background:
+        url("../site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-bg-texture.png") 0 0 / 8px 8px repeat,
+        linear-gradient(180deg, var(--ln200), var(--ln100), var(--ln200));
+    overflow: hidden;
+    isolation: isolate;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+/* Padrão DS Xperiun inner: width 100% + padding 16, max-width
+   só no @media (min-width: 1440px) (= clones do .mba-intro-inner,
+   .mba-target-inner, .mba-how-inner).
+   align-items: stretch (default) — title-wrap estica pra altura
+   do card (item mais alto) e distribui title topo + tags bottom. */
+.mba-gains-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 16px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+/* Wrap do título — ocupa altura total do row (= card). flex column
+   com justify-content: flex-start = title + tags ambos colados no
+   topo (gap 16 entre eles). */
+.mba-gains-title-wrap {
+    grid-column: span 4;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 16px;
+}
+.mba-gains-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+/* Versão light da .tag (DS root.css:1218): em fundo light da
+   .mba-gains o estilo dark (bg dn800) fica muito contrastante.
+   Default ln300, hover ln500, active pc700. */
+.tag.mba-gains-tag {
+    background-color: var(--ln300);
+    color: var(--bb);
+}
+.tag.mba-gains-tag.is-hover,
+.tag.mba-gains-tag:hover {
+    background-color: var(--ln500);
+    color: var(--bb);
+}
+.tag.mba-gains-tag.is-active {
+    background-color: var(--pc700);
+    color: var(--bw);
+}
+.mba-gains-title {
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0;
+    background-image: linear-gradient(90deg, var(--bb), var(--pc500));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.mba-gains-title-bold { font-weight: 700; font-style: italic; }
+/* Wrap dos 3 cards (Faixa 1/2/3). Cards empilhados na mesma célula
+   via grid-area: stack, com fade entre eles. O active tem opacity
+   1 e pointer-events auto; os outros ficam opacity 0/invisíveis
+   mas mantêm a altura no grid (= altura do maior card). */
+.mba-gains-cards {
+    grid-column: span 6;
+    margin-top: 40px;
+    display: grid;
+    grid-template-areas: "stack";
+}
+.mba-gains-cards .mba-gains-card {
+    grid-area: stack;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.mba-gains-cards .mba-gains-card.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.mba-gains-card {
+    padding: 32px;
+    /* bg sólido ln100; shadow + radius clonados de .mba-target-card
+       pra consistência visual entre cards light. position: relative
+       pra ancorar .mba-gains-card-tags absolute. */
+    background: var(--ln100);
+    border-radius: 16px;
+    box-shadow:
+        16px 16px 32px 16px rgba(35, 0, 150, 0.15),
+        inset 0 0 4px 0 var(--bw);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+}
+
+/* 3 tags no topo do card (Faixa 01/02/03), side by side, FLIPADAS
+   verticalmente (scaleY -1) — balão fica de cabeça pra baixo, com
+   a "barra" embaixo do label. Estrutura clone do tese-top-tag da
+   home.css:387-442, renomeada pra contexto MBA. Mask SVGs usam
+   paths absolutos pra continuar funcionando aqui. pointer-events
+   auto pra serem clicáveis (controlam toggle de faixa). */
+.mba-gains-card-tags {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 2;
+}
+.mba-gains-card-tag {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scaleY(-1);
+    /* Desativadas em 30% opacity, .is-active em opacity 1 com label pc700. */
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+.mba-gains-card-tag:not(.is-active):hover {
+    opacity: 0.6;
+}
+.mba-gains-card-tag.is-active {
+    opacity: 1;
+}
+.mba-gains-card-tag.is-active .mba-gains-card-tag-label {
+    color: var(--pc700);
+}
+.mba-gains-card-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: var(--ln100);
+}
+.mba-gains-card-tag-body {
+    height: 40px;
+    margin-top: 8px;
+    width: fit-content;
+    padding: 0 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ln100);
+    -webkit-mask:
+        url('/ed/site-dependencias/site-imagens/Top Tag Esquerda.svg') left bottom / 80px 48px no-repeat,
+        url('/ed/site-dependencias/site-imagens/Top Tag Direita.svg')  right bottom / 80px 48px no-repeat,
+        linear-gradient(to right,
+            transparent 80px,
+            black 80px,
+            black calc(100% - 80px),
+            transparent calc(100% - 80px));
+    mask:
+        url('/ed/site-dependencias/site-imagens/Top Tag Esquerda.svg') left bottom / 80px 48px no-repeat,
+        url('/ed/site-dependencias/site-imagens/Top Tag Direita.svg')  right bottom / 80px 48px no-repeat,
+        linear-gradient(to right,
+            transparent 80px,
+            black 80px,
+            black calc(100% - 80px),
+            transparent calc(100% - 80px));
+    -webkit-mask-composite: source-over;
+    mask-composite: add;
+}
+.mba-gains-card-tag-label {
+    /* Mesmo estilo do .btn.mba-curriculum-cta-label: Cormorant Infant
+       700 italic, 1.125rem (btn-l), line-height 1. Re-flipa via scaleY
+       pra ficar legível depois do scaleY(-1) do parent. */
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 1.125rem;
+    line-height: 1;
+    text-align: center;
+    margin: 0;
+    color: var(--bb);
+    transform: scaleY(-1);
+    display: inline-block;
+}
+/* Linha de 5 imagens quadradas no topo do card. flex:1 + min-width:0
+   distribui igual entre as 5 mesmo com o aspect-ratio forçando height. */
+.mba-gains-card-imgs {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+.mba-gains-card-img {
+    flex: 1;
+    min-width: 0;
+    aspect-ratio: 1;
+    border-radius: 0;
+    object-fit: cover;
+    display: block;
+}
+.mba-gains-card-img:first-child {
+    border-radius: 12px 0 0 12px;
+}
+.mba-gains-card-img:last-child {
+    border-radius: 0 12px 12px 0;
+}
+/* Imagem correspondente a item desabilitado da lista: blur 8 + opacity 0.5
+   (faixa 2: imgs 1 e 4; faixa 3: imgs 1, 3 e 4). */
+.mba-gains-card-img.is-disabled {
+    filter: blur(8px);
+    opacity: 0.5;
+}
+.mba-gains-card-title {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--pc700);
+    margin: 0;
+}
+.mba-gains-card-text {
+    font: var(--p);
+    color: var(--dn500);
+    margin: 0;
+}
+/* Lista de bullets com ícone "check" do Material Symbols (Google
+   Fonts), 24px weight 200, cor sc900 (success-900). */
+.mba-gains-card-list {
+    list-style: none;
+    font: var(--p);
+    color: var(--dn500);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.mba-gains-card-list li {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+.mba-gains-card-list-icon {
+    flex-shrink: 0;
+    color: var(--sc900);
+    font-size: 24px;
+    font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+}
+/* Item desabilitado (não incluído na faixa): ícone "close" em er900
+   e texto com linha cortando. */
+.mba-gains-card-list li.is-disabled .mba-gains-card-list-icon {
+    color: var(--er900);
+}
+.mba-gains-card-list li.is-disabled > span:last-child {
+    text-decoration: line-through;
+}
+.mba-gains-card-list-tag {
+    color: var(--sc900);
+    font-weight: 700;
+}
+/* Aviso de prazo final — texto er900 (error-900) com ícone "warning"
+   Material Symbols, mesmo size/weight do check. */
+.mba-gains-card-warn {
+    font: var(--p);
+    color: var(--er900);
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.mba-gains-card-warn-icon {
+    flex-shrink: 0;
+    color: var(--er900);
+    font-size: 24px;
+    font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Header em modo "inline" = primeiro item do scroll horizontal.
+   Aplicado via JS quando matchMedia (min-width: 865) and (max-height: 864)
+   bate (viewport wide-short). O JS move o DOM pra dentro do grid e
+   adiciona a classe --inline; aqui só ajustamos o visual pra ele
+   se comportar como um card.
+   align-items: stretch → inner ocupa altura toda do --inline;
+   inner com justify-content: space-between → title no topo, CTA no
+   bottom (cada conteúdo em um extremo). */
+.mba-curriculum-header--inline {
+    flex-shrink: 0;
+    width: 544px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: stretch;
+}
+.mba-curriculum-header--inline .mba-curriculum-header-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+}
+.mba-curriculum-header--inline .mba-curriculum-title,
+.mba-curriculum-header--inline .mba-curriculum-header-cta {
+    grid-column: auto;
+    width: 100%;
+}
+.mba-curriculum-header--inline .mba-curriculum-header-cta {
+    align-items: flex-start;
+}
+.mba-curriculum-header--inline .mba-curriculum-header-cta-text {
+    text-align: left;
+}
+/* Spacer invisível antes do header inline — só existe em wide-short
+   (inserido/removido pelo mesmo IIFE do relocate). Ocupa espaço no
+   início do scroll horizontal, dando uma "entrada vazia" antes do
+   header aparecer. Width = mesma dos cards (832px), ajustável. */
+.mba-curriculum-spacer {
+    flex-shrink: 0;
+    width: 832px;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Wide-short (vw > 864 + vh < 864): mesma viewport do header inline.
+   Padding-top do meta reduzido pra 64 (de 128) — em altura baixa o
+   espaço pro num gigante 16rem em cima fica espremido. */
+@media (min-width: 865px) and (max-height: 864px) {
+    .mba-curriculum-card-meta {
+        padding-top: 64px;
+    }
+}
+
+/* ── Reveal: .mba-offer sobe sobre .mba-gains ──
+   Mesmo padrão de .mba-curriculum-gains-track / .mba-light-how-track:
+   .mba-gains sticky com top: calc(100vh - height); .mba-offer por cima
+   com z-index 1. --mba-gains-height exposto via JS. */
+.mba-gains-offer-track {
+    position: relative;
+}
+.mba-gains-offer-track .mba-gains {
+    position: sticky;
+    top: calc(100vh - var(--mba-gains-height, 100vh));
+    z-index: 0;
+}
+.mba-gains-offer-track .mba-offer {
+    position: relative;
+}
+
+/* ── .mba-offer: card de pricing à esquerda + FAQ à direita.
+   Fundo dark pra fazer contraste com a .mba-gains light que está
+   abaixo (sticky reveal). */
+.mba-offer {
+    width: 100%;
+    padding: 128px 0;
+    box-sizing: border-box;
+    position: relative;
+    /* bg movido pro ::after z-index -1 abaixo. Section em si fica
+       transparente — o glow ::before do wrap-pai (z-index 1) consegue
+       aparecer acima do bg (z-index -1 no stacking do wrap), apenas o
+       card (z-index 2) fica na frente do glow. */
+}
+.mba-offer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bb), var(--bb-50));
+    z-index: -1;
+    pointer-events: none;
+}
+.mba-offer-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 16px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+.mba-offer-card {
+    /* Centralizado em 10 cols (3 / span 6 = cols 3-8). */
+    grid-column: 3 / span 6;
+}
+/* Conteúdo das sections acima do ::before do wrap (z-index 1).
+   Card e faq-grid em z-index 2, ::before glow fica acima do bg
+   sólido das sections mas atrás do conteúdo principal. */
+.mba-offer-inner,
+.mba-offer-card,
+.mba-faq-inner,
+.mba-faq .faq-grid {
+    position: relative;
+    z-index: 2;
+}
+/* ── Section .mba-faq: clone do .sec-faq do hub (formacoes/style.css:
+   2229-2293), mas sem eyebrow, com título no padrão dessa página
+   (Cormorant Infant gradient high), e bg igual ao .mba-how. */
+.mba-faq {
+    width: 100%;
+    padding: 128px 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
+    /* bg movido pro ::after z-index -1 abaixo (mesma estratégia
+       do .mba-offer). Section transparente → glow ::before do
+       wrap fica acima, conteúdo (faq-grid z=2) na frente do glow. */
+}
+.mba-faq::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bb);
+    z-index: -1;
+    pointer-events: none;
+}
+/* Wrap visual de .mba-offer + .mba-faq: background com gradient
+   roxo blurred clone do .perfis-depos-wrap::before do hub
+   (formacoes/style.css:1163-1186). */
+.mba-offer-faq-wrap {
+    position: relative;
+    z-index: 0;
+    /* overflow removido — cortaria o box-shadow externo. */
+    box-shadow: 0 -128px 128px 0 var(--bw);
+}
+.mba-offer-faq-wrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 20% 60%, var(--pc800) 0%, transparent 70%),
+        radial-gradient(ellipse at 60% 40%, transparent 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 40%, transparent 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 20%, var(--pc900) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 100%, transparent 0%, transparent 100%),
+        radial-gradient(ellipse at 100% 100%, transparent 0%, transparent 70%);
+    background-size: 100% 100%;
+}
+.mba-faq-inner {
+    width: 100%;
+    padding: 0 16px 64px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.mba-faq-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+.mba-faq-title {
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0;
+    background-image: var(--text-gradient-high);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    width: fit-content;
+}
+
+/* ── FAQ accordion: clone de .faq-grid do hub (formacoes/style.css:
+   2252-2293), escopado em .mba-offer pra não vazar. Animação suave
+   via grid-template-rows 0fr → 1fr (toggle .is-open via JS). */
+.mba-faq .faq-grid {
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+}
+.mba-faq .faq-row { padding: 0 16px; cursor: pointer; transition: background-color 0.2s ease; }
+.mba-faq .faq-row:hover { background-color: var(--bw-5); }
+.mba-faq .faq-row + .faq-row { box-shadow: inset 0 2px 0 0 var(--bw-10); }
+.mba-faq .faq-q {
+    list-style: none;
+    cursor: pointer;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.mba-faq .faq-q::-webkit-details-marker { display: none; }
+.mba-faq .faq-q-text { font: var(--p); color: var(--bw); }
+.mba-faq .faq-q-icon { color: var(--bw-50); flex-shrink: 0; font-weight: 200; }
+.mba-faq .faq-a-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s ease-out;
+    will-change: grid-template-rows;
+}
+.mba-faq .faq-a-grid.is-open { grid-template-rows: 1fr; }
+.mba-faq .faq-a-wrap {
+    min-height: 0;
+    overflow: hidden;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 28px;
+    box-sizing: border-box;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.mba-faq .faq-a { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* ── .mba-offer-card clone (home.css:2085-2280) — pricing card MBA.
+   Sem keyframes is-entered (visível direto via opacity: 1 abaixo). */
+.mba-offer-card {
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bb);
+    background-image: linear-gradient(to top, var(--dn500-50), transparent);
+}
+.mba-offer-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    box-shadow: inset 0 0 4px 0 var(--bw-10);
+    pointer-events: none;
+    z-index: 10;
+}
+.mba-offer-card-header {
+    padding: 0;
+    height: 192px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, var(--dn800), transparent);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+/* Glow gradient animado no fundo (z-index 0) — transparent → pc500
+   com opacity pulsando 0.25 → 1. */
+@keyframes mba-offer-card-header-glow {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 1; }
+}
+.mba-offer-card-header-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(90deg, transparent, var(--pc500));
+    animation: mba-offer-card-header-glow 4s ease-in-out infinite;
+    pointer-events: none;
+}
+/* 12 stripes (clone do .mba-hero-stripes:117-123) por cima do glow,
+   atrás do logo. Cria padrão de "véu" radial sobre o gradient. */
+.mba-offer-card-header-stripes {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    pointer-events: none;
+}
+.mba-offer-card-header-stripes > div {
+    flex: 1 1 0;
+    height: 100%;
+    background: radial-gradient(ellipse, transparent 0%, var(--bb) 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+}
+/* Logo no centro, acima de glow e stripes. */
+.mba-offer-card-header-logo {
+    position: relative;
+    z-index: 2;
+    width: 294px;
+    height: auto;
+    display: block;
+}
+.mba-offer-card-body {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    flex: 1;
+}
+/* Bloco preço: old (cortado) → main (preço grande) → sub (parcelas). */
+.mba-offer-price-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.mba-offer-price-old {
+    font: var(--p-s);
+    color: var(--bw-50);
+    text-decoration: line-through;
+    margin: 0;
+    text-align: center;
+}
+.mba-offer-price-main {
+    text-align: center;
+    margin: 0;
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+.mba-offer-price-sub {
+    font: var(--p-s);
+    color: var(--bw-75);
+    margin: 4px 0 0;
+    text-align: center;
+}
+.mba-offer-price-wrap { display: inline-flex; align-items: flex-start; gap: 8px; }
+.mba-offer-price-currency { font: var(--label-s); color: var(--bw-50); }
+.mba-offer-price-value {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 96px;
+    line-height: 0.825em;
+    background: linear-gradient(180deg, var(--sg200) 0%, var(--sg500) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.mba-offer-price-alt { display: flex; flex-direction: column; gap: 16px; }
+.mba-offer-price-sep { width: 100%; height: 2px; background: var(--bw-10); flex-shrink: 0; }
+.mba-offer-price-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.mba-offer-price-row-label { font: var(--label-m); color: var(--bw-50); }
+.mba-offer-price-row-right { display: flex; flex-direction: column; align-items: flex-end; }
+.mba-offer-price-row-amount { font: var(--label-m); color: var(--bw); }
+.mba-offer-price-row-period { font: var(--label-s); color: var(--bw-50); }
+.mba-offer-price-savings { font: var(--label-m); color: var(--sc500); text-align: right; margin: 0; }
+.mba-offer-price-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.mba-offer-risk { max-width: 400px; margin: 0 auto; text-align: center; }
+.mba-offer-risk p { font: var(--p-s); color: var(--bw-75); margin: 0; }
+.mba-offer-ctas { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+
+/* CTA wave — gradient animado. Clone do home.css:2218-2248. */
+@keyframes mba-offer-wave-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.mba-offer .btn.mba-offer-cta-wave[data-emphasis] {
+    width: 100% !important;
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+    background-image: linear-gradient(90deg, var(--sg400), var(--sg100), var(--sg400), var(--sg700)) !important;
+    background-size: 600% 600% !important;
+    color: var(--bb) !important;
+    /* font shorthand primeiro (size 1.25rem do --btn-xl), depois
+       overrides de family/weight pra manter Cormorant Infant 700. */
+    font: var(--btn-xl) !important;
+    font-family: var(--font-display) !important;
+    font-weight: 700 !important;
+    transition: color 0.5s !important;
+    animation: mba-offer-wave-shift 5s ease infinite !important;
+}
+.mba-offer .btn.mba-offer-cta-wave[data-emphasis]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bw-75);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    z-index: -1;
+}
+.mba-offer .btn.mba-offer-cta-wave[data-emphasis]:hover { color: var(--bb) !important; }
+.mba-offer .btn.mba-offer-cta-wave[data-emphasis]:hover::before { opacity: 1; }
+
+.mba-offer-trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.mba-offer-trust-item { display: flex; align-items: center; gap: 4px; font: var(--p-xs); color: var(--pc200); margin: 0; }
+.mba-offer-trust-item .material-symbols-outlined {
+    font-size: 14px;
+    color: var(--pc200);
+    font-variation-settings: 'FILL' 0;
+}
+
+/* ── Botão dentro do sticky CTA: estilo clone do .btn.mba-cta
+   (gradient bw→ln600→ln900, color bb, inset shadow 2px, Cormorant
+   700 italic, transition 0.5s) MAS com padding S (data-size="s" do
+   DS). font-size mantido em 1.125rem (= btn L) por pedido. */
+.btn.mba-sticky-cta-btn {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background-image: linear-gradient(90deg, var(--bw), var(--ln600), var(--ln900));
+    background-size: 200%;
+    background-position: 0% 0%;
+    color: var(--bb);
+    box-shadow: inset 0 0 0 2px var(--bw);
+    font-family: var(--font-display) !important;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.25;
+    transition: 0.5s;
+}
+.btn.mba-sticky-cta-btn.is-hover,
+.btn.mba-sticky-cta-btn:hover {
+    background-position: 100% 0%;
+    color: var(--bb);
+}
+
+/* ── Sticky CTA "Garantir minha vaga": fixed no bottom da viewport,
+   centralizado horizontal. Body clone do .mba-gains-card-tag-body
+   com 2x o tamanho (height 80, padding 0 128, mask SVGs 160x96 com
+   gap 160). Bottom -16 dá o efeito de "tag saindo do chão". */
+.mba-sticky-cta {
+    position: fixed;
+    bottom: -8px;
+    left: 0;
+    z-index: 100;
+    pointer-events: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+/* Recolhe pra baixo (fora da viewport) quando .mba-hero ou .mba-offer
+   estão visíveis. Toggle via JS (IntersectionObserver). */
+.mba-sticky-cta.is-collapsed {
+    transform: translateY(100%);
+}
+/* Base que estende lateralmente além do body — full-width no bottom.
+   Body com margin-bottom equivalente deixa esse espaço livre, sem
+   sobreposição com alpha somada. Tamanhos /1.5 do original. */
+.mba-sticky-cta::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: var(--dn500-50);
+}
+/* Body: tag 120×72 (originais 160×96 /1.333). Proporção 5:3 mantida.
+   Padding 0 72, gradient bordas 120, min-width 288, margin-bottom 12
+   (= height do ::after). */
+.mba-sticky-cta-body {
+    height: 60px;
+    width: fit-content;
+    padding: 0 72px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    background:
+        url("data:image/svg+xml;charset=utf-8,<svg width='80' height='48' viewBox='0 0 80 48' xmlns='http://www.w3.org/2000/svg'><path transform='matrix(1 0 0 -1 0 48)' d='M80 48V0H0V8H2.74516C11.2321 8 19.3714 11.3714 25.3726 17.3726L46.6274 38.6274C52.6286 44.6286 60.7679 48 69.2548 48H80Z' fill='%2332323C' fill-opacity='0.50'/></svg>") left top / 120px 72px no-repeat,
+        url("data:image/svg+xml;charset=utf-8,<svg width='80' height='48' viewBox='0 0 80 48' xmlns='http://www.w3.org/2000/svg'><path transform='matrix(1 0 0 -1 0 48)' d='M0 48V0H80V8H77.2548C68.7679 8 60.6286 11.3714 54.6274 17.3726L33.3726 38.6274C27.3714 44.6286 19.2321 48 10.7452 48H0Z' fill='%2332323C' fill-opacity='0.50'/></svg>") right top / 120px 72px no-repeat,
+        linear-gradient(to right,
+            transparent 120px,
+            var(--dn500-50) 120px,
+            var(--dn500-50) calc(100% - 120px),
+            transparent calc(100% - 120px));
+    min-width: 288px;
+}
+
+/* ── Responsivo (DS Xperiun) ────────────────────────── */
+
+/* Orbs ajustadas em laptop pra não dominar viewport. */
+@media (max-width: 1439px) {
+    .mba-orb--1 { left: -50%; }
+    .mba-orb--3 { right: -20%; }
+}
+
+/* Tablet ≤864: 6 cols / gutter 24px.
+   Lead span 6 (full), action e meta seguem o grid 6. */
+@media (max-width: 864px) {
+    .mba-orb--1 { top: -60%; left: -80%; }
+    .mba-orb--3 {
+        height: 100%;
+        top: auto;
+        bottom: -10%;
+        left: 0%;
+    }
+
+    .mba-hero { padding: 80px 0 192px; }
+
+    .mba-hero-inner {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 24px;
+    }
+    .mba-lead { grid-column: span 6; gap: 24px; }
+    .mba-block { grid-column: span 6; margin-top: 24px; gap: 24px; }
+
+    /* Action vertical: texto em cima, CTA full-width abaixo. */
+    .mba-action {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        align-items: stretch;
+    }
+
+    .mba-meta {
+        --mba-meta-gap: 48px;
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .mba-meta-card { grid-column: span 3; }
+
+    /* Tablet: 2 cards por row × 2 rows.
+       Cards 2 e 4 são fim de row → sem linha vertical à direita.
+       Cards 1 e 2 (row 1) → linha horizontal embaixo (::before). */
+    .mba-meta-card:nth-child(2n)::after { display: none; }
+    .mba-meta-card:nth-child(-n+2)::before {
+        content: '';
+        position: absolute;
+        bottom: calc(var(--mba-meta-gap) / -2 - 1px);
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--bw-15);
+        pointer-events: none;
+    }
+
+    /* Stats em tablet: 2×2. Cards na row 2 (3 e 4) ganham divider top.
+       margin-top reduzido de 256 (desktop) pra 192 — mantido também
+       em ≤576 via cascade. */
+    .mba-stats { margin-top: 192px; }
+    .mba-stats-grid { flex-wrap: wrap; }
+    .mba-stat-card { flex: 0 0 50%; padding: 24px; }
+    .mba-stat-card:nth-child(n+3) {
+        box-shadow: inset 2px 0 0 0 var(--bw-10), inset 0 2px 0 0 var(--bw-10);
+    }
+
+    /* Intro tablet: 6 cols, título span 6 full, textos + CTA stack.
+       Pseudos + padding já vêm do override de ≤1152. */
+    .mba-intro-inner {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 24px;
+    }
+    .mba-intro-title { grid-column: span 6; margin-bottom: 24px; }
+    .mba-intro-text { grid-column: span 6; grid-row: auto; }
+    .btn.mba-intro-cta { grid-column: span 6; grid-row: auto; width: auto; justify-self: start; }
+
+    /* Target tablet: 6 cols, stack full. Sticky DESATIVADO daqui pra
+       baixo — cards e lead viram relative com top: auto.
+       Paddings vêm das vars --mba-target-pad-top/bot (96 / 256). */
+    .mba-target-inner { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+    .mba-target-lead {
+        grid-column: 1 / span 6;
+        row-gap: 24px;
+        position: relative;
+        top: auto;
+        height: auto;  /* reset do 128 fixo do bp ≤1152 */
+    }
+    .mba-target-title-wrap { grid-column: 1 / -1; }
+    .mba-target-text { grid-column: 1 / -1; }
+    .mba-target-cards { grid-column: 1 / span 6; gap: 24px; }
+    /* Reseta sticky dos cards — mesma specificity do override desktop. */
+    .mba-target-card,
+    .mba-target-card:nth-child(1),
+    .mba-target-card:nth-child(2),
+    .mba-target-card:nth-child(3),
+    .mba-target-card:nth-child(4) {
+        position: relative;
+        top: auto;
+    }
+
+    /* Reveal ≤864: cards do target NÃO são sticky, então a fórmula
+       composta não faz sentido. Volta pro padrão f6 puro: sticky
+       com bottom grudado no rodapé. */
+    .mba-light-how-track .mba-light {
+        top: calc(100vh - var(--mba-light-height, 100vh));
+    }
+
+    /* How tablet: 6 cols, stack — header e cards full width. */
+    .mba-how-inner { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+    .mba-how-header { grid-column: 1 / span 6; }
+    .mba-how-cards { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+    .mba-how-card-wrap--1,
+    .mba-how-card-wrap--4 { grid-column: span 6; }
+    .mba-how-card:nth-child(2),
+    .mba-how-card:nth-child(3) { grid-column: span 6; }
+    /* Layout column + img 100×256 + content padding 0 32 32 32 já
+       vêm do override de ≤1152 via cascade. */
+
+    /* Gains tablet: 6 cols, título + card em stack, full width cada.
+       padding-bottom 256 — dá espaço pro reveal sticky de .mba-offer
+       que sobe sobre a section em ≤864. */
+    .mba-gains { padding: 96px 0 256px; }
+    .mba-gains-inner {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 24px;
+    }
+    .mba-gains-title-wrap { grid-column: span 6; }
+    .mba-gains-cards { grid-column: span 6; }
+
+    /* Offer tablet: 6 cols, card full. */
+    .mba-offer { padding: 96px 0; }
+    .mba-offer-inner {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 24px;
+    }
+    .mba-offer-card { grid-column: span 6; }
+
+    /* FAQ tablet: 6 cols, header full. */
+    .mba-faq { padding: 96px 0; }
+    .mba-faq-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 48px;
+        padding-bottom: 48px;
+    }
+    .mba-faq-header { grid-column: 1 / -1; }
+}
+
+/* Mobile ≤576: 4 cols / gutter 16px. */
+@media (max-width: 576px) {
+    .mba-orb--1 { top: -60%; left: -150%; }
+    .mba-hero { padding: 64px 0 160px; }
+
+    .mba-hero-inner {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+    .mba-lead { grid-column: span 4; gap: 16px; }
+    .mba-lead-logo { width: 196px; }
+    .mba-block { grid-column: span 4; margin-top: 16px; gap: 16px; }
+
+    .mba-action { gap: 16px; }
+
+    .mba-meta {
+        --mba-meta-gap: 32px;
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .mba-meta-card { grid-column: span 4; }
+
+    /* Mobile: 1 card por row × 4 rows.
+       Sem linhas verticais (todos single col). Linhas horizontais
+       entre cards via ::before (exceto último). Reseta ::before
+       do tablet pra não duplicar. */
+    .mba-meta-card::after { display: none; }
+    .mba-meta-card::before { display: none; }
+    .mba-meta-card:not(:last-child)::before {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: calc(var(--mba-meta-gap) / -2 - 1px);
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--bw-15);
+        pointer-events: none;
+    }
+
+    /* CTA do curriculum volta a alinhar à esquerda em ≤576. */
+    .mba-curriculum-header-cta {
+        align-items: flex-start;
+    }
+    .mba-curriculum-header-cta-text {
+        text-align: left;
+    }
+
+    /* Stats em mobile: stack vertical, dividers horizontais entre cards.
+       margin-top 192 (herdado do ≤864 via cascade) — explícito aqui
+       pra documentar. Logo "X" pseudo já está em escopo global. */
+    .mba-stats { margin-top: 192px; }
+    .mba-stats-grid {
+        flex-direction: column;
+        box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+    }
+    .mba-stat-card {
+        padding: 16px;
+        box-shadow: none;
+    }
+    .mba-stat-card + .mba-stat-card {
+        box-shadow: inset 0 2px 0 0 var(--bw-10);
+    }
+
+    /* Intro mobile: 4 cols, tudo span 4 stack. */
+    .mba-intro { padding: 160px 0 64px; }
+    .mba-intro-inner {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+    .mba-intro-title { grid-column: span 4; margin-bottom: 16px; }
+    .mba-intro-text { grid-column: span 4; grid-row: auto; }
+    .btn.mba-intro-cta { grid-column: span 4; grid-row: auto; }
+
+    /* Target mobile: 4 cols, gaps menores, card padding reduzido.
+       Paddings vêm das vars --mba-target-pad-top/bot (64 / 256). */
+    .mba-target-inner { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .mba-target-lead { grid-column: 1 / span 4; row-gap: 16px; }
+    .mba-target-title-wrap { grid-column: 1 / -1; }
+    .mba-target-text { grid-column: 1 / -1; }
+    .mba-target-cards { grid-column: 1 / span 4; gap: 16px; }
+    .mba-target-card { padding: 160px 32px 64px 32px; }
+    /* Número ancora levemente acima do topo do card (-32). Com
+       padding-top 160 no card, o número não interfere no conteúdo. */
+    .mba-target-card::before {
+        top: -32px;
+        transform: none;
+    }
+
+    /* How mobile: 4 cols, stack. */
+    .mba-how { padding: 64px 0; }
+    .mba-how-inner { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .mba-how-header { grid-column: 1 / span 4; }
+    .mba-how-cards { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .mba-how-card-wrap--1,
+    .mba-how-card-wrap--4 { grid-column: span 4; }
+    .mba-how-card:nth-child(2),
+    .mba-how-card:nth-child(3) { grid-column: span 4; }
+    /* Padding do content NÃO muda em mobile — vem do ≤1152. */
+
+    /* Primeiro card do curriculum vira coluna (img em cima, meta abaixo).
+       Padding do demo: 0 32 32 32 (top 0 = demo cola na meta acima). */
+    .mba-curriculum-card:first-child {
+        flex-direction: column;
+    }
+    .mba-curriculum-card-demo {
+        padding: 0 32px 32px 32px;
+    }
+
+    /* Gains mobile: 4 cols, padding reduzido, card padding 24.
+       Sticky reveal já desabilitado no ≤864 (cascade cobre aqui).
+       margin-top do wrap removido em mobile + top-tags do card
+       escondidas (não cabem visualmente no card menor). */
+    .mba-gains { padding: 64px 0 256px; min-height: 100dvh; }
+    .mba-gains-inner {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+    .mba-gains-title-wrap { grid-column: span 4; }
+    .mba-gains-cards { grid-column: span 4; margin-top: 0; }
+    .mba-gains-card { padding: 24px; }
+    .mba-gains-card-tags { display: none; }
+    .mba-gains-card-imgs { gap: 2px; }
+
+    /* Offer mobile: 4 cols, padding reduzido. */
+    .mba-offer { padding: 64px 0; }
+    .mba-offer-inner {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+    .mba-offer-card { grid-column: span 4; }
+    .mba-offer-card-header,
+    .mba-offer-card-body { padding: 24px; }
+    .mba-offer-price-value { font-size: 72px; }
+
+    /* FAQ mobile: 4 cols. */
+    .mba-faq { padding: 64px 0; }
+    .mba-faq-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+        row-gap: 32px;
+        padding-bottom: 32px;
+    }
+    .mba-faq-header { grid-column: 1 / -1; }
+}
