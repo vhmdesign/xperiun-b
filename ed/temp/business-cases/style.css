@@ -1,0 +1,60 @@
+/* ===== Business Cases (temp/lab) — overrides locais. O visual base (hero wave,
+   sec-eyebrow/sec-title/sec-lede, sec-cta, .btn, grid) vem de root.css +
+   formacoes/style.css, e o reveal das seções vem de formacoes/script.js
+   (mesmo setup das páginas de área). ===== */
+
+/* ── hero (centralizado, igual às páginas de área) ── */
+.hero { background: linear-gradient(0deg, var(--pc500-25), transparent); }
+.hero-wave.wave-section { padding-top: 128px; }
+.hero-content { max-width: 832px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.hero-title-group, .hero-bottom { align-items: center; }
+.hero-tags, .hero-actions { justify-content: center; }
+.bc-hero-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.bc-hero-list li { display: flex; align-items: center; gap: 10px; font: var(--p); color: var(--bw-75); }
+.bc-hero-list .material-symbols-outlined { font-size: 22px; color: var(--sc500); flex-shrink: 0; }
+.bc-tudo { font: var(--label-l); color: var(--bw); }
+
+/* ── seções extras (alinhadas ao grid de conteúdo 1152) ── */
+.bc-sec { padding: 128px 0; }
+.bc-inner { max-width: 1152px; margin: 0 auto; padding: 0 16px; box-sizing: border-box; }
+.bc-header { display: flex; flex-direction: column; gap: 16px; max-width: 680px; }
+.bc-header--center { max-width: 720px; margin-left: auto; margin-right: auto; align-items: center; text-align: center; }
+
+/* ── overview (3 features) ── */
+.bc-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 56px; }
+.bc-feature { display: flex; flex-direction: column; gap: 12px; }
+.bc-feature-ico { width: 56px; height: 56px; border-radius: 14px; background: var(--pc500-15); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+.bc-feature-ico .material-symbols-outlined { font-size: 28px; color: var(--pc300); }
+.bc-feature h3 { font: var(--label-l); font-weight: 600; color: var(--bw); margin: 0; }
+.bc-feature p { font: var(--p-s); color: var(--bw-75); margin: 0; }
+
+/* ── grades de imagem (filler) ── */
+.bc-img-grid { display: grid; gap: 24px; margin-top: 56px; }
+.bc-img-2 { grid-template-columns: repeat(2, 1fr); }
+.bc-img-3 { grid-template-columns: repeat(3, 1fr); }
+.bc-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 16px; display: block; }
+
+/* ── áreas (marquee de tags) ── */
+.bc-marquee { margin-top: 48px; display: flex; flex-direction: column; gap: 16px; overflow: hidden;
+    -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.bc-track { display: flex; gap: 16px; width: max-content; }
+.bc-track--a { animation: bc-scroll 55s linear infinite; }
+.bc-track--b { animation: bc-scroll 55s linear infinite reverse; }
+.bc-tag { flex: 0 0 auto; padding: 12px 24px; border-radius: 9999px; background: var(--dn800); box-shadow: inset 0 0 0 2px var(--bw-10); font: var(--label); color: var(--bw-75); white-space: nowrap; }
+@keyframes bc-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .bc-track { animation: none; } }
+
+/* ── portfólio: iframe à ESQUERDA, texto à DIREITA ── */
+.bc-portfolio { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: center; }
+.bc-portfolio .bc-header { max-width: none; }
+.bc-portfolio-frame { margin: 0; }
+
+@media (max-width: 1152px) {
+    .bc-features { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 864px) {
+    .bc-features { grid-template-columns: 1fr; }
+    .bc-img-2, .bc-img-3 { grid-template-columns: 1fr; }
+    .bc-portfolio { grid-template-columns: 1fr; }
+}

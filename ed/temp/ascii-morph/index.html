@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix 3D , Claude -> Xperiun</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+        width: 100%;
+        height: 100%;
+        background: #00000A;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .stage {
+        position: relative;
+        width: min(100vw, 100vh);
+        height: min(100vw, 100vh);
+        overflow: hidden;
+    }
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</head>
+<body>
+    <div class="stage">
+        <canvas id="c" width="1080" height="1080"></canvas>
+    </div>
+
+<script>
+(function () {
+    'use strict';
+
+    var SIZE = 1080;
+    var canvas = document.getElementById('c');
+    var ctx = canvas.getContext('2d');
+
+    /* ===== Grade (células quadradas: glifos legíveis tipo Matrix) ===== */
+    var COLS = 128, ROWS = 128;
+    var CELL = SIZE / COLS;
+    var CHAR_ASPECT = 1;
+
+    /* ===== Glifos estilo Matrix ===== */
+    var GLYPHS = (
+        "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍｦｲｸｺｿﾁﾄﾉﾌﾔﾙﾚﾛﾝ" +
+        "0123456789" +
+        "ABCDEFGHIJKLMNPQRSTUVWXYZ" +
+        ":=*+<>|/"
+    ).split('');
+
+    /* ====================================================================
+       SILHUETA A , robô do ascii-claude (SVG viewBox 0 0 110 80)
+    ==================================================================== */
+    var BODY = [
+        [100,20],[100,0],[10,0],[10,20],[0,20],[0,40],[10,40],[10,80],
+        [20,80],[20,60],[30,60],[30,80],[40,80],[40,60],[70,60],[70,80],
+        [80,80],[80,60],[90,60],[90,80],[100,80],[100,40],[110,40],[110,20]
+    ];
+    var EYES = [
+        { x0: 20, x1: 30, y0: 20, y1: 30 },
+        { x0: 80, x1: 90, y0: 20, y1: 30 }
+    ];
+    function inPoly(px, py, poly) {
+        var inside = false, j = poly.length - 1;
+        for (var i = 0; i < poly.length; i++) {
+            var xi = poly[i][0], yi = poly[i][1];
+            var xj = poly[j][0], yj = poly[j][1];
+            if (((yi > py) !== (yj > py)) &&
+                (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) inside = !inside;
+            j = i;
+        }
+        return inside;
+    }
+    function inEye(px, py) {
+        for (var e = 0; e < EYES.length; e++) {
+            var E = EYES[e];
+            if (px >= E.x0 && px <= E.x1 && py >= E.y0 && py <= E.y1) return true;
+        }
+        return false;
+    }
+
+    /* ====================================================================
+       SILHUETA B , símbolo Xperiun (SVG viewBox 0 0 800 800)
+    ==================================================================== */
+    var XPATH = "M208.7 139.14c-38.41 38.42-22.84 116.28 34.79 173.9l34.77 34.78c32.6 32.6 71.16 48.74 93.84 41.15l-59.05-75.93 75.93 59.06c7.59-22.67-8.55-61.24-41.15-93.84L208.71 139.14zm180.34 288.939c7.44 22.7-8.71 61.14-41.21 93.65L243.48 626.07C147.44 722.13 38.43 768.84.01 730.43H0l278.26-278.25c32.51-32.51 70.95-48.65 93.65-41.21L243.48 556.53 389.04 428.1zm63.14 93.661c-32.6-32.6-48.74-71.16-41.15-93.84l75.93 59.06-59.05-75.93c22.67-7.59 61.24 8.55 93.84 41.15l34.77 34.78c57.63 57.63 73.2 135.479 34.79 173.899L452.19 521.74zm-41.22-149.82c-7.44-22.7 8.71-61.141 41.21-93.65l104.35-104.341c96.05-96.05 205.05-142.77 243.47-104.35h.01L521.74 347.83c-32.51 32.51-70.95 48.651-93.65 41.211l128.43-145.56-145.56 128.43z";
+    var _off = document.createElement('canvas'); _off.width = 800; _off.height = 800;
+    var _octx = _off.getContext('2d');
+    var _xpath = new Path2D(XPATH);
+    function inXperiun(x, y) { return _octx.isPointInPath(_xpath, x, y); }
+
+    /* ====================================================================
+       Construtor genérico de modelo 3D extrudado (faces + paredes)
+       -> rasteriza, centra, extruda (HD/halfExtent = 9/55) e normaliza p/ 12 un.
+    ==================================================================== */
+    function buildModel(VW, VH, STEP, inside) {
+        var GNX = Math.ceil(VW / STEP) + 1;
+        var GNY = Math.ceil(VH / STEP) + 1;
+        var solid = new Uint8Array(GNX * GNY);
+        function S(i, j) { return (i < 0 || j < 0 || i >= GNX || j >= GNY) ? 0 : solid[i * GNY + j]; }
+
+        var i, j;
+        for (i = 0; i < GNX; i++)
+            for (j = 0; j < GNY; j++)
+                solid[i * GNY + j] = inside(i * STEP, j * STEP) ? 1 : 0;
+
+        var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+        for (i = 0; i < GNX; i++)
+            for (j = 0; j < GNY; j++)
+                if (solid[i * GNY + j]) {
+                    var bx = i * STEP, by = j * STEP;
+                    if (bx < minX) minX = bx; if (bx > maxX) maxX = bx;
+                    if (by < minY) minY = by; if (by > maxY) maxY = by;
+                }
+        var CX = (minX + maxX) / 2, CY = (minY + maxY) / 2;
+        var halfExtent = Math.max(maxX - CX, maxY - CY);
+        var HD = (9 / 55) * halfExtent, ZSTEPS = 14;
+
+        var P = [];
+        function push(x, y, z, nx, ny, nz, sd) {
+            var l = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+            P.push([x - CX, CY - y, z, nx/l, ny/l, nz/l, sd]);
+        }
+        for (i = 0; i < GNX; i++)
+            for (j = 0; j < GNY; j++) {
+                if (!S(i, j)) continue;
+                var sx = i * STEP, sy = j * STEP;
+                push(sx, sy,  HD, 0, 0,  1, 0);
+                push(sx, sy, -HD, 0, 0, -1, 0);
+                var rE = !S(i+1,j), lE = !S(i-1,j), dE = !S(i,j+1), uE = !S(i,j-1);
+                if (rE || lE || dE || uE) {
+                    var nx = (rE?1:0) - (lE?1:0);
+                    var ny = (uE?1:0) - (dE?1:0);
+                    if (nx !== 0 || ny !== 0)
+                        for (var k = 0; k < ZSTEPS; k++)
+                            push(sx, sy, -HD + (2*HD) * k / (ZSTEPS - 1), nx, ny, 0, 1);
+                }
+            }
+
+        var nmx = 0, nmy = 0;
+        for (i = 0; i < P.length; i++) {
+            if (Math.abs(P[i][0]) > nmx) nmx = Math.abs(P[i][0]);
+            if (Math.abs(P[i][1]) > nmy) nmy = Math.abs(P[i][1]);
+        }
+        var nf = 12 / Math.max(nmx, nmy);
+        for (i = 0; i < P.length; i++) { P[i][0]*=nf; P[i][1]*=nf; P[i][2]*=nf; }
+
+        /* ordena por ângulo p/ um morph que "flui" (mesmo quantil de ângulo em A e B) */
+        P.sort(function (a, b) { return Math.atan2(a[1], a[0]) - Math.atan2(b[1], b[0]); });
+        return P;
+    }
+
+    var MA = buildModel(110, 80, 0.55, function (x, y) { return inPoly(x, y, BODY) && !inEye(x, y); });
+    var MB = buildModel(800, 800, 4, inXperiun);
+    var lenA = MA.length, lenB = MB.length, M = Math.max(lenA, lenB);
+
+    /* ===== Bagunça da transição: direção de espalhamento + atraso por ponto ===== */
+    var SCATTER = 5.5;   /* quão longe cada ponto voa no meio do morph (unidades) */
+    var SPREAD  = 0.55;  /* quão dessincronizado o morph fica (0 = todos juntos) */
+    var SCX = new Float32Array(M), SCY = new Float32Array(M), SCZ = new Float32Array(M), DLY = new Float32Array(M);
+    for (var si = 0; si < M; si++) {
+        var th = Math.random() * Math.PI * 2, ph2 = Math.acos(2 * Math.random() - 1), mag = 0.35 + Math.random() * 0.65;
+        SCX[si] = Math.sin(ph2) * Math.cos(th) * mag;
+        SCY[si] = Math.sin(ph2) * Math.sin(th) * mag;
+        SCZ[si] = Math.cos(ph2) * mag;
+        DLY[si] = Math.random();
+    }
+
+    /* ===== Esfera-alvo do meio do morph (projeta círculo perfeito em qualquer ângulo) ===== */
+    var R_SPH = 11;
+    var SPHX = new Float32Array(M), SPHY = new Float32Array(M), SPHZ = new Float32Array(M);
+    var SNX = new Float32Array(M), SNY = new Float32Array(M), SNZ = new Float32Array(M);
+    var GA = Math.PI * (3 - Math.sqrt(5));   /* ângulo áureo: distribuição uniforme (Fibonacci) */
+    for (var qi = 0; qi < M; qi++) {
+        var yy = 1 - (qi + 0.5) / M * 2;
+        var rr = Math.sqrt(Math.max(0, 1 - yy * yy));
+        var th = GA * qi;
+        var xx = Math.cos(th) * rr, zz = Math.sin(th) * rr;
+        SNX[qi] = xx; SNY[qi] = yy; SNZ[qi] = zz;
+        SPHX[qi] = xx * R_SPH; SPHY[qi] = yy * R_SPH; SPHZ[qi] = zz * R_SPH;
+    }
+
+    /* ===== Trajetória de um ponto no morph (forma A -> esfera -> forma B + scatter) =====
+       Fonte única usada tanto no render quanto na calibração de escala. */
+    function morphPoint(p, morph, o) {
+        var a = MA[(p * lenA / M) | 0];
+        var b = MB[(p * lenB / M) | 0];
+        var ph, s0, s1, s2, n0, n1, n2, e0, e1, e2, m0, m1, m2;
+        if (morph < 0.5) {                       /* forma A -> esfera */
+            ph = morph * 2;
+            s0=a[0]; s1=a[1]; s2=a[2]; n0=a[3]; n1=a[4]; n2=a[5];
+            e0=SPHX[p]; e1=SPHY[p]; e2=SPHZ[p]; m0=SNX[p]; m1=SNY[p]; m2=SNZ[p];
+        } else {                                 /* esfera -> forma B */
+            ph = (morph - 0.5) * 2;
+            s0=SPHX[p]; s1=SPHY[p]; s2=SPHZ[p]; n0=SNX[p]; n1=SNY[p]; n2=SNZ[p];
+            e0=b[0]; e1=b[1]; e2=b[2]; m0=b[3]; m1=b[4]; m2=b[5];
+        }
+        /* dessincronização por ponto, mas zera nos extremos (ph 0 e 1) -> esfera fecha perfeita */
+        var pm = ph * (1 + SPREAD) - SPREAD * DLY[p];
+        if (pm < 0) pm = 0; else if (pm > 1) pm = 1;
+        pm = pm * pm * (3 - 2 * pm);
+        var im = 1 - pm;
+        /* scatter zera em ph 0 e 1: forma e esfera ficam limpas, espalha só no caminho */
+        var bulge = Math.sin(Math.PI * ph) * SCATTER;
+        o[0] = s0*im + e0*pm + SCX[p]*bulge;
+        o[1] = s1*im + e1*pm + SCY[p]*bulge;
+        o[2] = s2*im + e2*pm + SCZ[p]*bulge;
+        var nx = n0*im + m0*pm, ny = n1*im + m1*pm, nz = n2*im + m2*pm;
+        var nl = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+        o[3] = nx/nl; o[4] = ny/nl; o[5] = nz/nl;
+        o[6] = morph < 0.5 ? a[6] : b[6];
+    }
+
+    /* ===== Câmera / calibração de escala =====
+       Mede o pior caso REAL: varre a rotação da animação (+pulse) sobre as
+       formas cheias, a esfera E a trajetória do morph com scatter. Como o
+       scatter só rola quando a forma já encolheu rumo à esfera, isso devolve
+       quase o tamanho cheio original e ainda mantém as pontas dentro da tela. */
+    var DIST = 26, ooz0 = 1 / DIST;
+    var EDGE = 0.95;                         /* fração do meio-canvas que o pior caso pode ocupar */
+    var A_AMP = 0.22, B_AMP = 0.5, PULSE_MAX = 1.03, BOB_MAX = ROWS * 0.04;
+    var xK, yK;
+    (function calibrate() {
+        var maxPvx = 0, maxPvy = 0;
+        var AS = 5, BS = 7, o = [0,0,0,0,0,0,0];
+        var QSTEP = Math.max(1, (M / 4000) | 0);    /* subamostra ~4000 pts na trajetória */
+        function project(px, py, pz, sA, cA, sB, cB) {
+            px *= PULSE_MAX; py *= PULSE_MAX; pz *= PULSE_MAX;
+            var y1 = py*cA - pz*sA, z1 = py*sA + pz*cA;
+            var x2 = px*cB + z1*sB, z2 = -px*sB + z1*cB;
+            var ooz = 1 / (z2 + DIST);
+            var pvx = Math.abs(ooz * x2), pvy = Math.abs(ooz * y1);
+            if (pvx > maxPvx) maxPvx = pvx;
+            if (pvy > maxPvy) maxPvy = pvy;
+        }
+        for (var ai = 0; ai < AS; ai++) {
+            var A = -A_AMP + 2 * A_AMP * ai / (AS - 1);
+            var sA = Math.sin(A), cA = Math.cos(A);
+            for (var bi = 0; bi < BS; bi++) {
+                var B = -B_AMP + 2 * B_AMP * bi / (BS - 1);
+                var sB = Math.sin(B), cB = Math.cos(B), k;
+                /* formas cheias (definem o tamanho) */
+                for (k = 0; k < MA.length; k++) project(MA[k][0], MA[k][1], MA[k][2], sA, cA, sB, cB);
+                for (k = 0; k < MB.length; k++) project(MB[k][0], MB[k][1], MB[k][2], sA, cA, sB, cB);
+                /* trajetória do morph com scatter (subamostrada em t e em pontos) */
+                for (var ti = 1; ti < 10; ti++) {
+                    var morph = ti / 10;
+                    for (k = 0; k < M; k += QSTEP) {
+                        morphPoint(k, morph, o);
+                        project(o[0], o[1], o[2], sA, cA, sB, cB);
+                    }
+                }
+            }
+        }
+        var kx = (COLS/2 * EDGE) / maxPvx;
+        var ky = ((ROWS/2 - BOB_MAX) * EDGE) / maxPvy / CHAR_ASPECT;
+        xK = Math.min(kx, ky);
+        yK = xK * CHAR_ASPECT;
+    })();
+
+    /* ===== Luz ===== */
+    var LX = -0.4, LY = 0.55, LZ = 0.73;
+    (function () { var l = Math.sqrt(LX*LX+LY*LY+LZ*LZ); LX/=l; LY/=l; LZ/=l; })();
+    var AMBIENT = 0.28;
+
+    /* ===== Buffers de célula ===== */
+    var N = COLS * ROWS;
+    var zbuf = new Float32Array(N);
+    var lum  = new Float32Array(N);
+    var occ  = new Uint8Array(N);
+    var side = new Uint8Array(N);
+    var glyph = new Int16Array(N);
+    for (var gi = 0; gi < N; gi++) glyph[gi] = (Math.random() * GLYPHS.length) | 0;
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var FONT = "px 'Cascadia Code', 'Consolas', 'Menlo', monospace";
+
+    /* ===== Linha do tempo do morph ===== */
+    var T_HOLD = 2.6, T_MORPH = 2.0, PERIOD = 2 * (T_HOLD + T_MORPH);
+    function smooth(x) { return x * x * (3 - 2 * x); }
+    function morphAt(time) {
+        var ph = time % PERIOD;
+        if (ph < T_HOLD) return 0;
+        if (ph < T_HOLD + T_MORPH) return smooth((ph - T_HOLD) / T_MORPH);
+        if (ph < 2 * T_HOLD + T_MORPH) return 1;
+        return 1 - smooth((ph - (2 * T_HOLD + T_MORPH)) / T_MORPH);
+    }
+
+    /* buffers reaproveitados p/ o ponto interpolado (evita alocar por ponto) */
+    var mp = [0,0,0,0,0,0,0];
+
+    function frame(t) {
+        var time = t * 0.001;
+        var morph = morphAt(time);
+
+        var A = Math.sin(time * 0.7) * 0.22;
+        var B = Math.sin(time * 0.5) * 0.5;
+        var bob = Math.sin(time * 1.1) * (ROWS * 0.04);
+        var pulse = 1 + Math.sin(time * 1.5) * 0.03;
+        var sA = Math.sin(A), cA = Math.cos(A), sB = Math.sin(B), cB = Math.cos(B);
+
+        var p;
+        for (p = 0; p < N; p++) { occ[p] = 0; zbuf[p] = 0; }
+
+        /* nas fases de "segurar" itera só a nuvem da forma cheia (mais barato) */
+        var count = morph <= 0 ? lenA : morph >= 1 ? lenB : M;
+        var cx = COLS/2, cy = ROWS/2 + bob;
+
+        for (p = 0; p < count; p++) {
+            var px, py, pz, nx, ny, nz, sd;
+            if (morph <= 0) {
+                var a0 = MA[p]; px = a0[0]; py = a0[1]; pz = a0[2];
+                nx = a0[3]; ny = a0[4]; nz = a0[5]; sd = a0[6];
+            } else if (morph >= 1) {
+                var b0 = MB[p]; px = b0[0]; py = b0[1]; pz = b0[2];
+                nx = b0[3]; ny = b0[4]; nz = b0[5]; sd = b0[6];
+            } else {
+                morphPoint(p, morph, mp);
+                px = mp[0]; py = mp[1]; pz = mp[2];
+                nx = mp[3]; ny = mp[4]; nz = mp[5]; sd = mp[6];
+            }
+
+            px *= pulse; py *= pulse; pz *= pulse;
+            var y1 = py*cA - pz*sA, z1 = py*sA + pz*cA;
+            var ny1 = ny*cA - nz*sA, nz1 = ny*sA + nz*cA;
+            var x2 = px*cB + z1*sB, z2 = -px*sB + z1*cB;
+            var nx2 = nx*cB + nz1*sB, nz2 = -nx*sB + nz1*cB;
+            var ooz = 1 / (z2 + DIST);
+            var scol = (cx + xK*ooz*x2) | 0;
+            var srow = (cy - yK*ooz*y1) | 0;
+            if (scol < 0 || scol >= COLS || srow < 0 || srow >= ROWS) continue;
+            var idx = scol + srow*COLS;
+            if (ooz > zbuf[idx]) {
+                zbuf[idx] = ooz;
+                var L = nx2*LX + ny1*LY + nz2*LZ;
+                if (L < 0) L = 0;
+                lum[idx] = AMBIENT + (1 - AMBIENT) * L;
+                occ[idx] = 1;
+                side[idx] = sd;
+            }
+        }
+
+        var rer = (N * 0.05) | 0;
+        for (var r = 0; r < rer; r++) {
+            var ri = (Math.random() * N) | 0;
+            glyph[ri] = (Math.random() * GLYPHS.length) | 0;
+        }
+
+        ctx.globalAlpha = 1;
+        /* limpa total com a cor exata do fundo (sem rastro, sem quadrado visível) */
+        ctx.fillStyle = 'rgb(0,0,10)';
+        ctx.fillRect(0, 0, SIZE, SIZE);
+
+        ctx.font = (CELL * 1.05) + FONT;
+
+        for (var row = 0; row < ROWS; row++) {
+            for (var col = 0; col < COLS; col++) {
+                var c = col + row*COLS;
+                if (!occ[c]) continue;
+                var v = lum[c];
+                var gx = col*CELL + CELL/2;
+                var gy = row*CELL + CELL/2;
+
+                if (Math.random() < 0.004) {
+                    ctx.fillStyle = 'rgb(245,245,255)';
+                } else {
+                    var rr, gg, bb;
+                    if (side[c]) {
+                        rr = ( 90 + 110*v) | 0;
+                        gg = ( 90 + 110*v) | 0;
+                        bb = (160 +  95*v) | 0;
+                    } else {
+                        rr = ( 40 + 60*v) | 0;
+                        gg = ( 40 + 60*v) | 0;
+                        bb = (110 + 145*v) | 0;
+                    }
+                    ctx.fillStyle = 'rgb(' + rr + ',' + gg + ',' + bb + ')';
+                }
+                ctx.fillText(GLYPHS[glyph[c]], gx, gy);
+            }
+        }
+
+        requestAnimationFrame(frame);
+    }
+
+    ctx.fillStyle = '#00000A';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

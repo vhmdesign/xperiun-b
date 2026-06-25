@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Área de Membros — mockup ilustrativo</title>
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; }
+        html, body { width: 1440px; height: 900px; overflow: hidden; }
+        body {
+            background: var(--dn900);
+            color: var(--bw);
+            font-family: var(--font-family);
+            display: flex;
+        }
+        .ms { font-family: 'Material Symbols Outlined'; font-size: 22px; line-height: 1; font-weight: 300; }
+
+        /* ── Sidebar ── */
+        .mb-side {
+            flex: 0 0 280px;
+            background: var(--dn800);
+            border-right: 2px solid var(--bw-10);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .mb-logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 22px; }
+        .mb-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--pc500), var(--pc300)); }
+        .mb-nav { display: flex; flex-direction: column; gap: 6px; }
+        .mb-nav a { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 12px; color: var(--bw-75); text-decoration: none; font-size: 15px; font-weight: 500; }
+        .mb-nav a.is-active { background: var(--pc500-15); color: var(--bw); }
+        .mb-side-foot { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--dn700); }
+        .mb-avatar { width: 36px; height: 36px; border-radius: 9999px; background: linear-gradient(135deg, var(--sc500), var(--pc300)); flex: 0 0 auto; }
+        .mb-side-foot small { display: block; color: var(--bw-50); font-size: 12px; }
+
+        /* ── Main ── */
+        .mb-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .mb-top { height: 88px; flex: 0 0 88px; border-bottom: 2px solid var(--bw-10); display: flex; align-items: center; gap: 24px; padding: 0 48px; }
+        .mb-search { flex: 1; max-width: 420px; display: flex; align-items: center; gap: 12px; background: var(--dn800); border-radius: 12px; padding: 12px 16px; color: var(--bw-50); font-size: 14px; }
+        .mb-top-actions { margin-left: auto; display: flex; align-items: center; gap: 16px; color: var(--bw-75); }
+
+        .mb-content { padding: 40px 48px; overflow: hidden; display: flex; flex-direction: column; gap: 32px; }
+        .mb-greet h1 { font-weight: 700; font-size: 32px; }
+        .mb-greet p { color: var(--bw-50); font-size: 15px; margin-top: 6px; }
+
+        .mb-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .mb-stat { background: var(--dn800); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+        .mb-stat .ms { color: var(--pc300); }
+        .mb-stat-num { font-weight: 700; font-size: 28px; }
+        .mb-stat-lbl { color: var(--bw-50); font-size: 13px; }
+
+        .mb-sec-title { display: flex; align-items: baseline; justify-content: space-between; }
+        .mb-sec-title h2 { font-weight: 600; font-size: 20px; }
+        .mb-sec-title a { color: var(--pc300); font-size: 14px; text-decoration: none; }
+
+        .mb-courses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .mb-course { background: var(--dn800); border-radius: 16px; overflow: hidden; }
+        .mb-course-thumb { aspect-ratio: 16 / 9; position: relative; background: linear-gradient(135deg, var(--pc500), var(--pc800)); }
+        .mb-course-thumb:nth-of-type(1) { background: linear-gradient(135deg, var(--pc500), var(--pc800)); }
+        .mb-course-play { position: absolute; inset: 0; margin: auto; width: 48px; height: 48px; border-radius: 9999px; background: var(--bw); color: var(--dn900); display: flex; align-items: center; justify-content: center; }
+        .mb-course-body { padding: 20px; }
+        .mb-course-body h3 { font-weight: 600; font-size: 16px; }
+        .mb-progress { margin-top: 14px; height: 6px; border-radius: 9999px; background: var(--bw-10); overflow: hidden; }
+        .mb-progress span { display: block; height: 100%; background: var(--sc500); }
+        .mb-course-meta { margin-top: 8px; color: var(--bw-50); font-size: 12px; }
+    </style>
+</head>
+<body>
+    <aside class="mb-side">
+        <div class="mb-logo"><span class="mb-logo-mark"></span> Xperiun</div>
+        <nav class="mb-nav">
+            <a class="is-active"><span class="ms">space_dashboard</span> Início</a>
+            <a><span class="ms">school</span> Minhas Formações</a>
+            <a><span class="ms">workspace_premium</span> Business Cases</a>
+            <a><span class="ms">trending_up</span> Meu Progresso</a>
+            <a><span class="ms">groups</span> Comunidade</a>
+            <a><span class="ms">military_tech</span> Certificados</a>
+        </nav>
+        <div class="mb-side-foot">
+            <span class="mb-avatar"></span>
+            <div>Vitor Hugo<small>Plano Completa</small></div>
+        </div>
+    </aside>
+
+    <main class="mb-main">
+        <header class="mb-top">
+            <div class="mb-search"><span class="ms">search</span> Buscar cursos, cases, materiais...</div>
+            <div class="mb-top-actions">
+                <span class="ms">notifications</span>
+                <span class="ms">bookmark</span>
+                <span class="mb-avatar" style="width:36px;height:36px"></span>
+            </div>
+        </header>
+
+        <section class="mb-content">
+            <div class="mb-greet">
+                <h1>Bom te ver de novo, Vitor 👋</h1>
+                <p>Você está a 2 aulas de concluir a Formação de Power BI Intermediário ao Avançado.</p>
+            </div>
+
+            <div class="mb-stats">
+                <div class="mb-stat"><span class="ms">play_circle</span><span class="mb-stat-num">128</span><span class="mb-stat-lbl">Aulas concluídas</span></div>
+                <div class="mb-stat"><span class="ms">schedule</span><span class="mb-stat-num">64h</span><span class="mb-stat-lbl">Tempo de estudo</span></div>
+                <div class="mb-stat"><span class="ms">workspace_premium</span><span class="mb-stat-num">9</span><span class="mb-stat-lbl">Business Cases</span></div>
+                <div class="mb-stat"><span class="ms">local_fire_department</span><span class="mb-stat-num">12</span><span class="mb-stat-lbl">Dias de ofensiva</span></div>
+            </div>
+
+            <div>
+                <div class="mb-sec-title"><h2>Continue de onde parou</h2><a>Ver tudo</a></div>
+                <div class="mb-courses" style="margin-top:16px">
+                    <article class="mb-course">
+                        <div class="mb-course-thumb"><span class="mb-course-play ms">play_arrow</span></div>
+                        <div class="mb-course-body">
+                            <h3>Linguagem DAX Avançado</h3>
+                            <div class="mb-progress"><span style="width:72%"></span></div>
+                            <p class="mb-course-meta">72% concluído · 11h restantes</p>
+                        </div>
+                    </article>
+                    <article class="mb-course">
+                        <div class="mb-course-thumb" style="background:linear-gradient(135deg,var(--sc500),var(--pc500))"><span class="mb-course-play ms">play_arrow</span></div>
+                        <div class="mb-course-body">
+                            <h3>Business Case: DRE Avançada</h3>
+                            <div class="mb-progress"><span style="width:40%"></span></div>
+                            <p class="mb-course-meta">40% concluído · 2 aulas</p>
+                        </div>
+                    </article>
+                    <article class="mb-course">
+                        <div class="mb-course-thumb" style="background:linear-gradient(135deg,var(--pc300),var(--dn700))"><span class="mb-course-play ms">play_arrow</span></div>
+                        <div class="mb-course-body">
+                            <h3>Imersão Power BI + IA</h3>
+                            <div class="mb-progress"><span style="width:15%"></span></div>
+                            <p class="mb-course-meta">15% concluído · 4 aulas</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

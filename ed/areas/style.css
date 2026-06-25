@@ -1,0 +1,325 @@
+/* ═══════════════════════════════════════════════════════════
+   HUB de Áreas — estilos próprios dos componentes que antes
+   herdavam o nome "formacoes/formacao".
+
+   A BASE compartilhada do hub (hero, why, oferta, conta, depos,
+   cta, keyframes) continua vindo de ed/formacoes/style.css via a
+   classe `formacoes-hub` no <body> — é a "única classe com os
+   estilos primordiais" comum às páginas de hub. Aqui ficam só os
+   componentes renomeados pra areas-*/area-* (porte 1:1 do style.css
+   das formações). Especificidades da página seguem no <style> inline.
+   ═══════════════════════════════════════════════════════════ */
+
+body.areas-hub .sec-areas { padding: 128px 16px; }
+
+body.areas-hub .areas-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+body.areas-hub .areas-layout {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+body.areas-hub .areas-nav {
+    grid-column: span 3;
+    position: sticky;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+body.areas-hub .areas-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+body.areas-hub .areas-title {
+    font: var(--h3);
+    font-weight: 300;
+    color: var(--bw);
+    max-width: 680px;
+}
+body.areas-hub .areas-nav-list {
+    display: flex;
+    flex-direction: column;
+}
+body.areas-hub .areas-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px 12px 24px;
+    border: none;
+    background-color: transparent;
+    background-image: linear-gradient(90deg, var(--pc500-50), transparent, transparent);
+    background-size: 200%;
+    background-position: 100% center;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    color: var(--bw-50);
+    position: relative;
+    transition: color 0.3s, background-position 0.3s;
+}
+body.areas-hub .areas-nav-item:hover {
+    color: var(--bw-75);
+    background-position: 50% center;
+}
+body.areas-hub .areas-nav-item.is-active {
+    color: var(--bw);
+    background-position: 0% center;
+}
+body.areas-hub .areas-nav-item.is-active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--pc400);
+}
+body.areas-hub .areas-nav-label {
+    font: var(--p);
+}
+body.areas-hub .area-label {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+body.areas-hub .area-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+body.areas-hub .areas-nav-item .area-title-group {
+    gap: 0;
+}
+body.areas-hub .area-title {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+body.areas-hub .area-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+body.areas-hub .areas-cards {
+    grid-column: span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-top: 152px;
+}
+@media (max-width: 1439px) {
+    body.areas-hub .areas-layout { grid-template-columns: repeat(8, 1fr); }
+    body.areas-hub .areas-cards { grid-column: span 5; }
+}
+@media (max-width: 864px) {
+    body.areas-hub .areas-nav { position: static; grid-column: span 1; }
+    body.areas-hub .areas-nav-list { display: none; }
+    body.areas-hub .areas-layout { grid-template-columns: 1fr; gap: 24px; }
+    body.areas-hub .areas-cards { grid-column: span 1; padding-top: 0; }
+}
+@media (max-width: 576px) {
+    body.areas-hub .areas-layout { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Overrides específicos do HUB de Áreas (movidos do <style> inline)
+   ═══════════════════════════════════════════════════════════ */
+/* ── Overrides específicos do HUB de Áreas (v1) ──────────── */
+/* Ícones de área usam Material Symbols como placeholder até
+   virem os SVGs próprios em site-media/areas/icones/. */
+body.areas-hub .marquee-box .material-symbols-outlined { font-size: 56px; color: var(--pc300); }
+body.areas-hub .areas-nav-item { gap: 32px; }
+body.areas-hub .areas-nav-item .area-icon { font-size: 24px; color: inherit; font-variation-settings: 'wght' 400; }
+
+/* Hero no estilo das páginas de formação — grid Desktop do DS (1152 / 8 colunas) */
+body.areas-hub.formacoes-hub .hero-wave { padding-top: 128px; padding-bottom: 128px; }
+@media (max-width: 864px) { body.areas-hub.formacoes-hub .hero-wave { padding-top: 256px; } }
+body.areas-hub .hero-content {
+    max-width: 1152px; text-align: left;
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px; row-gap: 24px;
+}
+body.areas-hub .hero-actions { justify-content: flex-start; }
+/* título + texto na faixa esquerda, empilhados (título acima do texto) */
+body.areas-hub .hero-content > .hero-title-group,
+body.areas-hub .hero-content > .hero-bottom { grid-column: 1 / span 5; }
+@media (max-width: 864px) {
+    body.areas-hub .hero-content { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    body.areas-hub .hero-content > .hero-title-group,
+    body.areas-hub .hero-content > .hero-bottom { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    body.areas-hub .hero-content { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+}
+/* Painéis empilhados 3D no fundo do hero (no lugar do hero-bg-float) */
+body.areas-hub .hero-stacked {
+    position: absolute;
+    width: 100%; height: 200%;
+    top: -75%; left: 256px;
+    z-index: -1;
+    pointer-events: none; overflow: hidden;
+}
+body.areas-hub .hero-stacked .sp-scene-wrap { height: 100%; min-height: 0; }
+body.areas-hub .hero-stacked::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(-135deg, transparent 25%, var(--bb) 75%);
+}
+@media (max-width: 864px) {
+    body.areas-hub .hero-stacked { width: 200%; top: -100%; left: -75%; }
+}
+/* sec-áreas: layout de 10 colunas (nav 3 + cards 7) → container Wide do DS
+   (1440), corrigindo o 1408 */
+body.areas-hub .areas-inner { max-width: 1440px; }
+body.areas-hub .oferta-icon-box .area-icon { font-size: 24px; color: var(--pc300); }
+
+/* Imagem da oferta esquerda no MESMO estilo do index de formações
+   (.oferta-card-img: decorativa, rotacionada no canto, fade lateral — herda do
+   DS do hub). 1 imagem por área (troca com o dropdown); fica ausente
+   enquanto nada foi escolhido. Só no card esquerdo (o --full/Completa mantém
+   a sua imagem fixa). */
+body.areas-hub .oferta-card:not(.oferta-card--full) .oferta-card-img { opacity: 0; transition: opacity 0.4s ease; }
+body.areas-hub .oferta-card:not(.oferta-card--full) .oferta-card-img.is-active { opacity: 1; }
+/* Tópicos (Business Cases da área): estilo do DS .oferta-check, num grid item
+   próprio (.oferta-checks) — alinha com os checks do card Completo via subgrid.
+   Fica como item de grid mesmo vazio (antes da escolha) pra não desalinhar. */
+/* Marcador dos checks no card avulso (esquerda) → pc300 (Completo mantém sc500) */
+body.areas-hub .oferta-card:not(.oferta-card--full) .oferta-check::before { background: var(--pc300); }
+
+/* Acima de 1152px, a descrição do oferta-card ocupa só 75% da largura. */
+@media (min-width: 1153px) {
+    body.areas-hub .oferta-card-desc { max-width: 75%; }
+}
+/* Box do ícone sempre visível; o ícone (glyph) nasce vazio e o JS o preenche
+   com a área escolhida. Sem escolha → box aparece, mas sem ícone. */
+
+/* KPIs por área (linha discreta abaixo da descrição do card) */
+body.areas-hub .area-kpis { margin: 0; font-size: 13px; line-height: 1.45; color: var(--bw-50); }
+
+/* Footer do card vira seletor com 2 opções (avulso / pack) */
+body.areas-hub .area-footer { flex-direction: column; align-items: stretch; gap: 8px; }
+body.areas-hub .area-opcao {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 14px; border-radius: 12px;
+    border: 1px solid var(--bw-10); background: var(--bw-5);
+    text-decoration: none; color: inherit;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+body.areas-hub .area-opcao:hover { border-color: var(--pc300); background: var(--bw-10); }
+body.areas-hub .area-opcao--pack { border-color: var(--pc300-25); background: var(--pc300-10); }
+body.areas-hub .area-opcao--pack:hover { border-color: var(--pc300); }
+body.areas-hub .area-opcao-info { display: flex; flex-direction: column; gap: 2px; }
+body.areas-hub .area-opcao-title { font: var(--p-s); font-weight: 600; color: var(--bw-75); }
+body.areas-hub .area-opcao--pack .area-opcao-title { color: var(--pc100); }
+body.areas-hub .area-opcao-sub { font-size: 12px; line-height: 1.2; color: var(--bw-50); }
+body.areas-hub .area-opcao-price { font: var(--p); font-weight: 700; color: var(--bw-75); white-space: nowrap; }
+body.areas-hub .area-opcao--pack .area-opcao-price { color: var(--pc100); }
+
+/* ── Card de área no estilo entrada-card ──
+   (areas-cards mantém o padding-top:152px do HUB pra alinhar com a nav-list) */
+body.areas-hub .area-card {
+    border-radius: 16px;
+    background: linear-gradient(to bottom, var(--dn800), transparent);
+}
+/* Mídia (topo): imagem com fade na base, integrando ao corpo */
+body.areas-hub .area-card-media {
+    position: relative;
+    height: 240px; overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+body.areas-hub .area-card-media img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}
+/* Card-gateway "Outras Áreas" (acervo): mídia = marquee de 4 colunas */
+body.areas-hub .area-card--acervo .area-card-media {
+    background: var(--bb);
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}
+/* Marquee: cols 1/3 sobem, cols 2/4 descem; loop infinito (track = 4 imgs ×2) */
+body.areas-hub .bc-marquee {
+    display: flex;
+    gap: 16px;
+    height: 125%;
+    /* padding: 8px; */
+    width: 125%;
+    position: relative;
+    left: -12.5%;
+    transform: skew(0deg, 15deg) rotate(-15deg);
+}
+body.areas-hub .bc-marquee-col { flex: 1; min-width: 0; overflow: hidden; }
+body.areas-hub .bc-marquee-track {
+    display: flex; flex-direction: column;
+    will-change: transform;
+}
+body.areas-hub .bc-track-up   { animation: bc-marquee-up   24s linear infinite; }
+body.areas-hub .bc-track-down { animation: bc-marquee-down 28s linear infinite; }
+body.areas-hub .bc-marquee-col:nth-child(3) .bc-track-up   { animation-duration: 30s; }
+body.areas-hub .bc-marquee-col:nth-child(4) .bc-track-down { animation-duration: 34s; }
+body.areas-hub .bc-marquee-track img {
+    width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
+    border-radius: 8px; display: block;
+    margin-bottom: 8px;
+}
+@keyframes bc-marquee-up {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+}
+@keyframes bc-marquee-down {
+    from { transform: translateY(-50%); }
+    to   { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    body.areas-hub .bc-marquee-track { animation: none; }
+}
+/* Ícone da área (badge estilo oferta-icon-box), alinhado ao padding do corpo */
+body.areas-hub .area-icon-box {
+    position: absolute; left: 48px; top: 48px;
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bb-25);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+body.areas-hub .area-icon-box .area-icon { font-size: 24px; color: var(--bw-75); font-variation-settings: 'wght' 200; }
+/* Corpo: texto+CTA (esquerda, empilhados) e pasta 3D (direita) */
+body.areas-hub .area-card-body {
+    padding: 0 48px 48px 48px;
+    display: flex; flex-direction: row; align-items: stretch; gap: 48px;
+}
+body.areas-hub .area-card-cols { flex: 1; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+body.areas-hub .area-card-col { display: flex; flex-direction: column; gap: 16px; }
+body.areas-hub .area-card-col--cta { gap: 32px; align-items: flex-start; border-top: 2px solid var(--bw-15); padding-top: 24px; }
+body.areas-hub .area-card .area-title-group { padding-bottom: 16px; }
+body.areas-hub .area-cta-text { font: var(--p-s); color: var(--bw-75); margin: 0; }
+body.areas-hub .area-cta-price {
+    font-weight: 700; font-size: 24px; line-height: 1;
+    color: var(--bw);
+}
+body.areas-hub .area-card .area-folder { flex-shrink: 0; }
+/* Horizontal (padrão): pasta ocupa 100% da altura */
+body.areas-hub .area-card .folder3d { height: 100%; }
+@media (max-width: 1152px) {
+    /* Vertical: pasta 100% da largura */
+    body.areas-hub .area-card-body { flex-direction: column; }
+    body.areas-hub .area-card .folder3d { width: 100%; height: auto; }
+}
+@media (max-width: 864px) {
+    /* Horizontal de novo: pasta 100% da altura */
+    body.areas-hub .area-card-body { flex-direction: row; }
+    body.areas-hub .area-card .folder3d { width: auto; height: 100%; }
+}
+@media (max-width: 768px) {
+    body.areas-hub .area-card-body { padding: 0 24px 32px; gap: 24px; }
+    body.areas-hub .area-icon-box { left: 24px; top: 24px; }
+}
+@media (max-width: 576px) {
+    /* Vertical: pasta 100% da largura */
+    body.areas-hub .area-card-body { flex-direction: column; }
+    body.areas-hub .area-card .folder3d { width: 100%; height: auto; }
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code , Onboarding</title>
+<link rel="stylesheet" href="../../site-dependencias/root.css">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+        min-height: 100%;
+        background: var(--bb);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    /* a arte é desenhada num canvas (grade fixa): zoom escala o bitmap,
+       sem refazer layout de fonte, então nada desalinha nem estoura a célula. */
+    #scene {
+        display: block;
+        margin: 24px 28px 32px;
+        image-rendering: -webkit-optimize-contrast;
+    }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<script>
+(function () {
+    var FONT_REM = 1;        /* tamanho da fonte em rem */
+    var LINE = 1.15;         /* line-height em em */
+    var SS = 3;              /* supersample p/ continuar nítido ao dar zoom */
+
+    /* cores vindas do root.css (sem cor de fora) */
+    function tokenColor(name) {
+        var p = document.createElement('span');
+        p.style.color = 'var(' + name + ')';
+        document.body.appendChild(p);
+        var c = getComputedStyle(p).color;
+        document.body.removeChild(p);
+        return c;
+    }
+    var COL_BASE  = tokenColor('--bw-25');   /* tudo */
+    var COL_ROBOT = tokenColor('--pc300');   /* robô */
+
+    /* cor por caractere + coluna (C na direita; robô/plataformas na esquerda) */
+    function colorOf(ch, col) {
+        if (ch === ' ') return null;
+        if (ch === '█' && col < 38) return COL_ROBOT;
+        if (ch === '▄') return COL_ROBOT;
+        if (ch === '▓' && col < 38) return COL_ROBOT;
+        return COL_BASE;
+    }
+
+    function draw(txt) {
+        var lines = txt.replace(/\r/g, '').replace(/\n+$/, '').split('\n');
+        var W = 0;
+        for (var i = 0; i < lines.length; i++) if (lines[i].length > W) W = lines[i].length;
+        var H = lines.length;
+
+        var remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        var fontPx = FONT_REM * remPx * SS;
+        var canvas = document.getElementById('scene');
+        var ctx = canvas.getContext('2d');
+
+        ctx.font = fontPx + 'px Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace';
+        var cellW = ctx.measureText('█').width;     /* avanço monospace */
+        var cellH = fontPx * LINE;
+
+        canvas.width  = Math.ceil(W * cellW);
+        canvas.height = Math.ceil(H * cellH);
+        canvas.style.width  = (canvas.width  / SS) + 'px';
+        canvas.style.height = (canvas.height / SS) + 'px';
+
+        ctx.font = fontPx + 'px Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        for (var r = 0; r < H; r++) {
+            var line = lines[r];
+            var y = r * cellH + cellH / 2;
+            for (var c = 0; c < line.length; c++) {
+                var ch = line.charAt(c);
+                var color = colorOf(ch, c);
+                if (!color) continue;
+                ctx.fillStyle = color;
+                var w = ctx.measureText(ch).width;
+                ctx.save();
+                ctx.translate(c * cellW, y);
+                if (w > cellW) ctx.scale(cellW / w, 1);   /* encolhe glifo largo p/ caber na célula */
+                ctx.fillText(ch, 0, 0);
+                ctx.restore();
+            }
+        }
+    }
+
+    fetch('joguinho.txt')
+        .then(function (r) { return r.text(); })
+        .then(function (txt) { (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () { draw(txt); }); })
+        .catch(function () {
+            var ctx = document.getElementById('scene').getContext('2d');
+            document.getElementById('scene').width = 600;
+            document.getElementById('scene').height = 40;
+            ctx.fillStyle = '#888'; ctx.font = '14px monospace';
+            ctx.fillText('(não foi possível carregar joguinho.txt , abra via servidor http)', 8, 24);
+        });
+})();
+</script>
+</body>
+</html>

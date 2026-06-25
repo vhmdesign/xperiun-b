@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xperiun Analytics, heatmap</title>
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>Heatmap de cliques</h1>
+      <nav>
+        <a href="/">Sessoes</a>
+        <a href="/heatmap.html" class="active">Heatmap</a>
+      </nav>
+    </header>
+
+    <div class="controls">
+      <label>Pagina</label>
+      <select id="page"></select>
+      <label>Base do site</label>
+      <select id="base">
+        <option value="http://localhost:8080">localhost:8080</option>
+        <option value="http://localhost:3000">localhost:3000</option>
+      </select>
+      <button id="render">Gerar heatmap</button>
+      <span id="info" class="muted"></span>
+    </div>
+
+    <div id="stage-wrap" style="text-align:center"></div>
+    <div id="empty" class="empty" hidden>Sem dados de clique ainda. Clique pelo site com o tracker ativo.</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
+  <script>
+    const pageSel = document.getElementById('page');
+    const baseSel = document.getElementById('base');
+    const info = document.getElementById('info');
+    let pages = [];
+
+    fetch('/api/heatmap/pages').then(r => r.json()).then(({ pages: p }) => {
+      pages = p;
+      if (!pages.length) { document.getElementById('empty').hidden = false; return; }
+      pageSel.innerHTML = pages.map((x, i) =>
+        `<option value="${i}">${x.page_url} (${x.viewport_w}px, ${x.clicks} cliques)</option>`).join('');
+    });
+
+    document.getElementById('render').addEventListener('click', async () => {
+      const sel = pages[Number(pageSel.value)];
+      if (!sel) return;
+      const url = `/api/heatmap?page=${encodeURIComponent(sel.page_url)}&viewport=${sel.viewport_w}`;
+      const data = await fetch(url).then(r => r.json());
+      renderHeatmap(sel, data);
+    });
+
+    function renderHeatmap(sel, data) {
+      const width = sel.viewport_w;
+      const maxY = data.clicks.reduce((m, c) => Math.max(m, c.y_abs), 0);
+      const height = Math.max(600, maxY + 200);
+      info.textContent = `${data.clicks.length} cliques, ${data.sessions} sessoes, scroll medio ${Math.round(data.avgScrollPct)}%`;
+
+      const wrap = document.getElementById('stage-wrap');
+      wrap.innerHTML = '';
+      const stage = document.createElement('div');
+      stage.className = 'heatmap-stage';
+      stage.style.width = width + 'px';
+      stage.style.height = height + 'px';
+
+      // Fundo: a propria pagina do site (iframe same-display) na largura do viewport capturado.
+      const iframe = document.createElement('iframe');
+      iframe.src = baseSel.value + sel.page_url;
+      iframe.style.height = height + 'px';
+      iframe.setAttribute('scrolling', 'no');
+      stage.appendChild(iframe);
+
+      const overlay = document.createElement('div');
+      overlay.className = 'overlay';
+      overlay.style.width = width + 'px';
+      overlay.style.height = height + 'px';
+      stage.appendChild(overlay);
+      wrap.appendChild(stage);
+
+      const hm = h337.create({ container: overlay, radius: 40, maxOpacity: 0.7, blur: 0.8 });
+      const points = data.clicks.map(c => ({ x: Math.round(c.x_norm * width), y: c.y_abs, value: 1 }));
+      hm.setData({ max: 5, data: points });
+    }
+  </script>
+</body>
+</html>

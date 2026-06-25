@@ -111,6 +111,11 @@
     height: 32px;
     object-fit: contain;
 }
+/* reCAPTCHA padronizado: alinhado à direita dentro do input-group */
+.popup-form .g-recaptcha {
+    display: flex;
+    justify-content: flex-end;
+}
 .popup-form .popup-form-header {
     display: flex;
     align-items: center;

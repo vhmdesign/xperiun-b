@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>frame-embed — demo</title>
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--dn900); color: var(--bw); font-family: var(--font-family); padding: 64px 24px; }
+        .wrap { max-width: 1152px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+        h1 { font-weight: 700; font-size: 28px; margin: 0; }
+        p.note { color: var(--bw-50); margin: 0 0 24px; font-size: 14px; }
+        h2 { font-weight: 600; font-size: 16px; color: var(--bw-75); margin: 32px 0 0; }
+        .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 768px) { .cols { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div>
+            <h1>frame-embed — demonstração</h1>
+            <p class="note">O mesmo HTML (area-membros.html, design 1440×900) escalado proporcionalmente conforme a largura do container. Fonte, padding e borders encolhem juntos, e fica nítido (é DOM real, não imagem).</p>
+        </div>
+
+        <h2>Largura total do container</h2>
+        <div class="frame-embed frame-embed--static" style="--frame-w:1440; --frame-h:900;">
+            <iframe src="/ed/site-dependencias/site-frames/area-membros.html" loading="lazy" title="Área de membros" tabindex="-1"></iframe>
+        </div>
+
+        <h2>Em duas colunas (mais reduzido)</h2>
+        <div class="cols">
+            <div class="frame-embed frame-embed--static" style="--frame-w:1440; --frame-h:900;">
+                <iframe src="/ed/site-dependencias/site-frames/area-membros.html" loading="lazy" title="Área de membros" tabindex="-1"></iframe>
+            </div>
+            <div class="frame-embed frame-embed--static" style="--frame-w:1440; --frame-h:900;">
+                <iframe src="/ed/site-dependencias/site-frames/area-membros.html" loading="lazy" title="Área de membros" tabindex="-1"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="/ed/site-dependencias/site-frames/frame-embed.js" defer></script>
+</body>
+</html>

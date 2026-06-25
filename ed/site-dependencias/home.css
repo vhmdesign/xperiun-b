@@ -2478,6 +2478,41 @@ black 0%, transparent 100%);
     align-items: flex-end;
 }
 .posgrad-card-cta .btn { width: 100%; }
+
+/* Card MBA FP&A: mídia baseada no .mba-offer-card-header (glow pulsante +
+   stripes radiais), no lugar do vídeo/foto de fundo. */
+.posgrad-card-media--fpa {
+    background: linear-gradient(to bottom, var(--dn800), transparent);
+    isolation: isolate;
+}
+.posgrad-fpa-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(90deg, transparent, var(--pc500));
+    animation: posgrad-fpa-glow 4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes posgrad-fpa-glow {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 1; }
+}
+.posgrad-fpa-stripes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    pointer-events: none;
+}
+.posgrad-fpa-stripes > div {
+    flex: 1 1 0;
+    height: 100%;
+    background: radial-gradient(ellipse, transparent 0%, var(--bb) 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+}
+.posgrad-logo-main--fpa { width: 220px; }
+
 @media (max-width: 1152px) {
     .posgrad-card-bottom { flex-direction: column; }
     .posgrad-card-body { width: 100%; }

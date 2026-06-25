@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xperiun Analytics, replay</title>
+  <link rel="stylesheet" href="/dashboard.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@2.0.0-alpha.18/dist/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>Replay de sessao</h1>
+      <nav>
+        <a href="/">Sessoes</a>
+        <a href="/heatmap.html">Heatmap</a>
+      </nav>
+    </header>
+    <div id="player"></div>
+    <div id="msg" class="empty" hidden></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/rrweb-player@2.0.0-alpha.18/dist/index.js"></script>
+  <script>
+    const id = new URLSearchParams(location.search).get('id');
+    const msg = document.getElementById('msg');
+    const show = (t) => { msg.hidden = false; msg.textContent = t; };
+
+    if (!id) {
+      show('Sessao nao informada.');
+    } else {
+      fetch(`/api/session/${encodeURIComponent(id)}`)
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(({ events }) => {
+          if (!events || events.length < 2) { show('Sessao sem eventos suficientes para reproduzir.'); return; }
+          const stage = document.getElementById('player');
+          const width = Math.min(1100, stage.clientWidth - 24);
+          new rrwebPlayer({
+            target: stage,
+            props: { events, width, height: Math.round(width * 0.6), autoPlay: false, speedOption: [1, 2, 4, 8] },
+          });
+        })
+        .catch(() => show('Nao foi possivel carregar a sessao.'));
+    }
+  </script>
+</body>
+</html>

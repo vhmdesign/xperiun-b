@@ -199,3 +199,20 @@ document.querySelectorAll('.dropdown-group').forEach(group => {
 
     document.addEventListener('click', closeDropdown);
 });
+
+/* Ícones de formação (.oferta-completa-icons) funcionam como o dropdown:
+   clicar num ícone fN seleciona a formação correspondente (dispara a opção do dropdown). */
+document.querySelectorAll('.oferta-card').forEach(card => {
+    const group = card.querySelector('.dropdown-group');
+    if (!group) return;
+    card.querySelectorAll('.oferta-completa-icon').forEach(iconEl => {
+        const cls = [...iconEl.classList].find(c => /^oferta-completa-icon--f\d$/.test(c));
+        if (!cls) return;
+        const target = cls.slice('oferta-completa-icon--'.length);
+        iconEl.style.cursor = 'pointer';
+        iconEl.addEventListener('click', () => {
+            const opt = group.querySelector('.dropdown-option[data-target="' + target + '"]');
+            if (opt) opt.click();
+        });
+    });
+});

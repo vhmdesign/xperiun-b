@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix 3D , Xperiun</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+        width: 100%;
+        height: 100%;
+        background: #00000A;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .stage {
+        position: relative;
+        width: min(100vw, 100vh);
+        height: min(100vw, 100vh);
+        overflow: hidden;
+    }
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</head>
+<body>
+    <div class="stage">
+        <canvas id="c" width="1080" height="1080"></canvas>
+    </div>
+
+<script>
+(function () {
+    'use strict';
+
+    var SIZE = 1080;
+    var canvas = document.getElementById('c');
+    var ctx = canvas.getContext('2d');
+
+    /* ===== Grade (células quadradas: glifos legíveis tipo Matrix) ===== */
+    var COLS = 128, ROWS = 128;
+    var CELL = SIZE / COLS;
+    var CHAR_ASPECT = 1;             /* célula quadrada no canvas */
+
+    /* ===== Glifos estilo Matrix (katakana meia-largura + latim + dígitos) ===== */
+    var GLYPHS = (
+        "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍｦｲｸｺｿﾁﾄﾉﾌﾔﾙﾚﾛﾝ" +
+        "0123456789" +
+        "ABCDEFGHIJKLMNPQRSTUVWXYZ" +
+        ":=*+<>|/"
+    ).split('');
+
+    /* ===== Silhueta do símbolo Xperiun (SVG viewBox 0 0 800 800, y para baixo) ===== */
+    var XPATH = "M208.7 139.14c-38.41 38.42-22.84 116.28 34.79 173.9l34.77 34.78c32.6 32.6 71.16 48.74 93.84 41.15l-59.05-75.93 75.93 59.06c7.59-22.67-8.55-61.24-41.15-93.84L208.71 139.14zm180.34 288.939c7.44 22.7-8.71 61.14-41.21 93.65L243.48 626.07C147.44 722.13 38.43 768.84.01 730.43H0l278.26-278.25c32.51-32.51 70.95-48.65 93.65-41.21L243.48 556.53 389.04 428.1zm63.14 93.661c-32.6-32.6-48.74-71.16-41.15-93.84l75.93 59.06-59.05-75.93c22.67-7.59 61.24 8.55 93.84 41.15l34.77 34.78c57.63 57.63 73.2 135.479 34.79 173.899L452.19 521.74zm-41.22-149.82c-7.44-22.7 8.71-61.141 41.21-93.65l104.35-104.341c96.05-96.05 205.05-142.77 243.47-104.35h.01L521.74 347.83c-32.51 32.51-70.95 48.651-93.65 41.211l128.43-145.56-145.56 128.43z";
+
+    /* ===== Rasteriza a silhueta (Path2D + isPointInPath, fiel ao SVG) ===== */
+    var VW = 800, VH = 800;
+    var STEP = 4;                    /* ~200 amostras de largura, igual ao ascii-claude */
+    var GNX = Math.ceil(VW / STEP) + 1;
+    var GNY = Math.ceil(VH / STEP) + 1;
+    var solid = new Uint8Array(GNX * GNY);
+    function S(i, j) { return (i < 0 || j < 0 || i >= GNX || j >= GNY) ? 0 : solid[i * GNY + j]; }
+    (function rasterize() {
+        var off = document.createElement('canvas');
+        off.width = VW; off.height = VH;
+        var octx = off.getContext('2d');
+        var path = new Path2D(XPATH);
+        for (var i = 0; i < GNX; i++)
+            for (var j = 0; j < GNY; j++) {
+                var x = i * STEP, y = j * STEP;
+                solid[i * GNY + j] = octx.isPointInPath(path, x, y) ? 1 : 0;
+            }
+    })();
+
+    /* ===== Centro + profundidade do extrude proporcional ao ascii-claude (HD/halfExtent = 9/55) ===== */
+    var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+    for (var i0 = 0; i0 < GNX; i0++)
+        for (var j0 = 0; j0 < GNY; j0++)
+            if (solid[i0 * GNY + j0]) {
+                var bx = i0 * STEP, by = j0 * STEP;
+                if (bx < minX) minX = bx; if (bx > maxX) maxX = bx;
+                if (by < minY) minY = by; if (by > maxY) maxY = by;
+            }
+    var CX = (minX + maxX) / 2, CY = (minY + maxY) / 2;
+    var halfExtent = Math.max(maxX - CX, maxY - CY);
+    var HD = (9 / 55) * halfExtent, ZSTEPS = 14;
+
+    /* ===== Modelo 3D extrudado (faces + paredes) ===== */
+    var P = [];
+    function push(x, y, z, nx, ny, nz, sd) {
+        var l = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+        P.push([x - CX, CY - y, z, nx/l, ny/l, nz/l, sd]);
+    }
+    for (var i = 0; i < GNX; i++)
+        for (var j = 0; j < GNY; j++) {
+            if (!S(i, j)) continue;
+            var sx = i * STEP, sy = j * STEP;
+            push(sx, sy,  HD, 0, 0,  1, 0);   /* faces (sd=0) */
+            push(sx, sy, -HD, 0, 0, -1, 0);
+            var rE = !S(i+1,j), lE = !S(i-1,j), dE = !S(i,j+1), uE = !S(i,j-1);
+            if (rE || lE || dE || uE) {
+                var nx = (rE?1:0) - (lE?1:0);
+                var ny = (uE?1:0) - (dE?1:0);
+                if (nx !== 0 || ny !== 0)
+                    for (var k = 0; k < ZSTEPS; k++)
+                        push(sx, sy, -HD + (2*HD) * k / (ZSTEPS - 1), nx, ny, 0, 1);  /* parede (sd=1) */
+            }
+        }
+
+    /* ===== Normaliza o modelo p/ ~12 unidades (mantém DIST/perspectiva calibrados) ===== */
+    var nmx = 0, nmy = 0;
+    for (i = 0; i < P.length; i++) {
+        if (Math.abs(P[i][0]) > nmx) nmx = Math.abs(P[i][0]);
+        if (Math.abs(P[i][1]) > nmy) nmy = Math.abs(P[i][1]);
+    }
+    var nf = 12 / Math.max(nmx, nmy);
+    for (i = 0; i < P.length; i++) { P[i][0]*=nf; P[i][1]*=nf; P[i][2]*=nf; }
+
+    /* ===== Câmera / auto-fit ===== */
+    var DIST = 26, ooz0 = 1 / DIST, maxFX = 0, maxFY = 0;
+    for (i = 0; i < P.length; i++) {
+        if (Math.abs(P[i][0]) > maxFX) maxFX = Math.abs(P[i][0]);
+        if (Math.abs(P[i][1]) > maxFY) maxFY = Math.abs(P[i][1]);
+    }
+    var colFit = (COLS/2 * 0.84) / (ooz0 * maxFX);
+    var rowFit = (ROWS/2 * 0.84) / (ooz0 * maxFY);
+    var xK = Math.min(colFit, rowFit / CHAR_ASPECT);
+    var yK = xK * CHAR_ASPECT;
+
+    /* ===== Luz ===== */
+    var LX = -0.4, LY = 0.55, LZ = 0.73;
+    (function () { var l = Math.sqrt(LX*LX+LY*LY+LZ*LZ); LX/=l; LY/=l; LZ/=l; })();
+    var AMBIENT = 0.28;
+
+    /* ===== Buffers de célula ===== */
+    var N = COLS * ROWS;
+    var zbuf = new Float32Array(N);
+    var lum  = new Float32Array(N);
+    var occ  = new Uint8Array(N);
+    var side = new Uint8Array(N);   /* 1 = célula da parede (extrude) */
+    var glyph = new Int16Array(N);   /* glifo persistente por célula (cintila) */
+    for (i = 0; i < N; i++) glyph[i] = (Math.random() * GLYPHS.length) | 0;
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var FONT = "px 'Cascadia Code', 'Consolas', 'Menlo', monospace";
+
+    function frame(t) {
+        var time = t * 0.001;
+
+        var A = Math.sin(time * 0.7) * 0.22;
+        var B = Math.sin(time * 0.5) * 0.5;
+        var bob = Math.sin(time * 1.1) * (ROWS * 0.04);
+        var pulse = 1 + Math.sin(time * 1.5) * 0.03;
+        var sA = Math.sin(A), cA = Math.cos(A), sB = Math.sin(B), cB = Math.cos(B);
+
+        var p;
+        for (p = 0; p < N; p++) { occ[p] = 0; zbuf[p] = 0; }
+
+        var cx = COLS/2, cy = ROWS/2 + bob;
+        for (p = 0; p < P.length; p++) {
+            var pt = P[p];
+            var px = pt[0]*pulse, py = pt[1]*pulse, pz = pt[2]*pulse;
+            var nx = pt[3], ny = pt[4], nz = pt[5];
+            var y1 = py*cA - pz*sA, z1 = py*sA + pz*cA;
+            var ny1 = ny*cA - nz*sA, nz1 = ny*sA + nz*cA;
+            var x2 = px*cB + z1*sB, z2 = -px*sB + z1*cB;
+            var nx2 = nx*cB + nz1*sB, nz2 = -nx*sB + nz1*cB;
+            var ooz = 1 / (z2 + DIST);
+            var scol = (cx + xK*ooz*x2) | 0;
+            var srow = (cy - yK*ooz*y1) | 0;
+            if (scol < 0 || scol >= COLS || srow < 0 || srow >= ROWS) continue;
+            var idx = scol + srow*COLS;
+            if (ooz > zbuf[idx]) {
+                zbuf[idx] = ooz;
+                var L = nx2*LX + ny1*LY + nz2*LZ;
+                if (L < 0) L = 0;
+                lum[idx] = AMBIENT + (1 - AMBIENT) * L;
+                occ[idx] = 1;
+                side[idx] = pt[6];
+            }
+        }
+
+        /* cintilação: re-sorteia uma fração dos glifos */
+        var rer = (N * 0.05) | 0;
+        for (var r = 0; r < rer; r++) {
+            var ri = (Math.random() * N) | 0;
+            glyph[ri] = (Math.random() * GLYPHS.length) | 0;
+        }
+
+        /* limpa total com a cor exata do fundo (sem rastro, sem quadrado visível) */
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgb(0,0,10)';
+        ctx.fillRect(0, 0, SIZE, SIZE);
+
+        ctx.font = (CELL * 1.05) + FONT;
+
+        for (var row = 0; row < ROWS; row++) {
+            for (var col = 0; col < COLS; col++) {
+                var c = col + row*COLS;
+                if (!occ[c]) continue;
+                var v = lum[c];
+                var gx = col*CELL + CELL/2;
+                var gy = row*CELL + CELL/2;
+
+                if (Math.random() < 0.004) {
+                    /* pisca: algumas letras em bw (#F5F5FF) de vez em quando */
+                    ctx.fillStyle = 'rgb(245,245,255)';
+                } else {
+                    var rr, gg, bb;
+                    if (side[c]) {
+                        /* parede (extrude): pc100 (#C8C8FF) */
+                        rr = ( 90 + 110*v) | 0;
+                        gg = ( 90 + 110*v) | 0;
+                        bb = (160 +  95*v) | 0;
+                    } else {
+                        /* faces: pc300 (#6464FF) */
+                        rr = ( 40 + 60*v) | 0;
+                        gg = ( 40 + 60*v) | 0;
+                        bb = (110 + 145*v) | 0;
+                    }
+                    ctx.fillStyle = 'rgb(' + rr + ',' + gg + ',' + bb + ')';
+                }
+                ctx.fillText(GLYPHS[glyph[c]], gx, gy);
+            }
+        }
+
+        requestAnimationFrame(frame);
+    }
+
+    ctx.fillStyle = '#00000A';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

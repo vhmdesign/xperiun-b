@@ -1,0 +1,1360 @@
+/* ============================================================
+   ICIAN, LP de evento (Xperiun)
+   Estende o Design System (root.css). Só tokens/estilos
+   específicos da página vivem aqui; tudo que é DS vem do root.css.
+   ============================================================ */
+
+/* ---- Tokens locais (escopo da página) ---------------------- */
+:root {
+    /* Paleta ICIAN, escala clara a forte (convenção do DS) */
+    --ic100: #FFC8AF;  /* tint mais claro   */
+    --ic300: #FF967D;  /* tom intermediário */
+    --ic500: #E1644B;  /* cor núcleo / base */
+
+    --ic500-5:  rgba(225,100,75,0.05);
+    --ic500-10: rgba(225,100,75,0.10);
+    --ic500-15: rgba(225,100,75,0.15);
+    --ic500-25: rgba(225,100,75,0.25);
+    --ic500-50: rgba(225,100,75,0.50);
+    --ic500-75: rgba(225,100,75,0.75);
+
+    --ic300-15: rgba(255,150,125,0.15);   /* FF967D 15% */
+    --ic100-25: rgba(255,200,175,0.25);   /* FFC8AF 25% */
+
+    /* Família de display dos títulos da LP */
+    --font-family-display: "EB Garamond", serif;
+}
+
+/* ============================================================
+   Títulos de display da página (EB Garamond 700, line-height 1em)
+   ============================================================ */
+.ic-title {
+    font-family: var(--font-family-display);
+    font-weight: 700;
+    line-height: 1em;
+    color: var(--bw);
+}
+
+/* Classe base dos ícones Material Symbols (a fonte vem do <link> no head;
+   root.css não define a classe e esta página não carrega o formacoes/style.css). */
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   Container do grid do DS (Wide)
+   Wide: 10 cols / max 1440px, gap 32px
+   Desktop (<=1439): 8 cols, gap 32px
+   Tablet (<=864): 6 cols, gap 24px
+   Mobile (<=576): 4 cols, gap 16px
+   ============================================================ */
+.ic-grid {
+    position: relative;
+    z-index: 2;   /* conteúdo acima dos dois bg (robô 0, xperiun 1) */
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+
+@media (max-width: 1439px) {
+    .ic-grid { grid-template-columns: repeat(8, 1fr); }
+}
+@media (max-width: 1152px) {
+    .ic-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+}
+@media (max-width: 576px) {
+    .ic-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+}
+
+/* ============================================================
+   ASCII Stage do robô: posicionada (absolute) dentro de .ic-hero,
+   mesmo padrão do .ic-xperiun-stage. Rola junto com o hero (não fixa).
+   O conteúdo do hero (.ic-hero-content, z-index 1) renderiza por cima.
+   ============================================================ */
+.ic-stage {
+    position: absolute;
+    top: -64px;
+    left: calc(50% - 128px);
+    z-index: 1;   /* acima do .ic-tese-wrap (z 0), abaixo do conteúdo (.ic-grid z 2) */
+    pointer-events: none;
+}
+.ic-stage canvas {
+    display: block;
+    width: 1080px;
+    height: 1080px;
+    /* "scrim" agora é MÁSCARA: o ascii some (fica transparente) do lado do
+       texto, em vez de um overlay opaco que cobria o outro canvas */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 50%, #000);
+            mask-image: linear-gradient(to right, transparent, #000 50%, #000);
+    /* transform (scale) controlado pelo JS, ver ascii-stage.js */
+}
+
+/* ============================================================
+   HERO ICIAN
+   Conteúdo nas 6 primeiras das 10 colunas (4 livres à direita).
+   Gaps verticais (96 / 32 / 32) via margin-top; row-gap = 0.
+   ============================================================ */
+/* Container de hero + seção 2: contém o overflow dos canvases (absolute +
+   translate) para que não estendam a área rolável da página (sem jank). */
+.ic-main {
+    overflow: hidden;
+}
+
+.ic-hero {
+    display: flex;
+    align-items: flex-start;
+    position: relative;   /* sem z-index: não cria stacking context (camadas são globais) */
+}
+
+.ic-hero-content {
+    padding: 96px 16px;
+}
+
+/* Indicador de scroll: canto inferior-esquerdo do hero */
+.ic-scroll-hint {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+.ic-scroll-hint .material-symbols-outlined {
+    display: block;
+    font-size: 32px;
+    color: var(--bw-50);
+    animation: ic-scroll-cue 1.6s ease-in-out infinite;
+}
+@keyframes ic-scroll-cue {
+    0%   { transform: translateY(-8px); opacity: 0; }
+    50%  { opacity: 1; }
+    100% { transform: translateY(8px); opacity: 0; }
+}
+
+/* Logo 220px */
+.ic-hero-logo {
+    grid-column: span 6;
+    width: 220px;
+    height: auto;
+    opacity: 0.5;
+}
+
+/* Corpo do hero: tags + título + bloco inferior num mesmo container.
+   Subgrid das 6 colunas; abaixo de 1152px ocupa 100% (1 / -1). */
+.ic-hero-body {
+    grid-column: span 6;
+    margin-top: 96px;                      /* gap logo -> corpo */
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: start;
+    row-gap: 32px;                         /* gaps internos: tags -> título -> bloco */
+}
+
+/* 3 tags Primary M (DS .tag-status neutral), em linha, gap 16px */
+.ic-hero-tags {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* Título H1, clamp 2.5rem (576px) a 5rem (1440px),
+   gradient pc300 a bw, esquerda para direita */
+.ic-hero-h1 {
+    grid-column: 1 / -1;
+    font-size: clamp(2.5rem, 4.6296vw + 0.8333rem, 5rem);
+    background-image: linear-gradient(90deg, var(--pc200), var(--bw));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Bloco inferior: texto + botão. Subgrid; texto ocupa todo o width
+   menos as 2 últimas colunas (botão). Gap entre eles = 32px (DS). */
+.ic-hero-bottom {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 32px;                         /* gap quando empilha (mobile) */
+    align-items: center;
+}
+
+/* Texto de apoio: todo o width menos as 2 colunas do botão */
+.ic-hero-sub {
+    grid-column: 1 / -3;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+
+/* CTA: base = Botão Medium Emphasis L (DS, no HTML via data-emphasis/data-size).
+   Só sobrescreve o gradient para pc300 -> ic300 (FF967D) -> ic100 (FFC8AF).
+   Resto (cor do texto, background-size 200%, slide no hover, transição) vem do DS.
+   2 últimas colunas do bloco inferior. */
+.ic-cta {
+    grid-column: -3 / -1;
+    width: 100%;
+    align-self: stretch;                   /* full height (acompanha o texto) */
+    gap: 8px;
+}
+.btn[data-emphasis="medium"].ic-cta {
+    background-image: linear-gradient(90deg, var(--ic100), var(--ic300), var(--pc200));
+}
+/* Mantém a cor do texto em --bb também no hover (DS troca pra --bw) */
+.btn[data-emphasis="medium"].ic-cta.is-hover,
+.btn[data-emphasis="medium"].ic-cta:hover {
+    color: var(--bb);
+}
+
+/* Tópicos: container em largura total (centralizado), 80px abaixo do corpo.
+   Os 3 itens ocupam as 6 primeiras colunas (span 2 cada). */
+.ic-hero-topics {
+    grid-column: 1 / -1;
+    margin: 80px 0 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 16px;
+}
+
+/* Linha divisória full-bleed (2px, 100vw) acima dos tópicos.
+   Possível porque o container está centralizado na viewport (1 / -1). */
+.ic-hero-topics::before {
+    content: "";
+    grid-column: 1 / -1;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: 2px;
+    background: var(--bw-15);
+}
+
+.ic-hero-topic {
+    grid-column: span 2;
+    margin: 0;
+    font: var(--p);
+    color: var(--bw);
+    position: relative;
+}
+
+/* Barra de destaque (64x4px) posicionada 20px acima do topo do tópico.
+   Tópicos 1 e 2: pc200; tópico 3: ic100 (FFC8AF). */
+.ic-hero-topic::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 64px;
+    height: 4px;
+    background: var(--pc200);
+    opacity: 0.75;
+}
+.ic-hero-topic:nth-child(3)::before { background: var(--ic100); }
+
+/* <= 1439px: reduz o padding-top do hero e sobe o canvas */
+@media (max-width: 1439px) {
+    .ic-hero-content { padding-top: 32px; }
+    .ic-stage { top: -20%; }
+}
+
+/* Abaixo de 1152px: o corpo ocupa 100% do width e o botão passa a 3 colunas */
+@media (max-width: 1152px) {
+    .ic-hero-body { grid-column: 1 / -1; }
+    .ic-hero-sub { grid-column: 1 / -4; }   /* todo width menos 3 cols */
+    .ic-cta      { grid-column: -4 / -1; }   /* 3 últimas colunas */
+
+    /* Tópicos distribuídos igualmente em 100% (3 colunas iguais) */
+    .ic-hero-topics { grid-template-columns: repeat(3, 1fr); column-gap: 32px; }
+    .ic-hero-topic { grid-column: auto; }
+}
+
+/* Abaixo de 864px: bloco inferior vertical (texto e botão empilhados) */
+@media (max-width: 864px) {
+    .ic-hero-sub,
+    .ic-cta { grid-column: 1 / -1; }
+
+    /* Restaura padding-top 96px do hero */
+    .ic-hero-content { padding-top: 96px; }
+
+    /* Stage sobe; canvas alarga (mantém 1:1 em 125vw) */
+    .ic-stage { top: -15%; left: 0; }
+    .ic-stage canvas {
+        width: 125vw;
+        height: 125vw;
+    }
+
+    /* Logo e corpo indentados 16px (deixam o rail à esquerda) */
+    .ic-hero-logo { margin-left: 16px; }
+    .ic-hero-body { padding-left: 16px; }
+
+    /* A divisória vira rail vertical à esquerda (2px x 100%), no left 0 */
+    .ic-hero-topics::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        margin-left: 0;
+    }
+
+    /* Tópicos full width e indentados; texto alinha com o corpo (32px) */
+    .ic-hero-topic {
+        grid-column: 1 / -1;
+        padding-left: 16px;
+        min-height: 64px;
+    }
+
+    /* Barra de destaque vertical (4x32), encostando no rail */
+    .ic-hero-topic::before {
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 32px;
+    }
+}
+
+/* Mobile: logo full width */
+@media (max-width: 576px) {
+    .ic-hero-logo { grid-column: 1 / -1; }
+    .ic-hero-body { margin-top: 64px; }
+}
+
+/* ============================================================
+   SEÇÃO 2 · Tese ("E foi de propósito")
+   Grid 10 cols: título e corpo nas 4 centrais (3 vazias cada lado);
+   texto da Imersão nas 2 colunas ao lado.
+   ============================================================ */
+.ic-sec2 {
+    position: relative;   /* sem z-index: não cria stacking context (camadas são globais) */
+    padding: 128px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Stage do Xperiun: absolute dentro da seção 2 (no lugar certo).
+   O overflow do canvas é contido pelo .ic-main (overflow: hidden) que
+   envolve hero + seção 2, então o translate não estende a área rolável. */
+.ic-xperiun-stage {
+    position: absolute;
+    top: calc(50% - 720px);
+    right: calc(50% - 256px);
+    z-index: 1;   /* acima do robô (0), abaixo do conteúdo (2) */
+    pointer-events: none;
+}
+.ic-xperiun-stage canvas {
+    display: block;
+    width: 1440px;
+    height: 1440px;
+    /* "scrim" como MÁSCARA (contrário do robô): some do lado direito */
+    -webkit-mask-image: linear-gradient(to left, transparent, #000 50%, #000);
+            mask-image: linear-gradient(to left, transparent, #000 50%, #000);
+}
+@media (min-width: 865px) and (max-width: 1152px) {
+    .ic-xperiun-stage {
+        top: auto;
+        bottom: -75vw;
+        right: -50vw;
+    }
+    .ic-xperiun-stage canvas {
+        width: 150vw;
+        height: 150vw;
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 50%, #000);
+                mask-image: linear-gradient(to right, transparent, #000 50%, #000);
+    }
+}
+@media (max-width: 864px) {
+    .ic-xperiun-stage {
+        top: -75vw;
+        bottom: auto;
+        right: -50vw;
+    }
+    .ic-xperiun-stage canvas {
+        width: 150vw;
+        height: 150vw;
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 50%, #000);
+                mask-image: linear-gradient(to right, transparent, #000 50%, #000);
+    }
+}
+
+.ic-sec2-grid {
+    row-gap: 48px;
+    align-items: start;
+}
+
+/* Título: 4 colunas centrais */
+.ic-sec2-title {
+    grid-column: 4 / 8;
+    grid-row: 1;
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+}
+
+/* 1ª parte em gradient padrão do DS (--text-gradient-low: bw -> bw50).
+   display:block faz o gradiente cobrir todo o width (não reinicia por linha). */
+.ic-sec2-title-main {
+    display: block;
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* "E foi de propósito" em linha separada, cor FFC8AF */
+.ic-sec2-title-accent { display: block; color: var(--ic100); }
+
+/* Corpo: mesmas 4 colunas centrais, abaixo do título */
+.ic-sec2-body {
+    grid-column: 4 / 8;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.ic-sec2-body p { font: var(--p); color: var(--bw); }
+
+/* Texto da Imersão: 3 colunas ao lado do corpo, abaixo do título */
+.ic-sec2-aside {
+    grid-column: 8 / 11;
+    grid-row: 2;
+}
+.ic-sec2-aside p { font: var(--p); color: var(--bw); }
+
+@media (max-width: 1439px) {
+    .ic-sec2-title { grid-column: 3 / 7; }
+    .ic-sec2-body  { grid-column: 3 / 7; }
+    .ic-sec2-aside { grid-column: 7 / 9; }
+}
+
+/* Abaixo de 1152px: título 1 col à esquerda (2/6); corpo 1 col à direita e 4 cols (2/6) */
+@media (max-width: 1152px) {
+    .ic-sec2-title,
+    .ic-sec2-body,
+    .ic-sec2-aside {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+}
+
+@media (max-width: 864px) {
+    .ic-sec2-title,
+    .ic-sec2-body,
+    .ic-sec2-aside {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .ic-sec2 { padding: 128px 0; }
+    .ic-sec2-title,
+    .ic-sec2-body,
+    .ic-sec2-aside { grid-column: 1 / -1; }
+}
+
+/* >= 1440px: seção 2 ocupa a viewport inteira */
+@media (min-width: 1440px) {
+    .ic-sec2 {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+}
+
+/* ============================================================
+   SEÇÃO 3 · Dores ("Você se reconhece em alguma dessas?")
+   Título + cards 3 por linha (3 -> 2 -> 1).
+   ============================================================ */
+/* Eyebrow de seção (kicker acima do título) */
+.ic-sec-eyebrow {
+    display: block;
+    font: var(--label-s);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: var(--bw);
+    margin-bottom: 16px;
+}
+
+/* Chuva matrix (sobe) atrás de usos + circle; esmaece em direção ao topo */
+.ic-rain-wrap {
+    position: relative;
+    isolation: isolate;
+}
+.ic-rain {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1440px;
+    height: 100%;
+    z-index: -1;            /* atrás da usos e do circle-scroll */
+    opacity: 1;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to top, #000, transparent);
+            mask-image: linear-gradient(to top, #000, transparent);
+}
+
+/* Barra fixa de CTA no rodapé: gradiente bb75 (base) -> transparent (topo) */
+.ic-bottom-cta {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to top, var(--bb-75), transparent);
+    z-index: 50;
+    pointer-events: none;   /* só o botão é interativo */
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+/* recolhida (hero ou faq visíveis): desce pra fora da tela */
+.ic-bottom-cta.is-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+}
+/* blur progressivo: 4 níveis, mais forte na base (16px) até o topo (2px) */
+/* blur progressivo: camadas full-height com máscaras sobrepostas que mesclam
+   os níveis num gradiente suave (leve no topo 2px -> forte na base 16px) */
+.ic-bottom-cta .ic-blur {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.ic-blur-2  { -webkit-backdrop-filter: blur(2px);  backdrop-filter: blur(2px);  -webkit-mask: linear-gradient(to top, transparent 50%, #000 75%, #000);                      mask: linear-gradient(to top, transparent 50%, #000 75%, #000); }
+.ic-blur-4  { -webkit-backdrop-filter: blur(4px);  backdrop-filter: blur(4px);  -webkit-mask: linear-gradient(to top, transparent 25%, #000 50%, #000 75%, transparent);    mask: linear-gradient(to top, transparent 25%, #000 50%, #000 75%, transparent); }
+.ic-blur-8  { -webkit-backdrop-filter: blur(8px);  backdrop-filter: blur(8px);  -webkit-mask: linear-gradient(to top, transparent, #000 25%, #000 50%, transparent 75%);    mask: linear-gradient(to top, transparent, #000 25%, #000 50%, transparent 75%); }
+.ic-blur-16 { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); -webkit-mask: linear-gradient(to top, #000, #000 25%, transparent 50%);                     mask: linear-gradient(to top, #000, #000 25%, transparent 50%); }
+.ic-bottom-cta .ic-cta {
+    position: relative;
+    z-index: 1;
+    width: auto;
+    align-self: center;
+    grid-column: auto;
+    pointer-events: auto;
+}
+
+/* Wrapper sec2 + pains: bg de gradiente roxo borrado (igual perfis-depos-wrap) */
+.ic-tese-wrap {
+    position: relative;
+    z-index: 0;
+}
+.ic-tese-wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 960px;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse at 20% 60%, var(--pc900) 0%, transparent 70%),
+        radial-gradient(ellipse at 60% 40%, var(--bb) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 40%, var(--bb) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 20%, var(--pc900) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 100%, var(--bb) 0%, transparent 100%),
+        radial-gradient(ellipse at 100% 100%, var(--bb) 0%, transparent 70%);
+    background-size: 100% 100%;
+}
+.ic-tese-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        var(--bb) 0,
+        transparent 400px,
+        transparent calc(100% - 400px),
+        var(--bb) 100%
+    );
+}
+
+/* Wrapper wins + profs + faq: mesmo bg, gradiente INVERTIDO (espelhado no X) */
+.ic-fim-wrap {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+}
+.ic-fim-wrap::before {
+    content: "";
+    position: absolute;
+    top: -64px;
+    left: -64px;
+    width: calc(100% + 128px);
+    height: calc(100% + 128px);
+    min-width: 960px;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse at 80% 60%, var(--pc800) 0%, transparent 70%),
+        radial-gradient(ellipse at 40% 40%, var(--bb) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 40%, var(--bb) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 20%, var(--pc900) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 100%, var(--bb) 0%, transparent 100%),
+        radial-gradient(ellipse at 0% 100%, var(--bb) 0%, transparent 70%);
+    background-size: 100% 100%;
+    filter: blur(64px);
+}
+.ic-fim-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        var(--bb) 0,
+        transparent 400px,
+        transparent calc(100% - 400px),
+        var(--bb) 100%
+    );
+}
+
+.ic-pains {
+    position: relative;
+    z-index: 1;
+    padding: 128px 0;
+}
+@media (min-width: 1440px) {
+    .ic-pains { padding-top: 0; }
+}
+
+.ic-pains-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+.ic-pains-title {
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    max-width: 16ch;
+    background-image: var(--text-gradient-low);   /* bw -> bw50, todo o width */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.ic-pains-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Card: gradiente FF967D 15% -> transparent (esq->dir), inset shadow FFC8AF 25% */
+.ic-pain-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;          /* zera o margin do reset de <li> do DS */
+    padding: 32px;
+    border-radius: 16px;
+    background: linear-gradient(to right, var(--ic300-15), transparent);
+    box-shadow: inset 0 0 4px 0 var(--ic100-25);
+}
+
+.ic-pain-x {
+    font-size: 24px;
+    color: var(--ic500);
+}
+
+.ic-pain-card p {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+@media (max-width: 864px) {
+    .ic-pains-cards { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+@media (max-width: 576px) {
+    .ic-pains { padding: 128px 0; }
+    .ic-pains-cards { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ============================================================
+   SEÇÃO · Ganhos (igual à pains, mas pc + check)
+   ============================================================ */
+.ic-wins {
+    position: relative;
+    z-index: 1;
+    padding: 128px 0;
+}
+.ic-wins-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+.ic-wins-title {
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    max-width: 16ch;
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.ic-wins-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+/* Card: gradiente pc300 15% -> transparent, inset shadow pc300 25% */
+.ic-win-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 32px;
+    border-radius: 16px;
+    background: linear-gradient(to right, var(--pc300-15), transparent);
+    box-shadow: inset 0 0 4px 0 var(--pc300-25);
+}
+.ic-win-check {
+    font-size: 24px;
+    color: var(--pc200);
+}
+.ic-win-card p {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+@media (max-width: 864px) {
+    .ic-wins-cards { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+@media (max-width: 576px) {
+    .ic-wins-cards { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ============================================================
+   SEÇÃO · Professores (sec-profs, trazida das formações)
+   ============================================================ */
+.sec-profs {
+    box-sizing: border-box;
+    padding: 128px 0;
+}
+.profs-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.profs-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+.profs-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 16px;
+    max-width: 680px;
+}
+.profs-eyebrow {
+    font: var(--label-s);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: var(--bw);
+    margin: 0;
+}
+.profs-title {
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    margin: 0;
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.prof-card {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    padding: 32px;
+    border-radius: 16px;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(to right, var(--dn800), transparent);
+}
+.prof-card-media {
+    flex: 0 0 auto;
+    width: 256px;
+    max-width: 30%;
+    align-self: flex-start;
+}
+.prof-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+}
+.prof-card-text {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+.prof-card-name {
+    font: var(--label-l);
+    color: var(--bw);
+    margin: 0;
+}
+.prof-card-role {
+    font: var(--label);
+    color: var(--bw-75);
+    margin: 0;
+}
+.prof-card-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 8px 0 0;
+}
+@media (max-width: 1439px) {
+    .profs-grid { grid-template-columns: repeat(8, 1fr); }
+    .profs-header { grid-column: span 4; }
+    .prof-card { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .profs-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+    .profs-header { grid-column: 1 / -1; }
+    .prof-card { grid-column: span 3; flex-direction: column; background: linear-gradient(to bottom, var(--dn800), transparent); }
+    .prof-card-media { width: 100%; max-width: none; }
+}
+@media (max-width: 576px) {
+    .profs-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+    .profs-header { grid-column: span 4; }
+    .prof-card { grid-column: span 4; }
+}
+
+/* ============================================================
+   SEÇÃO · FAQ (sec-faq, trazida das formações)
+   header em 1440 (span 5) + faq-grid full-width (linhas horizontais
+   cruzam a tela; conteúdo das perguntas capado em 1440). Acordeão via JS.
+   ============================================================ */
+.sec-faq {
+    padding: 128px 0;
+}
+.faq-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 64px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+.faq-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+}
+.faq-title {
+    max-width: 680px;
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.faq-grid {
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+}
+.faq-row { padding: 0 16px; cursor: pointer; transition: background-color 0.2s ease; }
+.faq-row:hover { background-color: var(--bw-5); }
+.faq-row + .faq-row { box-shadow: inset 0 2px 0 0 var(--bw-10); }
+.faq-q {
+    list-style: none;
+    cursor: pointer;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q-text { font: var(--p); color: var(--bw); }
+.faq-q-icon { color: var(--bw-50); flex-shrink: 0; font-weight: 200; }
+.faq-a-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    grid-template-columns: minmax(0, 1fr);
+    transition: grid-template-rows 0.45s ease-out;
+    will-change: grid-template-rows;
+}
+.faq-a-grid.is-open { grid-template-rows: 1fr; }
+.faq-a-wrap {
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 28px;
+    box-sizing: border-box;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.faq-a { font: var(--p); color: var(--bw-75); margin: 0; }
+@media (max-width: 1439px) {
+    .faq-inner { grid-template-columns: repeat(8, 1fr); }
+    .faq-header { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .faq-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; padding-bottom: 48px; }
+    .faq-header { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .faq-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; padding-bottom: 32px; }
+}
+
+/* ============================================================
+   SEÇÃO · CTA final (sec-cta, trazida das formações)
+   ============================================================ */
+.sec-cta {
+    padding: 128px max(16px, calc(50vw - 720px));
+}
+.cta-inner {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    align-items: stretch;
+}
+.cta-left {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    justify-content: flex-end;
+}
+.cta-right {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+.cta-title {
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    margin: 0;
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.cta-sub {
+    font: var(--p-l);
+    color: var(--bw-75);
+    margin: 0;
+}
+.cta-actions { display: flex; flex-wrap: wrap; gap: 16px; }
+.sec-cta .ic-cta { width: auto; align-self: auto; grid-column: auto; }
+@media (max-width: 1439px) {
+    .cta-inner { grid-template-columns: repeat(8, 1fr); }
+    .cta-left, .cta-right { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .cta-inner { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+    .cta-left, .cta-right { grid-column: span 6; }
+}
+@media (max-width: 576px) {
+    .sec-cta { padding: 128px 16px; }
+    .cta-inner { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .cta-left, .cta-right { grid-column: span 4; }
+}
+
+/* ============================================================
+   SEÇÃO · Claude Run (jogo, trazido de joguinho/jogo.html)
+   ============================================================ */
+.ic-game {
+    padding: 128px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    overflow: hidden;
+}
+.ic-game-head { text-align: center; padding: 0 16px; }
+.ic-game #stage { position: relative; }
+.ic-game #scene { display: block; image-rendering: -webkit-optimize-contrast; cursor: pointer; }
+.ic-game #hud, .ic-game #msg { position: absolute; font: var(--label); color: var(--bw); pointer-events: none; }
+.ic-game #hud { top: 16px; right: 24px; }
+.ic-game #msg { left: 50%; top: 42%; transform: translate(-50%, -50%); width: 92%; text-align: center; }
+.ic-game #msg .over { color: var(--er300); }
+.ic-game #duck { position: absolute; right: 24px; bottom: 24px; display: none; touch-action: none; background: var(--dn500-25); transition: none; }
+.ic-game #duck:hover, .ic-game #duck:active, .ic-game #duck.is-hover { background: var(--dn500-25); }
+
+/* ============================================================
+   SEÇÃO · Como usar Claude e IA no trabalho
+   6 cards numa grade com divisórias (técnica do depos-logo-card):
+   a grade tem borda topo + direita; cada card tem borda esquerda + inferior.
+   ============================================================ */
+.ic-usos {
+    padding: 128px 0;
+}
+.ic-usos-head {
+    max-width: 1440px;
+    margin: 0 auto 64px;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.ic-usos-band {
+    padding: 0 16px;
+    overflow: hidden;
+    /* linhas horizontais full-width (topo + base), como no depos */
+    box-shadow: inset 0 2px 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+}
+.ic-usos-title {
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    max-width: 20ch;
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.ic-usos-grid {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+    box-shadow: inset -2px 0 0 0 var(--bw-15);   /* só borda direita; topo/base vêm do band */
+}
+.ic-usos-card {
+    padding: 64px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+}
+.ic-usos-card-title {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+.ic-usos-card-text {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+@media (max-width: 864px) {
+    .ic-usos-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 576px) {
+    .ic-usos-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   SEÇÃO 4 · Menu circular (aulas) — estrutura base
+   Círculo externo (1440, gradiente) + círculo interno (bb, 192px menor)
+   + conteúdo central (4 colunas). Rotação por scroll: a definir.
+   ============================================================ */
+/* Wrapper de scroll: 300vh (3 aulas) — a seção fica sticky dentro dele */
+.ic-circle-scroll {
+    position: relative;
+    height: 300vh;
+}
+
+.ic-circle {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 100vh;
+    height: 100dvh;
+    padding: 96px 0 0 0;
+    box-sizing: border-box;
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Círculo externo: ocupa o grid 1440, gradiente bw-10 -> transparente */
+.ic-circle-outer {
+    position: absolute;
+    top: 96px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    width: 100%;
+    max-width: 1408px;
+    height: 100%;
+    border-radius: 8000px 8000px 0 0;
+    overflow: hidden;   /* clipa o glow das opções ao círculo */
+    background: linear-gradient(to bottom, var(--bw-10), transparent, transparent);
+    background-color: var(--bb);
+    box-shadow: 0 0 64px 0 var(--bb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 864px) {
+    .ic-circle-outer { width: 150%; }
+}
+@media (max-height: 768px) {
+    .ic-circle-outer { top: 0; }
+}
+
+/* Anéis de seleção: conic-gradient (arco pc200 centrado em 330°, largura 30°).
+   from 180deg: 0% no bottom-center, aumentando no sentido horário. */
+.ic-circle-select,
+.ic-circle-select-outer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--sel-rot, 0deg));
+    transition: transform 0.6s ease;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        transparent 37.5%,
+        var(--pc200) 37.5%,
+        var(--pc200) 45.833%,
+        transparent 45.833%
+    );
+    pointer-events: none;
+}
+
+/* Stroke 2px na borda do círculo interno */
+.ic-circle-select {
+    top: 96px;
+    width: calc(100% - 192px);
+    aspect-ratio: 1;
+    -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+            mask: radial-gradient(closest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+}
+
+/* Stroke 8px na borda do círculo externo */
+.ic-circle-select-outer {
+    top: 0;
+    width: 100%;
+    aspect-ratio: 1;
+    -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+            mask: radial-gradient(closest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+}
+
+/* Trilha das opções: mesmo diâmetro da linha de centro do anel.
+   Cada opção é um "rotor" que preenche a trilha e gira por --a;
+   o ícone fica no topo e contra-gira pra ficar reto. */
+.ic-circle-options {
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    width: calc(100% - 96px);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+.ic-circle-option {
+    position: absolute;
+    inset: 0;
+    transform: rotate(var(--a, 0deg));
+}
+
+/* Glow pc300 via radial-gradient (sem blur). Aparece (fade) só na opção ATIVA.
+   Clipado pelo círculo (overflow:hidden no outer). */
+/* glow das opções: canvas de glifos coloridos variando (mesmo tamanho/estilo
+   do ascii). A máscara radial faz o fade do "glow". */
+.ic-circle-glyphs {
+    position: absolute;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 405px;
+    height: 405px;
+    -webkit-mask-image: radial-gradient(circle, #000 25%, transparent 70%);
+            mask-image: radial-gradient(circle, #000 25%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+.ic-circle-option.is-selected .ic-circle-glyphs { opacity: 1; }
+/* ângulo de rotação (do topo) = 180° + (% × 360°), com 0% no bottom */
+.ic-circle-option:nth-child(1) { --a: 330deg; }   /* opção 1 (cima-esq) */
+.ic-circle-option:nth-child(2) { --a: 360deg; }   /* opção 2 (topo)     */
+.ic-circle-option:nth-child(3) { --a: 30deg;  }   /* opção 3 (cima-dir) */
+
+.ic-circle-option-icon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    transform: translate(-50%, -50%) rotate(calc(-1 * var(--a, 0deg)));
+    z-index: 1;            /* acima do canvas de glifos (ascii) */
+    pointer-events: auto;
+    cursor: pointer;
+}
+/* quadrados que compõem cada ícone */
+.ic-circle-option-icon i {
+    position: absolute;
+    background: var(--bw-25);
+    transition: background 0.3s ease;
+}
+.ic-circle-option-icon:hover i { background: var(--bw-75); }
+.ic-circle-option.is-selected .ic-circle-option-icon i { background: var(--pc200); }
+
+/* Aula 1: um quadrado 32px (centrado) */
+.ic-icon-1 i { width: 32px; height: 32px; top: 8px; left: 8px; }
+/* Aula 2: 16px com a ponta inf-dir tocando a ponta sup-esq de um 24px */
+.ic-icon-2 i:nth-child(1) { width: 16px; height: 16px; top: 4px;  left: 4px;  }
+.ic-icon-2 i:nth-child(2) { width: 24px; height: 24px; top: 20px; left: 20px; }
+/* Aula 3: 3x 16px em escada (cada um toca a ponta sup-dir do anterior) */
+.ic-icon-3 i:nth-child(1) { width: 16px; height: 16px; top: 32px; left: 0;   }
+.ic-icon-3 i:nth-child(2) { width: 16px; height: 16px; top: 16px; left: 16px; }
+.ic-icon-3 i:nth-child(3) { width: 16px; height: 16px; top: 0;    left: 32px; }
+
+/* Círculo interno: bb, 192px menor (diâmetro), conteúdo no topo */
+.ic-circle-inner {
+    position: absolute;
+    top: 96px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 192px);
+    aspect-ratio: 1;
+    border-radius: 8000px 8000px 0 0;
+    background: linear-gradient(to bottom, var(--pc500-5), transparent, transparent);
+    background-color: var(--bb);
+}
+
+/* Conteúdo: 4 colunas (544px), em fluxo na seção, centralizado, acima do círculo */
+.ic-circle-content {
+    position: relative;
+    z-index: 1;
+    width: 544px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 96px 16px 0 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 32px;
+}
+
+/* Tags + título no mesmo container */
+.ic-circle-headline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Eyebrow estilo áreas/formações, mas em bw */
+.ic-eyebrow {
+    font: var(--label-s);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: var(--bw);
+    margin-right: -0.5em;   /* compensa o tracking ao centralizar */
+    margin-bottom: 32px;
+}
+
+/* Tags especiais M: texto FFC8AF, bg FF967D translúcido */
+.ic-circle-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+.ic-circle-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 1920px;
+    font: var(--label-s);
+    line-height: 1.25;
+    background: var(--ic300-15);
+    color: var(--ic100);
+}
+
+/* Título: gradient do hero (pc200 -> bw), tamanho de título de seção */
+.ic-circle-title {
+    font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
+    background-image: linear-gradient(90deg, var(--pc200), var(--bw));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Texto de apoio: alinhado à esquerda, bw */
+.ic-circle-text {
+    align-self: stretch;
+    text-align: left;
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* Professores da aula: avatares pequenos + nomes, abaixo do texto */
+.ic-circle-profs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ic-circle-prof-avatars { display: flex; }
+.ic-circle-prof-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    object-fit: cover;
+    background: var(--dn700);
+    flex-shrink: 0;
+    box-shadow: -4px 0 0 0 var(--bb-25), inset 0 0 4px 0 var(--bw-25);
+}
+.ic-circle-prof-img + .ic-circle-prof-img { margin-left: -20px; }
+.ic-circle-prof-names {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+
+/* Indicador de scroll no fim do conteúdo do círculo */
+.ic-circle-scroll-hint {
+    font-size: 32px;
+    color: var(--bw-50);
+    animation: ic-scroll-cue 1.6s ease-in-out infinite;
+}

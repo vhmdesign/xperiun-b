@@ -43,26 +43,26 @@ if (window.matchMedia) {
 /* ── sec-depos: rotação dos logos ── */
 (function () {
     var logos = [
-        { src: '../site-dependencias/site-media/logos/logo-3m.webp',          alt: '3M' },
-        { src: '../site-dependencias/site-media/logos/logo-airliquide.webp',  alt: 'Air Liquide' },
-        { src: '../site-dependencias/site-media/logos/logo-ambev.webp',       alt: 'Ambev' },
-        { src: '../site-dependencias/site-media/logos/logo-bradesco.webp',    alt: 'Bradesco' },
-        { src: '../site-dependencias/site-media/logos/logo-cbf.webp',         alt: 'CBF' },
-        { src: '../site-dependencias/site-media/logos/logo-cielo.webp',       alt: 'Cielo' },
-        { src: '../site-dependencias/site-media/logos/logo-claro.webp',       alt: 'Claro' },
-        { src: '../site-dependencias/site-media/logos/logo-cpfl.webp',        alt: 'CPFL' },
-        { src: '../site-dependencias/site-media/logos/logo-globo.webp',       alt: 'Globo' },
-        { src: '../site-dependencias/site-media/logos/logo-google.webp',      alt: 'Google' },
-        { src: '../site-dependencias/site-media/logos/logo-inter.webp',       alt: 'Inter' },
-        { src: '../site-dependencias/site-media/logos/logo-magalu.webp',      alt: 'Magalu' },
-        { src: '../site-dependencias/site-media/logos/logo-mercedes.webp',    alt: 'Mercedes-Benz' },
-        { src: '../site-dependencias/site-media/logos/logo-natura.webp',      alt: 'Natura' },
-        { src: '../site-dependencias/site-media/logos/logo-neoway.webp',      alt: 'Neoway' },
-        { src: '../site-dependencias/site-media/logos/logo-piracanjuba.webp', alt: 'Piracanjuba' },
-        { src: '../site-dependencias/site-media/logos/logo-santander.webp',   alt: 'Santander' },
-        { src: '../site-dependencias/site-media/logos/logo-suzano.webp',      alt: 'Suzano' },
-        { src: '../site-dependencias/site-media/logos/logo-vale.webp',        alt: 'Vale' },
-        { src: '../site-dependencias/site-media/logos/sicoob.webp',           alt: 'Sicoob' }
+        { src: '/ed/site-dependencias/site-media/logos/logo-3m.webp',          alt: '3M' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-airliquide.webp',  alt: 'Air Liquide' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-ambev.webp',       alt: 'Ambev' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-bradesco.webp',    alt: 'Bradesco' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-cbf.webp',         alt: 'CBF' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-cielo.webp',       alt: 'Cielo' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-claro.webp',       alt: 'Claro' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-cpfl.webp',        alt: 'CPFL' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-globo.webp',       alt: 'Globo' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-google.webp',      alt: 'Google' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-inter.webp',       alt: 'Inter' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-magalu.webp',      alt: 'Magalu' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-mercedes.webp',    alt: 'Mercedes-Benz' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-natura.webp',      alt: 'Natura' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-neoway.webp',      alt: 'Neoway' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-piracanjuba.webp', alt: 'Piracanjuba' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-santander.webp',   alt: 'Santander' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-suzano.webp',      alt: 'Suzano' },
+        { src: '/ed/site-dependencias/site-media/logos/logo-vale.webp',        alt: 'Vale' },
+        { src: '/ed/site-dependencias/site-media/logos/sicoob.webp',           alt: 'Sicoob' }
     ];
     var grid = document.getElementById('depos-logos-grid');
     if (!grid) return;
@@ -875,4 +875,95 @@ if (window.matchMedia) {
         }, OPT);
         depObs.observe(depHeader);
     }
+})();
+
+/* oferta-checks: listas com mais de 6 itens colapsam, mostrando um botão
+   "Ver todos" que expande/recolhe. Em listas avulsas (que têm itens
+   .is-disabled), o item ativo é sempre mantido visível mesmo colapsado. */
+(function () {
+    var LIMIT = 7;
+    document.querySelectorAll('.oferta-checks').forEach(function (ul) {
+        var items = Array.prototype.slice.call(ul.querySelectorAll('.oferta-check'));
+        if (items.length <= LIMIT) return;
+        var hasDisabled = !!ul.querySelector('.oferta-check.is-disabled');
+
+        function render(open) {
+            var visible = [];
+            items.forEach(function (it, i) {
+                var keepActive = hasDisabled && !it.classList.contains('is-disabled');
+                var hide = !open && i >= LIMIT && !keepActive;
+                it.classList.toggle('is-hidden', hide);
+                it.classList.remove('is-fade-1', 'is-fade-2');
+                if (!hide) visible.push(it);
+            });
+            // colapsado e ainda há itens ocultos: desfoca os 2 últimos visíveis
+            if (!open && visible.length < items.length) {
+                var last = visible[visible.length - 1];
+                var penult = visible[visible.length - 2];
+                if (last) last.classList.add('is-fade-2');
+                if (penult) penult.classList.add('is-fade-1');
+            }
+        }
+
+        var li = document.createElement('li');
+        li.className = 'oferta-checks-toggle-row';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'oferta-checks-toggle';
+        btn.setAttribute('aria-expanded', 'false');
+        var label = document.createElement('span');
+        label.textContent = 'Ver todos';
+        var icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = 'expand_more';
+        btn.appendChild(label);
+        btn.appendChild(icon);
+        li.appendChild(btn);
+        ul.appendChild(li);
+
+        render(false);
+
+        // itens "extras" (além do limite) que colapsam — exceto o ativo do avulso
+        function overflowItems() {
+            return items.filter(function (it, i) {
+                var keepActive = hasDisabled && !it.classList.contains('is-disabled');
+                return i >= LIMIT && !keepActive;
+            });
+        }
+        var hideTimer = null;
+
+        btn.addEventListener('click', function () {
+            var open = btn.getAttribute('aria-expanded') !== 'true';
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            label.textContent = open ? 'Ver menos' : 'Ver todos';
+
+            if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+            var overflow = overflowItems();
+            overflow.forEach(function (it) {
+                it.classList.remove('is-hiding', 'is-revealing');
+                it.style.animationDelay = '';
+            });
+
+            if (open) {
+                // abertura: revela com fade + slide escalonado
+                render(true);
+                overflow.forEach(function (it, k) {
+                    it.style.animationDelay = (k * 0.03) + 's';
+                    it.classList.add('is-revealing');
+                });
+            } else {
+                // fechamento suave: anima a saída e só então oculta (display:none)
+                overflow.forEach(function (it) { it.classList.add('is-hiding'); });
+                hideTimer = setTimeout(function () {
+                    hideTimer = null;
+                    overflow.forEach(function (it) {
+                        it.classList.remove('is-hiding');
+                        it.style.animationDelay = '';
+                    });
+                    render(false);
+                }, 260);
+            }
+        });
+    });
 })();

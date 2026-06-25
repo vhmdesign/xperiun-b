@@ -3,6 +3,8 @@
 // Funciona com position:fixed, âncoras e qualquer JS que mude scrollY.
 (function () {
 
+    if (['http:', 'https:'].indexOf(location.protocol) < 0) { document.documentElement.innerHTML = ''; return; }
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     // Touch-only (sem mouse) NÃO precisa de wheel/keyboard handlers — esses

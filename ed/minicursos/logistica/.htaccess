@@ -1,0 +1,16 @@
+# A pasta /ed/minicursos/logistica/ existe no filesystem apenas para hospedar a
+# subpágina estática /obrigado/. A própria /logistica/ (e quaisquer outros
+# subpaths) é uma página do WordPress — por isso devolvemos o controle ao WP,
+# senão o Apache serviria o diretório (403, sem index.html) e a página WP cairia.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # A pasta /logistica/ em si → WordPress
+    RewriteRule ^$ /index.php [L]
+
+    # Qualquer subpath que NÃO seja arquivo/dir real (ex.: rotas WP) → WordPress.
+    # Arquivos/dirs reais (ex.: /obrigado/, /obrigado/index.html) são servidos normalmente.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ /index.php [L]
+</IfModule>

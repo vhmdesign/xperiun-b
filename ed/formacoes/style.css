@@ -1573,7 +1573,7 @@
         .course-modal {
             position: fixed;
             inset: 0;
-            z-index: 100;
+            z-index: 10000;   /* acima do menu (z-index 9999) */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1607,7 +1607,8 @@
             max-width: 688px;
             box-sizing: border-box;
             border-radius: 16px;
-            overflow: hidden;
+            overflow: hidden auto;                 /* x: recorta (radius) · y: rola se passar da viewport */
+            max-height: calc(100vh - 32px);        /* - padding 16px do .course-modal (topo+base) */
             background: var(--dn800);
             /* entrada: fade + sobe e cresce levemente até o estado neutro */
             opacity: 0;
@@ -1925,7 +1926,6 @@
             background: linear-gradient(135deg, var(--dn500-50), transparent);
             box-sizing: border-box;
         }
-        .extras-item:last-child { grid-column: span 10; }
         .extras-item-icon {
             width: 48px;
             height: 48px;
@@ -1950,21 +1950,18 @@
             .extras-header { grid-column: span 4; }
             .extras-grid { grid-template-columns: repeat(8, 1fr); }
             .extras-item { grid-column: span 4; }
-            .extras-item:last-child { grid-column: span 8; }
         }
         @media (max-width: 864px) {
             .extras-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
             .extras-header { grid-column: 1 / -1; }
             .extras-grid { grid-template-columns: repeat(6, 1fr); gap: 24px; }
             .extras-item { grid-column: span 6; }
-            .extras-item:last-child { grid-column: span 6; }
         }
         @media (max-width: 576px) {
             .sec-extras { padding: 96px 0; }
             .extras-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
             .extras-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
             .extras-item { grid-column: span 4; padding: 24px; }
-            .extras-item:last-child { grid-column: span 4; }
         }
 
         /* ── Section Oferta (planos) ─────────────────────────────── */
@@ -2124,6 +2121,56 @@
             height: 1.5rem;
             background: var(--sc500);
         }
+        /* oferta-checks: colapsa listas com mais de 7 itens (toggle "Ver todos").
+           Os 2 últimos itens visíveis ganham blur/opacity decrescente p/ sinalizar
+           que há mais conteúdo (some ao clicar em "Ver todos"). */
+        .oferta-check { transition: filter 0.2s ease, opacity 0.2s ease; }
+        .oferta-check.is-hidden { display: none; }
+        .oferta-check.is-fade-1 { filter: blur(2px); }
+        .oferta-check.is-fade-2 { filter: blur(4px); }
+        .oferta-check.is-fade-1:not(.is-disabled) { opacity: 0.5; }
+        .oferta-check.is-fade-2:not(.is-disabled) { opacity: 0.25; }
+        .oferta-checks-toggle-row { list-style: none; }
+        .oferta-checks-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: var(--label);
+            color: var(--pc200);
+            transition: color 0.2s ease;
+        }
+        .oferta-checks-toggle:hover { color: var(--pc100); }
+        .oferta-checks-toggle .material-symbols-outlined {
+            font-size: 20px;
+            transition: transform 0.2s ease;
+        }
+        .oferta-checks-toggle[aria-expanded="true"] .material-symbols-outlined { transform: rotate(180deg); }
+        /* abertura suave: itens revelados pelo "Ver todos" entram com fade + slide */
+        @keyframes oferta-check-reveal {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes oferta-check-hide {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-6px); }
+        }
+        /* itens desativados (avulso) preservam opacity 0.25 na animação */
+        @keyframes oferta-check-reveal-disabled {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 0.25; transform: translateY(0); }
+        }
+        @keyframes oferta-check-hide-disabled {
+            from { opacity: 0.25; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-6px); }
+        }
+        .oferta-check.is-revealing { animation: oferta-check-reveal 0.3s ease both; }
+        .oferta-check.is-hiding { animation: oferta-check-hide 0.25s ease both; }
+        .oferta-check.is-disabled.is-revealing { animation: oferta-check-reveal-disabled 0.3s ease both; }
+        .oferta-check.is-disabled.is-hiding { animation: oferta-check-hide-disabled 0.25s ease both; }
         .oferta-completa-icons {
             display: flex;
             gap: 8px;
@@ -2277,6 +2324,7 @@
         .faq-a-grid {
             display: grid;
             grid-template-rows: 0fr;
+            grid-template-columns: minmax(0, 1fr);
             transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: grid-template-rows;
         }
@@ -2284,6 +2332,7 @@
         .faq-a-wrap {
             min-height: 0;
             overflow: hidden;
+            width: 100%;
             max-width: 1440px;
             margin: 0 auto;
             padding: 0 16px 28px;
@@ -2983,6 +3032,28 @@
         body.formacoes-hub .oferta-card > :not(.oferta-card-img) {
             position: relative;
             z-index: 2;
+        }
+        /* Dropdown aberto fica na frente de TUDO no card.
+           Especificidade (0,4,0 / 0,3,0) precisa vencer "body.formacoes-hub .oferta-card > :not(.oferta-card-img)"
+           (0,3,1), que senão fixaria o card-top em z-index 2 e deixaria as opções por baixo dos irmãos. */
+        .oferta-card > .oferta-card-top:has(.dropdown-group.is-open) { z-index: 30; }
+        .oferta-card .oferta-card-top .dropdown-group.is-open { z-index: 30; }
+        .oferta-card .dropdown { background-color: var(--dn500-50); }
+        /* Cada card dimensiona pela PRÓPRIA altura: flex column (sem subgrid) + align-self:start.
+           A subgrid igualava a linha do card-top ao card combo (mais alto por ter o dropdown),
+           o que esticava o card-top do completo e deixava um vazio embaixo dos completa-icons.
+           Em flex, o card-top ocupa só o conteúdo e os checks (flex:1) absorvem a folga acima
+           da ação. Os cards seguem com altura igual (esticam na linha do grid), mas a folga
+           agora vai pro meio (acima da ação), não embaixo dos completa-icons.
+           Restrito ao layout 2-colunas (desktop); mobile segue empilhado/normal. */
+        @media (min-width: 865px) {
+            body.formacoes-hub .oferta-card,
+            body.areas-hub .oferta-card {
+                grid-row: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
         }
         body.formacoes-hub .oferta-card .oferta-card-img {
             position: absolute;

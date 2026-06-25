@@ -2,30 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <script>
-    /* Origin self-destruct: detecta cópia local (file://) e bloqueia
-       rendering. Inline pra rodar antes de qualquer outra coisa e ser
-       inseparável do HTML (atacante precisa editar o arquivo, não só
-       remover um <script src>). */
-    (function () {
-        var p = location.protocol;
-        var o = location.origin;
-        if (p === 'file:' || o === 'null' || location.hostname === '' ||
-            (p !== 'https:' && p !== 'http:')) {
-            document.documentElement.innerHTML =
-                '<head><title>Indisponível offline</title><meta charset="UTF-8"></head>' +
-                '<body style="margin:0;font-family:system-ui,sans-serif;background:#00000a;color:#f5faff;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:32px;">' +
-                '<div>' +
-                '<h1 style="font-size:2rem;font-weight:600;margin:0;">Página indisponível offline</h1>' +
-                '<p style="margin:16px 0 0;font-size:1.125rem;opacity:0.75;">' +
-                'Esse conteúdo só funciona acessado em ' +
-                '<a href="https://xperiun.com/" style="color:#64c8ff;text-decoration:underline;">xperiun.com</a>' +
-                '</p>' +
-                '</div></body>';
-            throw new Error('offline-blocked');
-        }
-    })();
-    </script>
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
     <meta name="author" content="Xperiun">
@@ -66,6 +43,7 @@
 <script src="../site-dependencias/anti-copy.js" defer></script>
 
 <!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
 </body>
 
 </html>

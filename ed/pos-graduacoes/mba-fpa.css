@@ -386,15 +386,28 @@ html, body { margin: 0; padding: 0; }
     right: 16px;
     width: 176px;
     height: 208px;
-    padding: 16px;
     box-sizing: border-box;
-    border-radius: 16px;
-    background: linear-gradient(180deg, var(--ln200), var(--bw));
     pointer-events: auto;
+    cursor: pointer;
+}
+/* Card visual (recebe o tilt 3D + bg); o .mba-bridge-card é só o host/âncora */
+.mba-bridge-fx {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    border-radius: 16px;
+    overflow: hidden;            /* recorta o overlay no formato arredondado */
+    isolation: isolate;          /* contém o mix-blend ao card */
+    background: linear-gradient(180deg, var(--ln200), var(--bw));
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    transform: perspective(700px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    transform-origin: center center;
+    transition: transform 200ms ease-out;
+    will-change: transform;
 }
 /* Topo: ícone + label "e-Mec" em pc500, centralizados. */
 .mba-bridge-head {
@@ -417,6 +430,57 @@ html, body { margin: 0; padding: 0; }
     width: auto;
     height: auto;
     max-width: 100%;
+}
+
+/* ── Foil holográfico do card (overlay iridescente sobre o card) ── */
+.mba-bridge-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+.mba-bridge-overlay g {
+    transform-box: view-box;
+    transform-origin: center;
+    will-change: transform;
+}
+/* Cores da iridescência — tokens do root, em ordem espectral */
+.mba-ov-1  polygon { fill: var(--er300); }
+.mba-ov-2  polygon { fill: var(--wr300); }
+.mba-ov-3  polygon { fill: var(--sc500); }
+.mba-ov-4  polygon { fill: var(--sc300); }
+.mba-ov-5  polygon { fill: var(--pc300); }
+.mba-ov-6  polygon { fill: var(--pc500); }
+.mba-ov-7  polygon { fill: var(--pp500); }
+.mba-ov-8  polygon { fill: transparent; }
+.mba-ov-9  polygon { fill: transparent; }
+.mba-ov-10 polygon { fill: var(--bw); }
+/* Shimmer ocioso: cada polígono oscila ±10° em torno de i*10° (defasado) */
+.mba-ov-1  { animation: mbaOverlay1  5s infinite; }
+.mba-ov-2  { animation: mbaOverlay2  5s infinite; }
+.mba-ov-3  { animation: mbaOverlay3  5s infinite; }
+.mba-ov-4  { animation: mbaOverlay4  5s infinite; }
+.mba-ov-5  { animation: mbaOverlay5  5s infinite; }
+.mba-ov-6  { animation: mbaOverlay6  5s infinite; }
+.mba-ov-7  { animation: mbaOverlay7  5s infinite; }
+.mba-ov-8  { animation: mbaOverlay8  5s infinite; }
+.mba-ov-9  { animation: mbaOverlay9  5s infinite; }
+.mba-ov-10 { animation: mbaOverlay10 5s infinite; }
+@keyframes mbaOverlay1  { 0%,100% { transform: rotate(0deg); }   50% { transform: rotate(10deg); } }
+@keyframes mbaOverlay2  { 0%,100% { transform: rotate(10deg); }  50% { transform: rotate(20deg); } }
+@keyframes mbaOverlay3  { 0%,100% { transform: rotate(20deg); }  50% { transform: rotate(30deg); } }
+@keyframes mbaOverlay4  { 0%,100% { transform: rotate(30deg); }  50% { transform: rotate(40deg); } }
+@keyframes mbaOverlay5  { 0%,100% { transform: rotate(40deg); }  50% { transform: rotate(50deg); } }
+@keyframes mbaOverlay6  { 0%,100% { transform: rotate(50deg); }  50% { transform: rotate(60deg); } }
+@keyframes mbaOverlay7  { 0%,100% { transform: rotate(60deg); }  50% { transform: rotate(70deg); } }
+@keyframes mbaOverlay8  { 0%,100% { transform: rotate(70deg); }  50% { transform: rotate(80deg); } }
+@keyframes mbaOverlay9  { 0%,100% { transform: rotate(80deg); }  50% { transform: rotate(90deg); } }
+@keyframes mbaOverlay10 { 0%,100% { transform: rotate(90deg); }  50% { transform: rotate(100deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .mba-bridge-overlay g { animation: none !important; }
+    .mba-bridge-fx { transition: none; }
 }
 
 /* ── Seção 2: intro com bg gradient claro. Header replica o
@@ -749,6 +813,101 @@ html, body { margin: 0; padding: 0; }
     position: relative;
     z-index: 1;
     background: var(--bb);
+}
+
+/* ── Section Profs: corpo docente (cards no padrão das formações,
+   título no estilo do MBA, sem eyebrow). ─────────────────────── */
+.mba-profs {
+    box-sizing: border-box;
+    padding: 128px 0;
+    background: var(--bb);
+    position: relative;
+}
+.mba-profs-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.mba-profs-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    max-width: 680px;
+}
+.mba-profs-title {
+    width: fit-content;
+    font-family: var(--font-display) !important;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem);
+    line-height: 1.25;
+    margin: 0;
+    background-image: var(--text-gradient-high);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.mba-profs-title-bold { font-weight: 700; font-style: italic; }
+.mba-profs-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+.mba-prof-card {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    padding: 32px;
+    border-radius: 16px;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(to right, var(--dn800), transparent);
+}
+.mba-prof-card-media {
+    flex: 0 0 auto;
+    width: 256px;
+    max-width: 30%;
+    align-self: flex-start;
+}
+.mba-prof-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+}
+.mba-prof-card-text {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+.mba-prof-card-name {
+    font-family: var(--font-display) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--bw);
+    margin: 0;
+}
+.mba-prof-card-desc {
+    font: var(--p-s);
+    color: var(--bw-75);
+    margin: 0;
+}
+@media (max-width: 1152px) {
+    .mba-profs-header { grid-column: 1 / -1; }
+    .mba-prof-card { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .mba-profs { padding: 96px 0; }
+    .mba-prof-card { flex-direction: column; }
+    .mba-prof-card-media { width: 100%; max-width: none; }
 }
 
 /* ── Seção 4 (dark): "Como funciona o MBA". Grid 10 cols.

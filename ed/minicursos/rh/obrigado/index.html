@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-06-22">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Aula · Xperiun</title>
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal; font-style: normal; line-height: 1;
+            letter-spacing: normal; text-transform: none; white-space: nowrap;
+            display: inline-block; direction: ltr; -webkit-font-smoothing: antialiased;
+        }
+
+        html, body { height: 100%; margin: 0; }
+
+        body {
+            font-family: var(--font-family);
+            color: var(--bw);
+            background: var(--dn900);
+            height: 100dvh;
+            overflow: hidden;              /* app: sem scroll de página, só na sidebar */
+            position: relative;
+            display: flex; flex-direction: column;   /* menu topo + conteúdo */
+        }
+
+        /* ── Menu do topo ──────────────────────────────────────────────── */
+        .menu-topo {
+            position: relative; z-index: 3;   /* acima da bg/scrim e do layout */
+            flex-shrink: 0;
+            height: 72px;
+            background: var(--bb-75);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px;
+        }
+        .menu-logo { height: 48px; width: auto; display: block; }
+        /* botão de perfil: ícone de usuário formado por 2 círculos recortados */
+        .menu-perfil-wrap { position: relative; flex-shrink: 0; height: 48px; }
+        .menu-perfil-notif {
+            position: absolute; left: -12px; bottom: 0;
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--er500-50);
+            display: grid; place-items: center;
+            pointer-events: none;
+        }
+        .menu-perfil-notif .material-symbols-outlined {
+            font-size: 16px; color: var(--bw);
+            transform-origin: top center;        /* pivô no topo, como um sino */
+            animation: sino-balanca 2.5s ease infinite;
+        }
+        /* dropdown do perfil */
+        .menu-perfil-dropdown {
+            position: absolute; top: calc(100% + 20px); right: 0;
+            min-width: 208px;
+            background: var(--dn800);
+            box-shadow: inset 0 0 4px 0 var(--bw-25);
+            border-radius: 12px 0 12px 12px;
+            padding: 8px;
+            display: flex; flex-direction: column;
+            z-index: 10;
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+        }
+        .menu-perfil-wrap.is-open .menu-perfil-dropdown { opacity: 1; visibility: visible; transform: none; }
+        .menu-perfil-header {
+            display: flex; flex-direction: column; gap: 2px;
+            padding: 12px 16px 16px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 -2px 0 var(--bw-10);   /* divider 2px */
+        }
+        .menu-perfil-nome { font: var(--label); color: var(--bw); }
+        .menu-perfil-email { font: var(--label-xs); color: var(--bw-50); }
+        .menu-perfil-dropdown .menu-perfil-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: 8px;
+            font: var(--p-s); color: var(--bw-75);
+            text-decoration: none; white-space: nowrap;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+        .menu-perfil-dropdown .menu-perfil-item .material-symbols-outlined { font-size: 20px; }
+        .menu-perfil-dropdown .menu-perfil-item:hover { color: var(--pp300); background: var(--bw-5); text-decoration: none; }
+        /* itens bloqueados até finalizar cadastro: borrados e não clicáveis */
+        .menu-perfil-dropdown .menu-perfil-item:not(:last-child) { filter: blur(4px); pointer-events: none; }
+        /* último item (Finalizar Cadastro): destaque em success 300 */
+        .menu-perfil-dropdown .menu-perfil-item:last-child,
+        .menu-perfil-dropdown .menu-perfil-item:last-child:hover { color: var(--sc300); }
+        @keyframes sino-balanca {
+            0%   { transform: rotate(0); }
+            6%   { transform: rotate(15deg); }
+            12%  { transform: rotate(-11.25deg); }
+            18%  { transform: rotate(7.5deg); }
+            24%  { transform: rotate(-3.75deg); }
+            30%  { transform: rotate(0); }
+            100% { transform: rotate(0); }        /* pausa em repouso (top center) */
+        }
+        .menu-perfil {
+            position: relative; flex-shrink: 0;
+            width: 48px; height: 48px;
+            border: none; cursor: pointer;
+            border-radius: 12px; overflow: hidden;
+            background: var(--dn500-50);
+        }
+        .menu-perfil::before {   /* cabeça */
+            content: ''; position: absolute;
+            width: 16px; height: 16px; border-radius: 50%;
+            top: 12px; left: 50%; transform: translateX(-50%);
+            background: var(--dn200);
+        }
+        .menu-perfil::after {    /* corpo (recortado pelo container) */
+            content: ''; position: absolute;
+            width: 40px; height: 40px; border-radius: 50%;
+            top: 32px; left: 50%; transform: translateX(-50%);
+            background: var(--dn200);
+        }
+        /* quando há "nome", mostra a inicial no lugar do ícone */
+        .menu-perfil-letra {
+            position: absolute; inset: 0; display: none;
+            align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1.5rem; color: var(--dn200);
+        }
+        .menu-perfil.has-letra::before,
+        .menu-perfil.has-letra::after { display: none; }
+        .menu-perfil.has-letra .menu-perfil-letra { display: flex; }
+
+        /* ── Fundo: imagem filler borrada + scrim (dentro do container) ── */
+        .aula-bg {
+            position: absolute; inset: 0; z-index: 0;
+            pointer-events: none;          /* camada decorativa não captura cliques */
+            background: url("/ed/site-dependencias/site-media/minicursos/rh/aula-wrap-bg.webp") center / cover no-repeat;
+            filter: blur(16px);
+            transform: scale(1.08);        /* esconde as bordas suavizadas pelo blur */
+        }
+        .aula-scrim {
+            position: absolute; inset: 0; z-index: 1;
+            pointer-events: none;          /* camada decorativa não captura cliques */
+            /* bb embaixo, bb-50 em cima (debaixo para cima) */
+            background: linear-gradient(to top, var(--bb), var(--bb-50));
+        }
+
+        /* Container geral: preenche o que sobra abaixo do menu do topo. */
+        .aula-wrap {
+            position: relative;
+            flex: 1; min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── Grid de plataforma: 10 colunas, gutter 32px, 100% width ───── */
+        .aula-layout {
+            position: relative;
+            z-index: 2;                           /* acima da bg/scrim do container */
+            flex: 1;
+            min-height: 0;
+            padding: 16px;                        /* margem do grid (16px DS); o menu fica full-bleed */
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: minmax(0, 1fr);   /* linha definida: teto pro max-height da sidebar */
+            gap: 32px;
+        }
+        .aula-main { grid-column: span 8; display: flex; flex-direction: column; gap: 24px; min-height: 0; max-height: calc(100dvh - 104px); }
+        .aula-right {
+            position: relative;
+            grid-column: span 2;
+            align-self: start;
+            min-height: 0;
+            max-height: calc(100dvh - 104px);
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        /* scrim de "tem mais conteúdo": aparece no rodapé da sidebar só quando
+           há scroll e o fim não está visível (classe has-scrim via JS). */
+        .aula-right::after {
+            content: 'keyboard_arrow_down';
+            font-family: 'Material Symbols Outlined'; font-size: 24px; line-height: 1;
+            color: var(--bw-50);
+            display: flex; align-items: flex-end; justify-content: center;
+            padding-bottom: 16px;
+            position: absolute; left: 0; bottom: 0;
+            width: 100%; height: 96px;
+            border-radius: 0 0 16px 16px;
+            background: linear-gradient(to bottom, transparent, var(--pc800));
+            pointer-events: none;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        .aula-right.has-scrim::after { opacity: 1; }
+
+        /* superfície de vidro reaproveitada pelos containers */
+        .aula-panel {
+            background: var(--dn900-75);
+            box-shadow: var(--ring-10);    /* anel 2px embutido (DS: nada de border 1px) */
+            border-radius: 16px;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* ── Lado esquerdo: player + navegação ─────────────────────────── */
+        .aula-player { background: var(--bb); }
+        .aula-video {
+            /* Largura = menor entre 100% e a largura cujo 16:9 cabe na altura
+               disponível (100dvh menos padding do wrap, nav e gap ≈ 128px).
+               Garante que vídeo + nav nunca passem da viewport. */
+            width: min(100%, (100dvh - 200px) * 16 / 9);
+            margin-inline: auto;
+            aspect-ratio: 16 / 9;
+            border-radius: 0;
+            overflow: hidden;
+            background: var(--dn900);
+        }
+        .aula-video-frame { width: 100%; height: 100%; border: none; display: block; }
+
+        .aula-nav {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        }
+        .aula-nav-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: none; border: none; cursor: pointer;
+            font: var(--label); color: var(--bw-75);
+            transition: color 0.2s ease;
+        }
+        .aula-nav-btn:hover { color: var(--bw); }
+        .aula-nav-btn[data-next] { margin-left: auto; }   /* fica à direita mesmo se "anterior" sumir */
+        .aula-nav-btn .material-symbols-outlined { font-size: 16px; }
+
+        /* ── Header de progresso (em cima da sidebar) ──────────────────── */
+        .aula-progress {
+            flex: 0 0 auto;
+            display: flex; flex-direction: column; gap: 16px;
+            padding: 24px;
+            border-radius: 16px;
+            background: linear-gradient(45deg, var(--dn800), transparent);
+        }
+        .aula-progress-course { font: var(--label-s); color: var(--bw-75); margin: 0; }   /* título sempre no topo */
+        .aula-progress-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .aula-progress-info { min-width: 0; }                                              /* concluídos */
+        .aula-progress-stats { display: flex; flex-direction: column; gap: 16px; }         /* "concluídos" verticais */
+        .aula-progress-stat { display: flex; flex-direction: column; gap: 4px; }
+        .aula-progress-num { font-size: 1.25rem; font-weight: 700; line-height: 1; color: var(--bw); }
+        .aula-progress-label { font: var(--label-xs); color: var(--bw-50); }
+        .aula-progress-aviso { font: var(--label-xs); color: var(--er300); margin: 0; }
+        .aula-progress-ring { position: relative; width: 144px; height: 144px; flex-shrink: 0; }
+        .aula-progress-ring-svg { display: block; width: 144px; height: 144px; }
+        .aula-progress-ring-svg circle[data-progress-ring] { transition: stroke-dashoffset 0.4s ease; }
+        .aula-progress-ring-img {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+        }
+        /* curso 100% concluído: números e anel em sg300 */
+        .aula-progress.is-complete .aula-progress-num { color: var(--sg300); }
+        .aula-progress.is-complete .aula-progress-ring-svg circle[data-progress-ring] { stroke: var(--sg300); }
+
+        /* ── Lado direito: lista de módulos com scroll Y ───────────────── */
+        .aula-side {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: hidden auto;             /* só scroll vertical; trava barra horizontal */
+            border-radius: 16px;
+            background: linear-gradient(180deg, var(--dn800), var(--pc800));
+            padding: 8px 0;
+            font-size: 1.25rem;
+        }
+        .aula-side::-webkit-scrollbar { width: 8px; }
+        .aula-side::-webkit-scrollbar-thumb { background: var(--bw-15); border-radius: 8px; }
+
+        /* ── Sanfona de módulos ────────────────────────────────────────── */
+        .aula-mod { box-shadow: inset 0 -2px 0 var(--bw-10); }   /* divider 2px (DS: nada de 1px) */
+        .aula-mod:last-child { box-shadow: none; }
+
+        .aula-mod-head {
+            width: 100%; display: flex; align-items: center; gap: 12px;
+            background: none; border: none; cursor: pointer; text-align: left;
+            padding: 16px 24px;
+            color: inherit;
+        }
+        .aula-mod-folder { font-size: 24px; color: var(--bw-75); flex-shrink: 0; }
+        .aula-mod-titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .aula-mod-eyebrow-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .aula-mod-eyebrow { font: var(--label-xs); color: var(--bw-50); }
+        .aula-mod-count { font: var(--label-xs); color: var(--bw-50); }
+        .aula-mod-count.is-complete { color: var(--pc200); }   /* módulo 100% concluído */
+        .aula-mod-name { font: var(--label); color: var(--bw-75); }
+
+        /* lista colapsável: anima grid-template-rows 0fr -> 1fr */
+        .aula-lessons {
+            display: grid; grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease;
+        }
+        .aula-lessons-inner { overflow: hidden; }
+        .aula-mod.is-open .aula-lessons { grid-template-rows: 1fr; }
+
+        .aula-lesson {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 24px; border-radius: 0;
+            font: var(--label-s); color: var(--bw-50);   /* não vista */
+            cursor: pointer;
+            /* mesmo bg deslizante do formacoes-nav-list: escondido à direita,
+               hover no meio (50%), ativo cobrindo tudo (0%) */
+            background-image: linear-gradient(90deg, var(--pc500-50), transparent, transparent);
+            background-size: 200%;
+            background-position: 100% center;
+            transition: color 0.3s, background-position 0.3s;
+        }
+        .aula-lesson:hover { background-position: 50% center; }
+
+        /* círculo de status (24px) — vazio por padrão */
+        .aula-lesson-mark {
+            width: 24px; height: 24px; flex-shrink: 0;
+            border-radius: 50%; background: var(--bw-10);
+            display: grid; place-items: center;
+            transition: background 0.2s ease;
+        }
+        .aula-lesson-mark .material-symbols-outlined { font-size: 16px; color: var(--pc200); display: none; }
+
+        /* assistida: texto pc300 + check dentro do círculo */
+        .aula-lesson.is-done { color: var(--pc200); }
+        .aula-lesson.is-done .aula-lesson-mark .material-symbols-outlined { display: block; }
+
+        /* ativa (assistindo agora): sg300 + gradiente pc500-25 -> transparente */
+        .aula-lesson.is-active {
+            color: var(--sg300);
+            background-position: 0% center;
+        }
+
+        /* linhas de ação (não são aula): ícone-botão + texto. Ex.: "Fazer Download", "Garantir acesso..." */
+        .aula-side .aula-download,
+        .aula-side .aula-acesso {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 24px;
+            font: var(--label-s); color: var(--bw-75);
+            text-decoration: none; cursor: pointer;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+        .aula-side .aula-download:hover,
+        .aula-side .aula-acesso:hover { color: var(--bw); background: var(--bw-5); text-decoration: none; }
+        .aula-download-btn {
+            width: 24px; height: 24px; flex-shrink: 0;
+            display: grid; place-items: center;
+        }
+        .aula-download-btn .material-symbols-outlined { font-size: 24px; color: var(--bw-50); }
+
+        /* ── Popup de conclusão ────────────────────────────────────────── */
+        .aula-modal {
+            position: fixed; inset: 0; z-index: 100;
+            display: flex;
+            align-items: center; justify-content: center;
+            padding: 16px;
+            background: var(--bb-50);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            opacity: 0; visibility: hidden;                    /* escondido: fade out */
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .aula-modal.is-open { opacity: 1; visibility: visible; }
+        .aula-modal-card {
+            width: 100%; max-width: 360px;
+            background: var(--dn800);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: left;
+            display: flex; flex-direction: column; gap: 8px;
+            transform: translateY(8px) scale(0.98);            /* entra suave */
+            transition: transform 0.25s ease;
+        }
+        .aula-modal.is-open .aula-modal-card { transform: none; }
+        /* modal de cadastro: scrim success-500-15 → transparente (esquerda → direita) */
+        #aula-modal-cadastro .aula-modal-card {
+            background: linear-gradient(to left, var(--sc500-15), transparent), var(--dn800);
+        }
+        #aula-modal-cadastro .tag-status { align-self: flex-start; }   /* pill não estica na coluna */
+        .aula-modal-title { font: var(--h6); font-weight: 400; color: var(--bw); margin: 0; }
+        .aula-modal-title--sucesso { color: var(--sc300); }
+        .aula-modal-sub { font: var(--label-xs); color: var(--bw-50); margin: 0; }
+        .aula-modal-aviso { font: var(--label-s); color: var(--bw-75); margin: 0; }
+        .aula-modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .aula-modal-actions .btn { flex: 1; }   /* botões oficiais ocupam metade cada */
+
+        /* ── Responsivo (breakpoints do DS) ────────────────────────────── */
+        @media (max-width: 1439px) {
+            .aula-layout { grid-template-columns: repeat(8, 1fr); }
+            .aula-main { grid-column: span 6; }
+            .aula-right { grid-column: span 2; }
+        }
+        @media (max-width: 1152px) {
+            /* abaixo de 1152px empilha (vídeo em cima, módulos embaixo) e a PÁGINA rola.
+               A sidebar fica do tamanho do próprio conteúdo (min-height = conteúdo), sem scroll interno. */
+            body { height: auto; overflow: auto; }
+            .aula-wrap { flex: none; height: auto; min-height: 0; max-height: none; }
+            .aula-layout { display: flex; flex-direction: column; gap: 24px; }
+            .aula-main { flex: 0 0 auto; max-height: none; }
+            .aula-video { width: 100%; }
+            .aula-right { max-height: none; width: 100%; align-self: stretch; }
+            .aula-side {
+                width: 100%;
+                flex: 0 0 auto;        /* altura = conteúdo */
+                max-height: none;
+                overflow: visible;
+            }
+        }
+        @media (max-width: 576px) {
+            .aula-layout { gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="aula-wrap">
+    <div class="aula-bg" aria-hidden="true"></div>
+    <div class="aula-scrim" aria-hidden="true"></div>
+    <header class="menu-topo">
+        <img class="menu-logo" src="/ed/site-dependencias/site-imagens/Core%20Logo%20Light.svg" alt="Xperiun">
+        <div class="menu-perfil-wrap">
+            <button class="menu-perfil" type="button" aria-label="Abrir menu de perfil"><span class="menu-perfil-letra" aria-hidden="true"></span></button>
+            <span class="menu-perfil-notif" aria-hidden="true">
+                <span class="material-symbols-outlined">notifications</span>
+            </span>
+            <nav class="menu-perfil-dropdown">
+                <div class="menu-perfil-header">
+                    <span class="menu-perfil-nome" data-perfil-nome>User</span>
+                    <span class="menu-perfil-email" data-perfil-email>seu@email.com</span>
+                </div>
+                <a class="menu-perfil-item" href="#"><span class="material-symbols-outlined">school</span>Ambiente MBA</a>
+                <a class="menu-perfil-item" href="#"><span class="material-symbols-outlined">manage_accounts</span>Meu Perfil</a>
+                <a class="menu-perfil-item" href="#"><span class="material-symbols-outlined">leaderboard</span>Logs de Pontuação</a>
+                <a class="menu-perfil-item" href="#"><span class="material-symbols-outlined">contact_support</span>Suporte</a>
+                <a class="menu-perfil-item" data-finalizar href="https://app.xperiun.com/entrar-gratuito?acesso=cadastrar&nome=&sobrenome=&telefone=&email="><span class="material-symbols-outlined">how_to_reg</span>Concluir Cadastro</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="aula-layout">
+        <!-- Lado esquerdo: 7 colunas -->
+        <section class="aula-main">
+            <div class="aula-player">
+                <div class="aula-video">
+                    <iframe class="aula-video-frame" src="" title="Player da aula"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+            <nav class="aula-nav">
+                <button class="aula-nav-btn" type="button" data-prev>
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Aula anterior
+                </button>
+                <button class="btn" data-size="s" data-emphasis="high" type="button" data-concluir-nav>
+                    <span class="material-symbols-outlined">how_to_reg</span>
+                    Concluir cadastro
+                </button>
+                <button class="aula-nav-btn" type="button" data-next>
+                    Próxima aula
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </nav>
+        </section>
+
+        <!-- Lado direito: header de progresso + lista de módulos -->
+        <div class="aula-right">
+            <header class="aula-progress">
+                <h2 class="aula-progress-course">Análise de Dados para RH</h2>
+                <div class="aula-progress-row">
+                <div class="aula-progress-info">
+                    <div class="aula-progress-stats">
+                        <div class="aula-progress-stat">
+                            <span class="aula-progress-num" data-progress-count>0/0</span>
+                            <span class="aula-progress-label">concluído</span>
+                        </div>
+                        <div class="aula-progress-stat">
+                            <span class="aula-progress-num" data-progress-pct>0%</span>
+                            <span class="aula-progress-label">concluído</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="aula-progress-ring">
+                    <svg class="aula-progress-ring-svg" viewBox="0 0 144 144" aria-hidden="true">
+                        <circle cx="72" cy="72" r="68" fill="none" stroke="var(--bw-10)" stroke-width="8"/>
+                        <circle data-progress-ring cx="72" cy="72" r="68" fill="none" stroke="var(--pc500)" stroke-width="8"
+                                pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+                                transform="rotate(180 72 72)"/>
+                    </svg>
+                    <img class="aula-progress-ring-img" src="/ed/site-dependencias/site-media/minicursos/rh/aula-progress-ring-img.webp" alt="">
+                </div>
+                </div>
+                <p class="aula-progress-aviso">Seu progresso só fica salvo ao concluir o cadastro!</p>
+            </header>
+            <aside class="aula-side" id="aula-modules"></aside>
+        </div>
+    </main>
+    </div>
+
+    <!-- Popup: confirmar conclusão antes de ir pra próxima aula -->
+    <div class="aula-modal" id="aula-modal">
+        <div class="aula-modal-card" role="dialog" aria-modal="true" aria-labelledby="aula-modal-title">
+            <h2 class="aula-modal-title" id="aula-modal-title">Você concluiu essa aula?</h2>
+            <p class="aula-modal-sub">Deseja marcar como concluído?</p>
+            <div class="aula-modal-actions">
+                <button class="btn" data-size="s" data-emphasis="medium" type="button" data-modal-yes>Sim</button>
+                <button class="btn" data-size="s" data-emphasis="subtle" type="button" data-modal-no>Ainda não</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup: confirmar conclusão do cadastro antes de redirecionar -->
+    <div class="aula-modal" id="aula-modal-cadastro">
+        <div class="aula-modal-card" role="dialog" aria-modal="true">
+            <span class="tag-status" data-semantic="success" data-size="s">Crie sua senha</span>
+            <h2 class="aula-modal-title aula-modal-title--sucesso">Deseja concluir seu cadastro agora?</h2>
+            <p class="aula-modal-aviso">Ao concluir seu cadastro, seu progresso fica salvo e o seu certificado é liberado ao assistir todas as aulas.</p>
+            <div class="aula-modal-actions">
+                <button class="btn" data-size="s" data-emphasis="medium" type="button" data-cadastro-sim>Concluir agora</button>
+                <button class="btn" data-size="s" data-emphasis="subtle" type="button" data-cadastro-nao>Concluir depois</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C e drag de imagem.
+         URL bloqueada via .htaccess + Sec-Fetch-Dest. -->
+    <script src="/ed/site-dependencias/anti-copy.js" defer></script>
+    <!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+    <script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+    <script>
+    (function () {
+        /* Perfil via URL: ?nome= e ?email= (com defaults). A inicial do nome
+           substitui o ícone de usuário na avatar. */
+        (function () {
+            var p = new URLSearchParams(location.search);
+            var nome = (p.get('nome') || '').trim();
+            var email = (p.get('email') || '').trim();
+            if (nome) {
+                document.querySelector('[data-perfil-nome]').textContent = nome;
+                var av = document.querySelector('.menu-perfil');
+                av.querySelector('.menu-perfil-letra').textContent = nome.charAt(0).toUpperCase();
+                av.classList.add('has-letra');
+            }
+            if (email) document.querySelector('[data-perfil-email]').textContent = email;
+
+            /* Finalizar Cadastro: repassa nome, sobrenome, telefone e email pro app. */
+            var finalizar = document.querySelector('[data-finalizar]');
+            if (finalizar) {
+                var q = new URLSearchParams({ acesso: 'cadastrar' });
+                ['nome', 'sobrenome', 'telefone', 'email'].forEach(function (k) { q.set(k, p.get(k) || ''); });
+                finalizar.href = 'https://app.xperiun.com/entrar-gratuito?' + q.toString();
+            }
+        })();
+
+        /* Módulos/aulas reais. Cada aula: { nome, video } (embed Pandavideo).
+           active: índice da aula em foco. done: índices já concluídos. open: sanfona aberta. */
+        var PV = 'https://player-vz-3f4bfda1-c03.tv.pandavideo.com.br/embed/?v=';
+        var DOWNLOAD_URL = '#';   /* TROCAR pelo link real dos materiais */
+        var ACESSO_URL = 'https://pages.xperiun.com/power-bi-basico-intermediario-rh/';
+        var modules = [
+            {
+                eyebrow: 'Módulo 01', name: '1. Introdução', open: true, active: 0, done: [],
+                lessons: [
+                    { nome: 'Boas Vindas', video: PV + '2f6c3bb6-44a2-4a58-853f-f86fba9cfcb6' },
+                    { nome: 'Pilares do Power BI', video: PV + '69935b75-1d8e-494d-8566-808c497b856e' },
+                    { nome: 'Download dos Materiais', video: PV + '34967cb3-d9c5-4d60-a00a-1f2ea9dcd9da' }
+                ]
+            },
+            {
+                eyebrow: 'Módulo 02', name: '2. Dashboard de RH', open: false,
+                lessons: [
+                    { nome: 'Case de Hoje', video: PV + '57f05a2a-d5c4-4b5f-8dc8-6c61d631959e' },
+                    { nome: 'Pilar 1 - Extração', video: PV + '72aa8baa-3b18-4817-88a1-2a3f98e50831' },
+                    { nome: 'Pilar 2 - Estruturação', video: PV + 'd6e477dd-d0ae-4e07-9878-650922498e40' },
+                    { nome: 'Pilar 3 - Modelagem', video: PV + '00201156-8219-4e5c-a0e8-cbd9ec935f65' },
+                    { nome: 'Pilar 4 - Cálculos', video: PV + 'aa4810c6-0e56-462c-8f80-f3bb1d3fdc79' },
+                    { nome: 'Pilar 5 - Visualização de Dados', video: PV + 'ee427649-b3e3-488c-92b7-7989e4eca598' },
+                    { nome: 'Tela de Fundo', video: PV + '4c05559e-6ab6-4115-a2a8-73847ac43861' },
+                    { nome: 'Análises', video: PV + '8882d404-7aee-45c6-811c-3a57084475a5' }
+                ]
+            },
+            {
+                eyebrow: 'Módulo 03', name: '3. Plataforma Xperiun', open: false,
+                lessons: [
+                    { nome: 'Conheça a Plataforma Xperiun', video: PV + '97101182-6f23-45c2-9f38-a6a7343099b9' }
+                ]
+            }
+        ];
+
+        var host = document.getElementById('aula-modules');
+
+        modules.forEach(function (mod) {
+            var done = mod.done || [];
+
+            var sec = document.createElement('section');
+            sec.className = 'aula-mod' + (mod.open ? ' is-open' : '');
+
+            var head = document.createElement('button');
+            head.type = 'button';
+            head.className = 'aula-mod-head';
+            head.setAttribute('aria-expanded', String(!!mod.open));
+            head.innerHTML =
+                '<span class="material-symbols-outlined aula-mod-folder">' + (mod.open ? 'folder_open' : 'folder') + '</span>' +
+                '<span class="aula-mod-titles">' +
+                    '<span class="aula-mod-eyebrow-row">' +
+                        '<span class="aula-mod-eyebrow">' + mod.eyebrow + '</span>' +
+                        '<span class="aula-mod-count" data-mod-count>0/0</span>' +
+                    '</span>' +
+                    '<span class="aula-mod-name">' + mod.name + '</span>' +
+                '</span>';
+
+            var list = document.createElement('div');
+            list.className = 'aula-lessons';
+            var inner = document.createElement('div');
+            inner.className = 'aula-lessons-inner';
+
+            mod.lessons.forEach(function (aula, i) {
+                var li = document.createElement('div');
+                li.className = 'aula-lesson';
+                if (i === mod.active) li.className += ' is-active';
+                else if (done.indexOf(i) > -1) li.className += ' is-done';
+                if (aula.video) li.dataset.video = aula.video;
+                li.innerHTML =
+                    '<span class="aula-lesson-mark"><span class="material-symbols-outlined">check</span></span>' +
+                    '<span class="aula-lesson-name">' + aula.nome + '</span>';
+                inner.appendChild(li);
+
+                /* Após "Download dos Materiais": linha de download (não é aula,
+                   não conta no progresso, não precisa concluir). */
+                if (aula.nome === 'Download dos Materiais') {
+                    var dl = document.createElement('a');
+                    dl.className = 'aula-download';
+                    dl.href = DOWNLOAD_URL;
+                    dl.target = '_blank'; dl.rel = 'noopener';
+                    dl.innerHTML =
+                        '<span class="aula-download-btn"><span class="material-symbols-outlined">download</span></span>' +
+                        '<span class="aula-lesson-name">Fazer Download</span>';
+                    inner.appendChild(dl);
+                }
+
+                /* Após a última aula: CTA de oferta com desconto. */
+                if (aula.nome === 'Conheça a Plataforma Xperiun') {
+                    var ac = document.createElement('a');
+                    ac.className = 'aula-acesso';
+                    ac.href = ACESSO_URL;
+                    ac.target = '_blank'; ac.rel = 'noopener';
+                    ac.innerHTML =
+                        '<span class="aula-download-btn"><span class="material-symbols-outlined">sell</span></span>' +
+                        '<span class="aula-lesson-name">Garantir acesso com desconto</span>';
+                    inner.appendChild(ac);
+                }
+            });
+
+            list.appendChild(inner);
+            sec.appendChild(head);
+            sec.appendChild(list);
+            host.appendChild(sec);
+        });
+
+        /* Sanfona: só um módulo aberto por vez. */
+        function setModulo(mod, aberto) {
+            mod.classList.toggle('is-open', aberto);
+            mod.querySelector('.aula-mod-head').setAttribute('aria-expanded', String(aberto));
+            mod.querySelector('.aula-mod-folder').textContent = aberto ? 'folder_open' : 'folder';
+        }
+        function abrirModulo(mod) {
+            host.querySelectorAll('.aula-mod.is-open').forEach(function (m) { if (m !== mod) setModulo(m, false); });
+            setModulo(mod, true);
+        }
+
+        host.addEventListener('click', function (e) {
+            var head = e.target.closest('.aula-mod-head');
+            if (head) {
+                var mod = head.closest('.aula-mod');
+                if (mod.classList.contains('is-open')) setModulo(mod, false);
+                else abrirModulo(mod);
+                return;
+            }
+
+            /* Linha de download → mesmo modal do cadastro, com mensagem de download. */
+            if (e.target.closest('.aula-download')) { e.preventDefault(); abrirCadastro(true); return; }
+
+            /* Selecionar uma aula pelo menu. */
+            var lesson = e.target.closest('.aula-lesson');
+            if (lesson) navegarPara(lesson);
+        });
+
+        /* ── Popup "Você concluiu essa aula?" em qualquer navegação ─────── */
+        var modal = document.getElementById('aula-modal');
+        var nextBtn = document.querySelector('[data-next]');
+        var prevBtn = document.querySelector('[data-prev]');
+        var concluirNavBtn = document.querySelector('[data-concluir-nav]');
+        var alvo = null;   /* aula pra onde ir depois que o usuário responder */
+
+        function pedirConclusao(lesson) {
+            alvo = lesson;
+            modal.classList.add('is-open');
+        }
+        function fecharModal() { modal.classList.remove('is-open'); alvo = null; }
+
+        /* Navega pra `lesson`. Só pergunta a conclusão se a aula atual ainda NÃO
+           foi concluída; se já estiver concluída, vai direto (sem perguntar). */
+        function navegarPara(lesson) {
+            if (!lesson || lesson.classList.contains('is-active')) return;
+            var atual = host.querySelector('.aula-lesson.is-active');
+            if (!atual || atual.classList.contains('is-done')) irPara(lesson, false);
+            else pedirConclusao(lesson);
+        }
+
+        /* Vai pra aula `lesson`; se marcarConcluido, a aula atual vira concluída.
+           A aula alvo mantém o estado de concluída se já tiver. */
+        function irPara(lesson, marcarConcluido) {
+            if (!lesson) return;
+            var atual = host.querySelector('.aula-lesson.is-active');
+            if (atual && atual !== lesson) {
+                atual.classList.remove('is-active');
+                if (marcarConcluido) atual.classList.add('is-done');   /* "Ainda não" não marca */
+            }
+            lesson.classList.add('is-active');
+            var mod = lesson.closest('.aula-mod');
+            if (mod && !mod.classList.contains('is-open')) abrirModulo(mod);
+            lesson.scrollIntoView({ block: 'nearest' });
+            carregarVideo(lesson);
+            atualizarProgresso();
+            atualizarNav();
+        }
+
+        /* Carrega o vídeo (embed) da aula no player. */
+        function carregarVideo(lesson) {
+            var frame = document.querySelector('.aula-video-frame');
+            if (frame && lesson && lesson.dataset.video) frame.src = lesson.dataset.video;
+        }
+
+        function proximaAula() {
+            var todas = Array.prototype.slice.call(host.querySelectorAll('.aula-lesson'));
+            var atual = host.querySelector('.aula-lesson.is-active');
+            return atual ? todas[todas.indexOf(atual) + 1] : todas[0];
+        }
+        function anteriorAula() {
+            var todas = Array.prototype.slice.call(host.querySelectorAll('.aula-lesson'));
+            var atual = host.querySelector('.aula-lesson.is-active');
+            var i = atual ? todas.indexOf(atual) : 0;
+            return i > 0 ? todas[i - 1] : null;
+        }
+
+        /* Esconde "Aula anterior"/"Próxima aula" quando não houver destino. */
+        function atualizarNav() {
+            var temPrev = !!anteriorAula();
+            /* sem aula anterior (primeira aula) → mostra "Concluir cadastro" no lugar */
+            if (prevBtn) prevBtn.style.display = temPrev ? '' : 'none';
+            if (concluirNavBtn) concluirNavBtn.style.display = temPrev ? 'none' : '';
+            if (nextBtn) nextBtn.style.display = proximaAula() ? '' : 'none';
+        }
+
+        /* Atualiza os contadores por módulo, a contagem geral, a % e o anel. */
+        function atualizarProgresso() {
+            var totalGeral = 0, feitasGeral = 0;
+            host.querySelectorAll('.aula-mod').forEach(function (mod) {
+                var lessons = mod.querySelectorAll('.aula-lesson');
+                var feitas = mod.querySelectorAll('.aula-lesson.is-done').length;
+                totalGeral += lessons.length;
+                feitasGeral += feitas;
+                var cnt = mod.querySelector('[data-mod-count]');
+                if (cnt) {
+                    cnt.textContent = feitas + '/' + lessons.length;
+                    cnt.classList.toggle('is-complete', lessons.length > 0 && feitas === lessons.length);
+                }
+            });
+            var pct = totalGeral ? Math.round(feitasGeral / totalGeral * 100) : 0;
+            document.querySelector('[data-progress-count]').textContent = feitasGeral + '/' + totalGeral;
+            document.querySelector('[data-progress-pct]').textContent = pct + '%';
+            document.querySelector('[data-progress-ring]').style.strokeDashoffset = (100 - pct);
+            document.querySelector('.aula-progress').classList.toggle('is-complete', pct === 100);
+        }
+        /* Scrim de scroll: indica que há mais conteúdo abaixo na sidebar. */
+        var aulaRight = document.querySelector('.aula-right');
+        function atualizarScrim() {
+            var temScroll = host.scrollHeight > host.clientHeight + 1;
+            var noFim = host.scrollHeight - host.scrollTop - host.clientHeight <= 1;
+            aulaRight.classList.toggle('has-scrim', temScroll && !noFim);
+        }
+        host.addEventListener('scroll', atualizarScrim);
+        host.addEventListener('transitionend', atualizarScrim);   /* abrir/fechar sanfona muda a altura */
+        window.addEventListener('resize', atualizarScrim);
+
+        carregarVideo(host.querySelector('.aula-lesson.is-active'));   /* vídeo inicial */
+        atualizarProgresso();   /* estado inicial */
+        atualizarNav();         /* estado inicial dos botões */
+        atualizarScrim();       /* estado inicial do scrim */
+
+        if (nextBtn) nextBtn.addEventListener('click', function () { navegarPara(proximaAula()); });
+        if (prevBtn) prevBtn.addEventListener('click', function () { navegarPara(anteriorAula()); });
+        modal.querySelector('[data-modal-yes]').addEventListener('click', function () { var l = alvo; fecharModal(); irPara(l, true); });
+        modal.querySelector('[data-modal-no]').addEventListener('click', function () { var l = alvo; fecharModal(); irPara(l, false); });
+        modal.addEventListener('click', function (e) { if (e.target === modal) fecharModal(); });   /* clicar fora cancela */
+
+        /* Dropdown de perfil: abre clicando na avatar (botão ou badge); fecha ao clicar fora ou num item. */
+        var perfilWrap = document.querySelector('.menu-perfil-wrap');
+        if (perfilWrap) {
+            perfilWrap.addEventListener('click', function (e) {
+                if (e.target.closest('.menu-perfil-item')) { perfilWrap.classList.remove('is-open'); return; }
+                e.stopPropagation();
+                perfilWrap.classList.toggle('is-open');
+            });
+            document.addEventListener('click', function () { perfilWrap.classList.remove('is-open'); });
+        }
+
+        /* Popup de confirmação antes de redirecionar pro cadastro.
+           Mesmo modal serve pro "Concluir cadastro" e pro "Fazer Download",
+           mudando só a mensagem. */
+        var finalizarLink = document.querySelector('[data-finalizar]');
+        var modalCad = document.getElementById('aula-modal-cadastro');
+        var TXT_CADASTRO = 'Deseja concluir seu cadastro agora?';
+        var TXT_DOWNLOAD = 'Para fazer download do material você precisa concluir o cadastro!';
+        function abrirCadastro(modoDownload) {
+            if (!modalCad) return;
+            var titulo = modalCad.querySelector('.aula-modal-title');
+            var aviso = modalCad.querySelector('.aula-modal-aviso');
+            if (titulo) titulo.textContent = modoDownload ? TXT_DOWNLOAD : TXT_CADASTRO;
+            if (aviso) aviso.style.display = modoDownload ? 'none' : '';
+            modalCad.classList.add('is-open');
+        }
+        if (finalizarLink && modalCad) {
+            finalizarLink.addEventListener('click', function (e) { e.preventDefault(); abrirCadastro(false); });
+            if (concluirNavBtn) concluirNavBtn.addEventListener('click', function () { abrirCadastro(false); });
+            modalCad.querySelector('[data-cadastro-sim]').addEventListener('click', function () { window.location.href = finalizarLink.href; });
+            modalCad.querySelector('[data-cadastro-nao]').addEventListener('click', function () { modalCad.classList.remove('is-open'); });
+            modalCad.addEventListener('click', function (e) { if (e.target === modalCad) modalCad.classList.remove('is-open'); });
+        }
+
+        /* Auto-avançar quando o vídeo termina (evento do player Pandavideo via postMessage).
+           Vídeo terminou = aula concluída, então marca e vai pra próxima sem perguntar. */
+        window.addEventListener('message', function (e) {
+            var d = e.data;
+            if (typeof d === 'string') { try { d = JSON.parse(d); } catch (_) { d = { message: e.data }; } }
+            var ev = d && (d.message || d.event || d.type);
+            if (typeof ev !== 'string' || !/(ended|complete|finish)/i.test(ev)) return;
+            var prox = proximaAula();
+            if (prox) {
+                irPara(prox, true);
+            } else {
+                var atual = host.querySelector('.aula-lesson.is-active');
+                if (atual) { atual.classList.add('is-done'); atualizarProgresso(); atualizarNav(); }
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

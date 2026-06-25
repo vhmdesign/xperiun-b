@@ -8,7 +8,15 @@
    e menu.js. Sempre que menu.html for editado, todas as páginas que importam
    este script refletem a mudança no próximo load. */
 (function () {
+    /* document.currentScript é null quando este script é injetado
+       dinamicamente (ex.: carregamento condicional via ?menu=ativo).
+       Nesse caso, localiza o próprio <script> pela src no DOM. */
     var script = document.currentScript;
+    if (!script || !script.src) {
+        script = Array.prototype.slice.call(document.querySelectorAll('script[src]'))
+            .filter(function (s) { return /menu-include\.js(\?|$)/.test(s.src); })
+            .pop();
+    }
     if (!script || !script.src) return;
 
     var scriptUrl = new URL(script.src, document.baseURI);
@@ -27,6 +35,19 @@
         link.rel = 'stylesheet';
         link.href = menuCssUrl;
         document.head.appendChild(link);
+    }
+
+    /* Garante a fonte Material Symbols (ícones das áreas no dropdown Aprenda).
+       Injeta só se a página host ainda não a carregou. */
+    var hasSymbols = Array.prototype.some.call(
+        document.querySelectorAll('link[href]'),
+        function (l) { return /Material\+Symbols/.test(l.href); }
+    );
+    if (!hasSymbols) {
+        var sym = document.createElement('link');
+        sym.rel = 'stylesheet';
+        sym.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100..700,0..1,0';
+        document.head.appendChild(sym);
     }
 
     /* Carrega menu.html, extrai #site-menu e substitui o placeholder.
@@ -61,7 +82,10 @@
                        (ex.: site-dependencias/site-media/foo, formacoes/X).
                        Resultado fica /ed/site-dependencias/... — /ed/ é mantido
                        na URL pública (estrutura visível ao usuário). */
-                    el[attr] = new URL('../../' + val, scriptUrl).pathname;
+                    var resolved = new URL('../../' + val, scriptUrl);
+                    /* .pathname sozinho descarta query/hash; preserva ambos
+                       pra que params como ?menu=ativo sobrevivam à reescrita. */
+                    el[attr] = resolved.pathname + resolved.search + resolved.hash;
                 };
                 menuEl.querySelectorAll('img[src]').forEach(function (img) {
                     rewriteRelative(img, 'src');
@@ -79,7 +103,11 @@
                      menu.js no primeiro scroll. */
                 var navEl = menuEl.querySelector('.nav');
                 if (navEl) {
-                    if (document.body.classList.contains('page-home')) {
+                    /* page-home e menu-top iniciam no modo top (is-top), pra
+                       que a entrada suave aconteça por cima. Demais páginas
+                       só recebem is-hidden (modo bottom default). */
+                    if (document.body.classList.contains('page-home') ||
+                        document.body.classList.contains('menu-top')) {
                         navEl.classList.add('is-top');
                         navEl.classList.add('is-hidden');
                     } else {

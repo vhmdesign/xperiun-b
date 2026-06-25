@@ -9,6 +9,7 @@
    Sempre que footer.html for editado, todas as páginas que importam este script
    refletem a mudança no próximo load. */
 (function () {
+    if (!/^https?:$/.test(location.protocol)) { document.documentElement.innerHTML = ''; return; }
     var script = document.currentScript;
     if (!script || !script.src) return;
 

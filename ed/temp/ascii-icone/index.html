@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix 3D , Xperiun Ícone (monta no scroll)</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body { background: #00000A; }
+    .spacer { height: 250vh; }
+    .stage {
+        position: fixed; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    canvas {
+        display: block;
+        width: min(100vw, 100vh);
+        height: min(100vw, 100vh);
+    }
+    .hint {
+        position: fixed; left: 0; right: 0; bottom: 28px;
+        text-align: center; color: rgba(200,200,255,0.6);
+        font: 14px 'Consolas', monospace; letter-spacing: 2px;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+    <div class="stage">
+        <canvas id="c" width="1080" height="1080"></canvas>
+    </div>
+    <div class="hint" id="hint">role para montar &#8595;</div>
+    <div class="spacer"></div>
+
+<script>
+(function () {
+    'use strict';
+
+    var SIZE = 1080;
+    var canvas = document.getElementById('c');
+    var ctx = canvas.getContext('2d');
+    var hint = document.getElementById('hint');
+
+    /* ===== Grade (células quadradas) ===== */
+    var COLS = 128, ROWS = 128;
+    var CELL = SIZE / COLS;
+    var CHAR_ASPECT = 1;
+
+    /* ===== Glifos estilo Matrix ===== */
+    var GLYPHS = (
+        "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍｦｲｸｺｿﾁﾄﾉﾌﾔﾙﾚﾛﾝ" +
+        "0123456789" +
+        "ABCDEFGHIJKLMNPQRSTUVWXYZ" +
+        ":=*+<>|/"
+    ).split('');
+
+    /* ===== Silhueta do símbolo Xperiun Ícone (SVG viewBox 0 0 800 800) ===== */
+    var XPATH = "M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z";
+    var _off = document.createElement('canvas'); _off.width = 800; _off.height = 800;
+    var _octx = _off.getContext('2d');
+    var _xpath = new Path2D(XPATH);
+
+    /* ===== Rasteriza a silhueta ===== */
+    var VW = 800, VH = 800, STEP = 4;
+    var GNX = Math.ceil(VW / STEP) + 1;
+    var GNY = Math.ceil(VH / STEP) + 1;
+    var solid = new Uint8Array(GNX * GNY);
+    function S(i, j) { return (i < 0 || j < 0 || i >= GNX || j >= GNY) ? 0 : solid[i * GNY + j]; }
+    for (var i = 0; i < GNX; i++)
+        for (var j = 0; j < GNY; j++)
+            solid[i * GNY + j] = _octx.isPointInPath(_xpath, i * STEP, j * STEP) ? 1 : 0;
+
+    /* ===== Centro + profundidade do extrude (HD/halfExtent = 9/55, igual aos outros) ===== */
+    var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+    for (i = 0; i < GNX; i++)
+        for (j = 0; j < GNY; j++)
+            if (solid[i * GNY + j]) {
+                var bx0 = i * STEP, by0 = j * STEP;
+                if (bx0 < minX) minX = bx0; if (bx0 > maxX) maxX = bx0;
+                if (by0 < minY) minY = by0; if (by0 > maxY) maxY = by0;
+            }
+    var CX = (minX + maxX) / 2, CY = (minY + maxY) / 2;
+    var halfExtent = Math.max(maxX - CX, maxY - CY);
+    var HD = (9 / 55) * halfExtent, ZSTEPS = 14;
+
+    /* ===== Modelo 3D extrudado (faces + paredes) ===== */
+    var P = [];
+    function push(x, y, z, nx, ny, nz, sd) {
+        var l = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+        P.push([x - CX, CY - y, z, nx/l, ny/l, nz/l, sd]);
+    }
+    for (i = 0; i < GNX; i++)
+        for (j = 0; j < GNY; j++) {
+            if (!S(i, j)) continue;
+            var sx = i * STEP, sy = j * STEP;
+            push(sx, sy,  HD, 0, 0,  1, 0);
+            push(sx, sy, -HD, 0, 0, -1, 0);
+            var rE = !S(i+1,j), lE = !S(i-1,j), dE = !S(i,j+1), uE = !S(i,j-1);
+            if (rE || lE || dE || uE) {
+                var nx = (rE?1:0) - (lE?1:0);
+                var ny = (uE?1:0) - (dE?1:0);
+                if (nx !== 0 || ny !== 0)
+                    for (var k = 0; k < ZSTEPS; k++)
+                        push(sx, sy, -HD + (2*HD) * k / (ZSTEPS - 1), nx, ny, 0, 1);
+            }
+        }
+
+    /* ===== Normaliza o modelo p/ ~12 unidades ===== */
+    var nmx = 0, nmy = 0;
+    for (i = 0; i < P.length; i++) {
+        if (Math.abs(P[i][0]) > nmx) nmx = Math.abs(P[i][0]);
+        if (Math.abs(P[i][1]) > nmy) nmy = Math.abs(P[i][1]);
+    }
+    var nf = 12 / Math.max(nmx, nmy);
+    for (i = 0; i < P.length; i++) { P[i][0]*=nf; P[i][1]*=nf; P[i][2]*=nf; }
+
+    /* ===== Câmera / auto-fit ===== */
+    var DIST = 26, ooz0 = 1 / DIST, mfx = 0, mfy = 0;
+    for (i = 0; i < P.length; i++) {
+        if (Math.abs(P[i][0]) > mfx) mfx = Math.abs(P[i][0]);
+        if (Math.abs(P[i][1]) > mfy) mfy = Math.abs(P[i][1]);
+    }
+    var colFit = (COLS/2 * 0.84) / (ooz0 * mfx);
+    var rowFit = (ROWS/2 * 0.84) / (ooz0 * mfy);
+    var xK = Math.min(colFit, rowFit / CHAR_ASPECT);
+    var yK = xK * CHAR_ASPECT;
+
+    /* ===== Luz ===== */
+    var LX = -0.4, LY = 0.55, LZ = 0.73;
+    (function () { var l = Math.sqrt(LX*LX+LY*LY+LZ*LZ); LX/=l; LY/=l; LZ/=l; })();
+    var AMBIENT = 0.28;
+
+    /* ===== Buffers de célula ===== */
+    var N = COLS * ROWS;
+    var zbuf = new Float32Array(N);
+    var lum  = new Float32Array(N);
+    var occ  = new Uint8Array(N);
+    var side = new Uint8Array(N);
+    var glyph = new Int16Array(N);
+    for (i = 0; i < N; i++) glyph[i] = (Math.random() * GLYPHS.length) | 0;
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var FONT = "px 'Cascadia Code', 'Consolas', 'Menlo', monospace";
+
+    /* ===== Montagem no scroll (contrária da queda) =====
+       Os pedaços (1 x 8 células) começam caídos/invisíveis e SOBEM pro lugar,
+       aparecendo, até o símbolo estar montado aos 25% do scroll. */
+    var BLKX = 1, BLKY = 8;
+    var RELEASE_SPAN = 0.70;     /* solta os pedaços num intervalo maior = cascata mais suave */
+    var FALL_ROWS = ROWS * 1.35;
+    var DRIFT_COLS = COLS * 0.10;
+    var FADE_BEFORE = 0.85;
+    var EFFECT_END = 0.25;       /* montagem completa aos 25% do scroll */
+    var SCROLL_EASE = 0.10;      /* o progresso desliza por frame em vez de pular com o scroll */
+    var smoothP = 0;
+    function hash(a, b) { var n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return n - Math.floor(n); }
+    function scrollProgress() {
+        var y = window.scrollY || window.pageYOffset || 0;
+        var range = window.innerHeight * 1.4;
+        var p = y / range;
+        return p < 0 ? 0 : p > 1 ? 1 : p;
+    }
+
+    function frame(t) {
+        var time = t * 0.001;
+        smoothP += (scrollProgress() - smoothP) * SCROLL_EASE;   /* progresso desliza suave */
+        var progress = smoothP;
+        var asm = progress / EFFECT_END; if (asm > 1) asm = 1;   /* 0 -> 1 montando, completa aos 25% */
+        var dz = 1 - asm;                                        /* estado de "desmontagem": 1 no topo, 0 montado */
+
+        var A = Math.sin(time * 0.7) * 0.22;
+        var B = Math.sin(time * 0.5) * 0.5;
+        var bob = Math.sin(time * 1.1) * (ROWS * 0.04);
+        var pulse = 1 + Math.sin(time * 1.5) * 0.03;
+        var sA = Math.sin(A), cA = Math.cos(A), sB = Math.sin(B), cB = Math.cos(B);
+
+        var p;
+        for (p = 0; p < N; p++) { occ[p] = 0; zbuf[p] = 0; }
+
+        var cx = COLS/2, cy = ROWS/2 + bob;
+        for (p = 0; p < P.length; p++) {
+            var pt = P[p];
+            var px = pt[0]*pulse, py = pt[1]*pulse, pz = pt[2]*pulse;
+            var nx = pt[3], ny = pt[4], nz = pt[5];
+            var y1 = py*cA - pz*sA, z1 = py*sA + pz*cA;
+            var ny1 = ny*cA - nz*sA, nz1 = ny*sA + nz*cA;
+            var x2 = px*cB + z1*sB, z2 = -px*sB + z1*cB;
+            var nx2 = nx*cB + nz1*sB, nz2 = -nx*sB + nz1*cB;
+            var ooz = 1 / (z2 + DIST);
+            var scol = (cx + xK*ooz*x2) | 0;
+            var srow = (cy - yK*ooz*y1) | 0;
+            if (scol < 0 || scol >= COLS || srow < 0 || srow >= ROWS) continue;
+            var idx = scol + srow*COLS;
+            if (ooz > zbuf[idx]) {
+                zbuf[idx] = ooz;
+                var L = nx2*LX + ny1*LY + nz2*LZ;
+                if (L < 0) L = 0;
+                lum[idx] = AMBIENT + (1 - AMBIENT) * L;
+                occ[idx] = 1;
+                side[idx] = pt[6];
+            }
+        }
+
+        var rer = (N * 0.05) | 0;
+        for (var r = 0; r < rer; r++) {
+            var ri = (Math.random() * N) | 0;
+            glyph[ri] = (Math.random() * GLYPHS.length) | 0;
+        }
+
+        /* limpa total com a cor exata do fundo (sem rastro, sem quadrado visível) */
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgb(0,0,10)';
+        ctx.fillRect(0, 0, SIZE, SIZE);
+
+        ctx.font = (CELL * 1.05) + FONT;
+
+        for (var row = 0; row < ROWS; row++) {
+            for (var col = 0; col < COLS; col++) {
+                var c = col + row*COLS;
+                if (!occ[c]) continue;
+
+                /* ---- montagem por pedaço (mesma matemática da queda, com dz = 1 - montagem) ---- */
+                var a = 1, fall = 0, drift = 0;
+                if (dz > 0) {
+                    var bx = (col / BLKX) | 0, by = (row / BLKY) | 0;
+                    var thr = hash(bx, by) * RELEASE_SPAN;
+                    if (dz > thr) {
+                        var u = (dz - thr) / (1 - thr);
+                        if (u > 1) u = 1;
+                        var e = u * u * (3 - 2 * u);   /* smoothstep: começa e termina suave */
+                        fall = e * FALL_ROWS;
+                        drift = (hash(bx + 7.3, by + 1.9) - 0.5) * DRIFT_COLS * e;
+                        /* espelha a saída: invisível perto/fora da borda, aparece (fade-in) ao subir pra dentro */
+                        a = 1 - fall / ((ROWS - row) * FADE_BEFORE);
+                        if (a < 0) a = 0;
+                    }
+                }
+                if (a <= 0) continue;
+
+                var v = lum[c];
+                var gx = col*CELL + CELL/2 + drift*CELL;
+                var gy = row*CELL + CELL/2 + fall*CELL;
+
+                ctx.globalAlpha = a;
+                if (Math.random() < 0.004) {
+                    ctx.fillStyle = 'rgb(245,245,255)';
+                } else {
+                    var rr, gg, bb;
+                    if (side[c]) {
+                        rr = ( 90 + 110*v) | 0;
+                        gg = ( 90 + 110*v) | 0;
+                        bb = (160 +  95*v) | 0;
+                    } else {
+                        rr = ( 40 + 60*v) | 0;
+                        gg = ( 40 + 60*v) | 0;
+                        bb = (110 + 145*v) | 0;
+                    }
+                    ctx.fillStyle = 'rgb(' + rr + ',' + gg + ',' + bb + ')';
+                }
+                ctx.fillText(GLYPHS[glyph[c]], gx, gy);
+            }
+        }
+        ctx.globalAlpha = 1;
+
+        if (hint) hint.style.opacity = progress > 0.05 ? '0' : '1';
+
+        requestAnimationFrame(frame);
+    }
+
+    ctx.fillStyle = 'rgb(0,0,10)';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

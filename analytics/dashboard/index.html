@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xperiun Analytics, sessoes</title>
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>Xperiun Analytics</h1>
+      <nav>
+        <a href="/" class="active">Sessoes</a>
+        <a href="/heatmap.html">Heatmap</a>
+      </nav>
+    </header>
+
+    <div id="list" class="session-list"></div>
+    <div id="empty" class="empty" hidden>Nenhuma sessao gravada ainda. Navegue no site com o tracker ativo.</div>
+  </div>
+
+  <script>
+    const fmtDate = (ms) => new Date(ms).toLocaleString('pt-BR');
+    const fmtDur = (a, b) => {
+      const s = Math.max(0, Math.round((b - a) / 1000));
+      return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
+    };
+    const device = (ua = '', w = 0) => {
+      if (/Mobi|Android|iPhone/i.test(ua) || w < 640) return 'Mobile';
+      if (w < 1024) return 'Tablet';
+      return 'Desktop';
+    };
+
+    fetch('/api/sessions').then(r => r.json()).then(({ sessions }) => {
+      const list = document.getElementById('list');
+      if (!sessions.length) { document.getElementById('empty').hidden = false; return; }
+      list.innerHTML = sessions.map(s => `
+        <a class="session" href="/player.html?id=${encodeURIComponent(s.id)}">
+          <div>
+            <div class="page">${s.page_url}</div>
+            <div class="meta">${fmtDate(s.started_at)} &middot; ${device(s.user_agent, s.viewport_w)} &middot; ${s.viewport_w || '?'}x${s.viewport_h || '?'}</div>
+          </div>
+          <div class="stat"><b>${fmtDur(s.started_at, s.ended_at)}</b><span>${s.event_count} eventos</span></div>
+        </a>
+      `).join('');
+    });
+  </script>
+</body>
+</html>

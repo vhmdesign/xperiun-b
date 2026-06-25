@@ -1,0 +1,59 @@
+/* ═══════════════════════════════════════════════════════════
+   Painéis empilhados 3D (CSS · cores Xperiun)
+   Recriação do "stacked panels". A onda que no original seguia o
+   mouse aqui é uma varredura AUTOMÁTICA infinita (sem mouse).
+   Animação dirigida por requestAnimationFrame (sem cubic-bezier).
+   ═══════════════════════════════════════════════════════════ */
+
+.sp-scene-wrap {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+    overflow: hidden;
+}
+
+/* Cena 3D — origem 0×0 centralizada na wrap; rotação via JS (inline). */
+.sp-scene {
+    position: relative;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* Painel — valores por painel vêm de custom properties setadas pelo JS
+   (--w, --h, --op, --z, --img). O blur é "assado" na imagem (hero-blur/),
+   sem filter em runtime. O JS só atualiza --wave a cada frame. */
+.sp-panel {
+    position: absolute;
+    width: var(--w);
+    height: var(--h);
+    margin-left: calc(var(--w) / -2);      /* centrado na origem (horizontal) */
+    margin-top: calc(var(--h) / -2);       /* centrado na origem (vertical) */
+    opacity: var(--op);
+    border-radius: 12px;
+    overflow: hidden;
+    transform: translateZ(var(--z, 0px)) translateY(var(--wave, 0px));
+    transform-origin: bottom center;
+    will-change: transform;
+}
+.sp-panel-img,
+.sp-panel-vignette {
+    position: absolute;
+    inset: 0;
+}
+/* Imagem do curso (por painel via --img) */
+.sp-panel-img {
+    background-image: var(--img);
+    background-size: cover;
+    background-position: center;
+}
+/* Vinheta escura pra profundidade */
+.sp-panel-vignette {
+    background: linear-gradient(to bottom, rgba(0,0,10,0.08) 0%, rgba(0,0,10,0.32) 100%);
+}

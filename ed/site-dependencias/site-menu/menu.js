@@ -203,11 +203,17 @@
     if (!nav) return;
 
     var isHomePage   = document.body.classList.contains('page-home');
+    /* menu-top: mesmo comportamento de página comum (recolhe no topo e
+       perto do fim, aparece ao rolar), mas ancorado no topo em modo
+       is-top (ex.: mba-fpa via ?menu=ativo). Sem o swap top↔bottom do
+       hero (não há #layer-content / #layer-trocas nessas páginas). */
+    var isMenuTop    = document.body.classList.contains('menu-top');
     var secAnuidade  = document.querySelector('.sec-anuidade');
     var layerContent = document.getElementById('layer-content');
     var layerTrocas  = document.getElementById('layer-trocas');
 
-    var baseHidden  = !isHomePage; /* non-home: começa hidden. home: visível. */
+    /* home começa visível; demais páginas (inclusive menu-top) hidden. */
+    var baseHidden  = !isHomePage;
     var forceHidden = false;
 
     function applyVisibility() {
@@ -290,6 +296,9 @@
         if (layerTrocas)  layerTrocas .addEventListener('scroll', updateForceHidden, { passive: true });
         if (layerContent) layerContent.addEventListener('scroll', updateForceHidden, { passive: true });
     } else {
+        /* menu-top ancora no topo (is-top); recolhe pra cima.
+           Demais páginas ficam no modo bottom default. */
+        if (isMenuTop) nav.classList.add('is-top');
         baseHidden = true;
         applyVisibility();
         window.addEventListener('scroll', function () {

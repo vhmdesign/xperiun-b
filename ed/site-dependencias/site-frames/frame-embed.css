@@ -1,0 +1,39 @@
+/* frame-embed.css — embute um HTML (de /site-frames/) como ilustração,
+   escalado proporcionalmente (fonte, padding, borders, tudo) via
+   transform: scale(). A escala é calculada pelo frame-embed.js conforme
+   a largura do container (--frame-scale).
+
+   Uso na página:
+     <div class="frame-embed" style="--frame-w:1440; --frame-h:900;">
+       <iframe src="/ed/site-dependencias/site-frames/SEU-MOCK.html"
+               loading="lazy" title="..." tabindex="-1"></iframe>
+     </div>
+     <script src="/ed/site-dependencias/site-frames/frame-embed.js" defer></script>
+
+   --frame-w / --frame-h = dimensões de DESIGN do mock (px, sem unidade).
+   Adicione a classe .frame-embed--static p/ desabilitar interação (só ilustra). */
+
+.frame-embed {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--frame-w, 1440) / var(--frame-h, 900);
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--dn800, #14141e);
+    box-shadow: inset 0 0 0 2px var(--bw-10, rgba(245, 245, 255, 0.1));
+    box-sizing: border-box;
+}
+
+.frame-embed > iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--frame-w, 1440) * 1px);
+    height: calc(var(--frame-h, 900) * 1px);
+    border: 0;
+    transform-origin: top left;
+    transform: scale(var(--frame-scale, 1));
+}
+
+/* puramente ilustrativo: não captura clique/scroll */
+.frame-embed--static > iframe { pointer-events: none; }

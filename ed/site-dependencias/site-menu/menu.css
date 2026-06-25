@@ -376,6 +376,7 @@
 
 /* Placeholder do painel — só bg sólido (sem imagem). */
 #site-menu .dm-img {
+    position: relative;
     width: 100%;
     flex-shrink: 0;
     height: 140px;
@@ -383,6 +384,42 @@
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 16px;
+}
+
+/* marquee leve de business cases dentro do dm-img (painel apr-1):
+   versão enxuta do bc-marquee da home de áreas, com thumbs 128x72. */
+#site-menu .dm-img--marquee { position: relative; }
+#site-menu .dm-bc-marquee {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 160%;
+    height: 220%;
+    transform: translate(-50%, -50%) skew(0deg, 15deg) rotate(-15deg);
+}
+#site-menu .dm-bc-col { flex: 1; min-width: 0; overflow: hidden; }
+#site-menu .dm-bc-track {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+#site-menu .dm-bc-up   { animation: dm-bc-up   24s linear infinite; }
+#site-menu .dm-bc-down { animation: dm-bc-down 28s linear infinite; }
+#site-menu .dm-bc-col:nth-child(3) .dm-bc-up { animation-duration: 30s; }
+#site-menu .dm-bc-track img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 8px;
+}
+@keyframes dm-bc-up   { from { transform: translateY(0); }    to { transform: translateY(-50%); } }
+@keyframes dm-bc-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+    #site-menu .dm-bc-track { animation: none; }
 }
 
 /* Variante posgrad: bg image + scrim gradiente + logos sobrepostos
@@ -414,6 +451,37 @@
 }
 #site-menu .dm-img--mba .dm-img-scrim {
     background: linear-gradient(to top, var(--pc800), color-mix(in srgb, var(--pc800) 25%, transparent));
+}
+/* FP&A: fundo compatível com .posgrad-card-media--fpa (glow + stripes), scrim pc800 */
+#site-menu .dm-img--fpa {
+    background: linear-gradient(to bottom, var(--dn800), transparent);
+    isolation: isolate;
+}
+#site-menu .dm-img--fpa .dm-img-scrim {
+    background: linear-gradient(to top, var(--pc800), color-mix(in srgb, var(--pc800) 25%, transparent));
+}
+#site-menu .dm-img--fpa .dm-img-logo-main { width: 220px; }
+#site-menu .dm-fpa-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(90deg, transparent, var(--pc500));
+    opacity: 0.5;
+    pointer-events: none;
+}
+#site-menu .dm-fpa-stripes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    pointer-events: none;
+}
+#site-menu .dm-fpa-stripes > div {
+    flex: 1 1 0;
+    height: 100%;
+    background: radial-gradient(ellipse, transparent 0%, var(--bb) 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
 }
 #site-menu .dm-img-logo-main {
     width: 120px;
@@ -471,6 +539,16 @@
 #site-menu .dm-formacao img {
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
+}
+/* ícone Material Symbols das áreas (bw-75, peso 200, 24px) */
+#site-menu .dm-area-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--bw-75);
+    font-variation-settings: 'wght' 200;
     flex-shrink: 0;
 }
 #site-menu .dm-formacao:hover {

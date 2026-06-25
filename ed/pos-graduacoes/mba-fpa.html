@@ -29,6 +29,38 @@
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
+<!-- Menu + footer controlados por URL: só carregam (e só pesam) quando
+     ?menu=ativo. Acesso direto a /mba-fpa não monta nem baixa CSS/JS deles. -->
+<script>
+(function () {
+    if (new URLSearchParams(location.search).get('menu') !== 'ativo') return;
+    document.body.classList.add('menu-top'); /* menu fixo no topo nesta página */
+    var ph = document.createElement('div');
+    ph.setAttribute('data-menu', '');
+    document.body.insertBefore(ph, document.body.firstChild);
+    var s = document.createElement('script');
+    s.src = '../site-dependencias/site-menu/menu-include.js';
+    document.body.appendChild(s);
+
+    /* Footer no fim da página, mesmo padrão do template (data-footer + include).
+       Anexado só depois do parse do body pra cair após todo o conteúdo,
+       não logo abaixo deste script no topo. */
+    var mountFooter = function () {
+        var fph = document.createElement('div');
+        fph.setAttribute('data-footer', '');
+        document.body.appendChild(fph);
+        var fs = document.createElement('script');
+        fs.src = '../site-dependencias/site-footer/footer-include.js';
+        document.body.appendChild(fs);
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mountFooter);
+    } else {
+        mountFooter();
+    }
+})();
+</script>
+
 <section class="mba-hero">
     <div class="mba-hero-orbs" aria-hidden="true">
         <div class="mba-orb mba-orb--1"></div>
@@ -98,11 +130,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <section class="mba-card-bridge" aria-hidden="true">
     <div class="mba-bridge-card">
-        <div class="mba-bridge-head">
-            <img src="../site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-emec.svg" alt="" class="mba-bridge-emec-icon">
-            <span class="mba-bridge-emec-label">e-Mec</span>
+        <div class="mba-bridge-fx">
+            <div class="mba-bridge-head">
+                <img src="../site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-emec.svg" alt="" class="mba-bridge-emec-icon">
+                <span class="mba-bridge-emec-label">e-Mec</span>
+            </div>
+            <img src="../site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-selo-mec.webp" alt="Selo MEC" class="mba-bridge-selo">
         </div>
-        <img src="../site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-selo-mec.webp" alt="Selo MEC" class="mba-bridge-selo">
     </div>
 </section>
 
@@ -190,6 +224,88 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </ul>
     </div>
 </section></div>
+
+<section class="mba-profs">
+    <div class="mba-profs-inner">
+        <div class="mba-profs-grid">
+            <div class="mba-profs-header">
+                <h2 class="mba-profs-title">Conheça o <span class="mba-profs-title-bold">corpo docente</span></h2>
+            </div>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_rafael.webp" alt="Rafael Gross Gevaerd">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Rafael Gross Gevaerd</h3>
+                    <p class="mba-prof-card-desc">Executivo, consultor e professor com mais de 25 anos de experiência em gestão empresarial, liderança, governança, planejamento estratégico e FP&amp;A. É especialista em transformar estratégia em processos, indicadores e resultados sustentáveis.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_thomas.webp" alt="Thomas Henrique Laurentino">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Thomas Henrique Laurentino</h3>
+                    <p class="mba-prof-card-desc">Controller e especialista em FP&amp;A com mais de 20 anos de atuação em finanças, operações e transformação empresarial. Possui sólida experiência em orçamento, forecast, controladoria, rentabilidade, governança e liderança de equipes multidisciplinares.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_iago.webp" alt="Iago Braz">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Iago Braz</h3>
+                    <p class="mba-prof-card-desc">Empreendedor, palestrante e professor com mais de 10 anos de atuação em dados, automação e Inteligência Artificial aplicada aos negócios. Founder da Kalidash e professor na Rocketseat, Conquer, Hashtag e Xperiun, conecta tecnologia, estratégia e aplicação prática para gerar eficiência e melhores decisões.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_say.webp" alt="Sayuri Valente">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Sayuri Valente</h3>
+                    <p class="mba-prof-card-desc">Especialista em design de dashboards e visualização de dados, é o rosto institucional da Xperiun. Traz o ângulo prático de prototipagem e layout para comunicar números com clareza e impacto na tomada de decisão.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_esdras.webp" alt="Esdras Santana">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Esdras Santana</h3>
+                    <p class="mba-prof-card-desc">Especialista em Power BI e Power Query, com pedagogia testada em milhares de alunos. Domina a construção de modelos e relatórios, do essencial ao Power BI Service, com foco em aplicação prática.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_anderson.webp" alt="Anderson Rocha">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Anderson Rocha</h3>
+                    <p class="mba-prof-card-desc">Especialista em Python, APIs e automação, com foco em integração real entre sistemas como CRM, ERP e ferramentas de marketing para conectar dados e ganhar eficiência operacional.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_italo.webp" alt="Ítalo Mesquita">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Ítalo Mesquita</h3>
+                    <p class="mba-prof-card-desc">Especialista em banco de dados e linguagem SQL, com foco em SQL aplicado a problemas reais de negócio, da modelagem à extração de dados para análise financeira.</p>
+                </div>
+            </article>
+            <article class="mba-prof-card">
+                <div class="mba-prof-card-media">
+                    <img class="mba-prof-card-img" src="../site-dependencias/site-media/professores/prof_renan.webp" alt="Renan Giovaninni">
+                </div>
+                <div class="mba-prof-card-text">
+                    <h3 class="mba-prof-card-name">Renan Giovaninni</h3>
+                    <p class="mba-prof-card-desc">Especialista em Business Analytics e KPIs, com domínio na estruturação de árvores de indicadores de operações inteiras, no padrão de consultoria sênior.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
 
 <div class="mba-curriculum-gains-track">
 <section class="mba-curriculum" id="mba-curriculum">
@@ -471,7 +587,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </summary>
             <div class="faq-a-grid">
                 <div class="faq-a-wrap">
-                    <p class="faq-a">Sua pós ensinou contabilidade. Este MBA ensina a operar FP&amp;A: Budget, Forecast, Real x Orçado, KPI tree, business case, IA. Tudo construído na sua frente. Se você nunca montou um modelo 3-statement driver-based do zero, você não fez FP&amp;A, você estudou sobre FP&amp;A.</p>
+                    <p class="faq-a">Sua pós ensinou contabilidade. Este MBA ensina a operar FP&amp;A: Budget, Forecast, Real x Orçado, KPI tree, Business Case, IA. Tudo construído na sua frente. Se você nunca montou um modelo 3-statement driver-based do zero, você não fez FP&amp;A, você estudou sobre FP&amp;A.</p>
                 </div>
             </div>
         </details>
@@ -541,5 +657,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script src="../site-dependencias/anti-copy.js" defer></script>
 
 <!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
 </body>
 </html>
