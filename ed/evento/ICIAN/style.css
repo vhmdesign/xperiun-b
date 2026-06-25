@@ -1358,3 +1358,211 @@
     color: var(--bw-50);
     animation: ic-scroll-cue 1.6s ease-in-out infinite;
 }
+
+/* ============================================================
+   PÁGINA OBRIGADO (confirmação de inscrição) — escopo .ic-obrigado
+   Mesma identidade do index: --bb de fundo (root.css), títulos
+   EB Garamond (.ic-title), eyebrow, tags e botão do DS.
+   ============================================================ */
+.ic-obrigado {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 64px;
+    padding: 96px 16px 48px;
+    box-sizing: border-box;
+}
+
+/* ── Confirmação ────────────────────────────────────────── */
+.ob-hero {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+}
+.ob-logo {
+    width: 200px;
+    height: auto;
+}
+.ob-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+.ic-obrigado .ic-sec-eyebrow {
+    margin-bottom: 0;
+}
+.ob-h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+.ob-h1 .material-symbols-outlined {
+    font-size: 0.9em;
+    color: var(--sc500);
+}
+.ob-h1-text {
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.ob-sub {
+    margin: 0;
+    max-width: 52ch;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+
+/* ── Próximos passos ────────────────────────────────────── */
+.ob-steps {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.ob-step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: 32px;
+    box-sizing: border-box;
+    border-radius: 24px;
+    background-image: linear-gradient(to bottom right, var(--ic300-15), transparent);
+    box-shadow: var(--ring-15);
+}
+.ob-step-num {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--label-l);
+    font-weight: 700;
+    color: var(--ic100);
+    box-shadow: var(--ring-25);
+}
+.ob-step-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+.ob-step-title {
+    margin: 0;
+    font-size: clamp(1.5rem, 1vw + 1rem, 2rem);
+}
+.ob-step-text {
+    margin: 0;
+    font: var(--p);
+    color: var(--bw-75);
+}
+
+/* Botão principal: mesmo tratamento laranja do .ic-cta do index */
+.ob-cta.btn[data-emphasis="medium"] {
+    background-image: linear-gradient(90deg, var(--ic100), var(--ic300), var(--pc200));
+}
+.ob-cta.btn[data-emphasis="medium"].is-hover,
+.ob-cta.btn[data-emphasis="medium"]:hover {
+    color: var(--bb);
+}
+
+/* ── Agenda das 3 noites ────────────────────────────────── */
+.ob-agenda {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ob-agenda-row {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: baseline;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: var(--ring-10);
+}
+.ob-agenda-date {
+    font: var(--label);
+    font-weight: 700;
+    color: var(--ic100);
+    white-space: nowrap;
+}
+.ob-agenda-aula {
+    font: var(--label);
+    color: var(--bw);
+    white-space: nowrap;
+}
+.ob-agenda-desc {
+    font: var(--p-s);
+    color: var(--bw-50);
+}
+
+/* ── Dica ───────────────────────────────────────────────── */
+.ob-tip {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font: var(--p-s);
+    color: var(--bw-50);
+}
+.ob-tip .material-symbols-outlined {
+    flex: none;
+    font-size: 20px;
+    color: var(--ic300);
+}
+
+/* ── Rodapé ─────────────────────────────────────────────── */
+.ob-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+.ob-footer img {
+    width: 28px;
+    height: 28px;
+    opacity: 0.6;
+}
+.ob-footer p {
+    margin: 0;
+    max-width: 44ch;
+    font: var(--p-s);
+    color: var(--bw-50);
+}
+
+/* ── Responsivo ─────────────────────────────────────────── */
+@media (max-width: 576px) {
+    .ic-obrigado {
+        gap: 48px;
+        padding: 64px 16px 40px;
+    }
+    .ob-step {
+        gap: 16px;
+        padding: 24px;
+    }
+    .ob-agenda-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+}
