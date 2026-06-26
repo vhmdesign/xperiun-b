@@ -37,18 +37,7 @@
         document.head.appendChild(link);
     }
 
-    /* Garante a fonte Material Symbols (ícones das áreas no dropdown Aprenda).
-       Injeta só se a página host ainda não a carregou. */
-    var hasSymbols = Array.prototype.some.call(
-        document.querySelectorAll('link[href]'),
-        function (l) { return /Material\+Symbols/.test(l.href); }
-    );
-    if (!hasSymbols) {
-        var sym = document.createElement('link');
-        sym.rel = 'stylesheet';
-        sym.href = '/ed/site-dependencias/site-fonts/material-symbols.css';
-        document.head.appendChild(sym);
-    }
+    /* Material Symbols já vem do root.css (self-hosted), não precisa injetar. */
 
     /* Carrega menu.html, extrai #site-menu e substitui o placeholder.
        Depois disso, carrega menu.js (que depende dos elementos já estarem
