@@ -79,7 +79,11 @@
         var remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         FONTPX = FONT_REM * remPx * SS;
         ctx.font = FONTPX + FONT;
-        cellW = ctx.measureText('█').width;
+        /* Avanço do monospace medido por uma string de chars normais (média),
+           NÃO pelo '█': em fallbacks (ex.: monospace do Android) o bloco cheio
+           tem largura diferente do avanço real e estica a cena. O '█' mais
+           largo que a célula é reduzido pelo g.scale(cellW/w,1) no drawGrid. */
+        cellW = ctx.measureText('00000000000000000000').width / 20;
         cellH = FONTPX * LINE;
         var vw = window.innerWidth;
         var scale = vw < 864 ? 0.75 : 1;

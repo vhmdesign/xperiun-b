@@ -72,7 +72,8 @@
 @media (max-width: 1439px) {
     .ic-grid { grid-template-columns: repeat(8, 1fr); }
 }
-@media (max-width: 1152px) {
+/* DS: 8 cols seguem até 864 (gutter 32). 6 cols só a partir de 864. */
+@media (max-width: 864px) {
     .ic-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
 }
 @media (max-width: 576px) {
@@ -120,7 +121,7 @@
 }
 
 .ic-hero-content {
-    padding: 96px 16px;
+    padding: 32px 16px 96px;
 }
 
 /* Indicador de scroll: canto inferior-esquerdo do hero */
@@ -264,7 +265,6 @@
 
 /* <= 1439px: reduz o padding-top do hero e sobe o canvas */
 @media (max-width: 1439px) {
-    .ic-hero-content { padding-top: 32px; }
     .ic-stage { top: -20%; }
 }
 
@@ -298,13 +298,16 @@
     .ic-hero-logo { margin-left: 16px; }
     .ic-hero-body { padding-left: 16px; }
 
-    /* A divisória vira rail vertical à esquerda (2px x 100%), no left 0 */
+    /* Trilho vertical à esquerda: do topo do hero (top: 0 = início da página)
+       até o bottom da BARRA do último tópico. Ancorado em .ic-hero-content
+       (.ic-grid, position: relative). Desconto: 96px (padding-bottom do hero)
+       + 32px (parte do último tópico de 64px que fica ABAIXO da barra de 32px). */
     .ic-hero-topics::before {
         position: absolute;
         top: 0;
         left: 0;
         width: 2px;
-        height: 100%;
+        height: calc(100% - 128px);
         margin-left: 0;
     }
 
@@ -349,7 +352,7 @@
 .ic-xperiun-stage {
     position: absolute;
     top: calc(50% - 720px);
-    right: calc(50% - 256px);
+    right: calc(50% - 128px - 160px);
     z-index: 1;   /* acima do robô (0), abaixo do conteúdo (2) */
     pointer-events: none;
 }
@@ -361,31 +364,9 @@
     -webkit-mask-image: linear-gradient(to left, transparent, #000 50%, #000);
             mask-image: linear-gradient(to left, transparent, #000 50%, #000);
 }
-@media (min-width: 865px) and (max-width: 1152px) {
-    .ic-xperiun-stage {
-        top: auto;
-        bottom: -75vw;
-        right: -50vw;
-    }
-    .ic-xperiun-stage canvas {
-        width: 150vw;
-        height: 150vw;
-        -webkit-mask-image: linear-gradient(to right, transparent, #000 50%, #000);
-                mask-image: linear-gradient(to right, transparent, #000 50%, #000);
-    }
-}
-@media (max-width: 864px) {
-    .ic-xperiun-stage {
-        top: -75vw;
-        bottom: auto;
-        right: -50vw;
-    }
-    .ic-xperiun-stage canvas {
-        width: 150vw;
-        height: 150vw;
-        -webkit-mask-image: linear-gradient(to right, transparent, #000 50%, #000);
-                mask-image: linear-gradient(to right, transparent, #000 50%, #000);
-    }
+/* Abaixo de 1152px o stage do Xperiun deixa de existir */
+@media (max-width: 1152px) {
+    .ic-xperiun-stage { display: none; }
 }
 
 .ic-sec2-grid {
@@ -395,7 +376,7 @@
 
 /* Título: 4 colunas centrais */
 .ic-sec2-title {
-    grid-column: 4 / 8;
+    grid-column: 5 / 9;
     grid-row: 1;
     font-size: clamp(2rem, 1.8519vw + 1.3333rem, 3rem);
 }
@@ -416,7 +397,7 @@
 
 /* Corpo: mesmas 4 colunas centrais, abaixo do título */
 .ic-sec2-body {
-    grid-column: 4 / 8;
+    grid-column: 5 / 11;
     grid-row: 2;
     display: flex;
     flex-direction: column;
@@ -426,15 +407,16 @@
 
 /* Texto da Imersão: 3 colunas ao lado do corpo, abaixo do título */
 .ic-sec2-aside {
-    grid-column: 8 / 11;
-    grid-row: 2;
+    grid-column: 7 / 11;
+    grid-row: 3;
 }
-.ic-sec2-aside p { font: var(--p); color: var(--bw); }
+.ic-sec2-aside p { font: var(--p); color: var(--bw-75); }
 
+/* <=1439px: grid do DS vira 8 colunas (Wide -> Desktop). Aside à direita, row 3 */
 @media (max-width: 1439px) {
     .ic-sec2-title { grid-column: 3 / 7; }
-    .ic-sec2-body  { grid-column: 3 / 7; }
-    .ic-sec2-aside { grid-column: 7 / 9; }
+    .ic-sec2-body  { grid-column: 3 / 9; }
+    .ic-sec2-aside { grid-column: 6 / 9; grid-row: 3; }
 }
 
 /* Abaixo de 1152px: título 1 col à esquerda (2/6); corpo 1 col à direita e 4 cols (2/6) */
@@ -511,11 +493,13 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 64px;
+    height: 140px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    background: linear-gradient(to top, var(--bb-75), transparent);
+    padding-bottom: 12px;
+    box-sizing: border-box;
+    background: linear-gradient(to top, var(--bb-75), transparent 75%);
     z-index: 50;
     pointer-events: none;   /* só o botão é interativo */
     transition: transform 0.4s ease, opacity 0.4s ease;
@@ -525,23 +509,24 @@
     transform: translateY(100%);
     opacity: 0;
 }
-/* blur progressivo: 4 níveis, mais forte na base (16px) até o topo (2px) */
-/* blur progressivo: camadas full-height com máscaras sobrepostas que mesclam
-   os níveis num gradiente suave (leve no topo 2px -> forte na base 16px) */
+/* Blur progressivo ("gradient blur"): 4 camadas full-height, todas sólidas na
+   base, com máscara que esmaece em alturas crescentes. Onde mais camadas se
+   sobrepõem (base) o backdrop-filter se compõe e fica mais forte; subindo,
+   menos camadas contribuem -> rampa contínua de 16px (base) a 0 (topo). */
 .ic-bottom-cta .ic-blur {
     position: absolute;
     inset: 0;
     pointer-events: none;
 }
-.ic-blur-2  { -webkit-backdrop-filter: blur(2px);  backdrop-filter: blur(2px);  -webkit-mask: linear-gradient(to top, transparent 50%, #000 75%, #000);                      mask: linear-gradient(to top, transparent 50%, #000 75%, #000); }
-.ic-blur-4  { -webkit-backdrop-filter: blur(4px);  backdrop-filter: blur(4px);  -webkit-mask: linear-gradient(to top, transparent 25%, #000 50%, #000 75%, transparent);    mask: linear-gradient(to top, transparent 25%, #000 50%, #000 75%, transparent); }
-.ic-blur-8  { -webkit-backdrop-filter: blur(8px);  backdrop-filter: blur(8px);  -webkit-mask: linear-gradient(to top, transparent, #000 25%, #000 50%, transparent 75%);    mask: linear-gradient(to top, transparent, #000 25%, #000 50%, transparent 75%); }
-.ic-blur-16 { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); -webkit-mask: linear-gradient(to top, #000, #000 25%, transparent 50%);                     mask: linear-gradient(to top, #000, #000 25%, transparent 50%); }
+.ic-blur-2  { -webkit-backdrop-filter: blur(2px);  backdrop-filter: blur(2px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 100%); mask: linear-gradient(to top, #000 0%, transparent 100%); }
+.ic-blur-4  { -webkit-backdrop-filter: blur(4px);  backdrop-filter: blur(4px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 66%);  mask: linear-gradient(to top, #000 0%, transparent 66%); }
+.ic-blur-8  { -webkit-backdrop-filter: blur(8px);  backdrop-filter: blur(8px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 42%);  mask: linear-gradient(to top, #000 0%, transparent 42%); }
+.ic-blur-16 { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); -webkit-mask: linear-gradient(to top, #000 0%, transparent 22%);  mask: linear-gradient(to top, #000 0%, transparent 22%); }
 .ic-bottom-cta .ic-cta {
     position: relative;
     z-index: 1;
     width: auto;
-    align-self: center;
+    align-self: flex-end;
     grid-column: auto;
     pointer-events: auto;
 }
@@ -1219,8 +1204,8 @@
     position: absolute;
     top: 0;
     left: 50%;
-    width: 48px;
-    height: 48px;
+    width: 24px;
+    height: 24px;
     transform: translate(-50%, -50%) rotate(calc(-1 * var(--a, 0deg)));
     z-index: 1;            /* acima do canvas de glifos (ascii) */
     pointer-events: auto;
@@ -1235,15 +1220,15 @@
 .ic-circle-option-icon:hover i { background: var(--bw-75); }
 .ic-circle-option.is-selected .ic-circle-option-icon i { background: var(--pc200); }
 
-/* Aula 1: um quadrado 32px (centrado) */
-.ic-icon-1 i { width: 32px; height: 32px; top: 8px; left: 8px; }
-/* Aula 2: 16px com a ponta inf-dir tocando a ponta sup-esq de um 24px */
-.ic-icon-2 i:nth-child(1) { width: 16px; height: 16px; top: 4px;  left: 4px;  }
-.ic-icon-2 i:nth-child(2) { width: 24px; height: 24px; top: 20px; left: 20px; }
-/* Aula 3: 3x 16px em escada (cada um toca a ponta sup-dir do anterior) */
-.ic-icon-3 i:nth-child(1) { width: 16px; height: 16px; top: 32px; left: 0;   }
-.ic-icon-3 i:nth-child(2) { width: 16px; height: 16px; top: 16px; left: 16px; }
-.ic-icon-3 i:nth-child(3) { width: 16px; height: 16px; top: 0;    left: 32px; }
+/* Aula 1: um quadrado 16px (centrado) */
+.ic-icon-1 i { width: 16px; height: 16px; top: 4px; left: 4px; }
+/* Aula 2: 8px com a ponta inf-dir tocando a ponta sup-esq de um 12px */
+.ic-icon-2 i:nth-child(1) { width: 8px;  height: 8px;  top: 2px;  left: 2px;  }
+.ic-icon-2 i:nth-child(2) { width: 12px; height: 12px; top: 10px; left: 10px; }
+/* Aula 3: 3x 8px em escada (cada um toca a ponta sup-dir do anterior) */
+.ic-icon-3 i:nth-child(1) { width: 8px;  height: 8px;  top: 16px; left: 0;   }
+.ic-icon-3 i:nth-child(2) { width: 8px;  height: 8px;  top: 8px;  left: 8px;  }
+.ic-icon-3 i:nth-child(3) { width: 8px;  height: 8px;  top: 0;    left: 16px; }
 
 /* Círculo interno: bb, 192px menor (diâmetro), conteúdo no topo */
 .ic-circle-inner {
