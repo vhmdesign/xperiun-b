@@ -49,6 +49,17 @@
         return el;
     }
 
+    // Normaliza telefone BR para E.164 (+55DDDNUMERO). Forms novos da AC
+    // têm campo de telefone internacional e EXIGEM esse formato; os antigos
+    // (texto simples) também aceitam. Padrão único pra TODOS os forms — atuais
+    // e futuros — já que este form.js é compartilhado.
+    function toE164BR(raw) {
+        var d = String(raw || '').replace(/\D/g, '');
+        if (!d) return '';
+        if (d.length > 11 && d.indexOf('55') === 0) return '+' + d; // já vem com código do país
+        return '+55' + d;
+    }
+
     function initModal(modal) {
         if (modal.dataset.wired === '1') return;
         modal.dataset.wired = '1';
@@ -237,7 +248,8 @@
             const out = [];
             for (const el of f.elements) {
                 if (!el.name || el.disabled || el.type === 'submit' || el.type === 'button') continue;
-                out.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(el.value));
+                const val = el.name === 'phone' ? toE164BR(el.value) : el.value;
+                out.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(val));
             }
             return out.join('&');
         }
