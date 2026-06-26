@@ -18,8 +18,12 @@
     if (!script || !script.src) return;
 
     var scriptUrl = new URL(script.src, document.baseURI);
-    var cssUrl    = new URL('form.css', scriptUrl).href;
-    var jsUrl     = new URL('form.js',  scriptUrl).href;
+    // Propaga o cache-bust do próprio form-include.js (ex.: ?v=2) pros
+    // sub-recursos (form.css / form.js / form-<id>.html), que são servidos
+    // com cache longo. Bumpar o ?v= na tag <script> da página atualiza tudo.
+    var ver       = scriptUrl.search;
+    var cssUrl    = new URL('form.css' + ver, scriptUrl).href;
+    var jsUrl     = new URL('form.js'  + ver, scriptUrl).href;
 
     /* Injeta form.css no <head> se ainda não estiver presente */
     var hasCss = Array.prototype.some.call(
@@ -36,7 +40,7 @@
     function loadPopup(placeholder) {
         var fN = placeholder.getAttribute('data-popup-form');
         if (!fN) return Promise.resolve();
-        var htmlUrl = new URL('form-' + fN + '.html', scriptUrl).href;
+        var htmlUrl = new URL('form-' + fN + '.html' + ver, scriptUrl).href;
         return fetch(htmlUrl)
             .then(function (r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
