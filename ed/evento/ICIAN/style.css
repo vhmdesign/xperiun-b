@@ -1008,6 +1008,8 @@
 .ic-game #msg .over { color: var(--er300); }
 .ic-game #duck { position: absolute; right: 24px; bottom: 24px; display: none; touch-action: none; background: var(--dn500-25); transition: none; }
 .ic-game #duck:hover, .ic-game #duck:active, .ic-game #duck.is-hover { background: var(--dn500-25); }
+/* ícone não captura pointer: eventos vão pro botão (duckOn/duckOff) */
+.ic-game #duck .material-symbols-outlined { pointer-events: none; }
 
 /* ============================================================
    SEÇÃO · Como usar Claude e IA no trabalho

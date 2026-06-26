@@ -1,0 +1,251 @@
+/* obrigado2.css — "Finalize sua inscrição" (evento ICIAN).
+   Tokens vêm do root.css. Fundo --bb (do body), container central de 864px. */
+
+.fin {
+    position: relative;
+    isolation: isolate;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;       /* mobile: dvh evita o bug do 100vh atrás da UI */
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;  /* centraliza o conteúdo verticalmente */
+    text-align: center;
+}
+/* glow roxo radial borrado no topo-esquerdo (igual .sec-pilares::before),
+   fixo cobrindo a tela inteira (100vw), atrás do conteúdo */
+.fin::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: -1;
+    background: radial-gradient(ellipse at 20% 0%, var(--pc500-75) 0%, transparent 45%);
+    pointer-events: none;
+}
+
+.fin-logo {
+    width: 220px;
+    height: auto;
+}
+
+/* ── Título + progresso ─────────────────────────────────── */
+.fin-head {
+    width: 100%;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+.fin-title {
+    margin: 0;
+    font-family: "EB Garamond", serif;
+    font-weight: 700;
+    line-height: 1em;
+    font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ── Progress bar (3 fases) — segue a referência: trilho + barra preenchida
+   (branco -> teal) até a fase atual; círculos branco (feito) / teal+pulso
+   (atual) / translúcido (pendente). Grid de 3 colunas com label EM FLUXO,
+   então os 3 labels ficam sempre alinhados. */
+.fin-prog {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.fin-prog::before,
+.fin-prog::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 14px;               /* centro vertical da bolinha de 32px */
+    height: 4px;
+    border-radius: 8px;
+}
+.fin-prog::before {          /* trilho: centro da 1ª col -> centro da 3ª col */
+    left: 16.6667%;
+    width: 66.6667%;
+    background: var(--bw-25);
+}
+.fin-prog::after {           /* preenchido (branco -> teal) até a fase atual */
+    left: 16.6667%;
+    width: 33.3333%;
+    background-image: linear-gradient(90deg, var(--bw), var(--sc500));
+    transition: width 0.5s ease-in-out;
+}
+.fin-prog-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.fin-prog-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--label-s);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--bw);
+    background: var(--bw-25);            /* pendente: translúcido (igual ref) */
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+}
+.fin-prog-step.is-done .fin-prog-dot {  /* feito: branco */
+    background: var(--bw);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+}
+.fin-prog-step.is-current .fin-prog-dot {  /* atual: teal + pulso (2 anéis) */
+    background: var(--sc500);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    animation: fin-pulse 1.5s ease-out infinite;
+}
+@keyframes fin-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--sc500-50),  0 0 0 0 var(--sc500-25); }
+    15%  { box-shadow: 0 0 0 0 var(--sc500-25),  0 0 0 0 var(--sc500-15); }
+    100% { box-shadow: 0 0 0 16px transparent,   0 0 0 32px transparent; }
+}
+.fin-prog-label {
+    font: var(--label-s);
+    color: var(--bw-50);
+    white-space: nowrap;
+}
+.fin-prog-step.is-done .fin-prog-label,
+.fin-prog-step.is-current .fin-prog-label { color: var(--bw); }
+
+/* ── Corpo ──────────────────────────────────────────────── */
+.fin-body {
+    width: 100%;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+.fin-body p {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+.fin-body .fin-hl { color: var(--bw); }
+
+/* Lista estilo .why-card-list das formações: barra vertical verde à esquerda */
+.fin-list {
+    margin: 8px 0 0;
+    padding-left: 32px;       /* espaço pras barras (::before em left: -32px) */
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+.fin-list li {
+    position: relative;
+    font: var(--p);
+    color: var(--bw-75);
+    padding-right: 12px;
+}
+.fin-list li::before {
+    content: "";
+    position: absolute;
+    left: -32px;
+    top: 0;
+    width: 2px;
+    height: 1.5rem;
+    background: var(--sc500);
+}
+
+/* ── Botão (abre o popup do Typeform): usa o .btn do root.css ── */
+.fin-cta {
+    margin-top: 32px;
+}
+
+/* ── Popup da pesquisa (Typeform inline, desliza da direita) ──
+   Coluna: barra do botão "Sair" (espaço reservado) em cima, form embaixo.
+   Assim o botão nunca é coberto pelo form, mesmo em viewports baixas. */
+.fin-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    box-sizing: border-box;
+    background: var(--bb-75);
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+    transform: translateX(100%);
+    opacity: 0;
+    filter: blur(1px);
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease;
+}
+.fin-popup.is-open {
+    transform: translateX(0);
+    opacity: 1;
+    filter: blur(0);
+    pointer-events: auto;
+}
+.fin-popup-bar {
+    position: relative;
+    z-index: 2;                 /* sempre acima do iframe -> botão clicável */
+    flex: none;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.fin-popup-inner {
+    position: relative;
+    z-index: 1;                 /* contexto próprio: o iframe fica contido aqui */
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+}
+.fin-popup-inner [data-tf-live] {
+    width: 100%;
+    height: 100%;
+}
+
+/* ── Responsivo ─────────────────────────────────────────── */
+@media (max-width: 576px) {
+    .fin-head { margin-top: 48px; }
+    .fin-body { margin-top: 48px; }
+    .fin-popup { padding: 12px; gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fin-prog-step.is-current .fin-prog-dot { animation: none; }
+    .fin-popup,
+    .fin-popup.is-open { transform: none; filter: none; transition: opacity 0.2s ease; }
+}
