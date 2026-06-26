@@ -99,6 +99,9 @@
         var success = modal.querySelector('.popup-form-success');
         if (success) success.hidden = true;   // nunca mostra sucesso quando há erro
         if (form) form.hidden = false;
+        // A AC devolve o formato internacional "(formato +XXXXXXXXXXXXX)",
+        // confuso pro usuário BR. Troca pelo formato que ele digita.
+        if (message) message = message.replace(/\(formato\s*\+X+\)/i, '(DDD) XXXXX-XXXX');
         showFormError(modal, message);
         var btn = modal.querySelector('[id$="_submit"]');
         if (btn) { btn.disabled = false; btn.classList.remove('processing'); }
