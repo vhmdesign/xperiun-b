@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap');
+/* Fontes self-hosted (Poppins/Oswald/Syne/EB Garamond/Cormorant Infant),
+   servidas do nosso domínio em vez do Google CDN (perf + sem dependência externa). */
+@import url('/ed/site-dependencias/site-fonts/fonts.css');
 
    /* ==========================================
        Base / Reset
