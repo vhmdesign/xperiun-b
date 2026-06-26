@@ -60,6 +60,50 @@
         return '+55' + d;
     }
 
+    // ── Respostas da ActiveCampaign ──────────────────────────────────
+    // O proc.php?jsonp=true devolve JS que chama estas funções globais.
+    // Sucesso REAL = redirect (window.top.location, executa sozinho) ou
+    // _show_thank_you. Erro de validação (ex.: telefone inválido) = _show_error.
+    // Antes o form.js mostrava sucesso só por o script ter carregado, então
+    // envio recusado dava "sucesso" falso. Agora respeitamos a resposta.
+    function acModalById(id) {
+        var f = document.getElementById('_form_' + id + '_');
+        return f ? f.closest('.popup-form') : null;
+    }
+    function showFormError(modal, message) {
+        var form = modal && modal.querySelector('form');
+        if (!form) return;
+        var box = form.querySelector('.popup-form-error');
+        if (!box) {
+            box = document.createElement('p');
+            box.className = 'popup-form-error';
+            var actions = form.querySelector('.popup-form-actions');
+            actions ? form.insertBefore(box, actions) : form.appendChild(box);
+        }
+        box.textContent = message || 'Não foi possível enviar. Confira os dados e tente novamente.';
+        box.hidden = false;
+    }
+    window._load_script = window._load_script || function () {};   // tracking da AC: ignorado
+    window._show_thank_you = function (id) {
+        var modal = acModalById(id);
+        if (!modal) return;
+        var form = modal.querySelector('form');
+        var success = modal.querySelector('.popup-form-success');
+        if (form) form.hidden = true;
+        if (success) success.hidden = false;
+    };
+    window._show_error = function (id, message) {
+        var modal = acModalById(id);
+        if (!modal) return;
+        var form = modal.querySelector('form');
+        var success = modal.querySelector('.popup-form-success');
+        if (success) success.hidden = true;   // nunca mostra sucesso quando há erro
+        if (form) form.hidden = false;
+        showFormError(modal, message);
+        var btn = modal.querySelector('[id$="_submit"]');
+        if (btn) { btn.disabled = false; btn.classList.remove('processing'); }
+    };
+
     function initModal(modal) {
         if (modal.dataset.wired === '1') return;
         modal.dataset.wired = '1';
@@ -255,11 +299,15 @@
         }
 
         function submit() {
+            const errBox = form.querySelector('.popup-form-error');
+            if (errBox) errBox.hidden = true;            // limpa erro anterior
             const url = form.action + '?' + serialize(form) + '&jsonp=true';
             const s = document.createElement('script');
             s.src = url;
-            s.onload  = () => { form.hidden = true; if (success) success.hidden = false; };
-            s.onerror = () => { alert('Erro ao enviar. Tente novamente.'); };
+            // Sucesso/erro vêm da RESPOSTA da AC: redirect (executa sozinho),
+            // _show_thank_you (sucesso) ou _show_error (recusado). onerror só
+            // cobre falha de rede (a AC não respondeu).
+            s.onerror = () => { showFormError(modal, 'Erro de conexão. Tente novamente.'); };
             document.head.appendChild(s);
         }
 

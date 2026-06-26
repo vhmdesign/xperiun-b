@@ -159,3 +159,14 @@
 .popup-form .popup-form-success p {
     margin: 0;
 }
+
+/* Erro retornado pela ActiveCampaign (ex.: telefone inválido). Mostrado
+   acima dos botões quando o envio é recusado, em vez do sucesso falso. */
+.popup-form .popup-form-error {
+    color: var(--er300);
+    font: var(--label-s);
+    margin: 16px 0 0;
+}
+.popup-form .popup-form-error[hidden] {
+    display: none;
+}
