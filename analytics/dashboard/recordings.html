@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xperiun Analytics, sessoes</title>
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>Sessoes</h1>
+      <nav>
+        <a href="/">Overview</a>
+        <a href="/recordings.html" class="active">Sessoes</a>
+        <a href="/heatmap.html">Heatmap</a>
+        <a href="/funnels.html">Funnels</a>
+      </nav>
+    </header>
+
+    <div class="filterbar">
+      <input type="search" id="q" placeholder="Buscar por pagina, origem, navegador, pais">
+      <select id="device">
+        <option value="">Todos dispositivos</option>
+        <option value="desktop">Desktop</option>
+        <option value="mobile">Mobile</option>
+        <option value="tablet">Tablet</option>
+      </select>
+      <div id="chips"></div>
+      <button id="save-seg" class="chip">Salvar segmento</button>
+    </div>
+
+    <div class="segments" id="segments"></div>
+
+    <div id="list" class="session-list"></div>
+    <div id="empty" class="empty" hidden>Nenhuma sessao encontrada.</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const state = {
+      filter: params.get('filter') || '',
+      device: params.get('device') || '',
+      q: params.get('q') || '',
+      event: params.get('event') || '',
+    };
+    const SEG_KEY = '__xp_segments__';
+
+    const fmtDate = (ms) => new Date(ms).toLocaleString('pt-BR');
+    const fmtDur = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`; };
+    const deviceLabel = (d) => ({ desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' }[d] || d || '?');
+
+    const FILTERS = [
+      { key: '', label: 'Todas' },
+      { key: 'rage', label: 'Rage clicks' },
+      { key: 'dead', label: 'Dead clicks' },
+      { key: 'quickback', label: 'Quick backs' },
+      { key: 'excessive-scroll', label: 'Scroll excessivo' },
+      { key: 'error', label: 'Erros JS' },
+    ];
+
+    const qEl = document.getElementById('q');
+    const deviceEl = document.getElementById('device');
+    qEl.value = state.q;
+    deviceEl.value = state.device;
+
+    function renderChips() {
+      document.getElementById('chips').innerHTML = FILTERS.map(f =>
+        `<button class="chip ${state.filter === f.key ? 'active' : ''}" data-k="${f.key}">${f.label}</button>`).join('');
+      document.querySelectorAll('#chips .chip').forEach(c =>
+        c.addEventListener('click', () => { state.filter = c.dataset.k; renderChips(); load(); }));
+    }
+
+    // --- segments (localStorage) ---
+    const getSegs = () => { try { return JSON.parse(localStorage.getItem(SEG_KEY) || '[]'); } catch { return []; } };
+    const setSegs = (s) => localStorage.setItem(SEG_KEY, JSON.stringify(s));
+    function renderSegs() {
+      const segs = getSegs();
+      const evChip = state.event ? `<span class="chip active seg">Evento: ${state.event}<span class="x" id="clr-ev">x</span></span>` : '';
+      document.getElementById('segments').innerHTML = evChip + segs.map((s, i) =>
+        `<span class="chip seg" data-i="${i}">${s.name}<span class="x" data-del="${i}">x</span></span>`).join('');
+      const ev = document.getElementById('clr-ev');
+      if (ev) ev.addEventListener('click', () => { state.event = ''; renderSegs(); load(); });
+      document.querySelectorAll('#segments .seg[data-i]').forEach(el => el.addEventListener('click', (e) => {
+        if (e.target.dataset.del !== undefined) return;
+        const s = getSegs()[Number(el.dataset.i)];
+        Object.assign(state, { filter: '', device: '', q: '', event: '' }, s.f);
+        qEl.value = state.q; deviceEl.value = state.device; renderChips(); renderSegs(); load();
+      }));
+      document.querySelectorAll('#segments [data-del]').forEach(x => x.addEventListener('click', (e) => {
+        e.stopPropagation(); const segs = getSegs(); segs.splice(Number(x.dataset.del), 1); setSegs(segs); renderSegs();
+      }));
+    }
+    document.getElementById('save-seg').addEventListener('click', () => {
+      const name = prompt('Nome do segmento:');
+      if (!name) return;
+      const segs = getSegs();
+      segs.push({ name, f: { filter: state.filter, device: state.device, q: state.q, event: state.event } });
+      setSegs(segs); renderSegs();
+    });
+
+    function tags(s) {
+      const t = [];
+      if (s.has_rage) t.push('<span class="tag rage">rage</span>');
+      if (s.has_dead) t.push('<span class="tag dead">dead click</span>');
+      if (s.is_quick_back) t.push('<span class="tag quickback">quick back</span>');
+      if (s.excessive_scroll) t.push('<span class="tag scroll">scroll excessivo</span>');
+      if (s.has_error) t.push('<span class="tag error">erro JS</span>');
+      return t.length ? `<div class="tags">${t.join('')}</div>` : '';
+    }
+
+    async function load() {
+      const p = new URLSearchParams();
+      for (const k of ['filter', 'device', 'q', 'event']) if (state[k]) p.set(k, state[k]);
+      const { sessions } = await fetch('/api/sessions?' + p.toString()).then(r => r.json());
+      const list = document.getElementById('list');
+      document.getElementById('empty').hidden = sessions.length > 0;
+      list.innerHTML = sessions.map(s => `
+        <a class="session" href="/player.html?id=${encodeURIComponent(s.id)}">
+          <div>
+            <div class="page">${s.page_url}</div>
+            <div class="meta">${fmtDate(s.started_at)}, ${deviceLabel(s.device_type)}, ${s.browser || '?'}, ${s.country || 'local'}, ${s.page_count} pag.</div>
+            ${tags(s)}
+          </div>
+          <div class="stat"><b>${fmtDur(s.duration_ms)}</b><span>${s.event_count} eventos</span></div>
+        </a>`).join('');
+    }
+
+    let t;
+    qEl.addEventListener('input', () => { state.q = qEl.value.trim(); clearTimeout(t); t = setTimeout(load, 250); });
+    deviceEl.addEventListener('change', () => { state.device = deviceEl.value; load(); });
+    renderChips();
+    renderSegs();
+    load();
+  </script>
+</body>
+</html>

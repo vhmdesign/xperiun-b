@@ -12,12 +12,20 @@
     <header class="top">
       <h1>Replay de sessao</h1>
       <nav>
-        <a href="/">Sessoes</a>
+        <a href="/">Overview</a>
+        <a href="/recordings.html">Sessoes</a>
         <a href="/heatmap.html">Heatmap</a>
+        <a href="/funnels.html">Funnels</a>
       </nav>
     </header>
-    <div id="player"></div>
-    <div id="msg" class="empty" hidden></div>
+
+    <div class="replay-layout">
+      <div>
+        <div id="player"></div>
+        <div id="msg" class="empty" hidden></div>
+      </div>
+      <aside class="sidebar" id="sidebar"></aside>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/rrweb-player@2.0.0-alpha.18/dist/index.js"></script>
@@ -25,19 +33,58 @@
     const id = new URLSearchParams(location.search).get('id');
     const msg = document.getElementById('msg');
     const show = (t) => { msg.hidden = false; msg.textContent = t; };
+    const fmtDate = (ms) => new Date(ms).toLocaleString('pt-BR');
+    const fmtDur = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`; };
+    const row = (k, v) => v ? `<div class="meta-row"><span class="k">${k}</span><span class="v">${v}</span></div>` : '';
+
+    function renderSidebar(m) {
+      if (!m) return;
+      const flags = [];
+      if (m.has_rage) flags.push('rage');
+      if (m.has_dead) flags.push('dead click');
+      if (m.is_quick_back) flags.push('quick back');
+      if (m.excessive_scroll) flags.push('scroll excessivo');
+      if (m.has_error) flags.push('erro JS');
+      const utm = [m.utm_source, m.utm_medium, m.utm_campaign].filter(Boolean).join(' / ');
+
+      document.getElementById('sidebar').innerHTML = `
+        <h3>Sessao</h3>
+        ${row('Inicio', fmtDate(m.started_at))}
+        ${row('Duracao', fmtDur(m.duration_ms))}
+        ${row('Paginas', m.page_count)}
+        ${row('Cliques', m.click_count)}
+        ${row('Scroll max', Math.round(m.max_scroll_pct) + '%')}
+        ${row('Visitante', m.visitor_id)}
+        <div class="section"><h3>Origem</h3>
+          ${row('Referrer', m.referrer || 'direto')}
+          ${row('UTM', utm)}
+        </div>
+        <div class="section"><h3>Dispositivo</h3>
+          ${row('Tipo', m.device_type)}
+          ${row('Navegador', m.browser)}
+          ${row('Sistema', m.os)}
+          ${row('Tela', (m.viewport_w || '?') + 'x' + (m.viewport_h || '?'))}
+          ${row('Local', [m.city, m.country].filter(Boolean).join(', ') || 'local')}
+        </div>
+        ${flags.length ? `<div class="section"><h3>Comportamento</h3><div class="tags">${flags.map(f => `<span class="tag">${f}</span>`).join('')}</div></div>` : ''}
+        ${m.pages && m.pages.length ? `<div class="section"><h3>Paginas visitadas</h3><ul>${m.pages.map(p => `<li>${p.page_url}</li>`).join('')}</ul></div>` : ''}
+        ${m.errors && m.errors.length ? `<div class="section"><h3>Erros</h3><ul>${m.errors.map(e => `<li>${e.message}</li>`).join('')}</ul></div>` : ''}
+      `;
+    }
 
     if (!id) {
       show('Sessao nao informada.');
     } else {
       fetch(`/api/session/${encodeURIComponent(id)}`)
         .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then(({ events }) => {
+        .then(({ events, meta }) => {
+          renderSidebar(meta);
           if (!events || events.length < 2) { show('Sessao sem eventos suficientes para reproduzir.'); return; }
           const stage = document.getElementById('player');
           const width = Math.min(1100, stage.clientWidth - 24);
           new rrwebPlayer({
             target: stage,
-            props: { events, width, height: Math.round(width * 0.6), autoPlay: false, speedOption: [1, 2, 4, 8] },
+            props: { events, width, height: Math.round(width * 0.6), autoPlay: false, speedOption: [1, 2, 4, 8], skipInactive: true },
           });
         })
         .catch(() => show('Nao foi possivel carregar a sessao.'));

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xperiun Analytics, funnels</title>
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>Funnels</h1>
+      <nav>
+        <a href="/">Overview</a>
+        <a href="/recordings.html">Sessoes</a>
+        <a href="/heatmap.html">Heatmap</a>
+        <a href="/funnels.html" class="active">Funnels</a>
+      </nav>
+    </header>
+
+    <div class="builder">
+      <select id="type">
+        <option value="page">Pagina</option>
+        <option value="event">Smart event</option>
+      </select>
+      <input id="value" list="opts" placeholder="Valor do passo">
+      <datalist id="opts"></datalist>
+      <button id="add">Adicionar passo</button>
+      <button id="calc">Calcular</button>
+    </div>
+
+    <div id="steps" class="segments"></div>
+    <div id="result" class="funnel"></div>
+    <div id="empty" class="empty" hidden>Adicione 2 ou mais passos e clique em Calcular.</div>
+  </div>
+
+  <script>
+    let options = { pages: [], events: [] };
+    let steps = [];
+
+    const typeEl = document.getElementById('type');
+    const valueEl = document.getElementById('value');
+    const optsEl = document.getElementById('opts');
+    const num = (n) => Number(n || 0).toLocaleString('pt-BR');
+
+    fetch('/api/funnel/options').then(r => r.json()).then(o => { options = o; fillOpts(); });
+    function fillOpts() {
+      const list = typeEl.value === 'event' ? options.events : options.pages;
+      optsEl.innerHTML = (list || []).map(v => `<option value="${v}">`).join('');
+    }
+    typeEl.addEventListener('change', fillOpts);
+
+    function renderSteps() {
+      document.getElementById('steps').innerHTML = steps.map((s, i) =>
+        `<span class="chip seg">${i + 1}. ${s.type === 'event' ? 'evento' : 'pagina'}: ${s.value}<span class="x" data-del="${i}">x</span></span>`).join('');
+      document.querySelectorAll('#steps [data-del]').forEach(x =>
+        x.addEventListener('click', () => { steps.splice(Number(x.dataset.del), 1); renderSteps(); }));
+    }
+    document.getElementById('add').addEventListener('click', () => {
+      const v = valueEl.value.trim();
+      if (!v) return;
+      steps.push({ type: typeEl.value, value: v });
+      valueEl.value = '';
+      renderSteps();
+    });
+
+    document.getElementById('calc').addEventListener('click', async () => {
+      document.getElementById('empty').hidden = steps.length >= 2;
+      if (steps.length < 2) { document.getElementById('result').innerHTML = ''; return; }
+      const data = await fetch('/api/funnel?steps=' + encodeURIComponent(JSON.stringify(steps))).then(r => r.json());
+      render(data);
+    });
+
+    function render(data) {
+      const out = [];
+      data.steps.forEach((st, i) => {
+        out.push(`
+          <div class="funnel-step">
+            <div class="fill" style="width:${st.pct}%"></div>
+            <div class="content">
+              <div class="name">${i + 1}. ${st.value}<small>${st.type === 'event' ? 'evento' : 'pagina'}</small></div>
+              <div class="nums"><b>${num(st.count)}</b><span>${st.pct.toFixed(1)}% do total</span></div>
+            </div>
+          </div>`);
+        if (i < data.steps.length - 1) {
+          const next = data.steps[i + 1];
+          const drop = st.count ? (100 - (next.count / st.count) * 100) : 0;
+          out.push(`<div class="funnel-drop">passa ${next.stepPct.toFixed(1)}%, perde ${drop.toFixed(1)}%</div>`);
+        }
+      });
+      out.push(`<div class="muted" style="font-size:12px;margin-top:8px">Base: ${num(data.total)} sessoes filtradas.</div>`);
+      document.getElementById('result').innerHTML = out.join('');
+    }
+  </script>
+</body>
+</html>

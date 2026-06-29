@@ -237,6 +237,38 @@
     height: 100%;
 }
 
+/* Indicador de carregamento do Typeform (some quando o iframe carrega) */
+.fin-popup-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 2;                 /* por cima do iframe enquanto carrega */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--bb);
+    transition: opacity 0.3s ease;
+}
+.fin-popup-loading.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.fin-spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, var(--pc300));
+    -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+            mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+    animation: fin-spin 0.8s linear infinite;
+}
+@keyframes fin-spin { to { transform: rotate(360deg); } }
+.fin-loading-text {
+    font: var(--label);
+    color: var(--bw-50);
+}
+
 /* ── Responsivo ─────────────────────────────────────────── */
 @media (max-width: 576px) {
     .fin-head { margin-top: 48px; }
@@ -246,6 +278,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .fin-prog-step.is-current .fin-prog-dot { animation: none; }
+    .fin-spinner { animation-duration: 1.5s; }
     .fin-popup,
     .fin-popup.is-open { transform: none; filter: none; transition: opacity 0.2s ease; }
 }

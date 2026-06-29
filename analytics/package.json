@@ -7,12 +7,15 @@
     "scripts": {
         "build:tracker": "node tracker/build-tracker.js",
         "start": "node server/index.js",
-        "dev": "node tracker/build-tracker.js && node server/index.js"
+        "dev": "node tracker/build-tracker.js && node server/index.js",
+        "seed": "node server/seed.js"
     },
     "dependencies": {
         "@fastify/cors": "^10.0.1",
         "@fastify/static": "^8.0.3",
-        "fastify": "^5.2.1"
+        "fastify": "^5.2.1",
+        "geoip-lite": "^2.0.3",
+        "ua-parser-js": "^2.0.10"
     },
     "devDependencies": {
         "esbuild": "^0.24.2",

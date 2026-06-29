@@ -13,7 +13,7 @@
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
     <!-- Fonte de títulos da LP ICIAN: EB Garamond 700 -->
-    <link rel="stylesheet" href="/ed/evento/ICIAN/obrigado.css?v=1">
+    <link rel="stylesheet" href="/ed/evento/ICIAN/obrigado.css?v=2">
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -72,6 +72,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button class="btn fin-popup-exit" type="button" id="fin-close" data-size="m" data-emphasis="subtle">Sair</button>
     </div>
     <div class="fin-popup-inner">
+        <div class="fin-popup-loading" role="status">
+            <span class="fin-spinner" aria-hidden="true"></span>
+            <span class="fin-loading-text">Carregando pesquisa...</span>
+        </div>
         <div data-tf-live="01KW28SG0J5J9CGGWS3CFN93SC"></div>
     </div>
 </div>
@@ -90,6 +94,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (closeBtn) closeBtn.addEventListener('click', closePopup);
     popup.addEventListener('click', function (e) { if (e.target === popup) closePopup(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePopup(); });
+
+    // Esconde o loading quando o iframe do Typeform aparece e carrega
+    var loading = popup.querySelector('.fin-popup-loading');
+    var tf = popup.querySelector('[data-tf-live]');
+    if (loading && tf) {
+        var hidden = false;
+        function hideLoading() { if (hidden) return; hidden = true; loading.classList.add('is-hidden'); }
+        function watchIframe(ifr) { ifr.addEventListener('load', hideLoading); }
+        var existing = tf.querySelector('iframe');
+        if (existing) watchIframe(existing);
+        else if (window.MutationObserver) {
+            var obs = new MutationObserver(function () {
+                var ifr = tf.querySelector('iframe');
+                if (ifr) { obs.disconnect(); watchIframe(ifr); }
+            });
+            obs.observe(tf, { childList: true, subtree: true });
+        }
+        setTimeout(hideLoading, 8000); // fallback: nunca trava o loading
+    }
 })();
 </script>
 

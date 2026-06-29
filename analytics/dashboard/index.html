@@ -3,48 +3,340 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Xperiun Analytics, sessoes</title>
+  <title>Xperiun Analytics, overview</title>
   <link rel="stylesheet" href="/dashboard.css">
 </head>
 <body>
-  <div class="wrap">
+  <div class="wrap wide">
     <header class="top">
       <h1>Xperiun Analytics</h1>
       <nav>
-        <a href="/" class="active">Sessoes</a>
+        <a href="/" class="active">Overview</a>
+        <a href="/recordings.html">Sessoes</a>
         <a href="/heatmap.html">Heatmap</a>
+        <a href="/funnels.html">Funnels</a>
       </nav>
     </header>
 
-    <div id="list" class="session-list"></div>
-    <div id="empty" class="empty" hidden>Nenhuma sessao gravada ainda. Navegue no site com o tracker ativo.</div>
+    <div class="controls">
+      <label>Periodo</label>
+      <select id="range">
+        <option value="">Tudo</option>
+        <option value="1">Ultimas 24h</option>
+        <option value="7">Ultimos 7 dias</option>
+        <option value="30">Ultimos 30 dias</option>
+      </select>
+      <label>Dispositivo</label>
+      <select id="device">
+        <option value="">Todos</option>
+        <option value="desktop">Desktop</option>
+        <option value="mobile">Mobile</option>
+        <option value="tablet">Tablet</option>
+      </select>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div class="head"><h3>Tendencia</h3>
+        <div class="tabs" id="trend-tabs">
+          <button class="tab active" data-k="sessions">Sessoes</button>
+          <button class="tab" data-k="users">Usuarios</button>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="trend"></canvas></div>
+    </div>
+
+    <div class="row c3">
+      <div class="card">
+        <div class="head"><h3>Usuarios</h3></div>
+        <div class="donut">
+          <div class="hole"><canvas id="users-donut"></canvas></div>
+          <ul class="legend" id="users-legend"></ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="head"><h3>Insights</h3></div>
+        <div id="insights"></div>
+      </div>
+      <div class="card">
+        <div class="head"><h3>Tecnologia</h3>
+          <div class="tabs" id="tech-tabs">
+            <button class="tab active" data-k="device">Dispositivos</button>
+            <button class="tab" data-k="browser">Navegadores</button>
+            <button class="tab" data-k="os">Sistemas</button>
+            <button class="tab" data-k="country">Regiao</button>
+          </div>
+        </div>
+        <div class="donut">
+          <div class="hole"><canvas id="tech-donut"></canvas></div>
+          <ul class="legend" id="tech-legend"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row c3">
+      <div class="card">
+        <div class="head"><h3>Smart events</h3></div>
+        <div id="smart"></div>
+      </div>
+      <div class="card">
+        <div class="head"><h3>Funnels</h3></div>
+        <div class="center-empty">Monte funis na aba <a href="/funnels.html">Funnels</a>.</div>
+      </div>
+      <div class="card">
+        <div class="head"><h3>Aquisicao</h3>
+          <div class="tabs" id="acq-tabs">
+            <button class="tab active" data-k="referrer">Referrer</button>
+            <button class="tab" data-k="source">Source</button>
+            <button class="tab" data-k="campaign">Campaign</button>
+            <button class="tab" data-k="medium">Medium</button>
+          </div>
+        </div>
+        <div id="acq"></div>
+      </div>
+    </div>
+
+    <div class="row c3">
+      <div class="card">
+        <div class="head"><h3>Performance</h3></div>
+        <div class="gauge">
+          <div class="meter">
+            <canvas id="perf-gauge"></canvas>
+            <div class="score" id="perf-score"></div>
+          </div>
+          <div class="vitals" id="vitals"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="head"><h3>Paginas</h3>
+          <div class="tabs" id="pages-tabs">
+            <button class="tab active" data-k="top">Mais vistas</button>
+            <button class="tab" data-k="entry">Entrada</button>
+            <button class="tab" data-k="inactive">Inativas</button>
+          </div>
+        </div>
+        <div id="pages"></div>
+      </div>
+      <div class="card">
+        <div class="head"><h3>Erros JavaScript</h3></div>
+        <div id="errors"></div>
+      </div>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
-    const fmtDate = (ms) => new Date(ms).toLocaleString('pt-BR');
-    const fmtDur = (a, b) => {
-      const s = Math.max(0, Math.round((b - a) / 1000));
-      return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
-    };
-    const device = (ua = '', w = 0) => {
-      if (/Mobi|Android|iPhone/i.test(ua) || w < 640) return 'Mobile';
-      if (w < 1024) return 'Tablet';
-      return 'Desktop';
-    };
+    const PALETTE = ['#4f8cff', '#6fd3c7', '#b388ff', '#ffb86b', '#ff8a8a', '#9ad0ff', '#b6e3a7', '#ffd27a', '#8a94a6'];
+    Chart.defaults.color = '#8a94a6';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.08)';
+    Chart.defaults.font.family = '"Segoe UI", system-ui, sans-serif';
 
-    fetch('/api/sessions').then(r => r.json()).then(({ sessions }) => {
-      const list = document.getElementById('list');
-      if (!sessions.length) { document.getElementById('empty').hidden = false; return; }
-      list.innerHTML = sessions.map(s => `
-        <a class="session" href="/player.html?id=${encodeURIComponent(s.id)}">
-          <div>
-            <div class="page">${s.page_url}</div>
-            <div class="meta">${fmtDate(s.started_at)} &middot; ${device(s.user_agent, s.viewport_w)} &middot; ${s.viewport_w || '?'}x${s.viewport_h || '?'}</div>
-          </div>
-          <div class="stat"><b>${fmtDur(s.started_at, s.ended_at)}</b><span>${s.event_count} eventos</span></div>
-        </a>
-      `).join('');
-    });
+    const rangeSel = document.getElementById('range');
+    const deviceSel = document.getElementById('device');
+    const num = (n) => Number(n || 0).toLocaleString('pt-BR');
+    const fmtMs = (ms) => { const s = Math.round(ms / 1000); return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`; };
+
+    function qs() {
+      const p = new URLSearchParams();
+      if (rangeSel.value) p.set('from', String(Date.now() - Number(rangeSel.value) * 864e5));
+      if (deviceSel.value) p.set('device', deviceSel.value);
+      return p.toString();
+    }
+
+    // estado dos dados + instancias de chart
+    let DATA = {};
+    const charts = {};
+    const destroy = (k) => { if (charts[k]) { charts[k].destroy(); charts[k] = null; } };
+
+    function barList(items, fmt) {
+      if (!items || !items.length) return '<div class="center-empty">Sem dados.</div>';
+      const max = Math.max(...items.map(i => i.count || i.sessions || 0));
+      return items.map(i => {
+        const v = i.sessions != null ? i.sessions : i.count;
+        return `<div class="bar-row">
+          <div class="bar-fill" style="width:${max ? (v / max) * 100 : 0}%"></div>
+          <div class="bar-label">${i.label || i.name || '(vazio)'}</div>
+          <div class="bar-count">${fmt ? fmt(i) : num(v)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function donut(canvasId, legendId, items, linkBase) {
+      destroy(canvasId);
+      const top = (items || []).slice(0, 8);
+      const data = top.map(i => i.count);
+      const labels = top.map(i => i.label || '(vazio)');
+      const total = data.reduce((a, b) => a + b, 0) || 1;
+      charts[canvasId] = new Chart(document.getElementById(canvasId), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data, backgroundColor: PALETTE, borderWidth: 0, cutout: '68%' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } },
+      });
+      document.getElementById(legendId).innerHTML = top.map((i, k) => `
+        <li>
+          <span class="dot" style="background:${PALETTE[k % PALETTE.length]}"></span>
+          <span>${i.label || '(vazio)'}</span>
+          <span class="lv">${((i.count / total) * 100).toFixed(1)}% , ${num(i.count)}</span>
+        </li>`).join('');
+    }
+
+    // --- carregamento ---
+    async function load() {
+      const q = qs();
+      const [ins, bd, sm, ts, perf, pg, errs] = await Promise.all([
+        fetch('/api/insights?' + q).then(r => r.json()),
+        fetch('/api/insights/breakdown?' + q).then(r => r.json()),
+        fetch('/api/insights/smart-events?' + q).then(r => r.json()),
+        fetch('/api/insights/timeseries?' + q).then(r => r.json()),
+        fetch('/api/insights/performance?' + q).then(r => r.json()),
+        fetch('/api/insights/pages?' + q).then(r => r.json()),
+        fetch('/api/errors?' + q).then(r => r.json()),
+      ]);
+      DATA = { ins, bd, sm, ts, perf, pg, errs };
+      renderKpis(ins.summary);
+      renderTrend();
+      renderUsers(ins.summary);
+      renderInsights(ins.behaviors);
+      renderTech();
+      renderSmart(sm.events);
+      renderAcq();
+      renderPerf(perf);
+      renderPages();
+      renderErrors(errs.errors);
+    }
+
+    function renderKpis(s) {
+      const cards = [
+        ['Sessoes', num(s.sessions)],
+        ['Usuarios unicos', num(s.users)],
+        ['Paginas / sessao', (s.avg_pages || 0).toFixed(2)],
+        ['Profundidade de scroll', Math.round(s.avg_scroll_pct) + '%'],
+        ['Duracao media', fmtMs(s.avg_duration_ms)],
+      ];
+      document.getElementById('kpis').innerHTML = cards.map(([k, v]) =>
+        `<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+    }
+
+    function renderTrend() {
+      const k = document.querySelector('#trend-tabs .tab.active').dataset.k;
+      const s = DATA.ts.series || [];
+      destroy('trend');
+      const ctx = document.getElementById('trend');
+      const grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 240);
+      grad.addColorStop(0, 'rgba(79,140,255,0.35)'); grad.addColorStop(1, 'rgba(79,140,255,0.02)');
+      charts.trend = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: s.map(r => r.day.slice(5)),
+          datasets: [{
+            data: s.map(r => r[k]), fill: true, backgroundColor: grad, borderColor: '#4f8cff',
+            tension: 0.35, pointRadius: 0, borderWidth: 2,
+          }],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } },
+        },
+      });
+    }
+
+    function renderUsers(s) {
+      const items = [
+        { label: 'Novos', count: s.new_sessions },
+        { label: 'Recorrentes', count: s.returning_sessions },
+      ];
+      donut('users-donut', 'users-legend', items);
+    }
+
+    const BEH = [
+      { key: 'rage', label: 'Rage clicks', filter: 'rage' },
+      { key: 'dead', label: 'Dead clicks', filter: 'dead' },
+      { key: 'excessive_scroll', label: 'Scroll excessivo', filter: 'excessive-scroll' },
+      { key: 'quickback', label: 'Quick backs', filter: 'quickback' },
+    ];
+    function renderInsights(b) {
+      const total = b.total || 1;
+      document.getElementById('insights').innerHTML = BEH.map(x => {
+        const ss = b[x.key] || 0;
+        return `<a class="insight-row" href="/recordings.html?filter=${x.filter}">
+          <div><div class="pct">${((ss / total) * 100).toFixed(2)}%</div><div class="nm">${x.label}</div></div>
+          <div class="ss">${num(ss)} sessoes</div>
+        </a>`;
+      }).join('');
+    }
+
+    function renderTech() {
+      const k = document.querySelector('#tech-tabs .tab.active').dataset.k;
+      donut('tech-donut', 'tech-legend', DATA.bd[k]);
+    }
+
+    function renderSmart(ev) {
+      document.getElementById('smart').innerHTML = (ev && ev.length)
+        ? ev.map(e => `<a class="bar-row link" href="/recordings.html?event=${encodeURIComponent(e.name)}">
+            <div class="bar-fill" style="width:${(e.sessions / ev[0].sessions) * 100}%"></div>
+            <div class="bar-label">${e.name}</div><div class="bar-count">${num(e.sessions)}</div></a>`).join('')
+        : '<div class="center-empty">Sem eventos ainda.</div>';
+    }
+
+    function renderAcq() {
+      const k = document.querySelector('#acq-tabs .tab.active').dataset.k;
+      document.getElementById('acq').innerHTML = barList(DATA.bd[k]);
+    }
+
+    function renderPerf(perf) {
+      const o = perf.overview || {};
+      const score = o.score || 0;
+      const col = score >= 90 ? '#b6e3a7' : score >= 50 ? '#4f8cff' : '#ff8a8a';
+      destroy('perf-gauge');
+      charts['perf-gauge'] = new Chart(document.getElementById('perf-gauge'), {
+        type: 'doughnut',
+        data: { datasets: [{ data: [score, 100 - score], backgroundColor: [col, 'rgba(255,255,255,0.08)'], borderWidth: 0, cutout: '78%' }] },
+        options: { responsive: true, maintainAspectRatio: false, rotation: -90, circumference: 180, plugins: { legend: { display: false }, tooltip: { enabled: false } } },
+      });
+      document.getElementById('perf-score').innerHTML = `<b style="color:${col}">${score}</b><span>de 100, ${num(o.samples)} amostras</span>`;
+      const g = o.good || 0, ni = o.ni || 0, poor = o.poor || 0, tot = (g + ni + poor) || 1;
+      document.getElementById('vitals').innerHTML = `
+        <div class="vital"><span class="n">LCP (carregamento)</span><span class="val">${o.lcp ? (o.lcp / 1000).toFixed(2) : '0'}<small>s</small></span></div>
+        <div class="vital"><span class="n">FCP (1o conteudo)</span><span class="val">${o.fcp ? (o.fcp / 1000).toFixed(2) : '0'}<small>s</small></span></div>
+        <div class="vital"><span class="n">TTFB (resposta)</span><span class="val">${o.ttfb ? Math.round(o.ttfb) : '0'}<small>ms</small></span></div>
+        <div class="dist">
+          <i style="width:${(g / tot) * 100}%;background:#b6e3a7"></i>
+          <i style="width:${(ni / tot) * 100}%;background:#ffd27a"></i>
+          <i style="width:${(poor / tot) * 100}%;background:#ff8a8a"></i>
+        </div>
+        <div class="vital"><span class="n">${Math.round((g / tot) * 100)}% bom, ${Math.round((ni / tot) * 100)}% medio, ${Math.round((poor / tot) * 100)}% ruim</span></div>`;
+    }
+
+    function renderPages() {
+      const k = document.querySelector('#pages-tabs .tab.active').dataset.k;
+      document.getElementById('pages').innerHTML = barList(DATA.pg[k]);
+    }
+
+    function renderErrors(errs) {
+      document.getElementById('errors').innerHTML = (errs && errs.length)
+        ? errs.slice(0, 8).map(e => `<div class="bar-row">
+            <div class="bar-fill" style="width:${(e.count / errs[0].count) * 100}%"></div>
+            <div class="bar-label">${e.message}</div><div class="bar-count">${num(e.count)}</div></div>`).join('')
+        : '<div class="center-empty">Nenhum erro.</div>';
+    }
+
+    // tabs (re-render sem refetch)
+    function wireTabs(id, fn) {
+      document.querySelectorAll(`#${id} .tab`).forEach(t => t.addEventListener('click', () => {
+        document.querySelectorAll(`#${id} .tab`).forEach(x => x.classList.remove('active'));
+        t.classList.add('active'); fn();
+      }));
+    }
+    wireTabs('trend-tabs', renderTrend);
+    wireTabs('tech-tabs', renderTech);
+    wireTabs('acq-tabs', renderAcq);
+    wireTabs('pages-tabs', renderPages);
+
+    rangeSel.addEventListener('change', load);
+    deviceSel.addEventListener('change', load);
+    load();
   </script>
 </body>
 </html>

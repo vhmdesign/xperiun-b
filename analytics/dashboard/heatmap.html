@@ -9,32 +9,42 @@
 <body>
   <div class="wrap">
     <header class="top">
-      <h1>Heatmap de cliques</h1>
+      <h1>Heatmap</h1>
       <nav>
-        <a href="/">Sessoes</a>
+        <a href="/">Overview</a>
+        <a href="/recordings.html">Sessoes</a>
         <a href="/heatmap.html" class="active">Heatmap</a>
+        <a href="/funnels.html">Funnels</a>
       </nav>
     </header>
 
     <div class="controls">
       <label>Pagina</label>
       <select id="page"></select>
+      <label>Modo</label>
+      <select id="mode">
+        <option value="clicks">Cliques</option>
+        <option value="scroll">Scroll</option>
+      </select>
       <label>Base do site</label>
       <select id="base">
         <option value="http://localhost:8080">localhost:8080</option>
         <option value="http://localhost:3000">localhost:3000</option>
       </select>
-      <button id="render">Gerar heatmap</button>
+      <button id="render">Gerar</button>
       <span id="info" class="muted"></span>
     </div>
 
     <div id="stage-wrap" style="text-align:center"></div>
+    <div id="scroll-legend"></div>
+    <div id="toplist" class="toplist"></div>
     <div id="empty" class="empty" hidden>Sem dados de clique ainda. Clique pelo site com o tracker ativo.</div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
   <script>
     const pageSel = document.getElementById('page');
+    const modeSel = document.getElementById('mode');
     const baseSel = document.getElementById('base');
     const info = document.getElementById('info');
     let pages = [];
@@ -51,39 +61,72 @@
       if (!sel) return;
       const url = `/api/heatmap?page=${encodeURIComponent(sel.page_url)}&viewport=${sel.viewport_w}`;
       const data = await fetch(url).then(r => r.json());
-      renderHeatmap(sel, data);
+      info.textContent = `${data.clicks.length} cliques, ${data.sessions} sessoes, scroll medio ${Math.round(data.avgScrollPct)}%`;
+      document.getElementById('scroll-legend').innerHTML = '';
+      document.getElementById('toplist').innerHTML = '';
+      if (modeSel.value === 'scroll') renderScroll(sel, data);
+      else renderClicks(sel, data);
     });
 
-    function renderHeatmap(sel, data) {
+    function pageStage(sel, height) {
       const width = sel.viewport_w;
-      const maxY = data.clicks.reduce((m, c) => Math.max(m, c.y_abs), 0);
-      const height = Math.max(600, maxY + 200);
-      info.textContent = `${data.clicks.length} cliques, ${data.sessions} sessoes, scroll medio ${Math.round(data.avgScrollPct)}%`;
-
       const wrap = document.getElementById('stage-wrap');
       wrap.innerHTML = '';
       const stage = document.createElement('div');
       stage.className = 'heatmap-stage';
       stage.style.width = width + 'px';
       stage.style.height = height + 'px';
-
-      // Fundo: a propria pagina do site (iframe same-display) na largura do viewport capturado.
       const iframe = document.createElement('iframe');
       iframe.src = baseSel.value + sel.page_url;
       iframe.style.height = height + 'px';
       iframe.setAttribute('scrolling', 'no');
       stage.appendChild(iframe);
+      wrap.appendChild(stage);
+      return { stage, width };
+    }
+
+    function renderClicks(sel, data) {
+      const maxY = data.clicks.reduce((m, c) => Math.max(m, c.y_abs), 0);
+      const height = Math.max(600, maxY + 200);
+      const { stage, width } = pageStage(sel, height);
 
       const overlay = document.createElement('div');
       overlay.className = 'overlay';
       overlay.style.width = width + 'px';
       overlay.style.height = height + 'px';
       stage.appendChild(overlay);
-      wrap.appendChild(stage);
 
       const hm = h337.create({ container: overlay, radius: 40, maxOpacity: 0.7, blur: 0.8 });
       const points = data.clicks.map(c => ({ x: Math.round(c.x_norm * width), y: c.y_abs, value: 1 }));
       hm.setData({ max: 5, data: points });
+
+      // elementos mais clicados
+      if (data.topElements && data.topElements.length) {
+        const max = Math.max(...data.topElements.map(e => e.clicks));
+        document.getElementById('toplist').innerHTML =
+          `<div class="panel"><h3>Elementos mais clicados</h3>` +
+          data.topElements.map(e => `
+            <div class="bar-row">
+              <div class="bar-fill" style="width:${(e.clicks / max) * 100}%"></div>
+              <div class="bar-label">${e.text ? e.text : e.selector} <span class="muted">${e.text ? e.selector : ''}</span></div>
+              <div class="bar-count">${e.clicks}</div>
+            </div>`).join('') + `</div>`;
+      }
+    }
+
+    function renderScroll(sel, data) {
+      const height = 600;
+      pageStage(sel, height);
+      const reach = data.scrollReach || [];
+      document.getElementById('scroll-legend').innerHTML =
+        `<div class="scroll-legend">` +
+        reach.map(r => `
+          <div class="row">
+            <span class="muted">${r.pct}%</span>
+            <span class="track"><span class="fill" style="width:${Math.round(r.reachedPct)}%"></span></span>
+            <span class="muted">${Math.round(r.reachedPct)}%</span>
+          </div>`).join('') + `</div>` +
+        `<div class="muted" style="text-align:center;font-size:12px">Percentual de sessoes que alcancou cada profundidade da pagina.</div>`;
     }
   </script>
 </body>
