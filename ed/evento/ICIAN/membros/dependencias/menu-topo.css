@@ -1,0 +1,98 @@
+/* ── Menu do topo (compartilhado por /membros/ e /membros/aulas/) ──
+   Só o background é definido por página (cada página põe .menu-topo { background } no seu style.css). */
+/* o placeholder some do layout: o <header> vira filho direto (importa no app-shell flex das aulas) */
+[data-menu-topo] { display: contents; }
+.menu-topo {
+    position: relative; z-index: 3;
+    flex-shrink: 0;
+    height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+}
+.menu-logo-link { display: inline-flex; flex-shrink: 0; }
+.menu-logo { height: 32px; width: auto; display: block; }
+/* botão de perfil: ícone de usuário formado por 2 círculos recortados */
+.menu-perfil-wrap { position: relative; flex-shrink: 0; height: 48px; }
+.menu-perfil-notif {
+    position: absolute; left: -12px; bottom: 0;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--er500-50);
+    display: grid; place-items: center;
+    pointer-events: none;
+}
+.menu-perfil-notif .material-symbols-outlined {
+    font-size: 16px; color: var(--bw);
+    transform-origin: top center;        /* pivô no topo, como um sino */
+    animation: sino-balanca 2.5s ease infinite;
+}
+/* dropdown do perfil */
+.menu-perfil-dropdown {
+    position: absolute; top: calc(100% + 20px); right: 0;
+    min-width: 208px;
+    background: var(--dn800);
+    box-shadow: inset 0 0 4px 0 var(--bw-25);
+    border-radius: 12px 0 12px 12px;
+    padding: 8px;
+    display: flex; flex-direction: column;
+    z-index: 10;
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+.menu-perfil-wrap.is-open .menu-perfil-dropdown { opacity: 1; visibility: visible; transform: none; }
+.menu-perfil-header {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 12px 16px 16px;
+    margin-bottom: 8px;
+    box-shadow: inset 0 -2px 0 var(--bw-10);   /* divider 2px */
+}
+.menu-perfil-nome { font: var(--label); color: var(--bw); }
+.menu-perfil-email { font: var(--label-xs); color: var(--bw-50); }
+.menu-perfil-dropdown .menu-perfil-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 8px;
+    font: var(--p-s); color: var(--bw-75);
+    text-decoration: none; white-space: nowrap;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+.menu-perfil-dropdown .menu-perfil-item .material-symbols-outlined { font-size: 20px; }
+.menu-perfil-dropdown .menu-perfil-item:hover { color: var(--pp300); background: var(--bw-5); text-decoration: none; }
+/* último item (Certificado): destaque em success 300 */
+.menu-perfil-dropdown .menu-perfil-item:last-child,
+.menu-perfil-dropdown .menu-perfil-item:last-child:hover { color: var(--sc300); }
+@keyframes sino-balanca {
+    0%   { transform: rotate(0); }
+    6%   { transform: rotate(15deg); }
+    12%  { transform: rotate(-11.25deg); }
+    18%  { transform: rotate(7.5deg); }
+    24%  { transform: rotate(-3.75deg); }
+    30%  { transform: rotate(0); }
+    100% { transform: rotate(0); }        /* pausa em repouso (top center) */
+}
+.menu-perfil {
+    position: relative; flex-shrink: 0;
+    width: 48px; height: 48px;
+    border: none; cursor: pointer;
+    border-radius: 12px; overflow: hidden;
+    background: var(--bb-75);
+}
+.menu-perfil::before {   /* cabeça */
+    content: ''; position: absolute;
+    width: 16px; height: 16px; border-radius: 50%;
+    top: 12px; left: 50%; transform: translateX(-50%);
+    background: var(--ln900);
+}
+.menu-perfil::after {    /* corpo (recortado pelo container) */
+    content: ''; position: absolute;
+    width: 40px; height: 40px; border-radius: 50%;
+    top: 32px; left: 50%; transform: translateX(-50%);
+    background: var(--ln900);
+}
+/* quando há "nome", mostra a inicial no lugar do ícone */
+.menu-perfil-letra {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.5rem; color: var(--dn200);
+}
+.menu-perfil.has-letra::before,
+.menu-perfil.has-letra::after { display: none; }
+.menu-perfil.has-letra .menu-perfil-letra { display: flex; }

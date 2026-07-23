@@ -1,0 +1,253 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Popup "Parabéns" (certificado liberado): mesmo tamanho/estrutura do
+   .course-modal, com o Badge-ICIAN animado + reflexo (igual temp/generator.html).
+   Compartilhado entre a home (/membros/) e as aulas (/membros/aulas/).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Faixa no topo do body (acima do menu), 64px, pc400 — só quando tudo concluído.
+   Fica em fluxo relative, empurrando o menu e o conteúdo pra baixo. */
+.cert-topbar {
+    position: relative;
+    z-index: 4;
+    width: 100%;
+    height: 64px;
+    background: linear-gradient(90deg, var(--pc400), var(--pc800));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;      /* faixa é um link: sem sublinhado */
+    cursor: pointer;
+}
+/* cantos côncavos (32px) pendurados abaixo da faixa, 1/4 de círculo, acompanhando
+   as pontas do gradiente: esquerdo em pc500, direito em pc900 */
+.cert-topbar::before,
+.cert-topbar::after {
+    content: '';
+    position: absolute;
+    bottom: -32px;
+    width: 32px; height: 32px;
+    pointer-events: none;
+}
+.cert-topbar::before {
+    left: 0;
+    background: var(--pc400);
+    -webkit-mask: radial-gradient(circle 32px at 100% 100%, transparent 31.5px, #000 32px);
+            mask: radial-gradient(circle 32px at 100% 100%, transparent 31.5px, #000 32px);
+}
+.cert-topbar::after {
+    right: 0;
+    background: var(--pc800);
+    -webkit-mask: radial-gradient(circle 32px at 0% 100%, transparent 31.5px, #000 32px);
+            mask: radial-gradient(circle 32px at 0% 100%, transparent 31.5px, #000 32px);
+}
+/* Quadrados bw-15 no fundo: checkerboard (tocam nos vértices), distribuídos
+   aleatoriamente (via JS), cada um com opacity animada em tempos aleatórios. */
+.cert-topbar-squares { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.cert-topbar-sq {
+    position: absolute;
+    width: 16px; height: 16px;
+    background: var(--bw-15);
+    opacity: 0;
+    animation: cert-sq-twinkle ease-in-out infinite;
+}
+@keyframes cert-sq-twinkle {
+    0%, 100% { opacity: 0; }
+    50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cert-topbar-sq { animation: none; opacity: 1; }
+}
+/* Conteúdo: logo (esquerda) | texto (centro) | botão (direita) */
+.cert-topbar-content {
+    position: relative;
+    z-index: 1;                 /* acima dos quadrados */
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    color: var(--bw);
+}
+/* logo AI Champion recolorido em bw (via mask) */
+.cert-topbar-brand { grid-column: 1; justify-self: start; display: flex; align-items: center; }
+.cert-topbar-logo {
+    height: 40px; aspect-ratio: 158 / 48; width: auto; display: block;
+    background-color: var(--bw);
+    -webkit-mask: url("/ed/evento/ICIAN/membros/dependencias/aic-brand.svg") no-repeat center / contain;
+            mask: url("/ed/evento/ICIAN/membros/dependencias/aic-brand.svg") no-repeat center / contain;
+}
+/* texto centralizado no container */
+.cert-topbar-txt { grid-column: 2; justify-self: center; text-align: center; font: var(--label); color: var(--bw); white-space: nowrap; }
+/* botão na extrema direita */
+.cert-topbar-offer { grid-column: 3; justify-self: end; display: flex; align-items: center; }
+
+/* botão "Ver Oferta": tamanho S (data-size) + estilo do .vit-cta (wave animado) */
+@keyframes cert-topbar-wave {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.cert-topbar-btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    box-shadow: var(--ring-25);  /* mesmo ring do .btn base, como no .vit-cta */
+    border-radius: 0;            /* cantos retos, igual ao .vit-cta */
+    color: var(--bw);
+    background-image: linear-gradient(90deg, var(--pc500), var(--pp500), var(--er500), var(--pp500), var(--pc500));
+    background-size: 600% 600%;
+    transition: color 0.5s;
+    animation: cert-topbar-wave 5s ease infinite;
+}
+.cert-topbar-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--bw-75);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    z-index: -1;
+}
+/* faixa é um link: nunca sublinha (nem no hover) — sem efeito de hover no texto/botão.
+   Usa a.cert-topbar pra vencer o a:not(.btn):hover do root (mesma especificidade, vem depois) */
+a.cert-topbar:hover { text-decoration: none; }
+/* hover na faixa inteira acende só o botão (a faixa toda é clicável) */
+.cert-topbar:hover .cert-topbar-btn { color: var(--bb); }
+.cert-topbar:hover .cert-topbar-btn::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cert-topbar-btn { animation: none; } }
+
+/* abaixo de 864px a frase não existe (fica só logo + botão) */
+@media (max-width: 864px) {
+    .cert-topbar-txt { display: none; }
+}
+
+.cert-modal {
+    position: fixed; inset: 0; z-index: 10002;   /* acima do course-modal (10000) e do progresso (10001) */
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    visibility: hidden;
+    transition: visibility 0s linear 0.5s;
+}
+.cert-modal.is-open { visibility: visible; transition: visibility 0s linear 0s; }
+
+.cert-modal-backdrop {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    background: var(--pc500-75);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 0; transition: opacity 0.5s ease-out;
+}
+.cert-modal.is-open .cert-modal-backdrop { opacity: 1; }
+/* Sunburst pc300 girando infinitamente atrás do card: raios (conic) + fade radial */
+.cert-modal-backdrop::before {
+    content: ''; position: absolute; pointer-events: none;
+    top: 50%; left: 50%; width: 200vmax; height: 200vmax;
+    background: repeating-conic-gradient(from 0deg at 50% 50%,
+        var(--pc300-50) 0deg 10deg,
+        transparent 10deg 20deg);
+    -webkit-mask-image: radial-gradient(circle 55vmax at center, transparent 0%, #000 100%);
+    mask-image: radial-gradient(circle 55vmax at center, transparent 0%, #000 100%);
+    transform: translate(-50%, -50%) rotate(0);
+    animation: cert-sunburst 40s linear infinite;
+}
+@keyframes cert-sunburst {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* mesmo tamanho do .course-modal-card */
+.cert-modal-card {
+    position: relative; width: 100%; max-width: 688px; box-sizing: border-box;
+    border-radius: 16px; overflow: hidden; max-height: calc(100vh - 32px);
+    background: var(--bb-75);
+    opacity: 0; transform: translateY(12px) scale(0.99);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.cert-modal.is-open .cert-modal-card { opacity: 1; transform: none; }
+
+/* "Sair" no mesmo lugar do .course-modal-close */
+.cert-modal-close { position: absolute; top: 16px; right: 16px; z-index: 4; }
+
+/* ── Área do badge (onde fica a mídia do course-modal) ── */
+.cert-badge-media {
+    position: relative;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 64px 0; box-sizing: border-box;
+    overflow: visible;   /* reflexo transborda como overlay, não reserva altura */
+}
+/* flutua o conjunto pra cima e pra baixo, 16px (8 pra cada lado) — igual generator */
+.cert-badge-preview {
+    position: relative;
+    display: flex; flex-direction: column; gap: 0;
+    animation: cert-badge-float 3s ease-in-out infinite;
+}
+/* pêndulo: pivô no topo, rotateZ dá o balanço e skewY a profundidade — igual generator */
+.cert-badge-stage {
+    position: relative; width: 180px;
+    transform-origin: top center;
+    animation: cert-badge-swing 4s ease-in-out infinite;
+}
+.cert-badge-stage img { width: 100%; height: auto; display: block; }
+
+/* Reflexo: cópia espelhada (scaleY -1), 32px abaixo, máscara 0.25 -> 0 — igual generator */
+.cert-badge-reflection {
+    position: absolute;
+    top: calc(100% + 32px); left: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+}
+.cert-badge-reflection-flip { transform: scaleY(-1); }
+
+@keyframes cert-badge-float {
+    0%, 100% { transform: translateY(-8px); }
+    50%      { transform: translateY(8px); }
+}
+@keyframes cert-badge-swing {
+    0%, 100% { transform: rotateZ(-3.75deg) skewY(-3.75deg); }
+    50%      { transform: rotateZ(3.75deg) skewY(3.75deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cert-modal, .cert-modal-card, .cert-modal-backdrop { transition: none; }
+    .cert-badge-preview, .cert-badge-stage, .cert-modal-backdrop::before { animation: none; }
+}
+
+/* ── Header: "Parabéns" (título) + frase, acima da badge, centralizados ── */
+.cert-modal-header {
+    padding: 96px 48px 0 48px;
+    display: flex; flex-direction: column; gap: 16px;
+    text-align: center;
+}
+.cert-modal-title { font: var(--h4); color: var(--sg300); margin: 0; }
+.cert-modal-desc { font: var(--p); color: var(--sg100); margin: 0; }
+
+/* ── Corpo: campo Nome + botões, abaixo da badge ── */
+.cert-modal-body {
+    position: relative; z-index: 1;   /* acima do reflexo, que agora transborda */
+    padding: 0 48px 48px 48px;
+    display: flex; flex-direction: column; gap: 16px;
+    text-align: center;
+}
+
+/* Campo "Nome Completo": label centralizado, input padrão do DS */
+.cert-modal-field { text-align: left; margin-top: 8px; }
+.cert-modal-field .input-label { text-align: left; color: var(--bw-75); }
+.cert-modal-field .input { background-color: var(--dn500-50); }
+
+/* botões no canto inferior direito */
+.cert-modal-actions {
+    display: flex; gap: 16px; justify-content: flex-end; flex-wrap: wrap;
+    margin-top: 16px;
+}
+/* .btn do DS não tem estado disabled próprio — replica o padrão (opacity 0.25) */
+.cert-modal-actions .btn:disabled { opacity: 0.25; pointer-events: none; }
+
+@media (max-width: 576px) {
+    .cert-badge-media { padding: 40px 0; }
+    .cert-badge-stage { width: 150px; }
+    .cert-modal-header { padding: 72px 24px 0 24px; }
+    .cert-modal-body { padding: 24px; }
+    .cert-modal-actions { justify-content: stretch; }
+    .cert-modal-actions .btn { flex: 1; }
+}

@@ -1839,7 +1839,7 @@
         function step() {
             const c = track.querySelector('.depos-card');
             const g = parseFloat(getComputedStyle(track).columnGap) || 24;
-            return c ? c.offsetWidth + g : 0;
+            return c ? c.getBoundingClientRect().width + g : 0;
         }
 
         function setInstant(pos) {
@@ -1851,7 +1851,7 @@
 
         function gridOffset() {
             if (!window.matchMedia('(min-width: 1440px)').matches) return 0;
-            return Math.max(0, (window.innerWidth - 1408) / 2);
+            return Math.max(0, (document.documentElement.clientWidth - 1408) / 2);
         }
 
         function loopCorrect() {

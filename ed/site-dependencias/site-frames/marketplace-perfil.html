@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Card de perfil — mockup ilustrativo</title>
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; }
+        body {
+            width: 544px;
+            background: transparent;
+            color: var(--bw);
+            font-family: var(--font-family);
+        }
+        .ms { font-family: 'Material Symbols Outlined'; line-height: 1; font-variation-settings: 'FILL' 1; }
+
+        /* card */
+        .mp {
+            width: 544px;
+            background: var(--dn800);
+            overflow: hidden;
+        }
+
+        /* capa */
+        .mp-cover {
+            height: 128px;
+            background: url('/ed/site-dependencias/site-media/frames/pf-hero-img.webp') center / cover no-repeat;
+        }
+
+        /* perfil: avatar invadindo -40px o bottom da capa */
+        .mp-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px 24px;
+        }
+        .mp-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            display: block;
+            margin-top: -40px;
+            box-shadow: inset 0 0 0 2px var(--bw-15);
+        }
+        .mp-name { font: var(--label-l); color: var(--bw); margin-top: 12px; text-align: center; }
+        .mp-role { font: var(--label-s); color: var(--bw-50); margin-top: 4px; text-align: center; }
+
+        /* stats: estilo course-modal-stats (divisores verticais + valor/label) */
+        .mp-stats { width: 100%; display: flex; margin-top: 24px; }
+        .mp-stat { flex: 1; padding: 0 32px; }
+        .mp-stat:first-child { padding-left: 0; }
+        .mp-stat:last-child { padding-right: 0; }
+        .mp-stat + .mp-stat { box-shadow: inset 2px 0 0 0 var(--bw-10); }
+        .mp-stat-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .mp-stat-value { font: var(--label); color: var(--bw); }
+        .mp-stat-label { font: var(--label-s); color: var(--bw-50); }
+
+        /* descrição */
+        .mp-desc { font: var(--p); color: var(--bw-75); margin-top: 24px; text-align: left; }
+
+        /* skills: grid 3 colunas, 16px gap (visual igual de pf-skill) */
+        .mp-skills { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+        .mp-skill { display: flex; flex-direction: column; gap: 8px; }
+        .mp-skill-name { font: var(--label-s); color: var(--bw-50); }
+        .mp-stars { display: flex; gap: 2px; }
+        .mp-star { font-size: 18px; color: var(--bw-25); font-variation-settings: 'FILL' 0; }
+        .mp-star.is-on { color: var(--pc300); font-variation-settings: 'FILL' 1; }
+
+        /* botão Ver portfólio em largura total */
+        .pf-contact-btn { width: 100%; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <div class="mp">
+        <div class="mp-cover"></div>
+
+        <div class="mp-profile">
+            <img class="mp-avatar" src="/ed/site-dependencias/site-media/professores/prof_diego.webp" alt="Marcos Silveira Amaral">
+            <div class="mp-name">Marcos Silveira Amaral</div>
+            <div class="mp-role">Analista de Dados | Analista de BI</div>
+
+            <div class="mp-stats">
+                <div class="mp-stat">
+                    <div class="mp-stat-text">
+                        <span class="mp-stat-value">16</span>
+                        <span class="mp-stat-label">Certificados</span>
+                    </div>
+                </div>
+                <div class="mp-stat">
+                    <div class="mp-stat-text">
+                        <span class="mp-stat-value">3</span>
+                        <span class="mp-stat-label">Projetos</span>
+                    </div>
+                </div>
+                <div class="mp-stat">
+                    <div class="mp-stat-text">
+                        <span class="mp-stat-value">8</span>
+                        <span class="mp-stat-label">Desafios</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mp-desc">Especialista em análise de dados, focado em transformar dados em insights acionáveis. Sempre buscando novas tecnologias para melhorar resultados.</p>
+
+            <div class="mp-skills">
+                <div class="mp-skill">
+                    <span class="mp-skill-name">Power BI</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star">star</span>
+                    </span>
+                </div>
+                <div class="mp-skill">
+                    <span class="mp-skill-name">Python</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star is-on">star</span>
+                    </span>
+                </div>
+                <div class="mp-skill">
+                    <span class="mp-skill-name">SQL</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star">star</span>
+                    </span>
+                </div>
+                <div class="mp-skill">
+                    <span class="mp-skill-name">API</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star">star</span>
+                    </span>
+                </div>
+                <div class="mp-skill">
+                    <span class="mp-skill-name">Figma</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star">star</span>
+                        <span class="ms mp-star">star</span>
+                    </span>
+                </div>
+                <div class="mp-skill">
+                    <span class="mp-skill-name">Soft Skills</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star">star</span>
+                    </span>
+                </div>
+                <div class="mp-skill">
+                    <span class="mp-skill-name">Business</span>
+                    <span class="mp-stars">
+                        <span class="ms mp-star is-on">star</span>
+                        <span class="ms mp-star">star</span>
+                        <span class="ms mp-star">star</span>
+                    </span>
+                </div>
+            </div>
+
+            <a class="btn pf-contact-btn" data-size="s" data-emphasis="medium" href="#">Ver portfólio</a>
+        </div>
+    </div>
+</body>
+</html>

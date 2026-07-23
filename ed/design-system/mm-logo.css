@@ -1,0 +1,126 @@
+    /* ==========================================
+       FOUNDATIONS > LOGO
+       Conteúdo da categoria Logo. Container já segue o padrão de
+       padding/gap dos demais Nível 1 pra alinhar com o menu fixo.
+       Tiles usam o mesmo orbe pc200 da Tipografia (corner glow).
+       ========================================== */
+
+    .container-mm-logo {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 16px 16px 16px 96px;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        isolation: isolate;
+    }
+
+    @media(max-width: 864px) {
+        .container-mm-logo {
+            padding: 16px;
+        }
+    }
+
+    /* Grid: 3 cols desktop, 2 cols tablet, 1 col mobile. */
+    .mm-logo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Tile do logo: bg transparente por default (mostra o bb da página).
+       Layout: label absoluto no canto sup-esq, logo centralizado via flex,
+       actions absolutas no canto inf-dir. Orbe pc200 256px no canto
+       bottom-right via ::after (mesma fórmula de .mm-tipografia-token). */
+    .mm-logo-tile {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        min-height: 256px;
+        box-sizing: border-box;
+    }
+
+    .mm-logo-tile::after {
+        content: "";
+        position: absolute;
+        width: 256px;
+        height: 256px;
+        background-color: var(--pc200);
+        border-radius: 100%;
+        bottom: -128px;
+        right: -128px;
+        filter: blur(256px);
+        z-index: -1;
+        opacity: 0.25;
+    }
+
+    /* Variante com fundo claro pros logos de tinta escura
+       (Base Black, Core Logo Dark) que precisam de contraste. */
+    .mm-logo-tile-light {
+        background-color: var(--bw);
+    }
+
+    /* Logo SVG inline: largura até 256px, mantém proporção via viewBox. */
+    .mm-logo-tile svg {
+        width: 100%;
+        max-width: 256px;
+        height: auto;
+        display: block;
+    }
+
+    /* Variante símbolo (logos quadrados ~1:1). Constrange a 96px pra que
+       o ícone fique visualmente equivalente ao wordmark (~256×77) e não
+       atropele o label do canto sup-esq nem os botões do canto inf-dir. */
+    .mm-logo-tile-simbolo svg {
+        max-width: 96px;
+    }
+
+    /* Label ancorada no canto superior-esquerdo. Cor adapta ao fundo. */
+    .mm-logo-tile-label {
+        position: absolute;
+        top: 32px;
+        left: 32px;
+        font: var(--label-s);
+        color: var(--bw-75);
+    }
+
+    .mm-logo-tile-light .mm-logo-tile-label {
+        color: var(--bb-75);
+    }
+
+    /* Ações (Baixar PNG / Copiar SVG) ancoradas no canto inferior-direito. */
+    .mm-logo-tile-actions {
+        position: absolute;
+        bottom: 32px;
+        right: 32px;
+        display: flex;
+        gap: 8px;
+    }
+
+    @media(max-width: 1024px) {
+        .mm-logo-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width: 767px) {
+        .mm-logo-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Bloco de diretrizes de uso usa a estrutura genérica .mm-uso /
+       .mm-uso-titulo (style.css): reutilizável em qualquer container.
+       Mapeamento variante → significado dentro do Logo:
+         error   = Proibições  (severo, vermelho)
+         warning = Evitar      (atenção, amarelo)
+         success = Permitido   (positivo, verde) */

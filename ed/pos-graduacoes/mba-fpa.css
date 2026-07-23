@@ -747,6 +747,30 @@ html, body { margin: 0; padding: 0; }
     margin: 0;
 }
 
+/* Desktop DS ≤1439 (bp "Plataforma" do DS): Wide 10 → 8 cols, MESMO
+   arranjo do desktop, só reescalado (não é o modo compacto do ≤1152).
+   Este bloco vem DEPOIS das bases (intro/target) e ANTES do ≤1152 —
+   assim vence a base em 1152–1439, e o ≤1152 (compacto/sticky recalc)
+   sobrepõe abaixo de 1152 por vir depois no source. */
+@media (max-width: 1439px) {
+    /* Intro: 10 → 8 cols. title span 5 (row 1), text span 4 (row 2),
+       cta -3/-1 (row 2) — arranjo idêntico ao desktop em 8 cols.
+       NÃO mexe em padding/pseudos (isso fica no ≤1152). */
+    .mba-intro-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-intro-title { grid-column: span 5; }
+    .mba-intro-text { grid-column: span 4; }
+    .btn.mba-intro-cta { grid-column: -3 / -1; }
+
+    /* Target: 10 → 8 cols mantendo o lado-a-lado do desktop (lead
+       sticky à esquerda + cards à direita). lead 1/span 4 (era span 5),
+       text 1/span 3 (era span 4), cards 5/span 4 (era 6/span 5).
+       Sticky/tops/altura NÃO mudam aqui — só as colunas. */
+    .mba-target-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-target-lead { grid-column: 1 / span 4; }
+    .mba-target-text { grid-column: 1 / span 3; }
+    .mba-target-cards { grid-column: 5 / span 4; }
+}
+
 /* Desktop compacto ≤1152 (DS): grid 8 cols. Título mantém span 5
    (cols 6-8 vazias); texto1+texto2 row 2 (cols 1-4 + 5-8 = full);
    CTA cai pra row 3 cols 7-8 (não cabe 4+4+2 em 8 cols). */
@@ -899,6 +923,13 @@ html, body { margin: 0; padding: 0; }
     font: var(--p-s);
     color: var(--bw-75);
     margin: 0;
+}
+/* Profs Desktop DS (≤1439): grid 8 cols; cards span 4 (2-up) pra não
+   estourar (span 5 do desktop viraria 10 cols em 2 cards). Header segue
+   span 5 (um item só, cabe nas 8). */
+@media (max-width: 1439px) {
+    .mba-profs-grid { grid-template-columns: repeat(8, 1fr); }
+    .mba-prof-card { grid-column: span 4; }
 }
 @media (max-width: 1152px) {
     .mba-profs-header { grid-column: 1 / -1; }
@@ -1121,6 +1152,22 @@ html, body { margin: 0; padding: 0; }
     margin: 0;
 }
 
+/* How Desktop DS ≤1439: 10 → 8 cols mantendo o zigue-zague largo+
+   estreito do desktop. header span 4 (era 5); how-cards vira grid 8;
+   wraps 1 e 4 span 5 (era 6) + cards 2/3 span 3 (era 4) → 5+3=8 por
+   linha, preserva "largo + estreito". margin-bottom/padding dos wraps
+   e flex-direction dos cards NÃO mudam aqui (o achatamento fica no
+   ≤1152). Vem DEPOIS da base e ANTES do ≤1152 (compacto vence abaixo). */
+@media (max-width: 1439px) {
+    .mba-how-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-how-header { grid-column: 1 / span 4; }
+    .mba-how-cards { grid-template-columns: repeat(8, 1fr); }
+    .mba-how-card-wrap--1,
+    .mba-how-card-wrap--4 { grid-column: span 5; }
+    .mba-how-card:nth-child(2),
+    .mba-how-card:nth-child(3) { grid-column: span 3; }
+}
+
 /* How ≤1152: header sem margin-bottom -128, wraps sem padding extra,
    cards iguais (cada um span 4 do grid 8). Esse @media tem que vir
    DEPOIS das regras base acima — cascade resolve por order quando
@@ -1164,19 +1211,12 @@ html, body { margin: 0; padding: 0; }
         margin-left: 0;  /* reset do -128 do desktop */
     }
 
-    /* Gains ≤1152: grid vira 8 cols. Card span 5 (1 col a mais que
-       o título span 3) — mesma proporção do desktop wide (4+6). */
-    .mba-gains-inner { grid-template-columns: repeat(8, 1fr); }
-    .mba-gains-title-wrap { grid-column: span 3; }
-    .mba-gains-cards { grid-column: span 5; }
-
-    /* Offer ≤1152: 8 cols, card span 6 centralizado (cols 2-7). */
-    .mba-offer-inner { grid-template-columns: repeat(8, 1fr); }
-    .mba-offer-card { grid-column: 2 / span 6; }
-
-    /* FAQ ≤1152: 8 cols, header span 4. */
-    .mba-faq-inner { grid-template-columns: repeat(8, 1fr); }
-    .mba-faq-header { grid-column: span 4; }
+    /* Gains/Offer/FAQ: as regras de grid 8-col dessas seções foram
+       movidas pro bloco @media (max-width: 1439px) mais abaixo (que
+       cobre 0–1439, incluindo este range). Precisou mover porque as
+       bases repeat(10) dessas seções são definidas DEPOIS deste bloco
+       no source — se ficassem aqui, a base posterior venceria em
+       1152–1439. O ≤1439 fica depois das bases e resolve a cascata. */
 }
 
 /* ── Seção 5: Curriculum — scroll horizontal sticky stage.
@@ -1335,6 +1375,16 @@ html, body { margin: 0; padding: 0; }
     flex-direction: column;
     align-items: flex-end;
     gap: 16px;
+}
+/* Curriculum header Desktop DS ≤1439: 10 → 8 cols, mesmo lado-a-lado
+   (title à esquerda + cta à direita). title 1/span 4 (era 5),
+   cta 5/span 4 (era 6/span 5). Vem DEPOIS da base (vence em 1152–1439)
+   e ANTES do ≤864 (que empilha em 1 col). A variante --inline (flex,
+   specificity maior + depois no source) continua vencendo. */
+@media (max-width: 1439px) {
+    .mba-curriculum-header-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-curriculum-title { grid-column: 1 / span 4; }
+    .mba-curriculum-header-cta { grid-column: 5 / span 4; }
 }
 .mba-curriculum-header-cta-logo {
     width: 196px;
@@ -2139,6 +2189,28 @@ html, body { margin: 0; padding: 0; }
     width: fit-content;
 }
 
+/* Gains/Offer/FAQ Desktop DS ≤1439: 10 → 8 cols mantendo a proporção
+   do desktop (mesmo layout, só reescalado — não há modo compacto
+   nessas seções). Este bloco fica DEPOIS das bases repeat(10) de gains
+   (~1690), offer (~2060) e faq (~2130) e ANTES do ≤864 (mais abaixo),
+   resolvendo a armadilha de cascata: as bases dessas seções vêm depois
+   do bloco ≤1152 no source, então as regras 8-col foram tiradas do
+   ≤1152 e centralizadas aqui (o range 0–1439 cobre ≤1152 também). */
+@media (max-width: 1439px) {
+    /* Gains: card span 5 + título span 3 (mesma proporção do 6+4 wide). */
+    .mba-gains-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-gains-title-wrap { grid-column: span 3; }
+    .mba-gains-cards { grid-column: span 5; }
+
+    /* Offer: card span 6 centralizado (cols 2-7). */
+    .mba-offer-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-offer-card { grid-column: 2 / span 6; }
+
+    /* FAQ: header span 4. */
+    .mba-faq-inner { grid-template-columns: repeat(8, 1fr); }
+    .mba-faq-header { grid-column: span 4; }
+}
+
 /* ── FAQ accordion: clone de .faq-grid do hub (formacoes/style.css:
    2252-2293), escopado em .mba-offer pra não vazar. Animação suave
    via grid-template-rows 0fr → 1fr (toggle .is-open via JS). */
@@ -2174,6 +2246,7 @@ html, body { margin: 0; padding: 0; }
 .mba-faq .faq-a-grid.is-open { grid-template-rows: 1fr; }
 .mba-faq .faq-a-wrap {
     min-height: 0;
+    min-width: 100%;
     overflow: hidden;
     max-width: 1440px;
     margin: 0 auto;

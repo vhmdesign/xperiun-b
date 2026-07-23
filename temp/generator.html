@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>Generator</title>
+  <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+  <!-- Material Symbols completo (só nesta ferramenta) pra permitir qualquer ícone;
+       declarado depois do root.css, então cobre o subset limitado do site. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <style>
+    body {
+      min-height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 0;
+    }
+    /* Grid do DS: container Desktop 1152 / 8 colunas / gap 32 (16+16 padding).
+       6 col em <=864 (gap 24), empilha em <=576 (gap 16). */
+    /* Grid do DS: container Wide 1440 (padding 0 16, box-sizing border-box), 10 col.
+       max-width NUNCA muda; cai 10→8 (≤1439), →6 (≤864, gap 24), →4 (≤576, gap 16).
+       Spans remapeados: 5+5 (10) → 4+4 (8) → 1/-1 empilhado (≤864). */
+    .gen-layout {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 16px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      column-gap: 32px;
+      row-gap: 32px;
+      align-items: center;
+    }
+    /* spans base (grid 10 col): preview 5 + form 5. As media queries abaixo
+       remapeiam (precisam vir DEPOIS desta regra pra não serem sobrescritas). */
+    .gen-preview, .gen-wrap { grid-column: span 5; }
+    @media (max-width: 1439px) {
+      .gen-layout { grid-template-columns: repeat(8, 1fr); }
+      .gen-preview, .gen-wrap { grid-column: span 4; }
+    }
+    @media (max-width: 864px) {
+      .gen-layout { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+      .gen-preview, .gen-wrap { grid-column: 1 / -1; }
+    }
+    @media (max-width: 576px) {
+      .gen-layout { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+      .gen-preview, .gen-wrap { grid-column: 1 / -1; }
+    }
+    .gen-wrap {
+      position: relative;
+      z-index: 1; /* form por cima do reflexo */
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .gen-actions {
+      display: flex;
+      gap: 16px;
+    }
+    .gen-actions .btn {
+      flex: 1;
+    }
+    .btn:disabled {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .gen-preview {
+      position: relative;
+      order: -1; /* preview antes do form */
+      justify-self: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      /* flutua o conjunto pra cima e pra baixo, 16px (8 pra cada lado) */
+      animation: badge-float 3s ease-in-out infinite;
+    }
+    /* Reflexo: cópia espelhada (scaleY -1), 32px abaixo, máscara 0.25 -> 0 */
+    .badge-reflection {
+      position: absolute;
+      top: calc(100% + 32px);
+      left: 0;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+    }
+    .badge-reflection-flip {
+      transform: scaleY(-1);
+    }
+    .badge-stage {
+      position: relative;
+      width: 1120px;
+      max-width: 100%;
+      /* Canvas interno 1120px (base pro Baixar em resolução nativa);
+         só a exibição encolhe 4x. */
+      zoom: 0.25;
+      /* pêndulo: pivô no topo, rotateZ dá o balanço rígido e skewX a profundidade */
+      transform-origin: top center;
+      animation: badge-swing 4s ease-in-out infinite;
+    }
+    @keyframes badge-float {
+      0%, 100% { transform: translateY(-8px); }
+      50%      { transform: translateY(8px); }
+    }
+    @keyframes badge-swing {
+      0%, 100% { transform: rotateZ(-3.75deg) skewY(-3.75deg); }
+      50%      { transform: rotateZ(3.75deg) skewY(3.75deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gen-preview, .badge-stage { animation: none; }
+    }
+    .badge-stage img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+    /* Box de texto no grid 14x14 do badge: x=3, y=4.5, 8 de largura x 5 de altura. */
+    .badge-text {
+      position: absolute;
+      left: 21.4286%;   /* 3/14 */
+      top: 32.1429%;    /* 4.5/14 */
+      width: 57.1429%;  /* 8/14 */
+      height: 35.7143%; /* 5/14 */
+      box-sizing: border-box;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      line-height: 1em;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--bw);
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+    #badge-preview {
+      display: none;
+    }
+    .cor-fields {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    /* Color picker: amostra (swatch) que abre o popover */
+    .color-swatch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 44px;
+      padding: 8px 12px;
+      background-color: var(--dn700);
+      color: var(--bw);
+      font: var(--p);
+      cursor: pointer;
+      box-sizing: border-box;
+      box-shadow: inset 0 0 0 2px var(--dn500);
+    }
+    /* hex sempre legível: pill escuro sobre qualquer cor do swatch */
+    .color-swatch-hex {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-weight: 400;
+      /* cor definida por JS (preto/branco) pra contrastar com o swatch */
+    }
+    /* Popover do picker */
+    .color-popover {
+      position: absolute;
+      z-index: 1000;
+      width: 240px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      background-color: var(--dn700);
+      border-radius: 16px;
+      box-shadow: var(--shadow-m-50);
+    }
+    .color-popover[hidden] {
+      display: none;
+    }
+    /* Área saturação/brilho */
+    .cp-area {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    .cp-area-thumb {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 2px var(--bw), 0 0 0 4px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+    }
+    /* Slider de matiz */
+    .cp-hue {
+      position: relative;
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      touch-action: none;
+      background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+    }
+    .cp-hue-thumb {
+      position: absolute;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: var(--bw);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 2px var(--dn700);
+      pointer-events: none;
+    }
+    /* Saída (formato + valor) */
+    .cp-output {
+      display: flex;
+      gap: 8px;
+    }
+    .cp-format {
+      flex-shrink: 0;
+      width: 84px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background-color: var(--dn500);
+      color: var(--bw);
+      box-sizing: border-box;
+    }
+    .cp-value {
+      flex: 1;
+      min-width: 0;
+      background-color: var(--dn500);
+      text-transform: uppercase;
+    }
+    #badge-svg,
+    #badge-svg-pago {
+      display: none;
+      width: 100%;
+      height: auto;
+    }
+    .badge-info {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      pointer-events: none;
+    }
+    /* Modal do preview (Visualizar): badge estático grande + backdrop */
+    .badge-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      overflow: auto;
+      background-color: var(--bb-75);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .badge-modal[hidden] {
+      display: none;
+    }
+    .badge-modal-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      max-width: 1120px;
+    }
+    .modal-stage {
+      position: relative;
+      width: 1120px;
+      /* escala aplicada por JS (zoom) pra caber no viewport mantendo proporção */
+    }
+    .modal-stage img,
+    .modal-stage svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .badge-modal-actions {
+      display: flex;
+      gap: 16px;
+    }
+    /* Slot pro SVG do usuário: grid 14x14, x=3.5, y=6, 7 largura x 4 altura */
+    .badge-slot {
+      position: absolute;
+      left: 25%;        /* 3.5/14 */
+      top: 42.8571%;    /* 6/14 */
+      width: 50%;       /* 7/14 */
+      height: 28.5714%; /* 4/14 */
+      display: none;
+      pointer-events: none;
+    }
+    .badge-slot svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    /* Slot de ícone (Minicurso): grid 14x14, y=10, x centralizado, 2x2 */
+    .badge-icon {
+      position: absolute;
+      left: 42.8571%;   /* 6/14 (centraliza a caixa de 2) */
+      top: 71.4286%;    /* 10/14 */
+      width: 14.2857%;  /* 2/14 */
+      height: 14.2857%; /* 2/14 */
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--pc300);
+      font-size: 140px;
+      line-height: 1;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+      pointer-events: none;
+    }
+    .svg-drop.is-drag {
+      box-shadow: inset 0 0 0 2px var(--pc500);
+    }
+    .icone-combo {
+      position: relative;
+    }
+    .icone-options {
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .icone-combo.is-open .icone-options {
+      display: block;
+    }
+    .icone-opt-icon {
+      font-size: 20px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    .dropdown-option.is-google {
+      color: var(--pc300);
+    }
+    .dropdown-option.is-disabled,
+    .is-locked {
+      filter: blur(4px);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    /* .dropdown-options-detached do DS usa overflow:hidden (clipa cantos),
+       o que impede o scroll. Reabilita só o eixo Y pra lista rolar quando
+       o max-height (setado no JS) limita a altura em viewports pequenas. */
+    .dropdown-options.dropdown-options-detached {
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="gen-layout">
+  <form class="gen-wrap" id="gen-form" autocomplete="off">
+
+    <!-- Tipo -->
+    <div class="input-group">
+      <span class="input-label">Tipo</span>
+      <div class="dropdown-group" data-field="tipo">
+        <div class="dropdown">
+          <span class="dropdown-placeholder">Selecione</span>
+          <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+        </div>
+        <ul class="dropdown-options dropdown-options-detached">
+          <li class="dropdown-option" data-value="formacao">Formação</li>
+          <li class="dropdown-option" data-value="curso">Curso</li>
+        </ul>
+      </div>
+      <input type="hidden" name="tipo" value="">
+    </div>
+
+    <!-- Estilo (opções dependem do Tipo) -->
+    <div class="input-group">
+      <span class="input-label">Estilo</span>
+      <div class="dropdown-group" data-field="estilo">
+        <div class="dropdown">
+          <span class="dropdown-placeholder">Selecione</span>
+          <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+        </div>
+        <ul class="dropdown-options dropdown-options-detached"></ul>
+      </div>
+      <input type="hidden" name="estilo" value="">
+    </div>
+
+    <!-- Nome (só quando Tipo = Curso) -->
+    <div class="input-group" id="nome-field">
+      <span class="input-label">Nome</span>
+      <textarea class="input" name="nome" rows="3"></textarea>
+    </div>
+
+    <!-- Tamanho da fonte (só quando Tipo = Curso) -->
+    <div class="input-group" id="tamanho-field">
+      <span class="input-label">Tamanho do Texto</span>
+      <div class="dropdown-group" data-field="tamanho">
+        <div class="dropdown">
+          <span class="dropdown-value">G</span>
+          <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+        </div>
+        <ul class="dropdown-options dropdown-options-detached">
+          <li class="dropdown-option" data-value="P">P</li>
+          <li class="dropdown-option" data-value="M">M</li>
+          <li class="dropdown-option" data-value="G">G</li>
+        </ul>
+      </div>
+      <input type="hidden" name="tamanho" value="G">
+    </div>
+
+    <!-- Ícone Google (só quando Estilo = Minicurso) -->
+    <div class="input-group" id="icone-field">
+      <span class="input-label">Ícone</span>
+      <div class="icone-combo">
+        <div class="input-wrap">
+          <input type="text" class="input input-has-icon-right" id="icone-input" autocomplete="off" placeholder="Buscar ícone">
+          <span class="material-symbols-outlined input-icon input-icon-right">expand_more</span>
+        </div>
+        <ul class="dropdown-options dropdown-options-detached icone-options" id="icone-options"></ul>
+      </div>
+    </div>
+
+    <!-- Cores do SVG (só quando Estilo = Evento Gratuito) -->
+    <div class="cor-fields" id="cor-fields">
+      <div class="input-group">
+        <span class="input-label">Cor inicial</span>
+        <button type="button" class="color-swatch" data-target="cor-inicial">          <span class="color-swatch-hex"></span>
+        </button>
+        <input type="hidden" id="cor-inicial" value="#2d2d37">
+      </div>
+      <div class="input-group">
+        <span class="input-label">Cor final</span>
+        <button type="button" class="color-swatch" data-target="cor-final">          <span class="color-swatch-hex"></span>
+        </button>
+        <input type="hidden" id="cor-final" value="#4b4bff">
+      </div>
+      <div class="input-group">
+        <span class="input-label">Brilho</span>
+        <button type="button" class="color-swatch" data-target="cor-brilho">          <span class="color-swatch-hex"></span>
+        </button>
+        <input type="hidden" id="cor-brilho" value="#6464ff">
+      </div>
+    </div>
+
+    <!-- SVG do usuário (só quando Estilo = Evento Gratuito) -->
+    <div class="input-group" id="svg-field">
+      <span class="input-label">SVG</span>
+      <textarea class="input svg-drop" id="svg-input" rows="4" placeholder="Arraste um .svg aqui ou cole o código"></textarea>
+    </div>
+
+    <!-- Ações -->
+    <div class="gen-actions">
+      <button type="button" class="btn" data-size="m" data-emphasis="subtle" id="btn-visualizar">Visualizar</button>
+      <button type="button" class="btn" data-size="m" data-emphasis="medium" id="btn-baixar">Baixar</button>
+    </div>
+
+  </form>
+
+  <!-- Preview do badge -->
+  <div class="gen-preview" id="gen-preview">
+    <div class="badge-stage" id="badge-stage">
+      <img id="badge-preview" alt="Preview do badge">
+      <img id="badge-oca" src="badges/badge-oca.png" alt="">
+      <svg id="badge-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 280 280">
+        <defs>
+          <linearGradient id="xpbdg-eg-1" x1="140" y1="12.33" x2="140" y2="267.67" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2d2d37"/>
+            <stop offset="1" stop-color="#4b4bff"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-eg-2" x1="140" y1="260.67" x2="140" y2="19.33" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2d2d37"/>
+            <stop offset="1" stop-color="#4b4bff"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-eg-3" x1="91" y1="267.67" x2="91" y2="12.33" xlink:href="#xpbdg-eg-2"/>
+          <linearGradient id="xpbdg-eg-4" x1="94" y1="19.33" x2="94" y2="260.67" xlink:href="#xpbdg-eg-2"/>
+          <linearGradient id="xpbdg-eg-5" x1="140" y1="258.34" x2="140" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#6464ff" stop-opacity=".25"/>
+            <stop offset="1" stop-color="#6464ff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-eg-6" x1="140" y1="248.34" x2="140" y2="150" xlink:href="#xpbdg-eg-5"/>
+          <linearGradient id="xpbdg-eg-7" x1="140" y1="238.34" x2="140" y2="140" xlink:href="#xpbdg-eg-5"/>
+          <linearGradient id="xpbdg-eg-8" x1="140" y1="228.34" x2="140" y2="130" xlink:href="#xpbdg-eg-5"/>
+        </defs>
+        <path fill="#00000a" d="M240 210V70L140 10 40 70v140l100 60z"/>
+        <path style="fill:url(#xpbdg-eg-1)" d="M42 208.87V71.13l98-58.8 98 58.8v137.74l-98 58.8z"/>
+        <path style="fill:url(#xpbdg-eg-2)" d="M48 205.47V74.53l92-55.2 92 55.2v130.94l-92 55.2z"/>
+        <path style="fill:url(#xpbdg-eg-3)" d="m140 12.33-98 58.8v137.74l98 58.8z"/>
+        <path style="fill:url(#xpbdg-eg-4)" d="m140 19.33-92 55.2v130.94l92 55.2z"/>
+        <path fill="#00000a" d="M50 204.34V75.66l90-54 90 54v128.68l-90 54z"/>
+        <path style="fill:url(#xpbdg-eg-5)" d="m50 204.34 90 54 90-54L140 160z"/>
+        <path style="fill:url(#xpbdg-eg-6)" d="m50 194.34 90 54 90-54L140 150z"/>
+        <path style="fill:url(#xpbdg-eg-7)" d="m50 184.34 90 54 90-54L140 140z"/>
+        <path style="fill:url(#xpbdg-eg-8)" d="m50 174.34 90 54 90-54L140 130z"/>
+      </svg>
+      <svg id="badge-svg-pago" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 280 280">
+        <defs>
+          <linearGradient id="xpbdg-ep-1" x1="140" y1="12.33" x2="140" y2="267.67" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2d2d37"/>
+            <stop offset="1" stop-color="#4b4bff"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-ep-2" y1="260.67" y2="19.33" xlink:href="#xpbdg-ep-1"/>
+          <linearGradient id="xpbdg-ep-3" x1="91" y1="267.67" x2="91" y2="12.33" xlink:href="#xpbdg-ep-1"/>
+          <linearGradient id="xpbdg-ep-4" x1="94" y1="19.33" x2="94" y2="260.67" xlink:href="#xpbdg-ep-1"/>
+          <linearGradient id="xpbdg-ep-5" x1="140" y1="258.34" x2="140" y2="21.66" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#6464ff" stop-opacity=".25"/>
+            <stop offset=".5" stop-color="#6464ff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-ep-6" y1="248.34" x2="140" xlink:href="#xpbdg-ep-5"/>
+          <linearGradient id="xpbdg-ep-7" y1="238.34" x2="140" xlink:href="#xpbdg-ep-5"/>
+        </defs>
+        <path fill="#00000a" d="M240 187.35v-94.7c0-14.05-7.37-27.07-19.42-34.3L140 10 59.42 58.35A40 40 0 0 0 40 92.65v94.7c0 14.05 7.37 27.07 19.42 34.3L140 270l80.58-48.35a40 40 0 0 0 19.42-34.3"/>
+        <path d="M42 187.35v-94.7c0-13.35 7-25.72 18.45-32.58L140 12.33l79.55 47.73A38 38 0 0 1 238 92.64v94.7c0 13.35-7 25.72-18.45 32.58L140 267.65l-79.55-47.73A38 38 0 0 1 42 187.34Z" style="fill:url(#xpbdg-ep-1)"/>
+        <path d="M48 187.35V92.64c0-11.24 5.9-21.66 15.54-27.44L140 19.32l76.46 45.88A32 32 0 0 1 232 92.64v94.71c0 11.24-5.9 21.66-15.54 27.44L140 260.67l-76.46-45.88A32 32 0 0 1 48 187.35" style="fill:url(#xpbdg-ep-2)"/>
+        <path d="M140 12.33 60.45 60.06A38 38 0 0 0 42 92.64v94.7c0 13.35 7 25.72 18.45 32.58L140 267.65z" style="fill:url(#xpbdg-ep-3)"/>
+        <path d="M140 19.33 63.54 65.21A32 32 0 0 0 48 92.65v94.71c0 11.24 5.9 21.66 15.54 27.44L140 260.68z" style="fill:url(#xpbdg-ep-4)"/>
+        <path fill="#00000a" d="M50 187.35v-94.7c0-10.54 5.53-20.3 14.56-25.72L140 21.67l75.44 45.26A29.99 29.99 0 0 1 230 92.65v94.7c0 10.54-5.53 20.3-14.56 25.72L140 258.33l-75.44-45.26A29.99 29.99 0 0 1 50 187.35"/>
+        <path d="M50 187.35v-94.7c0-10.54 5.53-20.3 14.56-25.72L140 21.67l75.44 45.26A29.99 29.99 0 0 1 230 92.65v94.7c0 10.54-5.53 20.3-14.56 25.72L140 258.33l-75.44-45.26A29.99 29.99 0 0 1 50 187.35" style="fill:url(#xpbdg-ep-5)"/>
+        <path d="M50 177.35v-84.7c0-10.54 5.53-20.3 14.56-25.72L140 21.67l75.44 45.26A29.99 29.99 0 0 1 230 92.65v84.7c0 10.54-5.53 20.3-14.56 25.72L140 248.33l-75.44-45.26A29.99 29.99 0 0 1 50 177.35" style="fill:url(#xpbdg-ep-6)"/>
+        <path d="M50 167.35v-74.7c0-10.54 5.53-20.3 14.56-25.72L140 21.67l75.44 45.26A29.99 29.99 0 0 1 230 92.65v74.7c0 10.54-5.53 20.3-14.56 25.72L140 238.33l-75.44-45.26A29.99 29.99 0 0 1 50 167.35" style="fill:url(#xpbdg-ep-7)"/>
+      </svg>
+      <img id="badge-info" class="badge-info" src="badges/badge-info.png" alt="">
+      <div class="badge-slot" id="badge-slot"></div>
+      <span class="badge-icon material-symbols-outlined" id="badge-icon"></span>
+      <div class="badge-text" id="badge-text"></div>
+    </div>
+    <div class="badge-reflection" aria-hidden="true">
+      <div class="badge-reflection-flip">
+        <div class="badge-stage" id="stage-reflection"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Modal do preview (Visualizar) -->
+  <div class="badge-modal" id="badge-modal" hidden>
+    <div class="badge-modal-card">
+      <div class="modal-stage" id="modal-stage"></div>
+      <div class="badge-modal-actions">
+        <button type="button" class="btn" data-size="m" data-emphasis="medium" id="btn-modal-baixar">Baixar</button>
+        <button type="button" class="btn" data-size="m" data-emphasis="subtle" id="btn-modal-sair">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popover do color picker -->
+  <div class="color-popover" id="color-popover" hidden>
+    <div class="cp-area" id="cp-area">
+      <div class="cp-area-thumb" id="cp-area-thumb"></div>
+    </div>
+    <div class="cp-hue" id="cp-hue">
+      <div class="cp-hue-thumb" id="cp-hue-thumb"></div>
+    </div>
+    <div class="cp-output">
+      <select class="cp-format" id="cp-format">
+        <option value="hex">HEX</option>
+        <option value="rgb">RGB</option>
+        <option value="hsl">HSL</option>
+        <option value="css">CSS</option>
+      </select>
+      <input type="text" class="input cp-value" id="cp-value" spellcheck="false">
+    </div>
+  </div>
+
+  <script src="icons.js"></script>
+  <script>
+    const ESTILOS = {
+      formacao: [
+        'Formação 1', 'Formação 2', 'Formação 3', 'Formação 4',
+        'Formação 5', 'Formação 6', 'Formação 7'
+      ],
+      curso: [
+        'Minicurso', 'Evento Gratuito', 'Evento Pago',
+        'Formação 1', 'Formação 2', 'Formação 3', 'Formação 4',
+        'Formação 5', 'Formação 6', 'Formação 7'
+      ]
+    };
+
+    /* ---- Controlador genérico do dropdown do Design System ----
+       Cada .dropdown-group controla o input[type=hidden] do seu .input-group.
+       Clique na opção seta o valor e dispara 'change' no hidden. */
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dropdown-group.is-open')
+        .forEach((g) => g.classList.remove('is-open'));
+    }
+
+    /* Limita a altura da lista ao espaço disponível abaixo do trigger, então
+       ela rola internamente (overflow-y do DS) em vez de crescer o viewport. */
+    function capOptionsHeight(group) {
+      const trigger = group.querySelector('.dropdown');
+      const optionsEl = group.querySelector('.dropdown-options');
+      const gap = 8;   // margin-top da lista detached
+      const margin = 8; // folga até a borda do viewport
+      const space = window.innerHeight - trigger.getBoundingClientRect().bottom - gap - margin;
+      optionsEl.style.maxHeight = space + 'px';
+    }
+
+    function resetDropdown(group) {
+      const trigger = group.querySelector('.dropdown');
+      const label = trigger.querySelector('.dropdown-placeholder, .dropdown-value');
+      label.textContent = 'Selecione';
+      label.className = 'dropdown-placeholder';
+      const hidden = group.closest('.input-group').querySelector('input[type="hidden"]');
+      if (hidden) hidden.value = '';
+    }
+
+    document.querySelectorAll('.dropdown-group').forEach((group) => {
+      const trigger = group.querySelector('.dropdown');
+      const optionsEl = group.querySelector('.dropdown-options');
+      const hidden = group.closest('.input-group').querySelector('input[type="hidden"]');
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = group.classList.contains('is-open');
+        closeAllDropdowns();
+        if (!isOpen) {
+          group.classList.add('is-open');
+          capOptionsHeight(group);
+        }
+      });
+
+      // Delegação: funciona mesmo quando as opções são recriadas (Estilo).
+      optionsEl.addEventListener('click', (e) => {
+        const opt = e.target.closest('.dropdown-option');
+        if (!opt) return;
+        e.stopPropagation();
+
+        const label = trigger.querySelector('.dropdown-placeholder, .dropdown-value');
+        label.textContent = opt.textContent.trim();
+        label.className = 'dropdown-value';
+        if (hidden) {
+          hidden.value = opt.dataset.value ?? opt.textContent.trim();
+          hidden.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        group.classList.remove('is-open');
+      });
+    });
+
+    document.addEventListener('click', closeAllDropdowns);
+
+    /* Títulos das Formações (usados quando Tipo = Formação). */
+    const TITULOS = {
+      '1': 'Power BI Data Analyst',
+      '2': 'Advanced Power BI Analyst',
+      '3': 'Microsoft Fabric Data Engineer',
+      '4': 'SQL & Database Analyst',
+      '5': 'Python Data Scientist',
+      '6': 'AI & Automation Expert',
+      '7': 'Data Business Professional'
+    };
+
+    /* ---- Lógica condicional Tipo -> Estilo / Nome ---- */
+    const tipoHidden = document.querySelector('input[name="tipo"]');
+    const estiloHidden = document.querySelector('input[name="estilo"]');
+    const estiloGroup = document.querySelector('.dropdown-group[data-field="estilo"]');
+    const estiloOptions = estiloGroup.querySelector('.dropdown-options');
+    const nomeField = document.getElementById('nome-field');
+
+    const nomeTextarea = document.querySelector('textarea[name="nome"]');
+    const tamanhoField = document.getElementById('tamanho-field');
+    const tamanhoHidden = document.querySelector('input[name="tamanho"]');
+    const TAMANHOS = { P: '3rem', M: '3.5rem', G: '4rem' };
+    const preview = document.getElementById('gen-preview');
+    const stage = document.getElementById('badge-stage');
+    const reflectionStage = document.getElementById('stage-reflection');
+    const previewImg = document.getElementById('badge-preview');
+    const badgeText = document.getElementById('badge-text');
+    const badgeOca = document.getElementById('badge-oca');
+    const badgeSvg = document.getElementById('badge-svg');
+    const badgeSvgPago = document.getElementById('badge-svg-pago');
+    const badgeInfo = document.getElementById('badge-info');
+    const corFields = document.getElementById('cor-fields');
+    const corInicial = document.getElementById('cor-inicial');
+    const corFinal = document.getElementById('cor-final');
+    const corBrilho = document.getElementById('cor-brilho');
+    const svgField = document.getElementById('svg-field');
+    const svgInput = document.getElementById('svg-input');
+    const badgeSlot = document.getElementById('badge-slot');
+    const iconeField = document.getElementById('icone-field');
+    const iconeInput = document.getElementById('icone-input');
+    const badgeIcon = document.getElementById('badge-icon');
+    const btnVisualizar = document.getElementById('btn-visualizar');
+    const btnBaixar = document.getElementById('btn-baixar');
+
+    /* Mostra os campos conforme Tipo + Estilo:
+       - Nome/Tamanho: Curso + "Formação N"
+       - Cores: Curso + "Evento Gratuito" */
+    function updateFields() {
+      const tipo = tipoHidden.value;
+      const estilo = estiloHidden.value;
+      const isCursoFormacao = tipo === 'curso' && /Formação\s+\d+/i.test(estilo);
+      const isMinicurso = tipo === 'curso' && estilo === 'Minicurso';
+      const isEvento = tipo === 'curso' && (estilo === 'Evento Gratuito' || estilo === 'Evento Pago');
+      const hasNome = isCursoFormacao || isMinicurso;
+
+      nomeField.style.display = hasNome ? 'flex' : 'none';
+      tamanhoField.style.display = hasNome ? 'flex' : 'none';
+      iconeField.style.display = isMinicurso ? 'flex' : 'none';
+      corFields.style.display = isEvento ? 'grid' : 'none';
+      svgField.style.display = isEvento ? 'flex' : 'none';
+
+      // Estilo trava (blur + opacidade) enquanto o Tipo não foi escolhido
+      estiloGroup.closest('.input-group').classList.toggle('is-locked', !tipo);
+
+      updateActions();
+    }
+
+    function onTipoChange() {
+      const t = tipoHidden.value;
+
+      // repopula as opções do Estilo conforme o Tipo
+      estiloOptions.innerHTML = (ESTILOS[t] || [])
+        .map((v) => '<li class="dropdown-option" data-value="' + v + '">' + v + '</li>')
+        .join('');
+      resetDropdown(estiloGroup);
+
+      updateFields();
+      renderPreview();
+    }
+
+    tipoHidden.addEventListener('change', onTipoChange);
+
+    // trocar o Estilo reavalia os campos visíveis e limpa o preview antigo
+    estiloHidden.addEventListener('change', () => {
+      updateFields();
+      renderPreview();
+    });
+
+    // Nome / Tamanho: preview ao vivo + reavaliam os botões
+    nomeTextarea.addEventListener('input', () => { renderPreview(); updateActions(); });
+    tamanhoHidden.addEventListener('change', () => { renderPreview(); updateActions(); });
+
+    /* ==== Color picker (swatch + popover) em HTML/CSS/JS puro ==== */
+    const cpPopover = document.getElementById('color-popover');
+    const cpArea = document.getElementById('cp-area');
+    const cpAreaThumb = document.getElementById('cp-area-thumb');
+    const cpHueEl = document.getElementById('cp-hue');
+    const cpHueThumb = document.getElementById('cp-hue-thumb');
+    const cpFormat = document.getElementById('cp-format');
+    const cpValue = document.getElementById('cp-value');
+
+    let cpH = 0, cpS = 0, cpV = 0, cpTarget = null, cpSwatch = null;
+
+    const cpClamp = (n, a, b) => Math.min(b, Math.max(a, n));
+
+    function cpHsvToRgb(h, s, v) {
+      h = ((h % 360) + 360) % 360; s /= 100; v /= 100;
+      const c = v * s;
+      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+      const m = v - c;
+      let r = 0, g = 0, b = 0;
+      if (h < 60) { r = c; g = x; }
+      else if (h < 120) { r = x; g = c; }
+      else if (h < 180) { g = c; b = x; }
+      else if (h < 240) { g = x; b = c; }
+      else if (h < 300) { r = x; b = c; }
+      else { r = c; b = x; }
+      return { r: Math.round((r + m) * 255), g: Math.round((g + m) * 255), b: Math.round((b + m) * 255) };
+    }
+    function cpRgbToHsv(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+      let h = 0;
+      if (d) {
+        if (max === r) h = ((g - b) / d) % 6;
+        else if (max === g) h = (b - r) / d + 2;
+        else h = (r - g) / d + 4;
+        h = h * 60; if (h < 0) h += 360;
+      }
+      return { h, s: max ? (d / max) * 100 : 0, v: max * 100 };
+    }
+    function cpRgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+      let h = 0;
+      if (d) {
+        if (max === r) h = ((g - b) / d) % 6;
+        else if (max === g) h = (b - r) / d + 2;
+        else h = (r - g) / d + 4;
+        h = h * 60; if (h < 0) h += 360;
+      }
+      const l = (max + min) / 2;
+      const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+      return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+    function cpToHex(r, g, b) {
+      const p = (n) => n.toString(16).padStart(2, '0');
+      return '#' + p(r) + p(g) + p(b);
+    }
+    function cpHexToRgb(hex) {
+      hex = String(hex).replace('#', '').trim();
+      if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('');
+      if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+      return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16) };
+    }
+
+    // Preto ou branco conforme a luminância da cor, pra o hex sempre contrastar
+    function cpContrastOn(hex) {
+      const { r, g, b } = cpHexToRgb(hex) || { r: 0, g: 0, b: 0 };
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      return lum > 140 ? 'var(--bb)' : 'var(--bw)';
+    }
+
+    function cpHex() { const { r, g, b } = cpHsvToRgb(cpH, cpS, cpV); return cpToHex(r, g, b); }
+    function cpDisplayValue() {
+      const { r, g, b } = cpHsvToRgb(cpH, cpS, cpV);
+      const fmt = cpFormat.value;
+      if (fmt === 'rgb') return 'rgb(' + r + ', ' + g + ', ' + b + ')';
+      if (fmt === 'css') return 'rgb(' + r + ' ' + g + ' ' + b + ')';
+      if (fmt === 'hsl') { const { h, s, l } = cpRgbToHsl(r, g, b); return 'hsl(' + h + ', ' + s + '%, ' + l + '%)'; }
+      return cpHex().toUpperCase();
+    }
+
+    function cpRender(push = true, updateValueInput = true) {
+      cpArea.style.background =
+        'linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(' + cpH + ', 100%, 50%))';
+      cpAreaThumb.style.left = cpS + '%';
+      cpAreaThumb.style.top = (100 - cpV) + '%';
+      cpAreaThumb.style.backgroundColor = cpHex();
+      cpHueThumb.style.left = (cpH / 360 * 100) + '%';
+      cpValue.readOnly = cpFormat.value !== 'hex';
+      if (updateValueInput) cpValue.value = cpDisplayValue();
+      if (push && cpTarget) {
+        const hex = cpHex();
+        cpTarget.value = hex;
+        if (cpSwatch) {
+          cpSwatch.style.backgroundColor = hex;
+          const hexEl = cpSwatch.querySelector('.color-swatch-hex');
+          hexEl.textContent = hex.toUpperCase();
+          hexEl.style.color = cpContrastOn(hex);
+        }
+        cpTarget.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }
+
+    function cpAreaFromEvent(e) {
+      const rect = cpArea.getBoundingClientRect();
+      cpS = cpClamp((e.clientX - rect.left) / rect.width, 0, 1) * 100;
+      cpV = (1 - cpClamp((e.clientY - rect.top) / rect.height, 0, 1)) * 100;
+      cpRender();
+    }
+    cpArea.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      cpArea.setPointerCapture(e.pointerId);
+      cpAreaFromEvent(e);
+      const move = (ev) => cpAreaFromEvent(ev);
+      const up = () => { cpArea.removeEventListener('pointermove', move); cpArea.removeEventListener('pointerup', up); };
+      cpArea.addEventListener('pointermove', move);
+      cpArea.addEventListener('pointerup', up);
+    });
+
+    function cpHueFromEvent(e) {
+      const rect = cpHueEl.getBoundingClientRect();
+      cpH = cpClamp((e.clientX - rect.left) / rect.width, 0, 1) * 360;
+      cpRender();
+    }
+    cpHueEl.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      cpHueEl.setPointerCapture(e.pointerId);
+      cpHueFromEvent(e);
+      const move = (ev) => cpHueFromEvent(ev);
+      const up = () => { cpHueEl.removeEventListener('pointermove', move); cpHueEl.removeEventListener('pointerup', up); };
+      cpHueEl.addEventListener('pointermove', move);
+      cpHueEl.addEventListener('pointerup', up);
+    });
+
+    cpFormat.addEventListener('change', () => cpRender(false));
+    cpValue.addEventListener('input', () => {
+      if (cpFormat.value !== 'hex') return;
+      const rgb = cpHexToRgb(cpValue.value);
+      if (!rgb) return;
+      const hsv = cpRgbToHsv(rgb.r, rgb.g, rgb.b);
+      cpH = hsv.h; cpS = hsv.s; cpV = hsv.v;
+      cpRender(true, false);
+    });
+
+    function openColorPicker(targetId, swatchEl) {
+      cpTarget = document.getElementById(targetId);
+      cpSwatch = swatchEl;
+      const rgb = cpHexToRgb(cpTarget.value) || { r: 0, g: 0, b: 0 };
+      const hsv = cpRgbToHsv(rgb.r, rgb.g, rgb.b);
+      cpH = hsv.h; cpS = hsv.s; cpV = hsv.v;
+      cpFormat.value = 'hex';
+      cpRender(false);
+      cpPopover.hidden = false;
+      const rect = swatchEl.getBoundingClientRect();
+      cpPopover.style.top = (window.scrollY + rect.bottom + 8) + 'px';
+      cpPopover.style.left = (window.scrollX + rect.left) + 'px';
+    }
+    function closeColorPicker() { cpPopover.hidden = true; cpTarget = null; cpSwatch = null; }
+
+    document.querySelectorAll('.color-swatch').forEach((sw) => {
+      const t = document.getElementById(sw.dataset.target);
+      sw.style.backgroundColor = t.value;
+      const hx = sw.querySelector('.color-swatch-hex');
+      hx.textContent = t.value.toUpperCase();
+      hx.style.color = cpContrastOn(t.value);
+      sw.addEventListener('click', (e) => { e.stopPropagation(); openColorPicker(sw.dataset.target, sw); });
+    });
+    document.addEventListener('click', (e) => {
+      if (!cpPopover.hidden && !cpPopover.contains(e.target)) closeColorPicker();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeColorPicker(); });
+
+    // estado inicial: nada selecionado, campos condicionais escondidos, botões travados
+    updateFields();
+    showPlaceholder();
+
+    /* Caixa do texto (Nome) por badge, no grid 14x14. */
+    const TEXT_BOX = {
+      formacao:  { left: '21.4286%', top: '32.1429%', width: '57.1429%', height: '35.7143%' }, // x3 y4.5 w8 h5
+      minicurso: { left: '21.4286%', top: '39.2857%', width: '57.1429%', height: '32.1429%' }  // x3 y5.5 w8 h4.5
+    };
+
+    /* ---- Resolve o que mostrar a partir de Tipo + Estilo ---- */
+    function resolveBadge() {
+      const tipo = tipoHidden.value;
+      const estilo = estiloHidden.value;
+      if (!tipo || !estilo) return { mode: 'none' };
+
+      // Evento Gratuito / Evento Pago (Curso) usam SVG com cores escolhidas
+      if (tipo === 'curso' && (estilo === 'Evento Gratuito' || estilo === 'Evento Pago')) {
+        return { mode: 'svg', svg: estilo };
+      }
+
+      // Minicurso (Curso) usa PNG próprio, com Nome + ícone Google
+      if (tipo === 'curso' && estilo === 'Minicurso') {
+        return { mode: 'img', src: 'badges/badge-minicurso.png', text: true, box: TEXT_BOX.minicurso, icon: true };
+      }
+
+      const m = estilo.match(/Formação\s+(\d+)/i);
+      if (m) {
+        const n = m[1];
+        if (tipo === 'formacao') {
+          const titulo = TITULOS[n];
+          return titulo
+            ? { mode: 'img', src: 'badges/f' + n + ' - ' + titulo + '.png', text: false }
+            : { mode: 'none' };
+        }
+        if (tipo === 'curso') {
+          return { mode: 'img', src: 'badges/f' + n + ' - badge.png', text: true, box: TEXT_BOX.formacao };
+        }
+      }
+      return { mode: 'none' };
+    }
+
+    /* ---- Habilita Visualizar/Baixar só com os campos necessários preenchidos ---- */
+    function isComplete() {
+      // Só Tipo + Estilo são obrigatórios; Nome, Tamanho, Ícone e SVG são opcionais
+      return resolveBadge().mode !== 'none';
+    }
+    function updateActions() {
+      const ok = isComplete();
+      btnVisualizar.disabled = !ok;
+      btnBaixar.disabled = !ok;
+    }
+
+    /* Placeholder: gen-preview nunca fica vazio, mostra o badge-oca */
+    function showPlaceholder() {
+      previewImg.style.display = 'none';
+      badgeSvg.style.display = 'none';
+      badgeSvgPago.style.display = 'none';
+      badgeInfo.style.display = 'none';
+      badgeSlot.style.display = 'none';
+      badgeIcon.style.display = 'none';
+      badgeText.style.display = 'none';
+      badgeOca.style.display = 'block';
+      stage.style.display = 'block';
+      syncReflection();
+    }
+
+    /* Reflexo: espelha o conteúdo do stage. Remove os ids do clone pra não
+       duplicar (as refs url(#gradiente) do clone caem no gradiente original,
+       que já está colorido, então o reflexo acompanha as cores ao vivo). */
+    function syncReflection() {
+      reflectionStage.innerHTML = stage.innerHTML;
+      reflectionStage.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+    }
+
+    /* ---- Aplica as cores dos gradientes do SVG ---- */
+    // Config por estilo: quais gradientes têm stops próprios (os demais herdam via xlink:href).
+    const SVGS = {
+      'Evento Gratuito': { el: badgeSvg,     base: ['xpbdg-eg-1', 'xpbdg-eg-2'], glow: ['xpbdg-eg-5'] },
+      'Evento Pago':     { el: badgeSvgPago, base: ['xpbdg-ep-1'], glow: ['xpbdg-ep-5'] }
+    };
+
+    function setStops(svgEl, gradId, colorA, colorB) {
+      const stops = svgEl.querySelectorAll('#' + gradId + ' stop');
+      if (stops[0]) stops[0].setAttribute('stop-color', colorA);
+      if (stops[1]) stops[1].setAttribute('stop-color', colorB);
+    }
+    function applySvgColors(cfg) {
+      const c1 = corInicial.value, c2 = corFinal.value, cg = corBrilho.value;
+      cfg.base.forEach((id) => setStops(cfg.el, id, c1, c2));
+      // brilho: 2o stop segue transparente (mesma cor, só muda o tom)
+      cfg.glow.forEach((id) => setStops(cfg.el, id, cg, cg));
+    }
+    function activeSvgCfg() {
+      if (badgeSvg.style.display === 'block') return SVGS['Evento Gratuito'];
+      if (badgeSvgPago.style.display === 'block') return SVGS['Evento Pago'];
+      return null;
+    }
+    // cores atualizam ao vivo no SVG visível
+    [corInicial, corFinal, corBrilho].forEach((inp) =>
+      inp.addEventListener('input', () => {
+        const cfg = activeSvgCfg();
+        if (cfg) applySvgColors(cfg);
+      })
+    );
+
+    /* ---- SVG do usuário: renderiza no slot do badge ---- */
+    function renderCustomSvg() {
+      badgeSlot.innerHTML = svgInput.value.trim();
+      const svg = badgeSlot.querySelector('svg');
+      if (svg) {
+        // deixa o SVG preencher o slot (usa o viewBox pra escalar)
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+      }
+    }
+
+    // colar / digitar: atualiza ao vivo se o badge SVG já estiver na tela
+    svgInput.addEventListener('input', () => {
+      if (activeSvgCfg()) { renderCustomSvg(); syncReflection(); }
+    });
+
+    /* ---- Combobox de ícone (digitável + sugestões + link Google Icons) ---- */
+    // Lista completa de Material Symbols (temp/icons.js); fallback se faltar.
+    const ICONES = window.MATERIAL_ICONS || ['local_shipping', 'account_balance_wallet', 'shopping_cart', 'group', 'grid_view'];
+    const ICONE_MAX = 20; // top N mostrados no dropdown
+    const iconeCombo = document.querySelector('.icone-combo');
+    const iconeOptions = document.getElementById('icone-options');
+
+    function renderIconeOptions(filter) {
+      const f = (filter || '').trim().toLowerCase();
+      // relevância: quem começa com o texto vem primeiro, depois o resto; top N
+      const matches = ICONES.filter((name) => name.includes(f)).sort((a, b) => {
+        const as = a.startsWith(f) ? 0 : 1, bs = b.startsWith(f) ? 0 : 1;
+        return as - bs || a.localeCompare(b);
+      });
+      let html = matches
+        .slice(0, ICONE_MAX)
+        .map((name) =>
+          '<li class="dropdown-option" data-value="' + name + '">' +
+            '<span class="material-symbols-outlined icone-opt-icon">' + name + '</span>' + name +
+          '</li>'
+        )
+        .join('');
+      // última opção: abre a biblioteca do Google Icons
+      html += '<li class="dropdown-option is-google" data-google="1">' +
+                '<span class="material-symbols-outlined icone-opt-icon">open_in_new</span>Ver no Google Icons' +
+              '</li>';
+      iconeOptions.innerHTML = html;
+    }
+
+    function liveIcone() {
+      if (badgeIcon.style.display === 'flex') badgeIcon.textContent = iconeInput.value.trim();
+    }
+
+    iconeInput.addEventListener('focus', () => {
+      renderIconeOptions(iconeInput.value);
+      iconeCombo.classList.add('is-open');
+    });
+    iconeInput.addEventListener('input', () => {
+      renderIconeOptions(iconeInput.value);
+      iconeCombo.classList.add('is-open');
+      liveIcone();
+      syncReflection();
+      updateActions();
+    });
+
+    iconeOptions.addEventListener('click', (e) => {
+      const item = e.target.closest('.dropdown-option');
+      if (!item) return;
+      if (item.dataset.google) {
+        window.open('https://fonts.google.com/icons', '_blank');
+        return;
+      }
+      iconeInput.value = item.dataset.value;
+      liveIcone();
+      syncReflection();
+      iconeCombo.classList.remove('is-open');
+      updateActions();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!iconeCombo.contains(e.target)) iconeCombo.classList.remove('is-open');
+    });
+
+    // arrastar um arquivo .svg pra dentro do textarea
+    svgInput.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      svgInput.classList.add('is-drag');
+    });
+    svgInput.addEventListener('dragleave', () => svgInput.classList.remove('is-drag'));
+    svgInput.addEventListener('drop', (e) => {
+      e.preventDefault();
+      svgInput.classList.remove('is-drag');
+      const file = e.dataTransfer.files[0];
+      if (!file || !(file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg'))) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        svgInput.value = reader.result;
+        if (activeSvgCfg()) { renderCustomSvg(); syncReflection(); }
+      };
+      reader.readAsText(file);
+    });
+
+    /* ---- Render do preview (usado pelo Visualizar e ao vivo) ---- */
+    function renderPreview() {
+      const r = resolveBadge();
+      preview.style.display = 'flex';
+
+      if (r.mode === 'img') {
+        previewImg.src = encodeURI(r.src);
+        previewImg.style.display = 'block';
+        badgeSvg.style.display = 'none';
+        badgeSvgPago.style.display = 'none';
+        badgeInfo.style.display = 'none';
+        badgeSlot.style.display = 'none';
+        stage.style.display = 'block';
+        badgeOca.style.display = 'none';
+
+        if (r.icon) {
+          badgeIcon.textContent = iconeInput.value.trim();
+          badgeIcon.style.display = 'flex';
+        } else {
+          badgeIcon.style.display = 'none';
+        }
+
+        if (r.text) {
+          const b = r.box;
+          badgeText.style.left = b.left;
+          badgeText.style.top = b.top;
+          badgeText.style.width = b.width;
+          badgeText.style.height = b.height;
+          badgeText.textContent = nomeTextarea.value;
+          badgeText.style.fontSize = TAMANHOS[tamanhoHidden.value] || '4rem';
+          badgeText.style.display = 'flex';
+        } else {
+          badgeText.style.display = 'none';
+        }
+      } else if (r.mode === 'svg') {
+        const cfg = SVGS[r.svg];
+        badgeSvg.style.display = 'none';
+        badgeSvgPago.style.display = 'none';
+        cfg.el.style.display = 'block';
+        applySvgColors(cfg);
+        renderCustomSvg();
+        previewImg.style.display = 'none';
+        badgeInfo.style.display = 'block';
+        badgeSlot.style.display = 'block';
+        badgeIcon.style.display = 'none';
+        badgeText.style.display = 'none';
+        stage.style.display = 'block';
+        badgeOca.style.display = 'none';
+      } else {
+        showPlaceholder();
+      }
+      syncReflection();
+    }
+    /* ---- Modal do preview (Visualizar): badge estático grande ---- */
+    const badgeModal = document.getElementById('badge-modal');
+    const modalStage = document.getElementById('modal-stage');
+
+    function sizeModalStage() {
+      // escala o canvas de 1120 pra caber no viewport (largura E altura), reservando
+      // ~140px pros botões/gap; mantém a proporção do texto/ícone.
+      const availW = window.innerWidth - 64;
+      const availH = window.innerHeight - 140;
+      modalStage.style.zoom = Math.min(1, availW / 1120, availH / 1120);
+    }
+    function openBadgeModal() {
+      // clona o badge atual (sem ids, pra não duplicar; refs de gradiente caem no original)
+      modalStage.innerHTML = stage.innerHTML;
+      modalStage.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      sizeModalStage();
+      badgeModal.hidden = false;
+    }
+    function closeBadgeModal() { badgeModal.hidden = true; }
+    window.addEventListener('resize', () => { if (!badgeModal.hidden) sizeModalStage(); });
+
+    document.getElementById('btn-visualizar').addEventListener('click', openBadgeModal);
+    document.getElementById('btn-modal-sair').addEventListener('click', closeBadgeModal);
+    badgeModal.addEventListener('click', (e) => { if (e.target === badgeModal) closeBadgeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeBadgeModal(); });
+    const EXPORT_SIZE = 1120;
+
+    function loadImg(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+    // rasteriza um SVG (string) num Image do tamanho pedido
+    function svgToImg(svgString, w, h) {
+      const doc = new DOMParser().parseFromString(svgString, 'image/svg+xml');
+      const el = doc.documentElement;
+      el.setAttribute('width', w);
+      el.setAttribute('height', h);
+      const s = new XMLSerializer().serializeToString(el);
+      return loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s));
+    }
+
+    function drawBadgeText(ctx, box) {
+      const text = nomeTextarea.value.trim();
+      if (!text) return;
+      const pct = (v) => parseFloat(v) / 100 * EXPORT_SIZE;
+      const bx = pct(box.left), by = pct(box.top), bw = pct(box.width), bh = pct(box.height);
+      const sizeMap = { P: 48, M: 56, G: 64 };
+      const fs = sizeMap[tamanhoHidden.value] || 64;
+      ctx.font = "700 " + fs + "px 'Syne', sans-serif";
+      ctx.fillStyle = getComputedStyle(badgeText).color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const lines = [];
+      for (const para of text.toUpperCase().split('\n')) {
+        if (!para.trim()) { lines.push(''); continue; }
+        let line = '';
+        for (const word of para.split(/\s+/)) {
+          const test = line ? line + ' ' + word : word;
+          if (ctx.measureText(test).width > bw && line) { lines.push(line); line = word; }
+          else line = test;
+        }
+        lines.push(line);
+      }
+      const lh = fs; // line-height 1em
+      let y = by + bh / 2 - (lines.length * lh) / 2 + lh / 2;
+      for (const ln of lines) { ctx.fillText(ln, bx + bw / 2, y); y += lh; }
+    }
+
+    function drawBadgeIcon(ctx) {
+      const name = iconeInput.value.trim();
+      if (!name) return;
+      ctx.font = "400 140px 'Material Symbols Outlined'";
+      ctx.fillStyle = getComputedStyle(badgeIcon).color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // slot 2x2 no grid 14: x centralizado (cx = 7/14), y=10 (centro em 11/14)
+      ctx.fillText(name, EXPORT_SIZE / 2, (11 / 14) * EXPORT_SIZE);
+    }
+
+    function slugify(s) {
+      return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+    function badgeFilename(r) {
+      const parts = [estiloHidden.value];
+      if (r.text && nomeTextarea.value.trim()) parts.push(nomeTextarea.value.trim());
+      const name = parts.map(slugify).filter(Boolean).join('-');
+      return (name || 'badge') + '.png';
+    }
+
+    async function downloadBadge() {
+      const r = resolveBadge();
+      if (r.mode === 'none') return;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = EXPORT_SIZE;
+      canvas.height = EXPORT_SIZE;
+      const ctx = canvas.getContext('2d');
+
+      try {
+        await document.fonts.load("700 64px 'Syne'");
+        await document.fonts.load("400 140px 'Material Symbols Outlined'");
+        await document.fonts.ready;
+
+        if (r.mode === 'img') {
+          ctx.drawImage(await loadImg(encodeURI(r.src)), 0, 0, EXPORT_SIZE, EXPORT_SIZE);
+          if (r.icon) drawBadgeIcon(ctx);
+          if (r.text) drawBadgeText(ctx, r.box);
+        } else if (r.mode === 'svg') {
+          const cfg = SVGS[r.svg];
+          const clone = cfg.el.cloneNode(true);
+          ctx.drawImage(await svgToImg(clone.outerHTML, EXPORT_SIZE, EXPORT_SIZE), 0, 0, EXPORT_SIZE, EXPORT_SIZE);
+          ctx.drawImage(await loadImg('badges/badge-info.png'), 0, 0, EXPORT_SIZE, EXPORT_SIZE);
+          const code = svgInput.value.trim();
+          if (code) {
+            const w = 0.5 * EXPORT_SIZE, h = (4 / 14) * EXPORT_SIZE;      // slot: 7 largura, 4 altura
+            const x = 0.25 * EXPORT_SIZE, y = (6 / 14) * EXPORT_SIZE;      // x=3.5, y=6
+            ctx.drawImage(await svgToImg(code, w, h), x, y, w, h);
+          }
+        }
+
+        const link = document.createElement('a');
+        link.download = badgeFilename(r);
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (e) {
+        console.error('Falha ao gerar o PNG:', e);
+        alert('Não consegui gerar o PNG (veja o console). Rode via servidor (npm run preview), não file://; SVG colado deve ser self-contained.');
+      }
+    }
+    document.getElementById('btn-modal-baixar').addEventListener('click', downloadBadge);
+    btnBaixar.addEventListener('click', downloadBadge);
+  </script>
+</body>
+</html>

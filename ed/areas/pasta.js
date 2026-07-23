@@ -325,6 +325,12 @@
             if (!el) return;
             el.innerHTML = '';
             el.appendChild(createFolder(data));
+        },
+        /* abre o lightbox direto com uma lista de projetos (sem precisar de
+           uma pasta montada). sourceEl é o elemento de origem do FLIP. */
+        open: function (projects, sourceEl) {
+            if (!projects || !projects.length) return;
+            Lightbox.open(projects, 0, sourceEl || document.body);
         }
     };
 

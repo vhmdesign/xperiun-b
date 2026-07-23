@@ -1,0 +1,314 @@
+/* ===== Marketplace (temp/lab) — overrides locais. O visual base do hero
+   (wave, top-tag, hero-h1/hero-p, reveal) vem de root.css + formacoes/style.css
+   + formacoes/script.js, igual às páginas de área/business-cases. ===== */
+
+/* ── hero (centralizado, igual ao business-cases) ── */
+.hero { background: linear-gradient(0deg, var(--pc500-25), transparent); }
+/* pêndulo de fundo (logo animado) do DS, contido no hero (absolute, não fixed).
+   z-index: -1 → atrás do conteúdo E do cap (::after), mas acima do fundo do
+   hero. O hero já é position: relative + z-index: 1 via [data-cap-bottom]. */
+.hero .bg-pendulo { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.hero .bg-pendulo::after {
+    content: "";
+    position: absolute;
+    left: auto;
+    right: 50%;
+    top: 0;
+    width: 50vw;
+    height: 50vw;
+    z-index: 0;
+    animation: bgpendulo 10s ease infinite;
+    background-image: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M386.73 434c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.6 46.51 762.3 0 715.79l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89L210.52 589.48zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.73c27.48 9 74.02-10.54 113.37-49.89L800 84.21c-46.51-46.51-159.62-8.81-252.63 84.21M168.42 84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01L631.59 715.8z' fill='url(%23a)'/%3E%3Cdefs%3E%3ClinearGradient id='a' x1='42.11' y1='757.9' x2='757.9' y2='42.11' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239696FF' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%239696FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E%0A");
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+/* ≥1440px: o pêndulo fica verticalmente centralizado no hero. Sem transform
+   (a animação bgpendulo já usa transform: rotate) — uso top/bottom 0 + margin
+   auto, que centra um elemento absoluto de altura fixa. */
+@media (min-width: 1440px) {
+    .hero .bg-pendulo::after { top: 0; bottom: 0; margin-top: auto; margin-bottom: auto; }
+}
+@media (max-width: 576px) {
+    .hero .bg-pendulo::after { top: 0; left: auto; right: -128px; width: 512px; height: 512px; }
+}
+@keyframes bgpendulo {
+    0%   { transform: rotate(0deg);   opacity: 0; }
+    50%  { transform: rotate(-15deg); opacity: 0.05; }
+    100% { transform: rotate(0deg);   opacity: 0; }
+}
+.hero-wave.wave-section { padding-top: 128px; }
+.hero-content { max-width: 832px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.hero-title-group, .hero-bottom { align-items: center; }
+.hero-tags, .hero-actions { justify-content: center; }
+
+/* ── seção genérica (cabeçalho eyebrow/título/lede do DS) ── */
+.mk-sec { padding: 128px 0; }
+.mk-sec-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
+    display: flex; flex-direction: column; gap: 16px; }
+.mk-sec .sec-lede { max-width: 720px; }
+
+/* ── pilares (grid DS: 10 cols ≥1440, 8 cols ≤1439) ── */
+.mk-pilares { padding: 0 0 128px 0; margin-top: -128px; position: relative; z-index: 2; }
+.mk-pilares-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
+    display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px; }
+/* card sem padding + overflow hidden (o padding vai nos containers internos;
+   o overflow contém os marquees dentro do raio do card). */
+.mk-card {
+    position: relative;
+    background: linear-gradient(45deg, var(--dn800), transparent);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bb-50);
+    backdrop-filter: blur(8px);
+}
+/* orb (sem blur) com o centro no bottom-center do card. z-index -1 fica contido
+   no stacking context do card (backdrop-filter) → atrás do conteúdo, acima do bg. */
+.mk-card-orb {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    z-index: -1;
+    pointer-events: none;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--pc500-25) 0%, transparent 60%);
+}
+.mk-card-body { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+/* título com gradiente de texto do DS (igual ao duo-card-title), versão sg
+   (dourado, --text-gradient-high), weight 200. */
+.mk-card-title {
+    font-size: 1.5rem;
+    font-weight: 200;
+    line-height: 1.25em;
+    margin: 0;
+    width: fit-content;
+    max-width: 100%;
+    background-image: var(--text-gradient-high);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.mk-card-text { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* ── profissionais em destaque (card 3): lista de perfis ── */
+/* só ilustrativo: sem interação nem seleção (leitura/acessibilidade tratada
+   com aria-hidden + tabindex -1 no HTML). */
+.mk-people { display: flex; flex-direction: column; gap: 8px; padding: 0 32px 0;
+    pointer-events: none; -webkit-user-select: none; user-select: none;
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+    mask-image: linear-gradient(to bottom, #000, transparent); }
+.mk-person { display: flex; align-items: center; gap: 16px; padding: 8px; background: var(--dn500-25); border-radius: 12px; }
+.mk-person-avatar { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 8px; overflow: hidden; }
+.mk-person-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mk-person-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.mk-person-name { font: var(--label-s); color: var(--bw-75); }
+.mk-person-role { font: var(--label-xs); color: var(--bw-50); }
+.mk-person .btn { flex: 0 0 auto; }
+
+/* ── bloco de logos (container abaixo do conteúdo, no card 1) ── */
+.mk-logos { position: relative; isolation: isolate; padding: 0 0 32px 0; }
+.mk-logos-stack { position: relative; display: flex; flex-direction: column; gap: 8px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%); }
+/* marquees: cada linha rola horizontalmente; overflow esconde o excedente.
+   Os boxes usam margin-right (não gap) p/ o loop -50% fechar exato. */
+.mk-marquee { overflow: hidden; }
+.mk-marquee-track { display: flex; width: max-content; will-change: transform; }
+.mk-marquee-track--left { animation: mk-marquee-left 30s linear infinite; }
+.mk-marquee-track--right { animation: mk-marquee-right 30s linear infinite; }
+.mk-logo-box { flex: 0 0 auto; width: 128px; height: 128px; margin-right: 8px; border-radius: 16px;
+    background: var(--dn500-25); display: flex; align-items: center; justify-content: center; }
+.mk-logo-img { width: 56px; height: 56px; object-fit: contain; display: block; }
+@keyframes mk-marquee-left  { from { transform: translateX(0); }      to { transform: translateX(-50%); } }
+@keyframes mk-marquee-right { from { transform: translateX(-50%); }   to { transform: translateX(0); } }
+/* box central, na frente e centralizado, com blur do fundo. */
+.mk-logos-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 128px;
+    height: 128px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: var(--pc300-15);
+    box-shadow: inset 0 0 0 2px var(--pc300-15), 0 0 96px 0 var(--pc500-50);
+}
+.mk-logos-center-inner { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; }
+.mk-logos-center-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (prefers-reduced-motion: reduce) {
+    .mk-marquee-track--left, .mk-marquee-track--right,
+    .mk-eco-comet-dot, .mk-eco-orbit { animation: none; }
+}
+/* pausa cometas + órbita quando o card sai da viewport (via JS/IntersectionObserver) */
+.mk-eco.is-paused .mk-eco-comet-dot,
+.mk-eco.is-paused .mk-eco-orbit { animation-play-state: paused; }
+
+/* ── ecossistema (card 2): 4 nodes 64px nos cantos + hub 192px no centro ── */
+/* sem padding: o stage ocupa 100% do card (borda a borda), pra que os cometas
+   horizontais alcancem as extremas esquerda/direita. Os elementos internos são
+   afastados +32px das laterais no lugar do antigo padding, então o diagrama fica
+   idêntico e sobra a faixa externa de 32px pros cometas até a borda. */
+.mk-eco { padding: 0 0 32px 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%); }
+.mk-eco-stage { position: relative; width: 100%; min-width: 512px; height: 320px; }
+/* nodes 64px (filler) nos 4 extremos: 2 na esquerda, 2 na direita. */
+.mk-eco-node { position: absolute; width: 64px; height: 64px; z-index: 2;
+    box-shadow: 0 0 64px 32px var(--dn900); border-radius: 12px; }
+.mk-eco-node img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 12px; }
+.mk-eco-node--tl { top: 0; left: 32px; }
+.mk-eco-node--bl { bottom: 0; left: 32px; }
+.mk-eco-node--tr { top: 0; right: 32px; }
+.mk-eco-node--br { bottom: 0; right: 32px; }
+/* hub 192px, círculo (b-radius 50%), centralizado H/V. */
+.mk-eco-hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 192px;
+    height: 192px;
+    border-radius: 50%;
+    z-index: 2;
+    box-sizing: border-box;
+    padding: 16px;
+    background: var(--dn800);
+    box-shadow: 0 0 64px 0 var(--pc500-15), 0 0 64px 32px var(--dn900), inset 0 0 16px 0 var(--pc300-5);
+    overflow: hidden;
+}
+.mk-eco-hub-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 16px;
+    background: var(--pc300-5);
+    /* box-shadow: 0 0 96px 0 var(--pc500-15); */
+}
+.mk-eco-hub-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* box-shadow: 0 8px 4px 0 var(--bb-25); */
+    background-color: var(--pc300-5);
+}
+.mk-eco-hub-icon svg { display: block; }
+/* conectores dos 4 nodes até perto do centro do hub (linha 2px, bw-25).
+   Cada um: sai do node (borda interna, centro vertical), degrau de 96px
+   (reto 32, curva 32r, 32, curva 32r) e reto até o x do centro do hub.
+   Stage de 320px → hub centrado em y=160; a queda de 96px a partir do centro do
+   node (y=32 no topo / y=288 embaixo) aterrissa 32px acima/abaixo do centro do
+   hub (y=128 / y=192). Mesmo path SVG, espelhado H/V por canto via transform. */
+.mk-eco-connector-step { position: absolute; width: 96px; height: 96px; overflow: visible; }
+.mk-eco-connector-step path { stroke: var(--bw-10); stroke-width: 2; fill: none; }
+.mk-eco-connector-step--tl { left: 96px;  top: 32px; }
+.mk-eco-connector-step--tr { right: 96px; top: 32px;    transform: scaleX(-1); }
+.mk-eco-connector-step--bl { left: 96px;  bottom: 32px; transform: scaleY(-1); }
+.mk-eco-connector-step--br { right: 96px; bottom: 32px; transform: scale(-1, -1); }
+.mk-eco-connector-line { position: absolute; height: 2px; width: calc(50% - 192px); background: var(--bw-10); }
+.mk-eco-connector-line--tl { left: 192px;  top: 127px; }
+.mk-eco-connector-line--tr { right: 192px; top: 127px; }
+.mk-eco-connector-line--bl { left: 192px;  bottom: 127px; }
+.mk-eco-connector-line--br { right: 192px; bottom: 127px; }
+/* linhas horizontais: centro do hub → extrema direita / esquerda (y=160).
+   width até a borda do hub (50% - 96px); faixa externa de 32px inclusa. */
+.mk-eco-connector-line--r { right: 0; top: 159px; width: calc(50% - 96px); }
+.mk-eco-connector-line--l { left: 0;  top: 159px; width: calc(50% - 96px); }
+
+/* ── cometa pc300 percorrendo o conector inteiro (degrau + reta), intermitente ──
+   Rastro de N partículas (dots) sobre um único offset-path por canto (montado no
+   marketplace.js a partir da largura do stage). offset-distance 0→100% na fase
+   ativa; cada dot com --ramp (opacidade cabeça→cauda) e animation-delay (a cauda)
+   → o conjunto lê como um gradiente liso que SEGUE a curva. Ciclo 3s com pausa. */
+.mk-eco-comets { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.mk-eco-comet-dot {
+    position: absolute; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--pc300); opacity: 0;
+    offset-rotate: 0deg; offset-anchor: center;
+    animation: mk-comet 3s linear infinite;
+}
+@keyframes mk-comet {
+    0%           { offset-distance: 0%;   opacity: var(--ramp); }
+    55%          { offset-distance: 100%; opacity: var(--ramp); }
+    55.01%, 100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* ── 2 cometas orbitando o hub, infinitamente (sem pausa) — CSS puro e leve ──
+   UM só elemento: o conic-gradient carrega os 2 cometas (duas caudas
+   pc300→transparent com cabeças a 180° e 360°, defasadas 180°), recortado por
+   máscara radial (só o aro no raio do hub), girando via transform: rotate
+   (compositado na GPU). Centrado no hub (top/left 50% do stage = centro do
+   hub, fixo → sem JS). */
+.mk-eco-orbit { position: absolute; top: 50%; left: 50%; z-index: 3; pointer-events: none;
+    width: 192px; height: 192px; border-radius: 50%;
+    background: conic-gradient(from 0deg,
+        transparent 0deg, transparent 100deg, var(--pc300) 180deg,
+        transparent 180deg, transparent 280deg, var(--pc300) 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 93px, #000 95px 97px, transparent 99px);
+    mask: radial-gradient(circle, transparent 0 93px, #000 95px 97px, transparent 99px);
+    animation: mk-orbit 6s linear infinite; }
+@keyframes mk-orbit {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/* órbita interna (dentro do hub-inner): menor, pra caber, a 25% de opacidade. */
+.mk-eco-orbit--inner {
+    width: 128px; height: 128px; opacity: 0.25;
+    animation-name: mk-orbit-rev;
+    -webkit-mask: radial-gradient(circle, transparent 0 60px, #000 62px 63px, transparent 64px);
+    mask: radial-gradient(circle, transparent 0 60px, #000 62px 63px, transparent 64px);
+}
+/* sentido contrário: espelha (scaleX -1) — inverte giro E gradiente juntos,
+   mantendo a cabeça do cometa liderando. */
+@keyframes mk-orbit-rev {
+    from { transform: translate(-50%, -50%) scaleX(-1) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) scaleX(-1) rotate(360deg); }
+}
+/* linha 1: card 1 (4) + card 2 (6) = 10. linha 2: card 3 (6) + notif (4). */
+.mk-card--1 { grid-column: span 4; }
+.mk-card--2 { grid-column: span 6; }
+.mk-card--3 { grid-column: span 6; }
+.mk-notif   { grid-column: span 4; }
+@media (max-width: 1439px) {
+    .mk-pilares-inner { grid-template-columns: repeat(8, 1fr); }
+    .mk-card--1 { grid-column: span 3; }
+    .mk-card--2 { grid-column: span 5; }
+    .mk-card--3 { grid-column: span 5; }
+    .mk-notif   { grid-column: span 3; }
+}
+@media (max-width: 864px) {
+    .mk-pilares-inner { grid-template-columns: 1fr; }
+    .mk-card--1, .mk-card--2, .mk-card--3, .mk-notif { grid-column: 1; }
+}
+
+/* notification-card neutral (DS, hub de formações): gradiente 135° da variante
+   (neutral = pc300-15) → transparent, padding 32, radius 16, flex column gap 16. */
+.mk-notif {
+    align-self: start;
+    display: flex; flex-direction: column; gap: 16px;
+    padding: 32px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--pc300-15), transparent);
+}
+.mk-notif .tag-status { align-self: flex-start; }
+.mk-notif-text { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* override local dos botões subtle (só nesta página; não mexe no DS global). */
+.btn[data-emphasis="subtle"] {
+    background-color: var(--dn400);
+    color: var(--bw);
+    transition: 0.5s;
+    box-shadow: var(--ring-10);
+    filter: blur(2px);
+}

@@ -1,0 +1,442 @@
+    /* ==========================================
+       NÍVEL 1: COMPONENTS
+       Blocos reutilizáveis de UI. Nível 2:
+         Buttons / Inputs / Tags / Button Tags / Links / Controls / Tooltips
+       ========================================== */
+
+    .container-mm-components {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 16px 16px 16px 96px;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        isolation: isolate;
+    }
+
+    @media(max-width: 864px) {
+        .container-mm-components {
+            padding: 16px;
+        }
+    }
+
+    /* ==========================================
+       NÍVEL 2: Buttons
+       Grid 3 colunas (uma por cor) + grupos com par hover/normal.
+       ========================================== */
+
+    /* Grid 3 colunas no desktop, 2 em tablet, 1 no mobile */
+    .mm-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 864px) {
+        .mm-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width: 576px) {
+        .mm-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Coluna de uma cor: empilha os 6 grupos verticalmente */
+    .mm-col {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    /* Grupo: título + par de botões (normal + hover) */
+    .mm-grupo {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* h5.mm-grupo-titulo inside .mm-grupo: group-level labels in showcase
+       grids. Use <h5> for group labels, <h4> for section dividers.
+       This rule overrides the section-level style to a plain label. */
+    .mm-grupo > .mm-grupo-titulo {
+        font: var(--label);
+        padding-top: 0;
+        padding-bottom: 0;
+        color: var(--bw-75);
+    }
+
+    .mm-grupo > .mm-grupo-titulo::before {
+        display: none;
+    }
+
+    .mm-grupo > .mm-grupo-titulo > span {
+        background-image: none;
+        -webkit-text-fill-color: var(--bw-75);
+        color: var(--bw-75);
+    }
+
+    .mm-par {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    /* Classes de botão definidas em root.css (.btn, tamanhos, ênfases). */
+
+    /* ---- Buttons: layout da documentação de uso ---- */
+
+    .mm-docs-anatomy {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .mm-docs-anatomy-piece {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 32px;
+        min-height: 160px;
+        box-sizing: border-box;
+    }
+
+    .mm-docs-anatomy-piece::after {
+        content: "";
+        position: absolute;
+        width: 256px;
+        height: 256px;
+        background-color: var(--pc200);
+        border-radius: 100%;
+        bottom: -128px;
+        right: -128px;
+        filter: blur(256px);
+        z-index: -1;
+        opacity: 0.25;
+    }
+
+    .mm-docs-anatomy-piece > span {
+        font: var(--label-xs);
+        color: var(--bw-50);
+        line-height: 1.5;
+    }
+
+    .mm-btn-docs-ref-sizes {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .mm-btn-docs-ref-row {
+        display: grid;
+        grid-template-columns: 64px max-content 1fr;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .mm-btn-docs-ref-row > span {
+        font: var(--label-xs);
+        color: var(--bw-50);
+        min-width: 0;
+    }
+
+    .mm-btn-docs-emphases {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 16px;
+        align-items: start;
+    }
+
+    .mm-btn-docs-emphasis-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .mm-btn-docs-emphasis-item > .btn {
+        align-self: flex-start;
+    }
+
+    .mm-btn-docs-emphasis-item > span {
+        font: var(--label-xs);
+        color: var(--bw-50);
+        line-height: 1.5;
+    }
+
+    @media(max-width: 1152px) {
+        .mm-btn-docs-emphases { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media(max-width: 864px) {
+        .mm-docs-anatomy { grid-template-columns: repeat(2, 1fr); }
+        .mm-btn-docs-emphases { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    }
+
+    @media(max-width: 576px) {
+        .mm-docs-anatomy { grid-template-columns: 1fr; }
+        .mm-btn-docs-ref-row { grid-template-columns: 64px max-content 1fr; }
+        .mm-btn-docs-emphases { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 400px) {
+        .mm-btn-docs-emphases { grid-template-columns: 1fr; }
+    }
+
+    /* ==========================================
+       NÍVEL 2: Button Tags: showcase layout grid
+       Componente (.tag) vive em root.css.
+       ========================================== */
+    .mm-tags-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    .mm-tags-grid > :nth-child(odd)  { grid-column: 1; }
+    .mm-tags-grid > :nth-child(even) { grid-column: 2; }
+
+    @media(max-width: 864px) {
+        .mm-tags-grid { grid-template-columns: repeat(2, 1fr); }
+        .mm-tags-grid > :nth-child(odd)  { grid-column: 1; }
+        .mm-tags-grid > :nth-child(even) { grid-column: 2; }
+    }
+
+    @media(max-width: 576px) {
+        .mm-tags-grid { grid-template-columns: 1fr; }
+        .mm-tags-grid > :nth-child(odd),
+        .mm-tags-grid > :nth-child(even) { grid-column: auto; }
+    }
+
+    /* ==========================================
+       NÍVEL 2: Links: showcase layout grid
+       Componente (.link) vive em root.css.
+       ========================================== */
+    .mm-links-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    .mm-links-grid > * { grid-column: 1; }
+
+    @media(max-width: 864px) {
+        .mm-links-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 576px) {
+        .mm-links-grid { grid-template-columns: 1fr; }
+        .mm-links-grid > * { grid-column: auto; }
+    }
+
+    /* ==========================================
+       NÍVEL 2: Inputs: showcase layout grids
+       Componentes (input, textarea, dropdown) vivem em root.css.
+       ========================================== */
+    .mm-inputs-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    .mm-textareas-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    .mm-dropdowns-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 864px) {
+        .mm-inputs-grid,
+        .mm-textareas-grid,
+        .mm-dropdowns-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 576px) {
+        .mm-inputs-grid,
+        .mm-textareas-grid,
+        .mm-dropdowns-grid { grid-template-columns: 1fr; }
+    }
+
+    /* No showcase os dropdown-options são estáticos (não absolute): apenas exibição visual,
+       sem lógica de posicionamento. Override de root.css sem classes adicionadas ao root. */
+    .mm-dropdowns-grid .dropdown-options {
+        position: static;
+        top: auto;
+        bottom: auto;
+        z-index: auto;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    /* No showcase os inputs sao readonly, sem foco nativo */
+    .mm-inputs-grid   .input,
+    .mm-textareas-grid .textarea,
+    .mm-inputs-grid   .input-value-btn { pointer-events: none; }
+
+    /* Bloco de código para exemplos de uso na documentação */
+    /* Estilo: Notification Transparente com variante neutral (pc300) */
+    .mm-code-block {
+        position: relative;
+        isolation: isolate;
+        border-left: 4px solid var(--pc300);
+        margin: 0;
+        padding: 24px;
+        overflow-x: auto;
+        font-family: var(--font-family);
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: var(--bw-75);
+        white-space: pre;
+    }
+
+    .mm-code-block::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0.10;
+        background: linear-gradient(90deg, var(--pc300) 0%, transparent 100%);
+    }
+
+    /* ==========================================
+       NÍVEL 2: Controls
+       Variações Nível 3: checkbox, radio, switch, slider.
+       ========================================== */
+    .mm-controls-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 864px) {
+        .mm-controls-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 576px) {
+        .mm-controls-grid { grid-template-columns: 1fr; }
+    }
+
+    .mm-control-col {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    /* ==========================================
+       NÍVEL 2: Tags (status): showcase layout grid
+       Componente (.tag-status) vive em root.css.
+       ========================================== */
+    .mm-notification-tags-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 767px) {
+        .mm-notification-tags-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Cada coluna: uma cor, tags empilhadas verticalmente, width definida pelo conteúdo */
+    .mm-notification-tags-col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    /* ==========================================
+       NÍVEL 2: Tooltips: showcase layout grid
+       Componente (.tooltip) vive em root.css.
+       ========================================== */
+    .mm-tooltips-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 767px) {
+        .mm-tooltips-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .mm-tooltips-col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    /* ==========================================
+       Utilitarios: grids e tipografia de suporte
+       ========================================== */
+
+    .mm-4col {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 864px) {
+        .mm-4col { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 576px) {
+        .mm-4col { grid-template-columns: 1fr; }
+    }
+
+    .mm-desc-xs {
+        font: var(--label-xs);
+        color: var(--bw-50);
+        line-height: 1.5;
+    }
+
+
+    .mm-docs-codes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .mm-desc-list {
+        margin: 0;
+        padding-left: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .mm-desc-list li {
+        font: var(--label-xs);
+        color: var(--bw-50);
+        line-height: 1.5;
+    }

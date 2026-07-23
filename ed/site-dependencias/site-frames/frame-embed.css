@@ -18,10 +18,8 @@
     width: 100%;
     aspect-ratio: var(--frame-w, 1440) / var(--frame-h, 900);
     overflow: hidden;
-    border-radius: 16px;
-    background: var(--dn800, #14141e);
-    box-shadow: inset 0 0 0 2px var(--bw-10, rgba(245, 245, 255, 0.1));
     box-sizing: border-box;
+    border-radius: 8px;
 }
 
 .frame-embed > iframe {
@@ -33,7 +31,12 @@
     border: 0;
     transform-origin: top left;
     transform: scale(var(--frame-scale, 1));
+    /* fica invisível até o frame-embed.js escalar (evita o flash sem escala
+       / scrollbar durante o load). O container já reserva o tamanho certo. */
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
+.frame-embed.is-ready > iframe { opacity: 1; }
 
 /* puramente ilustrativo: não captura clique/scroll */
 .frame-embed--static > iframe { pointer-events: none; }

@@ -25,7 +25,7 @@
         .pf-hero {
             width: 100%;
             height: 224px;
-            background: url('/ed/site-dependencias/site-imagens/filler.webp') center / cover no-repeat;
+            background: url('/ed/site-dependencias/site-media/frames/pf-hero-img.webp') center / cover no-repeat;
         }
 
         /* header de perfil (capa borrada atrás + overlay bb-75) */
@@ -43,7 +43,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: url('/ed/site-dependencias/site-imagens/filler.webp') center / cover no-repeat;
+            background: url('/ed/site-dependencias/site-media/frames/pf-hero-img.webp') center / cover no-repeat;
             transform: scale(1.5);
             filter: blur(8px);
             z-index: 0;
@@ -82,17 +82,19 @@
         .pf-contact-btn { width: 100%; }
 
         /* Na web */
-        .pf-web { display: flex; flex-direction: column; gap: 16px; }
-        .pf-web-row {
-            display: flex; align-items: center; gap: 12px; text-decoration: none;
-            padding: 8px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--dn500-50), transparent);
-            box-shadow: inset 0 0 4px 0 var(--bw-25);
-        }
+        /* separação estilo depos-logos-section: linhas via box-shadow inset (bw-15) */
+        .pf-web { display: flex; flex-direction: column; box-shadow: inset 0 2px 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15), inset 2px 0 0 0 var(--bw-15), inset -2px 0 0 0 var(--bw-15); }
+        .pf-web-row { display: flex; align-items: center; gap: 12px; text-decoration: none; padding: 16px; box-shadow: inset 0 -2px 0 0 var(--bw-15); }
+        .pf-web-row:last-child { box-shadow: none; }
+        .pf-contact-btn { margin-top: 16px; }
         .pf-web-logo { display: inline-flex; flex: 0 0 auto; }
         .pf-web-logo svg { width: 24px; height: 24px; display: block; fill: var(--bw-25); }
-        .pf-web-logo .ms { font-size: 24px; color: var(--bw-25); }
+        .pf-web-logo .ms { font-size: 24px; color: var(--bw-25); font-variation-settings: 'wght' 200; }
+        /* ícones sociais via mask (colorido por background-color, como os svg fill) */
+        .pf-ico { width: 24px; height: 24px; display: block; background-color: var(--bw-25);
+            -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+        .pf-ico--instagram { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill='none' d='M0 0h24v24H0z'%3E%3C/path%3E%3Cpath d='M12.001 9C10.3436 9 9.00098 10.3431 9.00098 12C9.00098 13.6573 10.3441 15 12.001 15C13.6583 15 15.001 13.6569 15.001 12C15.001 10.3427 13.6579 9 12.001 9ZM12.001 7C14.7614 7 17.001 9.2371 17.001 12C17.001 14.7605 14.7639 17 12.001 17C9.24051 17 7.00098 14.7629 7.00098 12C7.00098 9.23953 9.23808 7 12.001 7ZM18.501 6.74915C18.501 7.43926 17.9402 7.99917 17.251 7.99917C16.5609 7.99917 16.001 7.4384 16.001 6.74915C16.001 6.0599 16.5617 5.5 17.251 5.5C17.9393 5.49913 18.501 6.0599 18.501 6.74915ZM12.001 4C9.5265 4 9.12318 4.00655 7.97227 4.0578C7.18815 4.09461 6.66253 4.20007 6.17416 4.38967C5.74016 4.55799 5.42709 4.75898 5.09352 5.09255C4.75867 5.4274 4.55804 5.73963 4.3904 6.17383C4.20036 6.66332 4.09493 7.18811 4.05878 7.97115C4.00703 9.0752 4.00098 9.46105 4.00098 12C4.00098 14.4745 4.00753 14.8778 4.05877 16.0286C4.0956 16.8124 4.2012 17.3388 4.39034 17.826C4.5591 18.2606 4.7605 18.5744 5.09246 18.9064C5.42863 19.2421 5.74179 19.4434 6.17187 19.6094C6.66619 19.8005 7.19148 19.9061 7.97212 19.9422C9.07618 19.9939 9.46203 20 12.001 20C14.4755 20 14.8788 19.9934 16.0296 19.9422C16.8117 19.9055 17.3385 19.7996 17.827 19.6106C18.2604 19.4423 18.5752 19.2402 18.9074 18.9085C19.2436 18.5718 19.4445 18.2594 19.6107 17.8283C19.8013 17.3358 19.9071 16.8098 19.9432 16.0289C19.9949 14.9248 20.001 14.5389 20.001 12C20.001 9.52552 19.9944 9.12221 19.9432 7.97137C19.9064 7.18906 19.8005 6.66149 19.6113 6.17318C19.4434 5.74038 19.2417 5.42635 18.9084 5.09255C18.573 4.75715 18.2616 4.55693 17.8271 4.38942C17.338 4.19954 16.8124 4.09396 16.0298 4.05781C14.9258 4.00605 14.5399 4 12.001 4ZM12.001 2C14.7176 2 15.0568 2.01 16.1235 2.06C17.1876 2.10917 17.9135 2.2775 18.551 2.525C19.2101 2.77917 19.7668 3.1225 20.3226 3.67833C20.8776 4.23417 21.221 4.7925 21.476 5.45C21.7226 6.08667 21.891 6.81333 21.941 7.8775C21.9885 8.94417 22.001 9.28333 22.001 12C22.001 14.7167 21.991 15.0558 21.941 16.1225C21.8918 17.1867 21.7226 17.9125 21.476 18.55C21.2218 19.2092 20.8776 19.7658 20.3226 20.3217C19.7668 20.8767 19.2076 21.22 18.551 21.475C17.9135 21.7217 17.1876 21.89 16.1235 21.94C15.0568 21.9875 14.7176 22 12.001 22C9.28431 22 8.94514 21.99 7.87848 21.94C6.81431 21.8908 6.08931 21.7217 5.45098 21.475C4.79264 21.2208 4.23514 20.8767 3.67931 20.3217C3.12348 19.7658 2.78098 19.2067 2.52598 18.55C2.27848 17.9125 2.11098 17.1867 2.06098 16.1225C2.01348 15.0558 2.00098 14.7167 2.00098 12C2.00098 9.28333 2.01098 8.94417 2.06098 7.8775C2.11014 6.8125 2.27848 6.0875 2.52598 5.45C2.78014 4.79167 3.12348 4.23417 3.67931 3.67833C4.23514 3.1225 4.79348 2.78 5.45098 2.525C6.08848 2.2775 6.81348 2.11 7.87848 2.06C8.94514 2.0125 9.28431 2 12.001 2Z'%3E%3C/path%3E%3C/svg%3E"); }        .pf-ico--linkedin { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill='none' d='M0 0h24v24H0z'%3E%3C/path%3E%3Cpath d='M12.001 9.55005C12.9181 8.61327 14.1121 8 15.501 8C18.5385 8 21.001 10.4624 21.001 13.5V21H19.001V13.5C19.001 11.567 17.434 10 15.501 10C13.568 10 12.001 11.567 12.001 13.5V21H10.001V8.5H12.001V9.55005ZM5.00098 6.5C4.17255 6.5 3.50098 5.82843 3.50098 5C3.50098 4.17157 4.17255 3.5 5.00098 3.5C5.8294 3.5 6.50098 4.17157 6.50098 5C6.50098 5.82843 5.8294 6.5 5.00098 6.5ZM4.00098 8.5H6.00098V21H4.00098V8.5Z'%3E%3C/path%3E%3C/svg%3E"); }
+        .pf-ico--youtube { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill='none' d='M0 0h24v24H0z'%3E%3C/path%3E%3Cpath d='M19.6069 6.99482C19.5307 6.69695 19.3152 6.47221 19.0684 6.40288C18.6299 6.28062 16.501 6 12.001 6C7.50098 6 5.37252 6.28073 4.93225 6.40323C4.68776 6.47123 4.4723 6.69593 4.3951 6.99482C4.2863 7.41923 4.00098 9.19595 4.00098 12C4.00098 14.804 4.2863 16.5808 4.3954 17.0064C4.47126 17.3031 4.68676 17.5278 4.93251 17.5968C5.37252 17.7193 7.50098 18 12.001 18C16.501 18 18.6299 17.7194 19.0697 17.5968C19.3142 17.5288 19.5297 17.3041 19.6069 17.0052C19.7157 16.5808 20.001 14.8 20.001 12C20.001 9.2 19.7157 7.41923 19.6069 6.99482ZM21.5442 6.49818C22.001 8.28 22.001 12 22.001 12C22.001 12 22.001 15.72 21.5442 17.5018C21.2897 18.4873 20.547 19.2618 19.6056 19.5236C17.8971 20 12.001 20 12.001 20C12.001 20 6.10837 20 4.39637 19.5236C3.45146 19.2582 2.70879 18.4836 2.45774 17.5018C2.00098 15.72 2.00098 12 2.00098 12C2.00098 12 2.00098 8.28 2.45774 6.49818C2.71227 5.51273 3.45495 4.73818 4.39637 4.47636C6.10837 4 12.001 4 12.001 4C12.001 4 17.8971 4 19.6056 4.47636C20.5505 4.74182 21.2932 5.51636 21.5442 6.49818ZM10.001 15.5V8.5L16.001 12L10.001 15.5Z'%3E%3C/path%3E%3C/svg%3E"); }
         .pf-web-name { flex: 1 1 auto; font: var(--label-s); color: var(--bw-75); }
         .pf-web-arrow { font-size: 18px; color: var(--bw-75); }
 
@@ -131,7 +133,19 @@
         .pf-work-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
         .pf-work-scrim { position: absolute; inset: 0; background: linear-gradient(to top, var(--dn800), transparent, transparent); }
         .pf-work-title { position: absolute; left: 32px; right: 32px; bottom: 32px; font: var(--label-l); font-weight: 400; color: var(--bw); margin: 0; }
-        .pf-work-card { background: var(--dn800); border-radius: 16px; overflow: hidden; }
+        .pf-work-card { background: linear-gradient(135deg, var(--dn500-50), transparent); border-radius: 16px; overflow: hidden; }
+        .pf-work-card > * { opacity: 0; }
+        /* modo works-only (?works na URL): esconde tudo (mantendo o layout) e
+           mostra só os cards de trabalho com conteúdo, no MESMO tamanho/posição
+           do portfólio — pra sobrepor exatamente os placeholders quando embutido. */
+        body.works-only .pf { visibility: hidden; }
+        body.works-only .pf-works, body.works-only .pf-works * { visibility: visible; }
+        body.works-only .pf-work-card { background: var(--dn800); box-shadow: none; }
+        body.works-only .pf-work-card > * { opacity: 1; }
+        /* modo full (?full na URL): portfólio inteiro COM o conteúdo dos works
+           visível (preview completo, sem esconder o resto). */
+        body.show-works .pf-work-card { background: var(--dn800); }
+        body.show-works .pf-work-card > * { opacity: 1; }
         .pf-work-body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: center; padding: 0 32px 32px 32px; }
         .pf-work-desc { grid-column: span 3; font: var(--p-s); color: var(--bw-75); margin: 0; }
         .pf-work-cta { grid-column: span 1; }
@@ -143,7 +157,7 @@
         <div class="pf-hero"></div>
 
         <div class="pf-profile">
-            <img class="pf-avatar" src="/ed/site-dependencias/site-imagens/filler.webp" alt="Leonardo Karpinski">
+            <img class="pf-avatar" src="/ed/site-dependencias/site-media/professores/prof_leo.webp" alt="Leonardo Karpinski">
             <div class="pf-info">
                 <div class="pf-name-row">
                     <span class="pf-name">Leonardo Karpinski</span>
@@ -169,22 +183,22 @@
                             <span class="pf-web-arrow ms">arrow_outward</span>
                         </span>
                         <span class="pf-web-row">
-                            <span class="pf-web-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill="none" d="M0 0h24v24H0z"></path><path d="M13.0281 2.00073C14.1535 2.00259 14.7238 2.00855 15.2166 2.02322L15.4107 2.02956C15.6349 2.03753 15.8561 2.04753 16.1228 2.06003C17.1869 2.1092 17.9128 2.27753 18.5503 2.52503C19.2094 2.7792 19.7661 3.12253 20.3219 3.67837C20.8769 4.2342 21.2203 4.79253 21.4753 5.45003C21.7219 6.0867 21.8903 6.81337 21.9403 7.87753C21.9522 8.1442 21.9618 8.3654 21.9697 8.58964L21.976 8.78373C21.9906 9.27647 21.9973 9.84686 21.9994 10.9723L22.0002 11.7179C22.0003 11.809 22.0003 11.903 22.0003 12L22.0002 12.2821L21.9996 13.0278C21.9977 14.1532 21.9918 14.7236 21.9771 15.2163L21.9707 15.4104C21.9628 15.6347 21.9528 15.8559 21.9403 16.1225C21.8911 17.1867 21.7219 17.9125 21.4753 18.55C21.2211 19.2092 20.8769 19.7659 20.3219 20.3217C19.7661 20.8767 19.2069 21.22 18.5503 21.475C17.9128 21.7217 17.1869 21.89 16.1228 21.94C15.8561 21.9519 15.6349 21.9616 15.4107 21.9694L15.2166 21.9757C14.7238 21.9904 14.1535 21.997 13.0281 21.9992L12.2824 22C12.1913 22 12.0973 22 12.0003 22L11.7182 22L10.9725 21.9993C9.8471 21.9975 9.27672 21.9915 8.78397 21.9768L8.58989 21.9705C8.36564 21.9625 8.14444 21.9525 7.87778 21.94C6.81361 21.8909 6.08861 21.7217 5.45028 21.475C4.79194 21.2209 4.23444 20.8767 3.67861 20.3217C3.12278 19.7659 2.78028 19.2067 2.52528 18.55C2.27778 17.9125 2.11028 17.1867 2.06028 16.1225C2.0484 15.8559 2.03871 15.6347 2.03086 15.4104L2.02457 15.2163C2.00994 14.7236 2.00327 14.1532 2.00111 13.0278L2.00098 10.9723C2.00284 9.84686 2.00879 9.27647 2.02346 8.78373L2.02981 8.58964C2.03778 8.3654 2.04778 8.1442 2.06028 7.87753C2.10944 6.81253 2.27778 6.08753 2.52528 5.45003C2.77944 4.7917 3.12278 4.2342 3.67861 3.67837C4.23444 3.12253 4.79278 2.78003 5.45028 2.52503C6.08778 2.27753 6.81278 2.11003 7.87778 2.06003C8.14444 2.04816 8.36564 2.03847 8.58989 2.03062L8.78397 2.02433C9.27672 2.00969 9.8471 2.00302 10.9725 2.00086L13.0281 2.00073ZM12.0003 7.00003C9.23738 7.00003 7.00028 9.23956 7.00028 12C7.00028 14.7629 9.23981 17 12.0003 17C14.7632 17 17.0003 14.7605 17.0003 12C17.0003 9.23713 14.7607 7.00003 12.0003 7.00003ZM12.0003 9.00003C13.6572 9.00003 15.0003 10.3427 15.0003 12C15.0003 13.6569 13.6576 15 12.0003 15C10.3434 15 9.00028 13.6574 9.00028 12C9.00028 10.3431 10.3429 9.00003 12.0003 9.00003ZM17.2503 5.50003C16.561 5.50003 16.0003 6.05994 16.0003 6.74918C16.0003 7.43843 16.5602 7.9992 17.2503 7.9992C17.9395 7.9992 18.5003 7.4393 18.5003 6.74918C18.5003 6.05994 17.9386 5.49917 17.2503 5.50003Z"></path></svg></span>
+                            <span class="pf-web-logo"><span class="pf-ico pf-ico--instagram"></span></span>
                             <span class="pf-web-name">Instagram</span>
                             <span class="pf-web-arrow ms">arrow_outward</span>
                         </span>
                         <span class="pf-web-row">
-                            <span class="pf-web-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.94048 4.99993C6.94011 5.81424 6.44608 6.54702 5.69134 6.85273C4.9366 7.15845 4.07187 6.97605 3.5049 6.39155C2.93793 5.80704 2.78195 4.93715 3.1105 4.19207C3.43906 3.44699 4.18654 2.9755 5.00048 2.99993C6.08155 3.03238 6.94097 3.91837 6.94048 4.99993ZM7.00048 8.47993H3.00048V20.9999H7.00048V8.47993ZM13.3205 8.47993H9.34048V20.9999H13.2805V14.4299C13.2805 10.7699 18.0505 10.4299 18.0505 14.4299V20.9999H22.0005V13.0699C22.0005 6.89993 14.9405 7.12993 13.2805 10.1599L13.3205 8.47993Z"></path></svg></span>
+                            <span class="pf-web-logo"><span class="pf-ico pf-ico--linkedin"></span></span>
                             <span class="pf-web-name">LinkedIn</span>
                             <span class="pf-web-arrow ms">arrow_outward</span>
                         </span>
                         <span class="pf-web-row">
-                            <span class="pf-web-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill="none" d="M0 0h24v24H0z"></path><path d="M12.2439 4C12.778 4.00294 14.1143 4.01586 15.5341 4.07273L16.0375 4.09468C17.467 4.16236 18.8953 4.27798 19.6037 4.4755C20.5486 4.74095 21.2913 5.5155 21.5423 6.49732C21.942 8.05641 21.992 11.0994 21.9982 11.8358L21.9991 11.9884L21.9991 11.9991C21.9991 11.9991 21.9991 12.0028 21.9991 12.0099L21.9982 12.1625C21.992 12.8989 21.942 15.9419 21.5423 17.501C21.2878 18.4864 20.5451 19.261 19.6037 19.5228C18.8953 19.7203 17.467 19.8359 16.0375 19.9036L15.5341 19.9255C14.1143 19.9824 12.778 19.9953 12.2439 19.9983L12.0095 19.9991L11.9991 19.9991C11.9991 19.9991 11.9956 19.9991 11.9887 19.9991L11.7545 19.9983C10.6241 19.9921 5.89772 19.941 4.39451 19.5228C3.4496 19.2573 2.70692 18.4828 2.45587 17.501C2.0562 15.9419 2.00624 12.8989 2 12.1625V11.8358C2.00624 11.0994 2.0562 8.05641 2.45587 6.49732C2.7104 5.51186 3.45308 4.73732 4.39451 4.4755C5.89772 4.05723 10.6241 4.00622 11.7545 4H12.2439ZM9.99911 8.49914V15.4991L15.9991 11.9991L9.99911 8.49914Z"></path></svg></span>
+                            <span class="pf-web-logo"><span class="pf-ico pf-ico--youtube"></span></span>
                             <span class="pf-web-name">YouTube</span>
                             <span class="pf-web-arrow ms">arrow_outward</span>
                         </span>
-                        <a class="btn pf-contact-btn" data-size="m" data-emphasis="medium" href="#"><span class="material-symbols-outlined">mail</span>Contato</a>
                     </div>
+                    <a class="btn pf-contact-btn" data-size="m" data-emphasis="medium" href="#"><span class="material-symbols-outlined">mail</span>Contato</a>
                 </div>
 
                 <div class="pf-sep"></div>
@@ -262,7 +276,7 @@
                 <div class="pf-works">
                     <article class="pf-work-card">
                         <div class="pf-work">
-                            <img class="pf-work-img" src="/ed/site-dependencias/site-imagens/filler.webp" alt="">
+                            <img class="pf-work-img" src="/ed/site-dependencias/site-media/frames/pf-work-scrim-img01.webp" alt="">
                             <div class="pf-work-scrim" aria-hidden="true"></div>
                             <h3 class="pf-work-title">Dashboard de Logística</h3>
                         </div>
@@ -273,7 +287,7 @@
                     </article>
                     <article class="pf-work-card">
                         <div class="pf-work">
-                            <img class="pf-work-img" src="/ed/site-dependencias/site-imagens/filler.webp" alt="">
+                            <img class="pf-work-img" src="/ed/site-dependencias/site-media/frames/pf-work-scrim-img02.webp" alt="">
                             <div class="pf-work-scrim" aria-hidden="true"></div>
                             <h3 class="pf-work-title">Dashboard Comercial</h3>
                         </div>
@@ -286,5 +300,10 @@
             </div>
         </div>
     </div>
+    <script>
+        var pfQ = location.search;
+        if (/\bfull\b/.test(pfQ)) document.body.classList.add('show-works');
+        else if (/works/.test(pfQ)) document.body.classList.add('works-only');
+    </script>
 </body>
 </html>

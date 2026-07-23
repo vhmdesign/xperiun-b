@@ -13,6 +13,7 @@
    Roda em CI (GitHub Actions) antes do FTP upload. Roda local com
    `npm run build`. Preview com `npm run preview`. */
 import { promises as fs } from 'fs';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
@@ -110,8 +111,32 @@ async function build() {
         counts[kind]++;
     }
 
+    await stampSymbolsCacheBust();
+
     const dt = ((Date.now() - t0) / 1000).toFixed(2);
     console.log(`Build done in ${dt}s — ${counts.html} html, ${counts.css} css, ${counts.js} js, ${counts.copy} copy${counts.fallback ? `, ${counts.fallback} fallback` : ''}`);
+}
+
+/* Cache-bust automático do subset de ícones: carimba o ?v= do
+   material-symbols-200.woff2 no fonts.css (do dist) com um hash do CONTEÚDO do
+   woff2. Assim, toda vez que o subset muda (ícone novo), a URL muda e o browser
+   busca a fonte nova — sem depender de ninguém lembrar de subir o ?v na mão.
+   Só mexe no dist; a fonte de verdade (ed/) fica intacta. */
+async function stampSymbolsCacheBust() {
+    const woff2 = path.join(OUT, 'site-dependencias/site-fonts/material-symbols-200.woff2');
+    const cssPath = path.join(OUT, 'site-dependencias/site-fonts/fonts.css');
+    try {
+        const buf = await fs.readFile(woff2);
+        const hash = crypto.createHash('md5').update(buf).digest('hex').slice(0, 8);
+        const css = await fs.readFile(cssPath, 'utf-8');
+        const next = css.replace(/material-symbols-200\.woff2(\?v=[A-Za-z0-9]+)?/g, `material-symbols-200.woff2?v=${hash}`);
+        if (next !== css) {
+            await fs.writeFile(cssPath, next);
+            console.log(`  material-symbols cache-bust: ?v=${hash}`);
+        }
+    } catch (err) {
+        console.warn('  [warn] cache-bust do material-symbols pulado: ' + err.message);
+    }
 }
 
 build().catch((err) => {

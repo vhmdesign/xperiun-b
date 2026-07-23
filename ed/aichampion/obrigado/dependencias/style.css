@@ -1,0 +1,180 @@
+  /* ===========================================================
+     Obrigado, Formação AI Champion (pós-compra, recusa do upsell)
+     Sem vídeo: agradecimento + tentativa de reconversão pro Vitalício
+     + botão de voltar pra oferta anterior. Lockup AI Champion (.brand)
+     no topo. Tokens e .btn vêm do root.css.
+     =========================================================== */
+
+  html, body { margin: 0; background: #00000A; }
+  :root { --font-display: 'Poppins', sans-serif; }
+
+  /* brilho "canoa" pc300 subindo pelas bordas (copiado do AI Champion) */
+  .vit-canoa {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 150% 125% at 50% 0%,
+        transparent 70%,
+        rgba(100, 100, 255, 0.25) 90%,
+        rgba(100, 100, 255, 1) 100%),
+      linear-gradient(to top,
+        rgba(100, 100, 255, 0.1),
+        transparent);
+  }
+
+  /* logo AI Champion no topo (lockup .brand: símbolo + wordmark), no fluxo */
+  .brand {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 24px 0;
+    color: var(--bw);
+    line-height: 0;
+  }
+  .symbol { width: 48px; height: 48px; display: block; fill: currentColor; }
+  .wordmark { height: 25px; width: auto; display: block; fill: currentColor; }
+
+  /* seção única: ocupa a viewport, conteúdo centralizado no eixo vertical */
+  .vit {
+    position: relative;
+    z-index: 10;
+    min-height: calc(100dvh - 96px); /* 96px = logo relative no topo (48 + margens 24+24) */
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 0 56px;
+  }
+
+  /* grid do DS: Wide 10 cols / max 1440, cai 8/6/4 ; gaps 32/32/24/16 */
+  .vit-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 24px;
+    align-items: center;
+  }
+
+  /* título: 6 colunas centradas, base leve, gradiente bw -> ln800 */
+  .vit-title {
+    grid-column: 3 / span 6;
+    margin: 0;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(1.75rem, 0.75rem + 2.7778vw, 3.25rem);
+    line-height: 1.2;
+    background-image: linear-gradient(90deg, var(--bw), var(--ln800));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 16px rgba(0, 0, 10, 1));
+  }
+  .vit-title .vit-em { font-weight: 700; }
+
+  /* corpo: 6 colunas centradas, tamanho normal, em 3 parágrafos */
+  .vit-sub {
+    grid-column: 3 / span 6;
+    margin: 0;
+    max-width: 60ch;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+    font: var(--p);
+    color: var(--bw-75);
+  }
+  .vit-sub p { margin: 0; }
+  /* ênfase: success500 (sem bold) */
+  .vit-em { color: var(--sc500); }
+
+  /* CTA + aviso */
+  .vit-cta-wrap {
+    grid-column: 3 / span 6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .vit-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  /* botões sem radius (cantos retos) */
+  .vit-cta-row .btn { border-radius: 0; }
+
+  /* estilo "wave" (mesmo do .completa-cta-wave da home): gradiente animado */
+  @keyframes wave-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .btn.vit-cta[data-emphasis] {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-image: linear-gradient(90deg, var(--pc500), var(--pp500), var(--er500), var(--pp500), var(--pc500));
+    background-size: 600% 600%;
+    transition: color 0.5s;
+    animation: wave-shift 5s ease infinite;
+  }
+  .btn.vit-cta[data-emphasis]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bw-75);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .btn.vit-cta[data-emphasis]:hover { color: var(--bb); }
+  .btn.vit-cta[data-emphasis]:hover::before { opacity: 1; }
+
+  /* aviso: tag acima do texto, centralizado */
+  .vit-oneclick-note {
+    margin: 0;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    text-align: right;
+    font: 400 0.875rem/1.5 var(--font-display);
+    color: var(--bw-50);
+  }
+  .vit-oneclick-note .tag-status { flex-shrink: 0; }
+  .vit-note-em { color: var(--wr300); }
+
+  /* ===== responsivo do grid do DS: 10 -> 8 -> 6 -> 4 (media DEPOIS da base) ===== */
+  @media (max-width: 1439px) {
+    .vit-grid { grid-template-columns: repeat(8, 1fr); }
+    .vit-title, .vit-sub, .vit-cta-wrap { grid-column: 2 / span 6; }
+  }
+  @media (max-width: 864px) {
+    .vit-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    .vit-title, .vit-sub, .vit-cta-wrap { grid-column: 1 / -1; }
+  }
+  @media (max-width: 576px) {
+    .vit-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .symbol { width: 40px; height: 40px; }
+    .wordmark { height: 21px; }
+    .vit { padding: 0 0 40px; }
+    .vit-cta { width: 100%; }
+  }

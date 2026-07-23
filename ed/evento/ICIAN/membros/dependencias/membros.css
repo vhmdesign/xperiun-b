@@ -1,0 +1,393 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal; font-style: normal; line-height: 1;
+    letter-spacing: normal; text-transform: none; white-space: nowrap;
+    display: inline-block; direction: ltr; -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+}
+/* ícones filled (ex.: play) — precisa do eixo FILL (vem do Google Fonts nesta página) */
+.material-symbols-outlined.is-filled { font-variation-settings: 'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 24; }
+
+html, body { margin: 0; }
+
+body {
+    font-family: var(--font-family);
+    color: var(--bw);
+    background: var(--bb);
+    min-height: 100dvh;
+    position: relative;            /* âncora do .plat-bg (absolute, rola junto com a página) */
+}
+/* fundo do body: a mesma imagem, blur 32px e 50% de transparência, atrás de tudo */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    z-index: -1;
+    background: url("/ed/evento/ICIAN/membros/dependencias/plat-bg.webp") center / cover no-repeat;
+    filter: blur(32px);
+    opacity: 0.25;
+    transform: scale(1.1);         /* esconde a borda esmaecida pelo blur */
+    pointer-events: none;
+}
+
+/* ── Menu do topo: estilos vêm de menu-topo.css; aqui só o background da página ── */
+.menu-topo { background: linear-gradient(180deg, var(--pc900), transparent); }
+
+/* ── Wrap do conteúdo ──────────────────────────────────────────── */
+.plat-wrap {
+    position: relative;
+    padding-bottom: 64px;
+}
+
+/* ── Container de fundo 16:9: filler de imagem + 2 scrims de bw ──── */
+.plat-bg {
+    position: absolute; top: 0; left: 0;
+    width: 100%;
+    aspect-ratio: 16 / 9;          /* altura base 16:9; o min-height (JS = menu+hero) estende quando o hero é maior */
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;          /* camada decorativa não captura cliques */
+}
+/* faixa de certificado (64px) no topo empurra o conteúdo; o bg acompanha */
+.has-cert-topbar .plat-bg { top: 64px; }
+.plat-bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;             /* a imagem acompanha toda a altura do bg (inclusive o min-height) */
+    display: block;
+    /* fade vertical agora é máscara na própria imagem (some pra baixo, revela o bg do body) */
+    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+}
+/* scrim horizontal (esq→dir): bb sólido → transparente no centro → bb-25 na direita */
+.plat-bg-scrim-h {
+    position: absolute; inset: 0;
+    background: linear-gradient(to right,
+        var(--bb)    0%,
+        transparent  50%,
+        var(--bb-25) 75%);
+    /* mesma máscara vertical da imagem: some pra baixo junto com o bg */
+    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+}
+/* abaixo de 864px o scrim horizontal não existe mais */
+@media (max-width: 864px) {
+    .plat-bg-scrim-h { display: none; }
+}
+
+/* ── Orbs decorativas: glow ambiente top e bottom (padrão DS pc500) ── */
+.plat-orbs {
+    position: absolute; inset: 0;
+    /* inset:0 dimensiona pela altura do conteúdo (body). Mas o .plat-bg é absolute (não
+       cresce o body) e a 100% de largura tem altura 56.25vw (16:9). Quando o bg é mais alto
+       que o conteúdo, as orbs parariam curtas. O min-height fixa o piso na altura do bg,
+       então a camada fica sempre = max(altura do conteúdo, altura do bg). */
+    min-height: 56.25vw;
+    z-index: 0;                    /* acima do bg, abaixo do conteúdo */
+    pointer-events: none;
+    overflow: hidden;
+}
+.plat-orb { position: absolute; inset: 0; }
+/* centro do gradiente no canto: top-left e bottom-right (sem blur, o falloff é do próprio gradiente) */
+.plat-orb--top    { background: radial-gradient(ellipse at top left,     var(--pc500-15) 0%, transparent 50%); }
+.plat-orb--bottom { background: radial-gradient(ellipse at bottom right, var(--pc500-15) 0%, transparent 50%); }
+
+/* ── Conteúdo da área de membros ────────────────────────────────────────
+   Grid de plataforma (DS): 10 colunas, gutter 32px, margem 16px, 100%
+   width acima de 1440 (NÃO capa em 1440, diferente do site institucional).
+   Cai 8 (≤1439) / 6 (≤864) / 4 (≤576). */
+.plat-conteudo {
+    position: relative;
+    z-index: 1;                    /* acima do container de fundo */
+    padding: 0 64px;               /* margem lateral 64px acima de 1440; sem top/bottom */
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    overflow-x: clip;              /* carrossel sangra no padding sem scroll horizontal; Y flui no scroll da página */
+}
+@media (max-width: 1439px) {
+    .plat-conteudo { grid-template-columns: repeat(8, 1fr); padding: 0 16px; }
+}
+@media (max-width: 864px) {
+    .plat-conteudo { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+}
+@media (max-width: 576px) {
+    .plat-conteudo { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+}
+
+/* ── Container: título + texto (span 6, margin-top 96px) ─────────── */
+.plat-hero {
+    grid-column: span 5;           /* 5 de 10 colunas (base ≥1440) */
+    margin-top: 128px;
+    display: flex; flex-direction: column; gap: 32px;
+}
+.plat-event-logo { display: block; align-self: flex-start; max-width: 100%; }   /* tamanho original; flex-start evita o stretch do flex column deformar a logo */
+.plat-hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.plat-hero-title { font: var(--h2); color: var(--bw); margin: 0; max-width: 32ch; }   /* h2 no tamanho, <h1> na semântica */
+.plat-hero-text  { font: var(--p-l); color: var(--bw-75); margin: 0; max-width: 64ch; }
+.plat-hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 1439px) {
+    .plat-hero { grid-column: span 5; margin-top: 0; padding-top: 96px; }   /* mantém 5 colunas no grid de 8 cols */
+}
+@media (max-width: 864px) {
+    /* topo = altura do 16:9 (56.25%) menos os 72px do menu-topo, pra começar logo abaixo da imagem-banner */
+    .plat-hero { grid-column: 1 / -1; margin-top: 0; padding-top: calc(56.25% - 72px); }
+}
+
+/* ── Seção de cards 16:9 em carrossel (cada card = 3 colunas) ─────────
+   Largura do card = 3 colunas do grid do tier: 3·colW + 2·gap,
+   com colW = (100% − (cols−1)·gap) / cols. 5 cards excedem 10 cols,
+   então o track rola e os botões navegam. */
+.plat-cards {
+    grid-column: 1 / -1;
+    margin-top: 96px;
+    --cols: 10;                    /* colunas do tier (espelha o grid) */
+    --gap: 32px;                   /* gutter do tier */
+    --edge: 64px;                  /* padding lateral do plat-conteudo no tier (pra sangrar até a borda) */
+    display: flex; flex-direction: column; gap: 24px;
+}
+@media (max-width: 1439px) { .plat-cards { --cols: 8; --gap: 32px; --edge: 16px; margin-top: 0; padding-top: 48px; } }
+@media (max-width: 864px)  { .plat-cards { --cols: 6; --gap: 24px; } }
+@media (max-width: 576px)  { .plat-cards { --cols: 4; --gap: 16px; } }
+
+.plat-cards-nav { display: flex; gap: 8px; align-self: flex-end; }
+/* prev/next desativados quando não há anterior/próximo */
+.plat-cards-nav .btn:disabled { opacity: 0.25; pointer-events: none; }
+
+.plat-cards-track {
+    display: flex;
+    gap: var(--gap);
+    /* sangra até a borda da viewport (cancela o padding do plat-conteudo) e recoloca
+       o alinhamento por dentro: 1º card no conteúdo, peek indo até a borda. */
+    margin-inline: calc(-1 * var(--edge));
+    padding-inline: var(--edge);
+    scroll-padding-inline: var(--edge);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;                 /* Firefox */
+    -ms-overflow-style: none;              /* IE/Edge legado */
+}
+.plat-cards-track::-webkit-scrollbar { display: none; }
+
+.plat-card {
+    position: relative;
+    flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols) * 3 + 2 * var(--gap));
+    aspect-ratio: 16 / 9;
+    min-height: 192px;             /* piso: quando o 16:9 daria menos que isso, mantém 192px */
+    scroll-snap-align: start;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--dn900-75);
+    box-shadow: var(--ring-10);            /* anel 2px embutido (DS: nada de border 1px) */
+}
+.plat-card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* vídeo do card: sobre a imagem, aparece/toca no hover (imagem estática por baixo) */
+.plat-card-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.plat-card:hover .plat-card-video { opacity: 1; }
+
+/* hover: scrim pc800 sobre a imagem (abaixo do play e do título) */
+.plat-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, var(--pc800), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.plat-card:hover::after { opacity: 1; }
+
+/* scrim de baixo pra cima em dn800: dois gradientes empilhados (um forte até 50%, um suave até 100%) */
+.plat-card-scrim {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(to top, var(--dn800) 0%, transparent 50%),
+        linear-gradient(to top, var(--dn800) 0%, transparent 100%);
+}
+
+/* botão de play no canto superior direito (estilo do .depos-play: círculo glass) */
+.plat-card-play {
+    position: absolute; top: 16px; right: 16px; z-index: 1;
+    width: 48px; height: 48px;
+    border-radius: 1920px;
+    background: var(--bw-15);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--bw);
+    transition: background 0.2s;
+}
+.plat-card-play:hover { background: var(--bw-25); }
+.plat-card-play .material-symbols-outlined {
+    font-size: 32px;
+    font-variation-settings: 'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 24;   /* play preenchido, peso 200 */
+}
+
+/* container inferior: título + barra de progresso, 100% width, padding 16px */
+.plat-card-info {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    width: 100%; padding: 16px; box-sizing: border-box;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.plat-card-info > .tag-status,
+.plat-card-meta { align-self: flex-start; }   /* evita esticar na coluna */
+.plat-card-meta { display: flex; align-items: center; gap: 8px; }
+.plat-card-title { font: var(--label); color: var(--bw); }
+.plat-card-progress {
+    width: 100%; height: 4px;
+    background: var(--ln500-15);
+    border-radius: 9999px; overflow: hidden;
+}
+.plat-card-progress-fill {
+    height: 100%; width: 0;                /* largura = fração assistida (via JS) */
+    background: var(--pc300);
+    border-radius: inherit;
+    transition: width 0.3s ease;
+}
+/* aula concluída: barra cheia em sg500 */
+.plat-card-progress.is-done .plat-card-progress-fill { background: var(--sg500); }
+
+/* Larguras do card por breakpoint, sempre deixando 64px de peek do próximo card.
+   Fórmula: card + gap(s) + 64 = área visível (com a sangria do track). */
+@media (max-width: 864px) {
+    /* metade das colunas + peek de 32px (2 cards visíveis, gap 24) */
+    .plat-card { flex-basis: calc(50% - 32px); }
+}
+@media (max-width: 576px) {
+    /* largura cheia + peek de 32px (1 card visível, gap 16) */
+    .plat-card { flex-basis: calc(100% - 32px); }
+}
+
+/* ══ Popup dos cards (visual = .course-modal .lb-modal do /ed/areas/) ══ */
+.course-modal {
+    position: fixed; inset: 0; z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s;
+}
+.course-modal.is-open { visibility: visible; transition: visibility 0s linear 0s; }
+.course-modal-backdrop {
+    position: absolute; inset: 0;
+    background: var(--bb-75);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 0; transition: opacity 0.3s ease;
+}
+.course-modal.is-open .course-modal-backdrop { opacity: 1; }
+.course-modal-card {
+    position: relative; width: 100%; max-width: 688px; box-sizing: border-box;
+    border-radius: 16px; overflow: hidden auto; max-height: calc(100vh - 32px);
+    background: var(--dn800);
+    opacity: 0; transform: translateY(16px) scale(0.98);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.course-modal.is-open .course-modal-card { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+    .course-modal, .course-modal-card, .course-modal-backdrop { transition: none; }
+}
+.course-modal-card::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    box-shadow: inset 0 0 4px 0 var(--bw-15); pointer-events: none; z-index: 3;
+}
+.course-modal-close { position: absolute; top: 16px; right: 16px; z-index: 4; }
+.course-modal-media {
+    position: relative; aspect-ratio: 16 / 9;
+    background-size: cover; background-position: center;
+    display: flex; align-items: flex-end;
+    padding: 48px 48px 32px 48px; box-sizing: border-box;
+}
+/* vídeo da mídia do modal: cobre a área; a imagem (background-image) fica como holder por baixo */
+.course-modal-media-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.course-modal-media::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, var(--dn800), transparent);
+    pointer-events: none;
+}
+.course-modal-title { position: relative; z-index: 1; font: var(--h4); color: var(--bw); margin: 0; }
+.course-modal-body { padding: 0 48px 48px 48px; display: flex; flex-direction: column; gap: 32px; }
+.course-modal-stats { display: flex; }
+.course-modal-stat { padding: 0 32px; }
+.course-modal-stat:first-child { padding-left: 0; }
+.course-modal-stat:last-child { padding-right: 0; }
+.course-modal-stat + .course-modal-stat { box-shadow: inset 2px 0 0 var(--bw-10); }   /* divider 2px via ring (DS: nada de border 1px) */
+.course-modal-stat-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.course-modal-stat-label { font: var(--label-s); color: var(--bw-50); }
+.course-modal-stat-value { font: var(--label); color: var(--bw); }
+.course-modal-desc { display: flex; flex-direction: column; gap: 16px; }
+.course-modal-desc p { font: var(--p); color: var(--bw-75); margin: 0; }
+@media (max-width: 576px) {
+    .course-modal-body { padding: 24px; }
+    .course-modal-media { padding: 24px; }
+    .course-modal-stat { padding: 0 16px; }
+}
+
+/* overrides .lb-* (dots + rodapé "Assistir agora" + navs do popup) */
+.lb-card { transform-origin: center center; }
+.lb-card .course-modal-body { padding: 0 48px 16px 48px; }
+@media (max-width: 576px) { .lb-card .course-modal-body { padding: 0 24px 16px 24px; } }
+.lb-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.lb-dots { display: flex; align-items: center; gap: 6px; }
+.lb-dot {
+    width: 8px; height: 8px; border-radius: 50%; padding: 0; border: none; cursor: pointer;
+    background: var(--bw-25);
+    transition: background 0.3s ease-out, transform 0.3s ease-out;
+}
+.lb-dot.is-active { background: var(--bw-75); transform: scale(1.1); }
+.lb-nav-row { display: flex; justify-content: space-between; }
+
+/* ══ Popup Certificado (aberto pelo menu; mesmo visual do popup das aulas) ══ */
+.aula-modal {
+    position: fixed; inset: 0; z-index: 10001;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    background: var(--bb-50);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.aula-modal.is-open { opacity: 1; visibility: visible; }
+.aula-modal-card {
+    width: 100%; max-width: 360px;
+    background: var(--dn800);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: left;
+    display: flex; flex-direction: column; gap: 8px;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 0.25s ease;
+}
+.aula-modal.is-open .aula-modal-card { transform: none; }
+.aula-modal-title { font: var(--h6); font-weight: 400; color: var(--bw); margin: 0; }
+.aula-modal-sub { font: var(--label-xs); color: var(--bw-50); margin: 0; }
+.aula-modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+.aula-modal-actions .btn { flex: 1; }   /* botão estica (igual às aulas) */
+#aula-modal-certificado .aula-progress { padding: 0; }   /* o card do modal já tem padding */
+.aula-progress { display: flex; flex-direction: column; gap: 16px; }
+.aula-progress-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.aula-progress-info { min-width: 0; }
+.aula-progress-stats { display: flex; flex-direction: column; gap: 16px; }
+.aula-progress-stat { display: flex; flex-direction: column; gap: 4px; }
+.aula-progress-num { font-size: 1.25rem; font-weight: 700; line-height: 1; color: var(--bw); }
+.aula-progress-label { font: var(--label-xs); color: var(--bw-50); }
+.aula-progress-ring { position: relative; width: 144px; height: 144px; flex-shrink: 0; }
+.aula-progress-ring-svg { display: block; width: 144px; height: 144px; }
+.aula-progress-ring-svg circle[data-progress-ring] { transition: stroke-dashoffset 0.4s ease; }
+.aula-progress-ring-img {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+}
+.aula-progress.is-complete .aula-progress-num { color: var(--sg300); }
+.aula-progress.is-complete .aula-progress-ring-svg circle[data-progress-ring] { stroke: var(--sg300); }

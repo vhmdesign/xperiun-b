@@ -54,7 +54,11 @@
             var ifr = el.querySelector('iframe');
             if (ifr) {
                 autoHeight(el);
-                ifr.addEventListener('load', function () { autoHeight(el); });
+                var ready = function () { autoHeight(el); scaleOne(el); el.classList.add('is-ready'); };
+                if (ifr.contentDocument && ifr.contentDocument.readyState === 'complete') ready();
+                ifr.addEventListener('load', ready);
+            } else {
+                el.classList.add('is-ready');
             }
         });
 

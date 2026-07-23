@@ -1467,6 +1467,8 @@
     .tag-status.is-gradient[data-semantic="warning"]      { background-image: linear-gradient(90deg, var(--wr500-15), transparent); }
     .tag-status[data-semantic="neutral"]  { background-color: var(--pc300-15); color: var(--pc200); }
     .tag-status.is-gradient[data-semantic="neutral"]  { background-color: transparent; background-image: linear-gradient(90deg, var(--pc300-15), transparent); }
+    .tag-status[data-semantic="gold"]  { background-color: var(--sg500-15); color: var(--sg300); }
+    .tag-status.is-gradient[data-semantic="gold"]  { background-color: transparent; background-image: linear-gradient(90deg, var(--sg500-15), transparent); }
 
     /* ==========================================
        Tooltips

@@ -33,7 +33,7 @@
     function mount() {
         var placeholder = document.querySelector('[data-footer]');
         if (!placeholder) return;
-        fetch(footerHtmlUrl)
+        fetch(footerHtmlUrl, { cache: 'no-cache' })
             .then(function (r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.text();

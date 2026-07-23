@@ -1,0 +1,235 @@
+    /* ==========================================
+       NÍVEL 1: LAYOUTS
+       Estruturas de página: Grid, Spacing, Containers, Breakpoints.
+       ========================================== */
+
+    .container-mm-layouts {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 16px 16px 16px 96px;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        isolation: isolate;
+    }
+
+    @media(max-width: 864px) {
+        .container-mm-layouts {
+            padding: 16px;
+        }
+    }
+
+    /* ---- Tokens compartilhados ---- */
+    .mm-layout-bp-code {
+        font: var(--label-s);
+        color: var(--pp300);
+    }
+
+    .mm-layout-note {
+        font: var(--label-xs);
+        color: var(--bw-50);
+        margin: 0;
+    }
+
+    .mm-layout-bp-tag {
+        font: var(--h5);
+        color: var(--bw);
+    }
+
+    /* ==========================================
+       Grid vis: usado dentro de .mm-layout-bp-card
+       ========================================== */
+    .mm-layout-grid-table {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    @media (max-width: 864px) {
+        .mm-layout-grid-table {
+            gap: 24px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .mm-layout-grid-table {
+            gap: 16px;
+        }
+    }
+
+    .mm-layout-grid-row {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        overflow-x: auto;
+    }
+
+    .mm-layout-grid-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .mm-layout-grid-vis {
+        display: grid;
+        grid-template-columns: repeat(var(--cols), 1fr);
+        gap: var(--gutter);
+        min-width: var(--vis-min, 0px);
+        max-width: var(--vis-max, none);
+    }
+
+    .mm-layout-grid-vis > div {
+        height: 128px;
+        background: linear-gradient(to bottom, var(--bw-5), transparent);
+    }
+
+    /* ==========================================
+       Spacing vis: usado dentro de .mm-layout-bp-card
+       ========================================== */
+    .mm-layout-spacing-vis {
+        display: flex;
+        gap: var(--gap, 32px);
+        width: 100%;
+        align-self: center;
+        justify-self: stretch;
+    }
+
+    .mm-layout-spacing-vis > div {
+        flex: 1;
+        height: 128px;
+        background: linear-gradient(to bottom, var(--bw-5), transparent);
+    }
+
+    /* ==========================================
+       Breakpoints: régua + cards
+       ========================================== */
+
+    /* Régua proporcional */
+    .mm-layout-bp-ruler {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .mm-layout-bp-ruler-track {
+        display: flex;
+        height: 64px;
+        gap: 2px;
+    }
+
+    .mm-layout-bp-ruler-range {
+        flex: var(--flex, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        background: linear-gradient(90deg,
+            var(--bw-5), transparent);
+        border-radius: 0px;
+        overflow: hidden;
+        min-width: 0;
+        padding: 0 8px;
+    }
+
+    .mm-layout-bp-ruler-range--wide {
+        background: var(--pc500-15);
+    }
+
+    .mm-layout-bp-ruler-range > span {
+        font: var(--label-xs);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .mm-layout-bp-ruler-range > span:first-child {
+        color: var(--bw-75);
+    }
+
+    .mm-layout-bp-ruler-range > span:last-child {
+        color: var(--bw-50);
+    }
+
+    .mm-layout-bp-ruler-labels {
+        display: flex;
+        font: var(--label-xs);
+        color: var(--bw-25);
+    }
+
+    .mm-layout-bp-ruler-labels > span {
+        flex: var(--flex, 0 0 auto);
+    }
+
+    /* Cards de breakpoint */
+    .mm-layout-bp-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+    }
+
+    @media (max-width: 864px) {
+        .mm-layout-bp-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .mm-layout-bp-cards {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
+
+    .mm-layout-bp-card {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        justify-items: center;
+        align-items: center;
+        padding: 32px;
+        min-height: 256px;
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 0px;
+        background: var(--dn500-10);
+    }
+
+    .mm-layout-bp-card::after {
+        content: "";
+        position: absolute;
+        width: 256px;
+        height: 256px;
+        background-color: var(--pc200);
+        border-radius: 100%;
+        bottom: -128px;
+        right: -128px;
+        filter: blur(256px);
+        z-index: -1;
+        opacity: 0.25;
+    }
+
+    .mm-layout-bp-card > .mm-layout-bp-code {
+        grid-row: 1;
+        align-self: start;
+    }
+
+    .mm-layout-bp-card-name {
+        grid-row: 2;
+        font: var(--h4);
+        color: var(--bw);
+    }
+
+    .mm-layout-bp-card-specs {
+        grid-row: 3;
+        font: var(--label-xs);
+        color: var(--bw-50);
+        align-self: end;
+    }

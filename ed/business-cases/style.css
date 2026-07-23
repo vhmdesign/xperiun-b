@@ -1,0 +1,413 @@
+/* ===== Business Cases (temp/lab) — overrides locais. O visual base (hero wave,
+   sec-eyebrow/sec-title/sec-lede, sec-cta, .btn, grid) vem de root.css +
+   formacoes/style.css, e o reveal das seções vem de formacoes/script.js
+   (mesmo setup das páginas de área). ===== */
+
+/* ── hero (centralizado, igual às páginas de área) ── */
+.hero { background: linear-gradient(0deg, var(--pc500-25), transparent); }
+/* pêndulo de fundo (logo animado) do DS, contido no hero (absolute, não fixed).
+   z-index: -1 → atrás do conteúdo E do cap (::after), mas acima do fundo do
+   hero. O hero já é position: relative + z-index: 1 via [data-cap-bottom]. */
+.hero .bg-pendulo { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.hero .bg-pendulo::after {
+    content: "";
+    position: absolute;
+    left: auto;
+    right: 50%;
+    top: 0;
+    width: 50vw;
+    height: 50vw;
+    z-index: 0;
+    animation: bgpendulo 10s ease infinite;
+    background-image: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M386.73 434c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.6 46.51 762.3 0 715.79l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89L210.52 589.48zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.73c27.48 9 74.02-10.54 113.37-49.89L800 84.21c-46.51-46.51-159.62-8.81-252.63 84.21M168.42 84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01L631.59 715.8z' fill='url(%23a)'/%3E%3Cdefs%3E%3ClinearGradient id='a' x1='42.11' y1='757.9' x2='757.9' y2='42.11' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239696FF' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%239696FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E%0A");
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+/* ≥1440px: o pêndulo fica verticalmente centralizado no hero. Sem transform
+   (a animação bgpendulo já usa transform: rotate) — uso top/bottom 0 + margin
+   auto, que centra um elemento absoluto de altura fixa. */
+@media (min-width: 1440px) {
+    .hero .bg-pendulo::after { top: 0; bottom: 0; margin-top: auto; margin-bottom: auto; }
+}
+@media (max-width: 576px) {
+    .hero .bg-pendulo::after { top: 0; left: auto; right: -128px; width: 512px; height: 512px; }
+}
+@keyframes bgpendulo {
+    0%   { transform: rotate(0deg);   opacity: 0; }
+    50%  { transform: rotate(-15deg); opacity: 0.05; }
+    100% { transform: rotate(0deg);   opacity: 0; }
+}
+.hero-wave.wave-section { padding-top: 128px; }
+.hero-content { max-width: 832px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.hero-title-group, .hero-bottom { align-items: center; }
+.hero-tags, .hero-actions { justify-content: center; }
+
+/* ── seções extras (alinhadas ao grid de conteúdo 1152) ── */
+.bc-sec { padding: 128px 0; }
+.bc-sec--flush-top { padding-top: 0; margin-top: -128px; }
+/* segunda seção (overview): bottom da sec-cards-duo (208px), top padrão. */
+#bc-overview { padding: 128px 0 208px; }
+@media (max-width: 576px) { #bc-overview { padding: 96px 0 176px; } }
+.bc-inner { max-width: 1152px; margin: 0 auto; padding: 0 16px; box-sizing: border-box; }
+.bc-header { display: flex; flex-direction: column; gap: 16px; max-width: 680px; }
+.bc-header--center { max-width: 720px; margin-left: auto; margin-right: auto; align-items: center; text-align: center; }
+
+/* ── overview: bento de Step Cards. Linha 1: header (6 cols) + card 01 (4 cols).
+   Linha 2: card 02 (4 cols) + card 03 (6 cols). Step Card = base troca-card
+   (home.css), versão dark, trazida pra cá porque a página não carrega home.css.
+   Tipografia do header segue o DS (sec-title/lede). ── */
+.bc-how-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px;
+    box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px; }
+.bc-how-header { grid-column: 1 / span 6; align-self: center;
+    display: flex; flex-direction: column; gap: 16px; }
+.bc-step { grid-column: span 4; }
+.bc-step--wide { grid-column: span 6; }
+
+/* Step Card do DS (base troca-card do home.css), SEM imagem: só o número
+   grande + título + texto, no fundo dn800 com glow roxo. Trazido pra cá
+   porque a página não carrega o home.css. A célula .bc-step é o container
+   (padding do meta acompanha a largura). */
+.bc-step .troca-card { position: relative; isolation: isolate; overflow: hidden;
+    border-radius: 16px; height: 100%; display: flex; flex-direction: column; background: none; }
+.bc-step .troca-card::before { content: ""; position: absolute; inset: 0; z-index: -1;
+    border-radius: inherit; pointer-events: none;
+    background: linear-gradient(135deg, var(--dn800), transparent); }
+.bc-step .troca-card::after { content: ""; position: absolute; top: -128px; left: 50%;
+    transform: translateX(-50%); width: 256px; height: 256px; border-radius: 50%;
+    background: var(--pc300); filter: blur(256px); pointer-events: none; z-index: -1; }
+.bc-step .troca-meta { position: relative; isolation: isolate; height: 100%;
+    display: flex; flex-direction: column; gap: 10px; justify-content: flex-end;
+    padding: 128px 64px 64px; }
+.bc-step .troca-num { position: absolute; left: -32px; top: -32px; width: 120%;
+    font-size: 16rem; line-height: 1em; font-weight: 400; font-style: italic;
+    background: linear-gradient(135deg, var(--pc300-25), transparent);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    pointer-events: none; user-select: none; z-index: -1; }
+.bc-step .troca-card-title { font: var(--h6); font-weight: 400; margin: 0; color: var(--bw); }
+.bc-step .troca-card-body { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* Só o card 3 (bc-step--wide) tem imagem/demo. HORIZONTAL por padrão:
+   imagem à DIREITA full-bleed + texto à esquerda (row-reverse); a demo
+   estica pra altura do card e a imagem preenche com height:100%; meta com
+   altura natural e sem padding do lado da imagem. Só vira vertical no
+   mobile (<=576, mais abaixo). */
+.bc-step--wide .troca-card { flex-direction: row-reverse; }
+.bc-step--wide .troca-demo { position: relative; flex: 0 0 50%; padding: 0; }
+.bc-step--wide .troca-demo-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+    mask-image: linear-gradient(to right, transparent, black); }
+.bc-step--wide .troca-meta { flex: 0 0 50%; height: auto; padding: 128px 0 64px 64px; }
+
+/* ── explore: container de 5 cols (media full em cima + texto 4 cols embaixo)
+   + layer1 (544px) ao lado ── */
+.bc-explore-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px;
+    box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: 32px; }
+/* container de 5 colunas no lugar do texto: media em cima (5 cols, full) +
+   texto embaixo (4 cols). subgrid alinha as colunas internas ao grid pai;
+   align-content space-between mantém o texto no bottom quando o container
+   estica pela altura da layer ao lado. */
+.bc-explore-col { grid-column: span 5; display: grid; grid-template-columns: subgrid;
+    row-gap: 32px; align-content: space-between; }
+.bc-explore-media { grid-column: 1 / -1; grid-row: 1; position: relative; aspect-ratio: 4 / 3; }
+.bc-explore-text { grid-column: span 4; grid-row: 2; display: flex; flex-direction: column; gap: 16px; }
+/* layer1 (fixa 544px) ao lado do container, conteúdo ancorado no bottom e
+   na frente do container (z-index). */
+.bc-explore-layer { grid-column: 6 / span 4; display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: flex-start; gap: 24px;
+    position: relative; z-index: 1; min-width: 0; }
+.bc-explore-search { display: flex; align-items: stretch; gap: 8px; width: 100%; }
+.bc-explore-dropdown { flex: 1; min-width: 0; }
+/* disabled = opacity 0.5 + sem eventos de cursor. */
+.bc-explore-search .btn:disabled { opacity: 0.5; pointer-events: none; }
+.bc-explore-layer-stack { position: relative; width: 544px; }
+.bc-explore-layer-stack img { display: block; }
+/* base: layer1 define o tamanho (544px), com radius + máscara. */
+.bc-explore-layer-img--1 { width: 544px; height: auto; border-radius: 64px;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,1));
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,1)); }
+/* layer3 sobreposta por cima da layer1 e de todas as tabs. */
+.bc-explore-layer-img--3 { position: absolute; top: 0; left: 0; width: 100%; height: auto; z-index: 10; }
+/* tabs (svg) empilhadas, centralizadas na horizontal, atrás da layer3. Cada
+   uma 16px mais pra cima e um z-index atrás da anterior (--1 é a da frente). */
+.bc-explore-layer-tab { position: absolute; left: 50%; transform: translateX(-50%); display: block; height: auto;
+    transform-origin: bottom left; transition: transform 0.4s ease; }
+/* tab selecionada no dropdown: levanta (rotate 3.75° do bottom-left + sobe
+   16px) e o fill vira pc500. */
+.bc-explore-layer-tab path { transition: fill 0.4s ease; }
+.bc-explore-layer-tab.is-active { transform: translateX(-50%) translateY(-16px) rotate(3.75deg); }
+.bc-explore-layer-tab.is-active path { fill: var(--pp500); }
+.bc-explore-layer-tab--1 { bottom: calc(50% - 8px);  z-index: 6; width: 352px; }
+.bc-explore-layer-tab--2 { bottom: calc(50% + 8px);  z-index: 5; width: 340px; }
+.bc-explore-layer-tab--3 { bottom: calc(50% + 24px); z-index: 4; width: 328px; }
+.bc-explore-layer-tab--4 { bottom: calc(50% + 40px); z-index: 3; width: 316px; }
+.bc-explore-layer-tab--5 { bottom: calc(50% + 56px); z-index: 2; width: 304px; }
+.bc-explore-layer-tab--6 { bottom: calc(50% + 72px); z-index: 1; width: 292px; }
+/* 2 imagens 100% width, skew(45deg,0) com origem no top-left; a 1ª colada
+   no top-left, a 2ª deslocada 128px pra baixo. */
+.bc-explore-shot { position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 9;
+    border-radius: 12px; overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,10,0.4);
+    transform: skew(45deg, 0); transform-origin: top left;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black);
+    mask-image: linear-gradient(to bottom, transparent, black); }
+.bc-explore-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bc-explore-shot--1 { top: 0; z-index: 1; }
+.bc-explore-shot--2 { top: 128px; opacity: 0.5; }
+@media (max-width: 1439px) {
+    .bc-explore-inner { grid-template-columns: repeat(8, 1fr); }
+    .bc-explore-col { grid-column: span 5; }
+    .bc-explore-layer { grid-column: 6 / -1; }
+}
+@media (max-width: 864px) {
+    .bc-explore-inner { grid-template-columns: 1fr; }
+    .bc-explore-col { grid-column: 1; grid-template-columns: 1fr; }
+    .bc-explore-media, .bc-explore-text, .bc-explore-layer { grid-column: 1; }
+}
+
+/* ── aprenda ativamente: container light (tipo courses-depos-track), fundo
+   ln100 e conteúdo em cores escuras pra contraste. ── */
+.bc-active-track { position: relative; }
+.bc-active-sec { position: relative; background: var(--ln100); }
+/* notch/wave no topo (mesmo da sec-courses): a faixa ln100 sobe à direita
+   e a wave curva faz a transição da seção escura acima. */
+.bc-active-sec::before {
+    content: ''; position: absolute; top: -80px; left: calc(50% + 64px); right: 0;
+    height: 96px; background: var(--ln100); pointer-events: none;
+}
+.bc-active-sec::after {
+    content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+    width: 160px; height: 96px; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48' viewBox='0 0 80 48' fill='none'%3E%3Cpath d='M80 0V48H0V40H2.74516C11.2321 40 19.3714 36.6286 25.3726 30.6274L46.6274 9.3726C52.6286 3.3714 60.7679 0 69.2548 0H80Z' fill='%23EBEBF5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.bc-active-sec .sec-eyebrow { color: var(--pc500); }
+.bc-active-sec .sec-title { color: var(--bb); }
+.bc-active-sec .sec-lede { color: var(--bb-75); }
+
+/* ── Business Cases: 5 cards especiais (container ln200 + inner ln300),
+   cada card ocupa metade das colunas. Seção light (sem notch). ── */
+.bc-cases-sec { background: var(--ln100); }
+.bc-cases-sec .sec-eyebrow { color: var(--pc500); }
+.bc-cases-sec .sec-title { color: var(--bb); }
+
+/* sobreposição sticky (padrão courses-depos-track): bc-cases-sec fica sticky
+   (z0, grudada no rodapé) e a Portfólio sobe por cima (z1, bg sólido).
+   --bc-cases-height é atualizada pelo script.js. */
+.bc-cases-track { position: relative; }
+.bc-cases-track .bc-cases-sec {
+    position: sticky;
+    top: calc(100vh - var(--bc-cases-height, 100vh));
+    z-index: 0;
+    padding-bottom: 256px;
+}
+.bc-cases-track .bc-portfolio-over {
+    position: relative;
+    z-index: 1;
+    background: var(--bb);
+    padding-bottom: 0;
+}
+@media (max-width: 576px) {
+    .bc-cases-track .bc-cases-sec { padding-bottom: 192px; }
+}
+/* grid imitando o .courses-inner: header span 5 + grid aninhado repeat(10)
+   com cards em bento (spans 3/3/4...). */
+.bc-cases-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box; }
+/* header ocupa uma célula de card no grid; cards fluem em volta. */
+.bc-cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.bc-cases-header { display: flex; flex-direction: column; justify-content: flex-start; gap: 16px; }
+.bc-case-card { background: var(--ln200); border-radius: 24px; padding: 8px; }
+.bc-case-card[data-area] { cursor: pointer; }
+/* número de Business Cases no canto inferior direito do painel. */
+.bc-case-count { position: absolute; right: 24px; bottom: 24px; font-size: 2.5rem; line-height: 1; color: var(--bb); }
+/* ícone arrow_outward no canto inferior esquerdo do painel. */
+.bc-case-arrow { position: absolute; left: 24px; bottom: 24px; font-size: 2rem; color: var(--bb); }
+/* esconde o "Conhecer todos" do lightbox (só nesta página). */
+.lb-foot .btn { display: none; }
+.bc-case-card-inner { position: relative; overflow: hidden; background: var(--ln300); border-radius: 16px 16px 0 0; pointer-events: none; }
+/* 3 imagens empilhadas (top 0/32/64) + painel no bottom (top 200, bw). */
+.bc-case-img { position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; border-radius: 16px; box-shadow: 0 0 16px 0 var(--bb-25); transition: transform 0.4s ease; }
+.bc-case-img--1 { top: 0; opacity: 0.5; }
+.bc-case-img--2 { top: 16px; opacity: 0.75; }
+.bc-case-img--3 { top: 32px; }
+/* scrim sobre a imagem 3 (bb 0.25 embaixo → transparent em cima). */
+.bc-case-scrim { position: absolute; left: 0; top: 32px; width: 100%; aspect-ratio: 16 / 9;
+    border-radius: 16px; pointer-events: none; transition: transform 0.4s ease;
+    background: linear-gradient(to top, var(--bb-25), transparent); }
+/* hover: 2ª imagem desce 32px, 3ª (e o scrim) descem 64px. */
+.bc-case-card:hover .bc-case-img--2 { transform: translateY(32px); }
+.bc-case-card:hover .bc-case-img--3,
+.bc-case-card:hover .bc-case-scrim { transform: translateY(64px); }
+.bc-case-panel { position: relative; margin-top: 56.25%; width: 100%; min-height: 128px; padding: 0 24px 24px 24px; box-sizing: border-box; background: var(--ln200); border-radius: 0 16px 0 0; }
+/* label do painel: "Business Cases" (bb) + área (h4, bb-50). */
+.bc-case-label { position: relative; z-index: 1; top: -1.25rem; max-width: 75%;
+    display: flex; flex-direction: column; gap: 4px; }
+.bc-case-label span { font: var(--label-xs); color: var(--bb); }
+.bc-case-label h4 { font: var(--label); color: var(--bb-50); margin: 0; }
+
+/* continuação plana à ESQUERDA da wave (espelho do .bc-active-sec::before,
+   metade + lado invertido). */
+.bc-case-panel::before {
+    content: ''; position: absolute; top: -40px; left: 0; right: calc(50% + 32px);
+    height: 48px; background: var(--ln200); pointer-events: none;
+    border-radius: 16px 0 0 0;
+}
+/* mesma wave do .bc-active-sec::after, pela metade (80×48) e invertida na
+   horizontal; cor = ln200 (a do painel), pra parecer o painel subindo. */
+.bc-case-panel::after {
+    content: ''; position: absolute; top: -40px; left: 50%;
+    transform: translateX(-50%) scaleX(-1); width: 80px; height: 48px; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48' viewBox='0 0 80 48' fill='none'%3E%3Cpath d='M80 0V48H0V40H2.74516C11.2321 40 19.3714 36.6286 25.3726 30.6274L46.6274 9.3726C52.6286 3.3714 60.7679 0 69.2548 0H80Z' fill='%23E1E1EB'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+/* ≤1152: 2 por linha. */
+@media (max-width: 1152px) {
+    .bc-cases-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+/* ≤864: cards 100% width (1 por linha). */
+@media (max-width: 864px) {
+    .bc-cases-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 576px) {
+    .bc-cases-grid { gap: 16px; }
+}
+
+/* mesmo grid da explore: imagens (5 cols, esq) + conteúdo (4 cols, dir);
+   pula a coluna 6 no Wide. */
+.bc-active-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px;
+    box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: 32px; align-items: center; }
+.bc-active-media { grid-column: span 5; position: relative; aspect-ratio: 4 / 3; }
+.bc-active-text { grid-column: 7 / span 4; display: flex; flex-direction: column; gap: 16px; }
+/* duas imagens ~4 cols de width (80% do container 5 cols): 1ª top-right, 2ª bottom-left. */
+.bc-active-img { position: absolute; width: 80%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; }
+.bc-active-img--1 { top: 0; right: 0; }
+.bc-active-img--2 { bottom: 0; left: 0; z-index: 1; }
+@media (max-width: 1439px) {
+    .bc-active-inner { grid-template-columns: repeat(8, 1fr); }
+    .bc-active-media { grid-column: span 5; }
+    .bc-active-text { grid-column: 6 / -1; }
+}
+@media (max-width: 1152px) {
+    .bc-active-inner { grid-template-columns: 1fr; }
+    .bc-active-media, .bc-active-text { grid-column: 1; }
+    /* inverte a ordem: conteúdo em cima, imagens embaixo. */
+    .bc-active-text { order: -1; }
+}
+
+/* Portfólio: mesmo grid da bc-active-sec, mas invertido — texto (conteúdo)
+   à esquerda, ilustração (iframe) à direita. */
+.bc-portfolio-over .bc-active-text { grid-column: 1 / span 4; }
+.bc-portfolio-over .bc-portfolio-media { grid-column: 6 / span 4; grid-row: 1; position: relative; }
+/* overlay works: na MESMA linha do frame base (grid-row 1), deslocado 1 coluna
+   pra direita — base cols 6-9, overlay cols 7-10. */
+.bc-portfolio-over .bc-portfolio-embed { grid-column: 7 / -1; grid-row: 1; z-index: 1; transform: translateY(-64px); }
+@media (max-width: 1439px) {
+    .bc-portfolio-over .bc-active-text { grid-column: 1 / span 3; }
+    .bc-portfolio-over .bc-portfolio-media { grid-column: 4 / span 4; }
+    .bc-portfolio-over .bc-portfolio-embed { grid-column: 5 / -1; }
+}
+@media (max-width: 1152px) {
+    /* vertical: texto full em cima; base + overlay continuam na MESMA linha
+       (offset) embaixo. */
+    .bc-portfolio-over .bc-active-inner { grid-template-columns: repeat(6, 1fr); }
+    .bc-portfolio-over .bc-active-text { grid-column: 1 / -1; grid-row: 1; }
+    .bc-portfolio-over .bc-portfolio-media { grid-column: 1 / span 5; grid-row: 2; }
+    .bc-portfolio-over .bc-portfolio-embed { grid-column: 2 / -1; grid-row: 2; }
+}
+
+/* ── grades de imagem (filler) ── */
+.bc-img-grid { display: grid; gap: 24px; margin-top: 56px; }
+.bc-img-2 { grid-template-columns: repeat(2, 1fr); }
+.bc-img-3 { grid-template-columns: repeat(3, 1fr); }
+.bc-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 16px; display: block; }
+
+/* ── portfólio: iframe à ESQUERDA, texto à DIREITA ── */
+.bc-portfolio { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: center; }
+.bc-portfolio .bc-header { max-width: none; }
+.bc-portfolio-frame { margin: 0; opacity: 0.5; }
+/* CTA "Crie seu portfólio": alinhado à esquerda, do tamanho do conteúdo. */
+.bc-portfolio-cta { display: flex; }
+
+/* Desktop DS (≤1439): 8 colunas. Linha 1: header + card 01 (span 4 cada).
+   Cards 02 e 03 ocupam as 8 colunas (full width), um por linha.
+   (os cards são os filhos 2, 3 e 4 do inner; n+3 = card 02 e card 03) */
+@media (max-width: 1439px) {
+    .bc-how-inner { grid-template-columns: repeat(8, 1fr); }
+    .bc-how-header { grid-column: 1 / span 4; }
+    .bc-step { grid-column: span 4; }
+    .bc-step:nth-child(n+3) { grid-column: 1 / -1; }
+}
+@media (max-width: 864px) {
+    .bc-how-inner { grid-template-columns: 1fr; }
+    .bc-how-header, .bc-step, .bc-step--wide { grid-column: 1; }
+    .bc-img-2, .bc-img-3 { grid-template-columns: 1fr; }
+    .bc-portfolio { grid-template-columns: 1fr; }
+}
+/* Mobile (viewport ≤576): padding do meta cai pra 32 e o card 3 vira
+   vertical (texto em cima, imagem embaixo em 16/10). */
+@media (max-width: 576px) {
+    .bc-step .troca-meta { padding: 128px 32px 32px; }
+    .bc-step--wide .troca-card { flex-direction: column-reverse; }
+    .bc-step--wide .troca-demo { flex: 0 0 auto; }
+    .bc-step--wide .troca-demo-img { position: static; width: 100%; height: auto; aspect-ratio: 16 / 10;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, black);
+        mask-image: linear-gradient(to bottom, transparent, black); }
+    .bc-step--wide .troca-meta { flex: 0 0 auto; padding: 128px 32px 32px; }
+}
+
+/* ── reveal no scroll (JS adiciona .is-entered; padrão do formacoes/script.js).
+   Estado inicial = escondido (fade + blur, sobe 32px onde não há transform
+   próprio); a transição usa ease-out. ────────────────────────────────────── */
+/* bc-step + layer-stack: sem transform próprio → fade + blur + sobe 32px. */
+.bc-step,
+.bc-explore-layer-stack {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(32px);
+    transition: opacity 0.7s ease-out, filter 0.7s ease-out, transform 0.7s ease-out;
+}
+.bc-step.is-entered,
+.bc-explore-layer-stack.is-entered {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+/* bc-explore-shot: desce de cima (translateY -32px), preserva o skew, SEM blur. */
+.bc-explore-shot {
+    opacity: 0;
+    transform: translateY(-32px) skew(45deg, 0);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.bc-explore-shot.is-entered { opacity: 1; transform: translateY(0) skew(45deg, 0); }
+.bc-explore-shot--2.is-entered { opacity: 0.5; }
+/* bc-active-img: a 1ª vem da direita (+64px), a 2ª da esquerda (-64px). */
+.bc-active-img {
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.7s ease-out, filter 0.7s ease-out, transform 0.7s ease-out;
+}
+.bc-active-img--1 { transform: translateX(64px); }
+.bc-active-img--2 { transform: translateX(-64px); }
+.bc-active-img.is-entered { opacity: 1; filter: blur(0); transform: translateX(0); }
+/* frame-embed do portfólio: base = fade + blur (opacidade final 0.5); o 2º
+   (overlay) vem da direita (+64px), preservando o translateY(-64px). */
+.bc-portfolio-over .frame-embed {
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.7s ease-out, filter 0.7s ease-out, transform 0.7s ease-out;
+}
+.bc-portfolio-over .bc-portfolio-embed { transform: translateY(-64px) translateX(64px); }
+.bc-portfolio-over .frame-embed.is-entered { opacity: 1; filter: blur(0); }
+.bc-portfolio-over .bc-portfolio-embed.is-entered { transform: translateY(-64px) translateX(0); }
+.bc-portfolio-over .bc-portfolio-frame.is-entered { opacity: 0.5; }
+/* blur em animação é evitado em telas pequenas (≤576px) — mantém só
+   opacity/transform (mesma regra do bf() do formacoes/script.js). */
+@media (max-width: 576px) {
+    .bc-step,
+    .bc-explore-layer-stack,
+    .bc-active-img,
+    .bc-portfolio-over .frame-embed,
+    .bc-step.is-entered,
+    .bc-explore-layer-stack.is-entered,
+    .bc-active-img.is-entered,
+    .bc-portfolio-over .frame-embed.is-entered { filter: none; }
+}

@@ -1,0 +1,478 @@
+/* ===================================================================
+   mm-doc-extra.css
+   Helpers de LAYOUT de documentacao para as secoes Assets / Patterns /
+   Guidelines do Design System. Aqui mora SO o andaime da doc (grades,
+   tiles de preview, demos). Os primitivos demonstrados (scrim, caps,
+   glass, wave, card-glass, tag-status, form, footer) vem todos do
+   root.css compartilhado. Tokens do root.css; sem traco de 1px (rings
+   via box-shadow inset 2px); sem cubic-bezier.
+   =================================================================== */
+
+/* Grade responsiva de tiles de preview ----------------------------- */
+.dsx-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+@media (max-width: 864px) { .dsx-grid { gap: 24px; } }
+@media (max-width: 576px) { .dsx-grid { gap: 16px; grid-template-columns: 1fr; } }
+
+.dsx-grid--narrow {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+}
+
+/* Tile: superficie escura para demonstrar um primitivo -------------- */
+.dsx-tile {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--dn700);
+    min-height: 184px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 4px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+.dsx-tile > .dsx-tile-title,
+.dsx-tile > .dsx-tile-sub { position: relative; z-index: 2; }
+.dsx-tile-title { font: var(--label); color: var(--bw); margin: 0; }
+.dsx-tile-sub   { font: var(--label-s); color: var(--bw-50); margin: 0; }
+
+/* Fundo "foto" simulado (gradiente, sem asset externo) para demos
+   de scrim. */
+.dsx-photo {
+    background-image: linear-gradient(135deg, var(--pp500), var(--pc500) 55%, var(--sg500));
+}
+
+/* Linha de chips / badges ------------------------------------------ */
+.dsx-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+.dsx-row--tight { gap: 8px; }
+
+/* Stack de demonstracao de Section Caps ---------------------------- */
+.dsx-cap-stack { border-radius: 16px; overflow: hidden; }
+.dsx-cap-band {
+    height: 112px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--label-s);
+    color: var(--bw-50);
+}
+
+/* Anatomia de secao (eyebrow / title / lede) ----------------------- */
+/* A producao define o CSS por pagina (sec-eyebrow / sec-title /
+   sec-lede em home.css, formacoes/style.css, etc.). Aqui replicamos a
+   convencao com tokens so para a doc renderizar o exemplo. */
+.dsx-anatomy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 720px;
+}
+.dsx-eyebrow {
+    font: var(--label-s);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pc200);
+}
+.dsx-title { font: var(--h2); color: var(--bw); margin: 0; }
+.dsx-title strong { font-weight: 700; color: var(--pc200); }
+.dsx-lede { font: var(--p-l); color: var(--bw-75); margin: 0; }
+
+/* Tabela simples de API (atributo / valor) ------------------------- */
+.dsx-api {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px var(--bw-5);
+}
+.dsx-api-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    padding: 14px 20px;
+}
+.dsx-api-row + .dsx-api-row { box-shadow: inset 0 2px 0 0 var(--bw-5); }
+.dsx-api-key  { font: var(--label-s); color: var(--bw); }
+.dsx-api-val  { font: var(--label-s); color: var(--bw-50); }
+@media (max-width: 576px) {
+    .dsx-api-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* Bloco de codigo legivel ------------------------------------------ */
+.dsx-code {
+    white-space: pre;
+    line-height: 1.6;
+    padding: 20px 24px;
+    border-radius: 12px;
+    background: var(--bw-5);
+    overflow-x: auto;
+    margin: 0;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: var(--bw-75);
+}
+
+/* Disclaimer in-line (nota de contexto) ---------------------------- */
+.dsx-note {
+    font: var(--label-s);
+    color: var(--bw-50);
+    margin: 0;
+}
+
+/* ===================================================================
+   CATÁLOGO: reveal sem JS
+   As páginas escondem blocos (opacity:0 + transform de entrada) e só
+   revelam via JS de scroll (classes .is-entered / .is-revealed / .motion).
+   No DS não há esse JS, então aqui forçamos o ESTADO FINAL (visível).
+   IMPORTANTE: mexe só em opacity / transform / animation dos roots e
+   grids de reveal. NÃO toca em grid-column / width / flex, então o
+   LAYOUT real dos cards é 100% preservado.
+   =================================================================== */
+.cat-home .enter-card, .cat-home .motion, .cat-home .completa-card, .cat-home .completa-tile,
+.cat-home .troca-card, .cat-home .depos-card, .cat-home .formacoes-item, .cat-home .meta-card,
+.cat-home .posgrad-card, .cat-home .tese-card, .cat-home .tese-method-card,
+.cat-areas .enter-card, .cat-areas .motion, .cat-areas .area-card, .cat-areas .oferta-card,
+.cat-formacoes .enter-card, .cat-formacoes .motion, .cat-formacoes .courses-grid,
+.cat-formacoes .skills-grid, .cat-formacoes .extras-grid, .cat-formacoes .projetos-grid,
+.cat-formacoes .perfis-row, .cat-formacoes .faq-grid, .cat-formacoes .conta-grid,
+.cat-formacoes .sec-stats, .cat-formacoes .notification-card, .cat-formacoes .meta-card,
+.cat-formacoes .oferta-card, .cat-formacoes .pilar-item, .cat-formacoes .profile-card,
+.cat-formacoes .depos-card, .cat-formacoes .spotlight-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+/* Reveal extra: containers/roots do HUB de Formações (e botões de reveal).
+   Só opacity/transform/animation; não toca layout nem imagens decorativas. */
+.cat-formacoes .stats-grid, .cat-formacoes .notification-grid, .cat-formacoes .formacoes-cards,
+.cat-formacoes .conta-grid, .cat-formacoes .faq-inner, .cat-formacoes .cta-inner,
+.cat-formacoes .depos-nav, .cat-formacoes .oferta-cards, .cat-formacoes .sec-why,
+.cat-formacoes .sec-oferta, .cat-formacoes .sec-cta,
+.cat-formacoes .cta-right .btn, .cat-formacoes .cta-right .tag-status,
+.cat-formacoes .hero-actions .btn {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+/* ===================================================================
+   CATÁLOGO: neutraliza a arquitetura de scroll/layout herdada das páginas.
+   O cards-catalog.css traz o CSS completo das páginas escopado em .cat-*;
+   via merge body/html→.cat-*, os wrappers herdaram overflow:hidden,
+   overscroll-behavior, min/height de viewport, glows ::before/::after fixos
+   e os layers fixos (#layer-*). No DS isso quebra/atrapalha o scroll.
+   Aqui os wrappers voltam a ser containers comuns.
+   =================================================================== */
+.cat-home, .cat-areas, .cat-formacoes {
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    background: transparent !important;
+}
+.cat-home::before, .cat-home::after,
+.cat-areas::before, .cat-areas::after,
+.cat-formacoes::before, .cat-formacoes::after {
+    content: none !important;
+}
+.cat-home #layer-hero, .cat-home #layer-content, .cat-home #layer-trocas,
+.cat-home .dn-stack {
+    position: static !important;
+    inset: auto !important;
+    overflow: visible !important;
+    height: auto !important;
+}
+
+/* Blocos de pattern (cat-home etc.) não devem esticar na viewport toda;
+   capa na largura padrão do DS (1440px, Wide 10 colunas), alinhado à
+   esquerda como o resto do conteúdo do DS. */
+.container-mm-patterns .cat-home,
+.container-mm-patterns .cat-areas,
+.container-mm-patterns .cat-formacoes {
+    max-width: 1440px;
+}
+
+/* troca-card no catálogo: base é width 832px (carrossel da home);
+   no grid precisa preencher a célula. */
+.container-mm-patterns .cat-home .troca-card { width: auto !important; }
+
+/* Grid de cards 2 colunas no padrão do DS (gap 32/24/16). */
+.dsx-cards-2col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+}
+@media (max-width: 864px) { .dsx-cards-2col { gap: 24px; } }
+@media (max-width: 576px) { .dsx-cards-2col { grid-template-columns: 1fr; gap: 16px; } }
+
+/* Colunas do troca-grid: 2 no Wide (>=1440, capado em 1440 pelo .cat-home);
+   2 ocupando 100% da largura em 865-1439; 1 coluna em <=864. */
+@media (max-width: 1439px) {
+    .container-mm-patterns .cat-home:has(.troca-grid) { max-width: none; }
+    .container-mm-patterns .troca-grid { width: 100%; }
+}
+@media (max-width: 864px) {
+    .container-mm-patterns .troca-grid { grid-template-columns: 1fr; }
+}
+
+/* Orientação do troca-card pela PRÓPRIA largura (container query), não pela
+   viewport. Cada célula é o container. 3 faixas:
+   >=688px  horizontal, troca-meta padding 64;
+   512-687  horizontal compacto, troca-meta padding 32;
+   <512px   vertical (demo em cima, conteúdo embaixo). */
+.container-mm-patterns .troca-cq { container-type: inline-size; }
+@container (width >= 688px) {
+    .container-mm-patterns .troca-card { flex-direction: row !important; }
+    .container-mm-patterns .troca-demo { flex: 0 0 calc(50% - 32px) !important; padding: 32px 32px 32px 0 !important; }
+    .container-mm-patterns .troca-meta { flex: 0 0 calc(50% + 32px) !important; padding: 128px 64px 64px 64px !important; }
+}
+@container (512px <= width < 688px) {
+    .container-mm-patterns .troca-card { flex-direction: row !important; }
+    .container-mm-patterns .troca-demo { flex: 0 0 calc(50% - 32px) !important; padding: 32px 32px 32px 0 !important; }
+    .container-mm-patterns .troca-meta { flex: 0 0 calc(50% + 32px) !important; padding: 128px 32px 32px 32px !important; }
+}
+@container (width < 512px) {
+    .container-mm-patterns .troca-card { flex-direction: column !important; }
+    .container-mm-patterns .troca-demo { flex: 0 0 auto !important; padding: 0 32px 32px 32px !important; }
+    .container-mm-patterns .troca-meta { flex: 0 0 auto !important; padding: 128px 32px 16px 32px !important; }
+}
+
+/* troca-demo-img: alinhada à direita no demo (que é flex). */
+.container-mm-patterns .troca-demo-img { margin-left: auto; }
+
+/* troca-num: aumenta a largura do número grande. */
+.container-mm-patterns .troca-num { width: 120% !important; }
+
+/* CTA card com Symbol Orbit.
+   Breakpoints via CONTAINER QUERY (.cta-cq): respondem à largura REAL do
+   componente, não da viewport. No DS isso já desconta o menu lateral de 80px;
+   num site real o container é a largura cheia e o breakpoint vale como ele é
+   (a regra de menos-o-menu fica só aqui na apresentação). Card SEMPRE horizontal:
+   órbita superior-esquerda, conteúdo à direita via reserva no padding-left. */
+.container-mm-patterns .cta-cq { container-type: inline-size; }
+.container-mm-patterns .formacoes-cta-card { padding: 80px 160px 80px 432px !important; }
+.container-mm-patterns .formacoes-cta-card .formacoes-cta {
+    top: 0 !important;
+    left: 0 !important;
+    bottom: auto !important;
+    right: auto !important;
+}
+@container (max-width: 1152px) {
+    .container-mm-patterns .formacoes-cta-card { padding: 80px 80px 80px 368px !important; }
+}
+/* Abaixo de 864px: reserva menor (left 240, top/right/bottom 64) e a órbita
+   em left -96, mantendo horizontal. */
+@container (max-width: 864px) {
+    .container-mm-patterns .formacoes-cta-card { padding: 64px 64px 64px 240px !important; }
+    .container-mm-patterns .formacoes-cta-card .formacoes-cta { left: -96px !important; }
+}
+/* Abaixo de 576px de largura do componente: órbita vai pro canto inferior-direito,
+   conteúdo acima (reserva 304 no rodapé). */
+@container (max-width: 576px) {
+    .container-mm-patterns .formacoes-cta-card { padding: 64px 32px 304px 32px !important; }
+    .container-mm-patterns .formacoes-cta-card .formacoes-cta {
+        top: auto !important;
+        left: auto !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+    }
+    .container-mm-patterns .formacoes-cta-card .mm-symbol-orbit-stage {
+        top: auto !important;
+        left: auto !important;
+        bottom: -64px !important;
+        right: -64px !important;
+    }
+}
+
+/* Variantes --pp700 / --pc700 do posgrad-card: mesma estrutura das --pp/--pc,
+   trocando os tons 800 (scrim + rodapé) pelos 700. */
+.cat-home .posgrad-card--pp700 .posgrad-card-scrim { background: linear-gradient(to top, var(--pp700), color-mix(in srgb, var(--pp700) 25%, transparent)); }
+.cat-home .posgrad-card--pc700 .posgrad-card-scrim { background: linear-gradient(to top, var(--pc700), color-mix(in srgb, var(--pc700) 25%, transparent)); }
+.cat-home .posgrad-card--pp700 .posgrad-card-bottom { background: var(--pp700); }
+.cat-home .posgrad-card--pc700 .posgrad-card-bottom { background: var(--pc700); }
+
+/* Meta Card no DS: card preenche o container de 1440px (a meta-inner real capa em
+   1152 e tem padding lateral). Sem hero acima, então remove o margin-top: -80px
+   (que serve pra sobrepor a capa). */
+.container-mm-patterns .mm-meta-1440 .meta-inner { max-width: 1440px; padding: 0; }
+.container-mm-patterns .mm-meta-1440 .meta-card { margin-top: 0 !important; }
+
+/* ==========================================================================
+   cards-duo: par de cards (Indicadores --ind / Business Cases --bc), grid 2 cols
+   que vira 1 col abaixo de 864px. Extraído de areas/<area>/style.css (sub-áreas,
+   fora do catálogo gerado), escopado sob .cat-areas. Padding-bottom da seção
+   removido (no DS não há sobreposição com a seção seguinte).
+   ========================================================================== */
+.cat-areas .sec-cards-duo { position: relative; padding: 0; }
+/* No DS o par ocupa todo o container de 1440 (a inner real capa em 1152). */
+.cat-areas .cards-duo-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+.cat-areas .duo-card {
+    box-sizing: border-box;
+    position: relative;
+    padding: 48px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.cat-areas .duo-card--ind { --duo-accent: var(--sc500); background: linear-gradient(45deg, var(--dn800), transparent); }
+.cat-areas .duo-card--bc  { --duo-accent: var(--pc200); background: linear-gradient(-135deg, var(--dn800), transparent); }
+
+/* aba colorida no topo de cada card */
+.cat-areas .duo-card::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 32px;
+    width: 64px;
+    height: 8px;
+    background: var(--duo-accent);
+}
+
+/* overlay: linha-gradiente colorida no topo + linha sutil na base */
+.cat-areas .duo-card-fx { position: absolute; inset: 0; pointer-events: none; }
+.cat-areas .duo-card-fx::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 64px;
+    height: 2px;
+    width: calc(100% - 128px);
+}
+.cat-areas .duo-card-fx::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    height: 2px;
+    width: calc(100% - 32px);
+    background-image: linear-gradient(90deg, transparent, var(--bw-5), transparent);
+}
+.cat-areas .duo-card--ind .duo-card-fx::after { background-image: linear-gradient(90deg, var(--sc500-15), transparent); }
+.cat-areas .duo-card--bc  .duo-card-fx::after { background-image: linear-gradient(90deg, var(--pc300-10), transparent); }
+
+/* título: gradiente de texto do DS (Especial Success / Medium Emphasis), weight 200 */
+.cat-areas .duo-card-title {
+    font-size: 1.5rem;
+    font-weight: 200;
+    line-height: 1.25em;
+    margin: 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.cat-areas .duo-card--ind .duo-card-title { background-image: var(--text-gradient-special-success); }
+.cat-areas .duo-card--bc  .duo-card-title { background-image: var(--text-gradient-medium); }
+.cat-areas .duo-card-lede,
+.cat-areas .duo-card-foot { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* tópicos: barra vertical à esquerda + faixa-gradiente de fundo */
+.cat-areas .duo-list { list-style: none; margin: 0 -48px; padding: 0 48px; display: flex; flex-direction: column; color: var(--bw-75); }
+.cat-areas .duo-card--ind .duo-list { background-image: linear-gradient(90deg, var(--sc500-10), transparent); }
+.cat-areas .duo-card--bc  .duo-list { background-image: linear-gradient(90deg, var(--pc300-10), transparent); }
+.cat-areas .duo-list li {
+    position: relative;
+    padding: 8px 16px 8px 24px;
+    font: var(--p);
+}
+.cat-areas .duo-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--duo-accent);
+}
+/* palavra em destaque: só o peso muda; herda o gradiente do título */
+.cat-areas .grad-verde,
+.cat-areas .grad-lilas { font-weight: 700; }
+@media (max-width: 864px) {
+    .cat-areas .cards-duo-inner { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   depos-grid: grade de depoimentos em vídeo (3 colunas, 2 linhas → 2 colunas
+   abaixo de 1152px → 1 coluna abaixo de 576px). Reusa o .depos-card /
+   .depos-video do componente; no carrossel o card vem com flex-basis, mas em
+   grid o flex é ignorado e cada card preenche a célula. Escopado sob
+   .cat-formacoes, onde vivem os estilos do card. Gaps no padrão DS (32/24/16).
+   ========================================================================== */
+.cat-formacoes .depos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+@media (max-width: 1152px) {
+    .cat-formacoes .depos-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 864px) {
+    .cat-formacoes .depos-grid { gap: 24px; }
+}
+@media (max-width: 576px) {
+    .cat-formacoes .depos-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ==========================================================================
+   spotlight-stack: pilha vertical (coluna única) de spotlight-card, como no hub
+   de formações. Substitui o .formacoes-cards original (que traz grid-column:
+   span 7 + padding-top:152px do layout com nav sticky, irrelevante no DS).
+   Os estilos do card vêm de .cat-formacoes.formacoes-hub no cards-catalog.css.
+   ========================================================================== */
+.cat-formacoes .spotlight-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+@media (max-width: 864px) {
+    .cat-formacoes .spotlight-stack { gap: 24px; }
+}
+
+/* mm-desc dentro de Patterns respeita o grid de 1440: o container é full-width
+   (width:100%), então 40% dele passa de 4 colunas quando a viewport ultrapassa
+   1440px, desalinhando da .cat-formacoes (capada em 1440). Acima de 1440 a desc
+   capa em 544px = 4 de 10 colunas (1408 de conteúdo, gutter 32). Abaixo de 1440
+   as regras responsivas globais de .mm-desc continuam valendo. */
+@media (min-width: 1440px) {
+    .container-mm-patterns .mm-desc { max-width: 544px; }
+}
+
+/* Hero de formações/áreas no DS: as hero-tags e a hero-top-tag-body são
+   reveladas via JS (que o catálogo não roda), então ficariam invisíveis.
+   Força o estado revelado. A hero-bg-float anima sozinha (animation forwards). */
+.cat-formacoes .hero-tags .tag-status,
+.cat-formacoes .hero-top-tag-body {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* Notification Cards: 4º card (warning) ganha o gradiente da própria semântica.
+   O cards-catalog só define fundo pros nth-child 1-3 (erro/neutro/sucesso). */
+.cat-formacoes.formacoes-hub .notification-card:nth-child(4) {
+    background: linear-gradient(135deg, var(--wr500-10), transparent);
+}

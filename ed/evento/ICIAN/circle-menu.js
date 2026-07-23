@@ -29,7 +29,7 @@
         {
             num: 'Aula 02', date: '22/07', time: '19:30',
             title: 'IA aplicada a dados e cenários de negócio',
-            text: 'Aplicações práticas com dados, dashboards e análise. A aula mostra os caminhos possíveis com Fabric e MCP, mas foca no uso mais viável para empresas: skills no Claude Code via PBIP.',
+            text: 'Aplicações práticas com dados e dashboards. Você vai ver como a IA entra em cada etapa, requisitos, modelagem, medidas e design dos relatórios e qual caminho é o mais seguro para dados de empresa.',
             profs: [{ name: 'Sayuri Valente', img: PROF + 'prof_say.webp' }]
         },
         {

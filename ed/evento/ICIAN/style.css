@@ -910,6 +910,7 @@
 .faq-a-grid.is-open { grid-template-rows: 1fr; }
 .faq-a-wrap {
     min-height: 0;
+    min-width: 100%;
     overflow: hidden;
     width: 100%;
     max-width: 1440px;

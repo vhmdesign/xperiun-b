@@ -5,7 +5,9 @@
     "description": "Build pipeline de minificação pra páginas /ed/* do site Xperiun. Source em ed/, output em dist/ed/.",
     "type": "module",
     "scripts": {
+        "prebuild": "node dl-symbols.cjs",
         "build": "node build.js",
+        "subset": "node dl-symbols.cjs",
         "gen-blur": "node gen-hero-blur.js",
         "gen-wave": "node gen-wave-mask.js",
         "preview": "npx --yes http-server . -p 8080 -c-1 --silent"

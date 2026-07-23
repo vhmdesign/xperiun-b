@@ -1,0 +1,978 @@
+    /* ==========================================
+       NÍVEL 1: PATTERNS
+       Combinações comuns de Components resolvendo problemas recorrentes.
+       Nível 2: Forms / Navigations / Notifications / Cards / Espaçamento.
+       ========================================== */
+
+    .container-mm-patterns {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 16px 16px 16px 96px;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        isolation: isolate;
+    }
+
+    @media(max-width: 864px) {
+        .container-mm-patterns {
+            padding: 16px;
+        }
+    }
+
+    /* ==========================================
+       Régua: instrumento de documentação reutilizado
+       em Espaçamento e Cards pra visualizar medidas.
+       - .regua.vertical: bordas top + bottom 2px (mede altura).
+       - .regua.horizontal: bordas left + right 2px (mede largura).
+       Cada régua exibe seu valor via data-medida + ::before centrado.
+       ========================================== */
+    .regua {
+        position: relative;
+        background-color: var(--pc500-15);
+        box-sizing: border-box;
+    }
+
+    .regua.vertical {
+        border-top: 2px solid var(--pc500);
+        border-bottom: 2px solid var(--pc500);
+    }
+
+    .regua.horizontal {
+        border-left: 2px solid var(--pc500);
+        border-right: 2px solid var(--pc500);
+    }
+
+    .regua::before {
+        content: attr(data-medida);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font: var(--label-xs);
+        color: var(--bw-75);
+        white-space: nowrap;
+    }
+
+    /* ==========================================
+       NÍVEL 2: Forms
+       Composição de Components (inputs, textareas, dropdowns, controls,
+       buttons) com rhythm vertical. .mm-form é só o ritmo; o "card" é
+       opcional via .mm-form-card.
+       ========================================== */
+    .mm-forms-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    @media(max-width: 864px) {
+        .mm-forms-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ==========================================
+       NÍVEL 2: Navigations
+       Padrões de navegação compostos com Components existentes.
+       O menu lateral fixo já é uma navigation completa (mm-menu.css);
+       aqui documentamos: tabs (mesma primitive de .mm-filtros usada
+       como navegação de conteúdo) e breadcrumbs.
+       ========================================== */
+    .mm-navs-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .mm-nav-grupo {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .mm-nav-titulo {
+        font: var(--label);
+        color: var(--bw-75);
+    }
+
+    /* Tabs: usa o mesmo primitive .mm-filtros. Nao ha classe nova;
+       o exemplo e so pra deixar claro que filter tags servem tambem
+       como navegacao de conteudo (nao so pra mostrar/esconder secoes
+       dentro de um Nível 1). */
+
+    /* Breadcrumb: trilha de navegação por hierarquia. Usa .mm-link
+       pros itens clicáveis + separador "/" em bw-50 + texto plain pro
+       item atual (não-link). */
+    .mm-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .mm-breadcrumb-sep {
+        font: var(--p);
+        color: var(--bw-50);
+    }
+
+    .mm-breadcrumb-current {
+        font: var(--p);
+        color: var(--bw);
+    }
+
+    /* ==========================================
+       NÍVEL 2: Notifications
+       Cards escuros (dn900) com borda esquerda 2px da cor da variante
+       e wash via .scrim (gradient cor-500 10% → transparent a 90°).
+       Aplicar como `class="mm-notification scrim mm-notification-{variant}"`.
+       ========================================== */
+    .mm-notifications-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        align-items: stretch;
+    }
+
+    @media(max-width: 864px) {
+        .mm-notifications-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width: 576px) {
+        .mm-notifications-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Notification card base: dn900 + border-left + scrim integration via
+       custom properties (a cor é setada por variante; direção e opacity
+       padrão do gradient ficam aqui). */
+    .mm-notification {
+        background-color: var(--dn900);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 16px;
+        padding: 16px;
+        border-left: 4px solid;
+        cursor: pointer;
+        overflow: hidden;
+        --scrim-direction: 90deg;
+        --scrim-opacity: 0.10;
+    }
+
+    /* Linha superior: ícone representativo (esq) + ícone de fechar (dir) */
+    .mm-notification-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .mm-notification-icon {
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .mm-notification-close {
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        color: var(--bw-50);
+    }
+
+    .mm-notification-message {
+        font: 400 1rem/1.25 var(--font-family);
+        color: var(--bw);
+    }
+
+    /* ---- Variantes (border-left + ícone + --scrim-color cor-500) ---- */
+    .mm-notification-notification {
+        border-left-color: var(--nt500);
+        --scrim-color: var(--nt500);
+    }
+    .mm-notification-notification .mm-notification-icon {
+        color: var(--nt500);
+    }
+
+    .mm-notification-success {
+        border-left-color: var(--sc500);
+        --scrim-color: var(--sc500);
+    }
+    .mm-notification-success .mm-notification-icon {
+        color: var(--sc500);
+    }
+
+    .mm-notification-error {
+        border-left-color: var(--er500);
+        --scrim-color: var(--er500);
+    }
+    .mm-notification-error .mm-notification-icon {
+        color: var(--er500);
+    }
+
+    .mm-notification-warning {
+        border-left-color: var(--wr500);
+        --scrim-color: var(--wr500);
+    }
+    .mm-notification-warning .mm-notification-icon {
+        color: var(--wr500);
+    }
+
+    .mm-notification-neutral {
+        border-left-color: var(--pc300);
+        --scrim-color: var(--pc300);
+    }
+    .mm-notification-neutral .mm-notification-icon {
+        color: var(--pc300);
+    }
+
+    /* Modifier "transparente": remove o bg dn900 (deixa o gradient + border
+       como únicas pistas visuais). Padding mantém 16px do base. */
+    .mm-notification-transparente {
+        background-color: transparent;
+    }
+
+    /* ==========================================
+       Notification card: variante de uso da .mm-notification como card
+       de conteúdo informativo (título + lista) ao invés de toast curto
+       (ícone + message). Mesma base visual: bg transparente, border-left,
+       scrim wash, com tipografia ajustada via h5 ou h6 no título.
+       Aplicar como `class="mm-notification scrim mm-notification-card
+       mm-notification-{notification|success|error|warning}"`.
+       ========================================== */
+    .mm-notification-card {
+        background-color: transparent;
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    /* Título: tipografia segue o elemento HTML (h5 = --h5, h6 = --h6). */
+    .mm-notification-card-titulo {
+        margin: 0;
+    }
+
+    h5.mm-notification-card-titulo { font: var(--h5); }
+    h6.mm-notification-card-titulo { font: var(--h6); }
+
+    /* Cor do título + ênfases (<strong>) = cor 300 da variante. */
+    .mm-notification-card.mm-notification-notification .mm-notification-card-titulo,
+    .mm-notification-card.mm-notification-notification strong {
+        color: var(--nt300);
+    }
+    .mm-notification-card.mm-notification-success .mm-notification-card-titulo,
+    .mm-notification-card.mm-notification-success strong {
+        color: var(--sc300);
+    }
+    .mm-notification-card.mm-notification-error .mm-notification-card-titulo,
+    .mm-notification-card.mm-notification-error strong {
+        color: var(--er300);
+    }
+    .mm-notification-card.mm-notification-warning .mm-notification-card-titulo,
+    .mm-notification-card.mm-notification-warning strong {
+        color: var(--wr300);
+    }
+
+    /* <strong>: ênfase via cor (sem font-weight extra). */
+    .mm-notification-card strong {
+        font-weight: inherit;
+    }
+
+    /* Lista interna: bullets quadrados, padding mínimo. */
+    .mm-notification-card ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--bw-75);
+        font: var(--p);
+        list-style: square;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Cor do marcador (::marker) = cor 300 da variante. Texto continua bw-75. */
+    .mm-notification-card.mm-notification-notification li::marker {
+        color: var(--nt300);
+    }
+    .mm-notification-card.mm-notification-success li::marker {
+        color: var(--sc300);
+    }
+    .mm-notification-card.mm-notification-error li::marker {
+        color: var(--er300);
+    }
+    .mm-notification-card.mm-notification-warning li::marker {
+        color: var(--wr300);
+    }
+
+    /* ==========================================
+       NÍVEL 2: Espaçamento
+       Exemplo real de rhythm vertical entre tag → título → parágrafo → CTAs,
+       com réguas marcando cada gap.
+       ========================================== */
+    .mm-espaco-showcase {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0px;
+        box-sizing: border-box;
+        max-width: 960px;
+    }
+
+    .mm-espaco-titulo {
+        font: var(--label);
+        color: var(--bw-50);
+        margin-bottom: 16px;
+    }
+
+    .mm-espaco-item {
+        display: flex;
+    }
+
+    /* H2 do showcase: usa o token --h2 do design system (com fallback mobile). */
+    .mm-espaco-h2 {
+        font: var(--h2);
+        color: var(--bw);
+        margin: 0;
+    }
+
+    .mm-espaco-p {
+        font: var(--p);
+        color: var(--bw-75);
+        margin: 0;
+    }
+
+    .mm-espaco-actions {
+        display: flex;
+        align-items: stretch;
+    }
+
+    @media(max-width: 576px) {
+        .mm-espaco-h2 {
+            font: var(--h2-mobile);
+        }
+    }
+
+    /* ==========================================
+       NÍVEL 2: Cards
+       Boxes (H4 / H5 / H6) demonstrando padding + gaps internos
+       proporcionais à hierarquia do título. Usa réguas como instrumento
+       visual. Layout em 2 colunas (1 col mobile).
+       ========================================== */
+    .mm-boxes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        align-items: start;
+        width: 100%;
+    }
+
+    @media(max-width: 864px) {
+        .mm-boxes-grid {
+            gap: 24px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .mm-boxes-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
+
+    /* Container do box: dark bg, padding real via CSS, position relative
+       pra ancorar os indicadores de padding em absolute. Border-radius
+       definido por instância (inline): sempre um valor entre {8,12,16,24,32}px,
+       escalando com o tamanho do título (H4=24, H5=16, H6=12). */
+    .mm-box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--dn800);
+        box-sizing: border-box;
+        flex: 1 1 0;
+        min-width: 0;
+        overflow: hidden; /* clipa as réguas pros cantos arredondados */
+    }
+
+    /* Conteúdo do .mm-box sobe pra cima do scrim ::after (z-index 0).
+       Aplicado a TODOS os filhos diretos pra cobrir réguas, h*, p, ações
+       e ícones inline sem cada um precisar gerenciar z-index manualmente. */
+    .mm-box > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Conteúdo interno: tipografia dos títulos do box usa os tokens do root. */
+    .mm-box-h4 {
+        font: var(--h4);
+        color: var(--bw);
+        margin: 0;
+    }
+    .mm-box-h5 {
+        font: var(--h5);
+        color: var(--bw);
+        margin: 0;
+    }
+    .mm-box-h6 {
+        font: var(--h6);
+        color: var(--bw);
+        margin: 0;
+    }
+
+    .mm-box-p {
+        font: var(--p);
+        color: var(--bw-75);
+        margin: 0;
+    }
+
+    /* Container das ações: gap 16px, alinhados à direita. */
+    .mm-box-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    @media(max-width: 576px) {
+        .mm-box-h4 { font: var(--h4-mobile); }
+        .mm-box-h5 { font: var(--h5-mobile); }
+        .mm-box-h6 { font: var(--h6-mobile); }
+    }
+
+    /* ==========================================
+       .card-capa: card estética de capa (revista/álbum).
+       background-image via data-bg (responsividade.js aplica como inline style).
+       Ícone via data-icon (CSS ::before com Material Symbols Outlined).
+       Grid: .cards-capa-grid (root.css).
+       Combinar com .scrim.scrim-dn900-45.
+       ========================================== */
+    .card-capa {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 16px;
+        padding: 30% 32px 32px 32px;
+        border-radius: 16px;
+        overflow: hidden;
+        box-sizing: border-box;
+        background-size: cover;
+        background-position: center;
+        --icon-weight: 200;
+    }
+
+    .card-capa[data-icon]::before {
+        font-family: 'Material Symbols Outlined';
+        content: attr(data-icon);
+        font-size: 32px;
+        line-height: 1;
+        font-style: normal;
+        font-variation-settings: 'FILL' 0, 'wght' var(--icon-weight), 'GRAD' 0, 'opsz' 24;
+        color: var(--pc200);
+    }
+
+    .card-capa h5 {
+        font: var(--h5);
+        font-size: 1rem;
+        color: var(--pc200);
+        margin: 0;
+    }
+
+    .card-capa p {
+        font: var(--p);
+        color: var(--bw-75);
+        margin: 0;
+    }
+
+    .card-capa-text {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    @media(max-width: 864px) {
+        .card-capa { padding: 35% 24px 24px 24px; }
+        .card-capa p { font: var(--p-s); }
+    }
+
+    /* ==========================================
+       .card-feature: card imagem + título + texto.
+       Imagem: 272×272px absolute à direita (>576px), relative + full-width (≤576px).
+       Grid: .cards-feature-grid (root.css).
+       Combinar com .scrim.scrim-dn700-270 e .motion.
+       ========================================== */
+    .card-feature {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 16px;
+        padding: 64px 272px 64px 32px;
+        border-radius: 16px;
+        overflow: hidden;
+        box-sizing: border-box;
+        min-height: 272px;
+    }
+
+    .card-feature h5 {
+        font: var(--h5);
+        color: var(--bw);
+        margin: 0;
+    }
+
+    .card-feature p {
+        font: var(--p);
+        color: var(--bw-75);
+        margin: 0;
+    }
+
+    .card-feature-img {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 272px;
+        height: 272px;
+        transform: translateY(-50%) rotate(-7.5deg) scale(1.25);
+        filter: blur(4px);
+        opacity: 1;
+        pointer-events: none;
+        transition: 0.5s transform ease-out, 0.5s filter ease-out, 0.5s opacity ease-out;
+        mask-image: linear-gradient(to right, transparent, black);
+        -webkit-mask-image: linear-gradient(to right, transparent, black);
+    }
+
+    .card-feature.is-revealed .card-feature-img {
+        transform: translateY(-50%) rotate(-15deg) scale(1);
+        filter: blur(0);
+        opacity: 0.5;
+    }
+
+    @media(max-width: 576px) {
+        .card-feature {
+            padding: 32px;
+            --scrim-direction: to top;
+        }
+        .card-feature-img {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 100%;
+            height: auto;
+            transform: rotate(-7.5deg) scale(1.25);
+            filter: blur(4px);
+            opacity: 1;
+            margin-bottom: -32px;
+            mask-image: linear-gradient(to top, transparent, black);
+            -webkit-mask-image: linear-gradient(to top, transparent, black);
+        }
+        .card-feature.is-revealed .card-feature-img {
+            transform: rotate(-15deg) scale(1);
+            filter: blur(0);
+            opacity: 0.5;
+        }
+    }
+
+    /* ==========================================
+       Check-feature: card "incluso/benefício" com frosted glass.
+         Badge via ::before em data-icon — 48×48, gradiente pc300-25→pc300-10
+         Título h5, z-index 1
+         Imagem decorativa: absolute bottom -64px, 100% largura,
+           máscara vertical rgba(0,0,0,0.5)→black, scroll-reveal .motion
+       Grid: .check-features-grid (root.css) — auto-fill minmax 328px.
+       Usa: <li class="check-feature-card motion" data-icon="check">
+              <h5>título</h5>
+              <img class="check-feature-imagem" src="…">
+            </li>
+       ========================================== */
+    .check-feature-card {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 16px;
+        padding: 64px 32px calc(100% - 64px) 32px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-sizing: border-box;
+        background-color: var(--dn500-50);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+    }
+
+    .check-feature-card[data-icon]::before {
+        content: attr(data-icon);
+        font-family: 'Material Symbols Outlined';
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        font-style: normal;
+        line-height: 1;
+        position: absolute;
+        top: 0;
+        left: 32px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom, var(--pc300-25), var(--pc300-10));
+        color: var(--bw);
+        z-index: 2;
+    }
+
+    .check-feature-card h5 {
+        font: var(--h5);
+        color: var(--bw);
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .check-feature-imagem {
+        position: absolute;
+        bottom: -64px;
+        left: 0;
+        width: 100%;
+        height: auto;
+        mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), black);
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), black);
+        transform: rotate(-7.5deg) scale(1.25);
+        filter: blur(4px);
+        opacity: 0.1;
+        pointer-events: none;
+        transition: 0.5s transform ease-out, 0.5s filter ease-out, 0.5s opacity ease-out;
+    }
+
+    .check-feature-card.is-revealed .check-feature-imagem {
+        transform: rotate(7.5deg) scale(1);
+        filter: blur(0);
+        opacity: 0.5;
+    }
+
+    /* ==========================================
+       .grid-card-frame / .grid-card / .grid-card-inner
+       Banner de destaque com bordas em gradiente estendidas e orb animado.
+       Extraído de xperiun.com/ed/marketplace/#saberMais (de18385).
+
+       .grid-card-frame — max-width 832px, margin 128px auto.
+         isolation: isolate cria stacking context; ::before com z-index: 1
+         fica acima de .grid-card (z: auto) e portanto acima do conteúdo.
+         ::before — 4 linhas de 2px, top/bottom/left/right: -128px.
+                    Gradiente 4 stops: transparent → bw-15 nos 128px de
+                    cada extremidade, bw-15 sólido no trecho central.
+
+       .grid-card — overflow: hidden (contém o orb), padding 64px/32px,
+                    text-align: center, backdrop-filter: blur(16px).
+         ::after  — orb SVG (Orb Spinning Background.svg), 704×640px
+                    centrado, filter: blur(128px), opacity 0.25,
+                    animation: spin 6s linear infinite.
+
+       .grid-card-inner — container interno de conteúdo. O conteúdo
+                    (tipografia, botões etc.) é livre — sem estilo imposto.
+
+       Usa: <div class="grid-card-frame">
+              <div class="grid-card">
+                <div class="grid-card-inner">conteúdo livre</div>
+              </div>
+            </div>
+       ========================================== */
+    .grid-card-frame {
+        position: relative;
+        isolation: isolate;
+        max-width: 832px;
+        margin: 128px auto;
+    }
+
+    .grid-card-frame::before {
+        content: "";
+        position: absolute;
+        top: -128px;
+        bottom: -128px;
+        left: -128px;
+        right: -128px;
+        pointer-events: none;
+        z-index: 1;
+        background:
+            linear-gradient(to right,  transparent, var(--bw-15) 128px, var(--bw-15) calc(100% - 128px), transparent) 0 128px               / 100% 2px no-repeat,
+            linear-gradient(to right,  transparent, var(--bw-15) 128px, var(--bw-15) calc(100% - 128px), transparent) left 0 bottom 128px   / 100% 2px no-repeat,
+            linear-gradient(to bottom, transparent, var(--bw-15) 128px, var(--bw-15) calc(100% - 128px), transparent) 128px 0               / 2px 100% no-repeat,
+            linear-gradient(to bottom, transparent, var(--bw-15) 128px, var(--bw-15) calc(100% - 128px), transparent) right 128px top 0     / 2px 100% no-repeat;
+    }
+
+    .grid-card {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding: 64px;
+        text-align: center;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .grid-card-inner {
+        position: relative;
+    }
+
+    .grid-card::after {
+        content: "";
+        position: absolute;
+        width: 704px;
+        height: 640px;
+        top: calc(50% - 320px);
+        left: calc(50% - 352px);
+        background: url('imagens/Orb Spinning Background.svg') center / 100% 100% no-repeat;
+        filter: blur(128px);
+        opacity: 0.25;
+        z-index: -1;
+        animation: spin 6s linear infinite;
+        pointer-events: none;
+    }
+
+    @media(max-width: 576px) {
+        .grid-card { padding: 32px; }
+    }
+
+    /* ==========================================
+       Card-grids: constrange grids de cards a 1120px, alinhadas à esquerda
+       (sem `margin-inline: auto`). Inclui:
+       boxes (H4/H5/H6 docs), capas, features, check-features e
+       notification-cards (Cards), forms (Forms).
+       Notifications standard NÃO entra aqui: usa width 100% do container.
+       ========================================== */
+    .mm-boxes-grid,
+    .mm-notification-cards-grid {
+        max-width: 1120px;
+    }
+
+    /* Grid pra notification cards (em Cards): 2 cols desktop, 1 col mobile.
+       Cada card é visualmente o dobro da largura das notifications standard
+       (que usam 4 cols). */
+    .mm-notification-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+    }
+
+    @media(max-width: 864px) {
+        .mm-notification-cards-grid {
+            gap: 24px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .mm-notification-cards-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
+
+    /* ==========================================
+       Responsive preview (responsividade.js)
+       Envolve cada grid de card em uma estrutura .mm-responsive com
+       tabs Desktop/Tablet/Mobile. O frame tem container-type: inline-size,
+       então as @container queries abaixo simulam o comportamento das
+       @media queries dentro do preview, sem alterar o viewport real.
+
+       Transição suave em width 0.3s ease entre 100% / 800px / 400px.
+       Em tablet/mobile aparece um handle pra arrastar e ajustar a
+       largura dentro do range da aba (768–1024 / 320–767).
+       ========================================== */
+    .mm-responsive {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+    }
+
+    .mm-responsive-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    /* Scroll wrapper: garante que o frame com largura fixa (1120/800/400px)
+       não seja comprimido em telas menores. Quando o frame é mais largo
+       que a tela, o usuário rola horizontalmente em vez de espremer o
+       conteúdo. Indispensável para visualizar o "Desktop" em mobile. */
+    .mm-responsive-scroll {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .mm-responsive-frame {
+        position: relative;
+        container-type: inline-size;
+        container-name: preview;
+        width: 100%;
+        transition: width 0.3s ease;
+    }
+
+    /* Durante o drag, desabilita a transição pra largura seguir o
+       cursor sem easing. */
+    .mm-responsive.is-dragging .mm-responsive-frame {
+        transition: none;
+    }
+
+    /* Outline tracejado só quando a aba ativa NÃO corresponde ao
+       spectrum do viewport real (estado de simulação explícita).
+       Quando o usuário está dentro do spectrum da aba, "nada acontece"
+       e o frame é exibido sem moldura. */
+    .mm-responsive.is-simulated .mm-responsive-frame {
+        outline: 1px dashed var(--bw-15);
+        outline-offset: 8px;
+    }
+
+    /* Handle de resize: barra vertical de 4px ancorada 16px à direita
+       do frame. Aparece SÓ no modo simulado (.is-simulated): em modo
+       in-spectrum o frame ocupa 100% do wrapper, e o handle ficaria
+       16px além da borda do scroll-wrapper, criando scrollbar
+       horizontal mesmo em telas largas. Esconder em in-spectrum
+       casa também com a semântica "nada acontece": o usuário vê o
+       que veria naturalmente. */
+    .mm-responsive-handle {
+        position: absolute;
+        top: 0;
+        right: -16px;
+        width: 16px;
+        height: 100%;
+        cursor: ew-resize;
+        touch-action: none;
+        z-index: 1;
+        display: none;
+    }
+
+    .mm-responsive.is-simulated .mm-responsive-handle {
+        display: block;
+    }
+
+    .mm-responsive-handle::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 6px;
+        width: 4px;
+        height: 48px;
+        background-color: var(--bw-25);
+        border-radius: 2px;
+        transform: translateY(-50%);
+        transition: background-color 0.2s ease;
+    }
+
+    .mm-responsive-handle:hover::after,
+    .mm-responsive.is-dragging .mm-responsive-handle::after {
+        background-color: var(--pc500);
+    }
+
+    /* Mirroring das @media abaixo. Tudo dentro de .mm-responsive-frame
+       passa a responder à largura do frame, não do viewport.
+
+       IMPORTANTE: as @media originais usam `vw` (relativo ao viewport).
+       Dentro do @container, isso ainda apontaria pro viewport real,
+       inflando os cards quando o frame é pequeno. Por isso aqui usamos
+       `cqw` (container query width), que resolve relativo à largura do
+       frame e dá uma simulação fiel. */
+    @container preview (max-width: 1152px) {
+        .cards-capa-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @container preview (max-width: 864px) {
+        .cards-capa-grid { gap: 24px; }
+        .card-capa { padding: 35% 24px 24px 24px; }
+        .card-capa p { font: var(--p-s); }
+        .cards-feature-grid { gap: 24px; }
+        .check-features-grid { gap: 24px; }
+        .mm-notification-cards-grid { gap: 24px; }
+        .mm-boxes-grid { gap: 24px; }
+    }
+
+    @container preview (max-width: 576px) {
+        .cards-capa-grid { gap: 16px; grid-template-columns: 1fr; }
+
+        .cards-feature-grid { gap: 16px; }
+        .card-feature {
+            padding: 32px;
+            --scrim-direction: to top;
+        }
+        .card-feature-img {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 100%;
+            height: auto;
+            transform: rotate(-7.5deg) scale(1.25);
+            filter: blur(4px);
+            opacity: 1;
+            margin-bottom: -32px;
+            mask-image: linear-gradient(to top, transparent, black);
+            -webkit-mask-image: linear-gradient(to top, transparent, black);
+        }
+        .card-feature.is-revealed .card-feature-img {
+            transform: rotate(-15deg) scale(1);
+            filter: blur(0);
+            opacity: 0.5;
+        }
+
+        .check-features-grid { gap: 16px; }
+        .mm-notification-cards-grid { grid-template-columns: 1fr; gap: 16px; }
+        .mm-boxes-grid { grid-template-columns: 1fr; gap: 16px; }
+    }
+
+    /* ==========================================
+       Section cap showcase (Assets/New Sections).
+       .mm-cap-grid: grade 2 colunas para os 4 demos.
+       .mm-cap-preview: empilha banda + seção.
+       .mm-cap-band: 64px escuro (dn900).
+       .mm-cap-section: 448px pc500 — total 512px por demo.
+       ========================================== */
+    .mm-cap-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+    }
+
+    .mm-cap-preview { display: flex; flex-direction: column; }
+
+    .mm-cap-band    { height: 64px;  background: var(--dn900); }
+    .mm-cap-section { height: 448px; background: var(--pc500); }
+
+    .mm-cap-preview > :first-child { border-radius: 12px 12px 0 0; }
+    .mm-cap-preview > :last-child  { border-radius: 0 0 12px 12px; }
+
+    @media(max-width: 864px) {
+        .mm-cap-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ==========================================
+       Scrim showcase
+       .mm-scrim-grid: grade 2 colunas.
+       .mm-scrim-preview: moldura do demo com background injetado via inline style.
+       ========================================== */
+    .mm-scrim-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+    }
+
+    .mm-scrim-preview {
+        border-radius: 12px;
+        height: 280px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding: 24px;
+        gap: 4px;
+    }
+
+    @media(max-width: 864px) {
+        .mm-scrim-grid { grid-template-columns: 1fr; }
+    }

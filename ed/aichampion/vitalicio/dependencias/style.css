@@ -1,0 +1,190 @@
+  /* ===========================================================
+     Acesso Vitalício, AI Champion (one-click buy)
+     Uma seção só: logo no topo, vídeo central, CTA de compra 1-clique.
+     Identidade do AI Champion sem o motor de scroll (canvas 400vh):
+     fundo bb + grão + brilho pc300 + título Poppins gradiente + pílula.
+     Tokens e .btn vêm do root.css.
+     =========================================================== */
+
+  html, body { margin: 0; background: #00000A; }
+  /* display desta página = Poppins (vem do root.css via @import fonts.css) */
+  :root { --font-display: 'Poppins', sans-serif; }
+
+  /* brilho "canoa" pc300 subindo pelas bordas (copiado do AI Champion) */
+  .vit-canoa {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 150% 125% at 50% 0%,
+        transparent 70%,
+        rgba(100, 100, 255, 0.25) 90%,
+        rgba(100, 100, 255, 1) 100%),
+      linear-gradient(to top,
+        rgba(100, 100, 255, 0.1),
+        transparent);
+  }
+
+  /* logo no topo: Infinite Pass + divisória 2px bw10 + Xperiun em bw50 (rola com a página) */
+  .vit-brand {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    height: 48px;
+    margin: 24px 0;
+    line-height: 0;
+  }
+  .vit-brand-ip { height: 48px; width: auto; display: block; }
+  .vit-brand-div { width: 2px; height: 48px; background: var(--bw-10); flex-shrink: 0; }
+  /* logo branco da Xperiun renderizado em bw50 (branco a 50%) */
+  .vit-brand-xp { height: 32px; width: auto; display: block; opacity: .5; }
+
+  /* seção única: ocupa a viewport, conteúdo centralizado no eixo vertical */
+  .vit {
+    position: relative;
+    z-index: 10;
+    min-height: calc(100dvh - 96px); /* 96px = logo relative no topo (48 + margens 24+24) */
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 0 56px;
+  }
+
+  /* grid do DS: Wide 10 cols / max 1440, cai 8/6/4 ; gaps 32/32/24/16.
+     Todo o conteúdo vive num span de 6 colunas centralizado. */
+  .vit-grid {
+    width: 100%;
+    min-width: 0; /* flex child: permite encolher abaixo do min-content (senão estoura em telas estreitas) */
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+    align-items: center;
+  }
+
+  /* subtítulo: 6 colunas centradas */
+  .vit-sub {
+    grid-column: 3 / span 6;
+    margin: 0;
+    text-align: center;
+    font: var(--p);
+    color: var(--bw-75);
+  }
+
+  /* vídeo central 16:9 em 6 colunas; largura limitada pela altura do viewport
+     (min entre a largura do span e 60vh de altura) pra caber junto com os botões */
+  /* vídeo 16:9 o maior possível: largura = menor entre as 6 colunas e a
+     altura livre da viewport (100dvh menos subtítulo/aviso/botões/gaps/padding),
+     convertida via 16/9. Garante os dois botões visíveis sem scroll. */
+  .vit-video {
+    grid-column: 1 / -1;
+    justify-self: center;
+    position: relative;
+    width: min(100%, calc((100dvh - 400px) * 16 / 9));
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--dn900);
+  }
+  .vit-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* CTA + aviso de compra em 1 clique */
+  .vit-cta-wrap {
+    grid-column: 3 / span 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  /* dois botões lado a lado: primário (vitalício) + baixa ênfase (1 ano) */
+  .vit-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  .vit-cta-alt { order: -1; } /* "Acesso apenas por um ano" fica à esquerda */
+  /* botões sem radius (cantos retos) */
+  .vit-cta-row .btn { border-radius: 0; }
+
+  /* estilo "wave" (mesmo do .completa-cta-wave da home): gradiente animado.
+     Escopo próprio (home.css não é carregado aqui); sem forçar width pra
+     manter os dois botões lado a lado. */
+  @keyframes wave-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .btn.vit-cta[data-emphasis] {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-image: linear-gradient(90deg, var(--pc500), var(--pp500), var(--er500), var(--pp500), var(--pc500));
+    background-size: 600% 600%;
+    transition: color 0.5s;
+    animation: wave-shift 5s ease infinite;
+  }
+  .btn.vit-cta[data-emphasis]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bw-75);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .btn.vit-cta[data-emphasis]:hover { color: var(--bb); }
+  .btn.vit-cta[data-emphasis]:hover::before { opacity: 1; }
+
+  /* aviso: full width, tag "Atenção" acima do texto */
+  .vit-oneclick-note {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+    font: 400 0.875rem/1.5 var(--font-display);
+    color: var(--bw-50);
+  }
+  .vit-oneclick-note .tag-status { flex-shrink: 0; }
+  .vit-note-em { color: var(--wr300); }
+
+  /* ===== responsivo do grid do DS: 10 -> 8 -> 6 -> 4 (media DEPOIS da base); gaps 32/32/24/16 ===== */
+  @media (max-width: 1439px) {
+    .vit-grid { grid-template-columns: repeat(8, 1fr); }
+    .vit-sub, .vit-cta-wrap { grid-column: 2 / span 6; }
+  }
+  @media (max-width: 864px) {
+    .vit-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    .vit-sub, .vit-cta-wrap { grid-column: 1 / -1; }
+  }
+  @media (max-width: 576px) {
+    .vit-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .vit-brand-ip { height: 40px; }
+    .vit-brand-xp { height: 26px; }
+    .vit-brand-div { height: 40px; }
+    .vit { padding: 0 0 40px; }
+    .vit-cta-row { flex-direction: column; width: 100%; }
+    .vit-cta, .vit-cta-alt { min-width: 0; width: 100%; }
+    .vit-cta-alt { order: 0; } /* empilhado: botão principal em cima */
+  }

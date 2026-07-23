@@ -49,15 +49,52 @@
         return el;
     }
 
-    // Normaliza telefone BR para E.164 (+55DDDNUMERO). Forms novos da AC
-    // têm campo de telefone internacional e EXIGEM esse formato; os antigos
-    // (texto simples) também aceitam. Padrão único pra TODOS os forms — atuais
-    // e futuros — já que este form.js é compartilhado.
-    function toE164BR(raw) {
-        var d = String(raw || '').replace(/\D/g, '');
+    // ── Telefone internacional (Brasil + Portugal) ───────────────────
+    // Um seletor de país (injetado à esquerda do input de phone por
+    // setupPhone) define o país ativo; máscara, validação e normalização
+    // E.164 seguem esse país. Forms novos da AC têm campo de telefone
+    // internacional e EXIGEM E.164; os antigos (texto simples) também
+    // aceitam. Padrão único pra TODOS os forms, atuais e futuros, já que
+    // este form.js é compartilhado. Pra adicionar um país, basta uma
+    // entrada aqui (dial, code, national, máscara via maskPhone).
+    var COUNTRIES = {
+        BR: { dial: '+55',  code: '55',  flag: '🇧🇷', name: 'Brasil',   national: 11,
+              placeholder: '(11) 99999-9999', error: 'Informe um WhatsApp válido com DDD.' },
+        PT: { dial: '+351', code: '351', flag: '🇵🇹', name: 'Portugal', national: 9,
+              placeholder: '912 345 678',     error: 'Indique um número de telemóvel válido.' },
+    };
+    function onlyDigits(raw) { return String(raw || '').replace(/\D/g, ''); }
+
+    // Máscara por país: BR (XX) XXXXX-XXXX / PT XXX XXX XXX (9 dígitos).
+    function maskPhone(raw, cc) {
+        var d = onlyDigits(raw);
+        if (cc === 'PT') {
+            d = d.slice(0, 9);
+            if (d.length > 6) return d.slice(0, 3) + ' ' + d.slice(3, 6) + ' ' + d.slice(6);
+            if (d.length > 3) return d.slice(0, 3) + ' ' + d.slice(3);
+            return d;
+        }
+        d = d.slice(0, 11);
+        if (d.length > 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+        if (d.length > 6)  return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+        if (d.length > 2)  return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+        if (d.length > 0)  return '(' + d;
+        return '';
+    }
+
+    // BR: 10 (fixo) ou 11 (celular) dígitos. PT: 9 dígitos.
+    function phoneValid(raw, cc) {
+        var n = onlyDigits(raw).length;
+        return cc === 'PT' ? n === 9 : (n === 10 || n === 11);
+    }
+
+    // Normaliza pro E.164 (+<code><numero>) conforme o país selecionado.
+    function toE164(raw, cc) {
+        var c = COUNTRIES[cc] || COUNTRIES.BR;
+        var d = onlyDigits(raw);
         if (!d) return '';
-        if (d.length > 11 && d.indexOf('55') === 0) return '+' + d; // já vem com código do país
-        return '+55' + d;
+        if (d.indexOf(c.code) === 0 && d.length > c.national) return '+' + d; // já veio com o código do país
+        return c.dial + d;
     }
 
     // ── Respostas da ActiveCampaign ──────────────────────────────────
@@ -100,8 +137,12 @@
         if (success) success.hidden = true;   // nunca mostra sucesso quando há erro
         if (form) form.hidden = false;
         // A AC devolve o formato internacional "(formato +XXXXXXXXXXXXX)",
-        // confuso pro usuário BR. Troca pelo formato que ele digita.
-        if (message) message = message.replace(/\(formato\s*\+X+\)/i, '(DDD) XXXXX-XXXX');
+        // confuso pro usuário. Troca pelo exemplo do país selecionado.
+        if (message) {
+            var codeEl = modal.querySelector('.popup-form-country-code');
+            var hint = codeEl && codeEl.textContent === '+351' ? '9XX XXX XXX' : '(DDD) XXXXX-XXXX';
+            message = message.replace(/\(formato\s*\+X+\)/i, '(' + hint + ')');
+        }
         showFormError(modal, message);
         var btn = modal.querySelector('[id$="_submit"]');
         if (btn) { btn.disabled = false; btn.classList.remove('processing'); }
@@ -117,6 +158,9 @@
         const success  = modal.querySelector('.popup-form-success');
         const phoneIn  = modal.querySelector('input[name="phone"]');
         if (!form) return;
+
+        // País ativo do telefone (default Brasil). O seletor abaixo troca isto.
+        let country = 'BR';
 
         const recaptchaEl = initRecaptcha(modal);
 
@@ -238,15 +282,106 @@
             }
         }
 
-        // Máscara BR: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX
-        phoneIn?.addEventListener('input', () => {
-            let v = phoneIn.value.replace(/\D/g, '').slice(0, 11);
-            if (v.length > 10)      v = `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}`;
-            else if (v.length > 6)  v = `(${v.slice(0, 2)}) ${v.slice(2, 6)}-${v.slice(6)}`;
-            else if (v.length > 2)  v = `(${v.slice(0, 2)}) ${v.slice(2)}`;
-            else if (v.length > 0)  v = `(${v}`;
-            phoneIn.value = v;
-        });
+        // ── Seletor de país + máscara internacional (BR / PT) ────────
+        // Injeta um seletor de país à esquerda do input de telefone, sem
+        // editar o HTML de cada form. Trocar o país reformata o valor atual,
+        // ajusta placeholder + texto de erro e muda validação/E.164.
+        if (phoneIn) setupPhone(phoneIn);
+
+        function setCountry(cc) {
+            if (!COUNTRIES[cc]) cc = 'BR';
+            country = cc;
+            const c = COUNTRIES[cc];
+            if (!phoneIn) return;
+            phoneIn.placeholder = c.placeholder;
+            phoneIn.value = maskPhone(phoneIn.value, cc);
+            const errText = phoneIn.closest('.input-group')?.querySelector('.input-error-text');
+            if (errText) errText.textContent = c.error;
+        }
+
+        function setupPhone(input) {
+            input.setAttribute('maxlength', '15');
+            input.addEventListener('input', () => { input.value = maskPhone(input.value, country); });
+
+            const row = document.createElement('div');
+            row.className = 'popup-form-phone';
+
+            const trigger = document.createElement('div');
+            trigger.className = 'popup-form-country';
+            trigger.setAttribute('role', 'button');
+            trigger.setAttribute('tabindex', '0');
+            trigger.setAttribute('aria-label', 'Selecionar país do telefone');
+            const code  = document.createElement('span'); code.className = 'popup-form-country-code';
+            const caret = document.createElement('span');
+            caret.className = 'material-symbols-outlined popup-form-country-caret';
+            caret.textContent = 'expand_more';
+            trigger.append(code, caret);
+
+            const menu = document.createElement('ul');
+            menu.className = 'popup-form-country-menu';
+            menu.hidden = true;
+            Object.keys(COUNTRIES).forEach((cc) => {
+                const c = COUNTRIES[cc];
+                const li = document.createElement('li');
+                li.className = 'popup-form-country-option';
+                li.dataset.country = cc;
+                li.setAttribute('role', 'button');
+                li.setAttribute('tabindex', '0');
+                li.textContent = c.name + '  ' + c.dial;
+                const pick = (e) => { e.stopPropagation(); applyCountry(cc); closeMenu(); };
+                li.addEventListener('click', pick);
+                li.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(e); }
+                });
+                menu.appendChild(li);
+            });
+
+            input.parentNode.insertBefore(row, input);
+            row.append(trigger, input, menu);
+
+            function renderTrigger(cc) {
+                code.textContent = COUNTRIES[cc].dial;
+            }
+            // Decide abrir pra cima ou pra baixo conforme o espaço dentro do
+            // card (que tem overflow:hidden e cortaria o menu). Mede a altura
+            // do menu fora de tela e compara com o espaço acima/abaixo do gatilho.
+            function positionMenu() {
+                const clip = row.closest('.popup-form-card') || document.documentElement;
+                const cRect = clip.getBoundingClientRect();
+                const tRect = trigger.getBoundingClientRect();
+                const prevVis = menu.style.visibility;
+                menu.style.visibility = 'hidden';
+                menu.hidden = false;
+                const mH = menu.offsetHeight;
+                menu.hidden = true;
+                menu.style.visibility = prevVis;
+                const gap = 8;
+                const spaceBelow = cRect.bottom - tRect.bottom - gap;
+                const spaceAbove = tRect.top - cRect.top - gap;
+                const up = spaceBelow < mH && spaceAbove > spaceBelow;
+                row.classList.toggle('is-up', up);
+            }
+            function openMenu()  { positionMenu(); menu.hidden = false; row.classList.add('is-open'); caret.textContent = 'expand_less'; }
+            function closeMenu() { menu.hidden = true; row.classList.remove('is-open'); caret.textContent = 'expand_more'; }
+            function applyCountry(cc) { setCountry(cc); renderTrigger(cc); input.focus(); }
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.hidden ? openMenu() : closeMenu();
+            });
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menu.hidden ? openMenu() : closeMenu();
+                }
+            });
+            // Fecha ao clicar fora (o handler global de dropdowns não cobre esta classe).
+            document.addEventListener('click', () => { if (!menu.hidden) closeMenu(); });
+
+            renderTrigger(country);
+            setCountry(country);
+        }
 
         function showError(input, show) {
             const group = input.closest('.input-group');
@@ -267,8 +402,7 @@
             const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
             showError(email, !emailOk); ok = ok && emailOk;
 
-            const phoneRaw = phone.value.replace(/\D/g, '');
-            const phoneOk  = phoneRaw.length === 10 || phoneRaw.length === 11;
+            const phoneOk  = phoneValid(phone.value, country);
             showError(phone, !phoneOk); ok = ok && phoneOk;
 
             if (recaptchaEl && window.grecaptcha) {
@@ -295,7 +429,7 @@
             const out = [];
             for (const el of f.elements) {
                 if (!el.name || el.disabled || el.type === 'submit' || el.type === 'button') continue;
-                const val = el.name === 'phone' ? toE164BR(el.value) : el.value;
+                const val = el.name === 'phone' ? toE164(el.value, country) : el.value;
                 out.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(val));
             }
             return out.join('&');

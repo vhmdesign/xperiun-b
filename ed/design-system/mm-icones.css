@@ -1,0 +1,54 @@
+    /* ==========================================
+       FOUNDATIONS > ICONOGRAFIA
+       Material Symbols Outlined em dois pesos (200 e 400).
+       Grid de 16 colunas no desktop, flex-wrap no mobile.
+       ========================================== */
+
+    .container-mm-iconografia {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 16px 16px 16px 96px;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    @media(max-width: 864px) {
+        .container-mm-iconografia {
+            padding: 16px;
+        }
+    }
+
+    .container-mm-icones {
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        gap: 8px;
+        justify-items: center;
+    }
+
+    @media(max-width: 767px) {
+        .container-mm-icones {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    .mm-icone {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bw-50);
+    }
+
+    .mm-icone .material-symbols-outlined {
+        font-size: 24px;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .container-mm-icones-w200 .mm-icone .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+    }

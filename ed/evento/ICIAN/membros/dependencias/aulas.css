@@ -1,0 +1,339 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal; font-style: normal; line-height: 1;
+    letter-spacing: normal; text-transform: none; white-space: nowrap;
+    display: inline-block; direction: ltr; -webkit-font-smoothing: antialiased;
+}
+
+html, body { height: 100%; margin: 0; }
+
+body {
+    font-family: var(--font-family);
+    color: var(--bw);
+    background: var(--dn900);
+    height: 100dvh;
+    overflow: hidden;              /* app: sem scroll de página, só na sanfona */
+    position: relative;
+    display: flex; flex-direction: column;   /* menu topo + conteúdo */
+}
+
+/* ── Menu do topo: estilos vêm de menu-topo.css; aqui só o background da página ── */
+.menu-topo { background: var(--bb-75); }
+
+/* ── Fundo: imagem borrada + scrim (dentro do container) ── */
+.aula-bg {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;          /* camada decorativa não captura cliques */
+    background: url("/ed/evento/ICIAN/membros/dependencias/plat-bg.webp") center / cover no-repeat;
+    filter: blur(16px);
+    transform: scale(1.08);        /* esconde as bordas suavizadas pelo blur */
+}
+.aula-scrim {
+    position: absolute; inset: 0; z-index: 1;
+    pointer-events: none;          /* camada decorativa não captura cliques */
+    /* bb embaixo, bb-50 em cima (debaixo para cima) */
+    background: linear-gradient(to top, var(--bb), var(--bb-50));
+}
+
+/* Container geral: preenche o que sobra abaixo do menu do topo. */
+.aula-wrap {
+    position: relative;
+    flex: 1; min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;              /* app-shell + contém o aula-bg (scale 1.08) */
+}
+
+/* ── Grid de plataforma: 10 colunas, gutter 32px, 100% width ───── */
+.aula-layout {
+    position: relative;
+    z-index: 2;                           /* acima da bg/scrim do container */
+    flex: 1;
+    min-height: 0;
+    padding: 16px;                        /* margem do grid (16px DS); o menu fica full-bleed */
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 32px;
+}
+.aula-main { grid-column: span 8; display: flex; flex-direction: column; gap: 24px; min-height: 0; max-height: calc(100dvh - 104px); }
+.aula-right {
+    position: relative;
+    grid-column: span 2;
+    min-height: 0;
+    max-height: calc(100dvh - 104px);
+    display: flex; flex-direction: column;
+}
+/* scrim de "tem mais conteúdo": aparece no rodapé da sanfona só quando
+   há scroll e o fim não está visível (classe has-scrim via JS). */
+.aula-right::after {
+    content: 'keyboard_arrow_down';
+    font-family: 'Material Symbols Outlined'; font-size: 24px; line-height: 1;
+    color: var(--bw-50);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 16px;
+    position: absolute; left: 0; bottom: 0;
+    width: 100%; height: 96px;
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(to bottom, transparent, var(--pc800));
+    pointer-events: none;
+    opacity: 0; transition: opacity 0.5s ease;
+}
+.aula-right.has-scrim::after { opacity: 1; }
+/* ── Lado esquerdo: vídeo + navegação (nav embaixo) ────────────── */
+.aula-player { background: var(--bb); display: flex; justify-content: center; }
+.aula-video {
+    /* Largura = menor entre 100% e a largura cujo 16:9 cabe na altura disponível. */
+    width: min(100%, (100dvh - 200px) * 16 / 9);
+    margin-inline: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+    overflow: hidden;
+    background: var(--dn900);
+}
+.aula-video { position: relative; }
+.aula-video-frame, #aula-player { width: 100%; height: 100%; border: none; display: block; }
+/* loader enquanto o vídeo carrega (ao trocar de aula) */
+.aula-video-loader {
+    position: absolute; inset: 0; z-index: 1;
+    display: grid; place-items: center;
+    background: var(--dn900);
+    pointer-events: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.aula-video-loader.is-loading { opacity: 1; visibility: visible; }
+.aula-video-loader::after {
+    content: '';
+    width: 40px; height: 40px; border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, var(--pc500));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
+            mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
+    animation: aula-spin 0.8s linear infinite;
+}
+@keyframes aula-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .aula-video-loader::after { animation: none; } }
+
+/* Chat ao vivo do YouTube (dentro da seção "Chat ao Vivo" da sanfona) */
+.aula-chat {
+    height: 55vh;
+    overflow: hidden;
+    background: var(--dn900);
+}
+.aula-chat-frame { width: 100%; height: 100%; border: 0; display: block; }
+
+.aula-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.aula-nav-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: none; border: none; cursor: pointer;
+    font: var(--label); color: var(--bw-75);
+    transition: color 0.2s ease;
+}
+.aula-nav-btn:hover { color: var(--bw); }
+/* "Voltar" é <a>: bate a regra a:not(.btn) do root.css (mesma especificidade, vem depois) */
+a.aula-nav-btn { color: var(--bw-75); text-decoration: none; }
+a.aula-nav-btn:hover { color: var(--bw); text-decoration: none; }
+.aula-nav-btn .material-symbols-outlined { font-size: 16px; }
+/* "Concluir aula" desativado (antes das 20:30 do dia, ou já concluída) */
+.aula-nav .btn:disabled { opacity: 0.25; pointer-events: none; }
+
+/* ── Header de progresso (em cima da sidebar) ──────────────────── */
+/* aula-progress agora é conteúdo da seção "Certificado" (a sanfona provê o card). */
+.aula-progress {
+    display: flex; flex-direction: column; gap: 16px;
+    padding: 24px;
+}
+.aula-progress-course { font: var(--label-s); color: var(--bw-75); margin: 0; }   /* título sempre no topo */
+.aula-progress-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.aula-progress-info { min-width: 0; }                                              /* concluídos */
+.aula-progress-stats { display: flex; flex-direction: column; gap: 16px; }         /* "concluídos" verticais */
+.aula-progress-stat { display: flex; flex-direction: column; gap: 4px; }
+.aula-progress-num { font-size: 1.25rem; font-weight: 700; line-height: 1; color: var(--bw); }
+.aula-progress-label { font: var(--label-xs); color: var(--bw-50); }
+.aula-progress-aviso { font: var(--label-xs); color: var(--er300); margin: 0; }
+/* 100% concluído: o aviso sai e entra o botão "Acessar meu Certificado" */
+.aula-progress-cert { display: none; width: 100%; }
+.aula-progress.is-complete .aula-progress-aviso { display: none; }
+.aula-progress.is-complete .aula-progress-cert { display: inline-flex; }
+.aula-progress-ring { position: relative; width: 144px; height: 144px; flex-shrink: 0; }
+.aula-progress-ring-svg { display: block; width: 144px; height: 144px; }
+.aula-progress-ring-svg circle[data-progress-ring] { transition: stroke-dashoffset 0.4s ease; }
+.aula-progress-ring-img {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+}
+/* curso 100% concluído: números e anel em sg300 */
+.aula-progress.is-complete .aula-progress-num { color: var(--sg300); }
+.aula-progress.is-complete .aula-progress-ring-svg circle[data-progress-ring] { stroke: var(--sg300); }
+
+/* ── Lado direito: lista de módulos com scroll Y ───────────────── */
+.aula-side {
+    flex: 0 1 auto;                    /* altura = conteúdo; encolhe e rola só se passar da altura */
+    min-height: 0;
+    overflow: hidden auto;             /* scroll vertical interno: a sanfona rola (com scrim) */
+    border-radius: 16px;
+    background: linear-gradient(180deg, var(--dn800), var(--pc800));
+    padding: 8px 0;
+    font-size: 1.25rem;
+}
+.aula-side::-webkit-scrollbar { width: 8px; }
+.aula-side::-webkit-scrollbar-thumb { background: var(--bw-15); border-radius: 8px; }
+
+/* ── Sanfona de módulos ────────────────────────────────────────── */
+.aula-mod { box-shadow: inset 0 -2px 0 var(--bw-10); }   /* divider 2px (DS: nada de 1px) */
+.aula-mod:last-child { box-shadow: none; }
+
+.aula-mod-head {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    background: none; border: none; cursor: pointer; text-align: left;
+    padding: 16px 24px;
+    color: inherit;
+}
+.aula-mod-folder { font-size: 24px; color: var(--bw-75); flex-shrink: 0; }
+.aula-mod-titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.aula-mod-eyebrow-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.aula-mod-eyebrow { font: var(--label-xs); color: var(--bw-50); }
+.aula-mod-count { font: var(--label-xs); color: var(--bw-50); }
+.aula-mod-count.is-complete { color: var(--pc200); }   /* módulo 100% concluído */
+.aula-mod-name { font: var(--label); color: var(--bw-75); }
+
+/* lista colapsável: anima grid-template-rows 0fr -> 1fr */
+.aula-lessons {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+}
+.aula-lessons-inner { overflow: hidden; }
+.aula-mod.is-open .aula-lessons { grid-template-rows: 1fr; }
+
+.aula-lesson {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 24px; border-radius: 0;
+    font: var(--label-s); color: var(--bw-50);   /* não vista */
+    cursor: pointer;
+    background-image: linear-gradient(90deg, var(--pc500-50), transparent, transparent);
+    background-size: 200%;
+    background-position: 100% center;
+    transition: color 0.3s, background-position 0.3s;
+}
+.aula-lesson:hover { background-position: 50% center; }
+.aula-lesson-name { flex: 1; min-width: 0; }
+.aula-lesson-date { margin-left: auto; flex-shrink: 0; font: var(--label-xs); color: var(--bw-50); }
+.aula-lesson-date.is-hoje { color: var(--sc300); }   /* no dia da aula */
+
+/* círculo de status (24px) — vazio por padrão */
+.aula-lesson-mark {
+    width: 24px; height: 24px; flex-shrink: 0;
+    border-radius: 50%; background: var(--bw-10);
+    display: grid; place-items: center;
+    transition: background 0.2s ease;
+}
+.aula-lesson-mark .material-symbols-outlined { font-size: 16px; color: var(--pc200); display: none; }
+
+/* assistida: texto pc300 + check dentro do círculo */
+.aula-lesson.is-done { color: var(--pc200); }
+.aula-lesson.is-done .aula-lesson-mark .material-symbols-outlined { display: block; }
+
+/* ativa (assistindo agora): sg300 + gradiente pc500-25 -> transparente */
+.aula-lesson.is-active {
+    color: var(--sg300);
+    background-position: 0% center;
+}
+
+/* linhas de ação (não são aula): ícone-botão + texto. Ex.: "Fazer Download" */
+.aula-side .aula-download,
+.aula-side .aula-acesso {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 24px;
+    font: var(--label-s); color: var(--bw-75);
+    text-decoration: none; cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+.aula-side .aula-download:hover,
+.aula-side .aula-acesso:hover { color: var(--bw); background: var(--bw-5); text-decoration: none; }
+.aula-download-btn {
+    width: 24px; height: 24px; flex-shrink: 0;
+    display: grid; place-items: center;
+}
+.aula-download-btn .material-symbols-outlined { font-size: 24px; color: var(--bw-50); }
+
+/* ── Popup de conclusão ────────────────────────────────────────── */
+.aula-modal {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex;
+    align-items: center; justify-content: center;
+    padding: 16px;
+    background: var(--bb-50);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 0; visibility: hidden;                    /* escondido: fade out */
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.aula-modal.is-open { opacity: 1; visibility: visible; }
+.aula-modal-card {
+    width: 100%; max-width: 360px;
+    background: var(--dn800);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: left;
+    display: flex; flex-direction: column; gap: 8px;
+    transform: translateY(8px) scale(0.98);            /* entra suave */
+    transition: transform 0.25s ease;
+}
+.aula-modal.is-open .aula-modal-card { transform: none; }
+/* modal de cadastro: scrim success-500-15 → transparente (esquerda → direita) */
+#aula-modal-cadastro .aula-modal-card {
+    background: linear-gradient(to left, var(--sc500-15), transparent), var(--dn800);
+}
+#aula-modal-cadastro .tag-status { align-self: flex-start; }   /* pill não estica na coluna */
+.aula-modal-title { font: var(--h6); font-weight: 400; color: var(--bw); margin: 0; }
+.aula-modal-title--sucesso { color: var(--sc300); }
+.aula-modal-sub { font: var(--label-xs); color: var(--bw-50); margin: 0; }
+.aula-modal-aviso { font: var(--label-s); color: var(--bw-75); margin: 0; }
+.aula-modal-progress { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.aula-modal-progress-track { width: 100%; height: 8px; background: var(--bw-10); border-radius: 1920px; overflow: hidden; }
+.aula-modal-progress-fill { height: 100%; width: 0; background: var(--pc500); border-radius: inherit; transition: width 0.3s ease; }
+.aula-modal-progress-label { font: var(--label-xs); color: var(--bw-50); }
+#aula-modal-certificado .aula-progress { padding: 0; }   /* o card do modal já tem padding */
+.aula-modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+.aula-modal-actions .btn { flex: 1; }   /* botões oficiais ocupam metade cada */
+
+/* faixa de certificado (64px) no topo: no app fixo (>=1153px) desconta 64px
+   dos cálculos de altura pra vídeo + botões continuarem cabendo sem scroll */
+@media (min-width: 1153px) {
+    .has-cert-topbar .aula-main,
+    .has-cert-topbar .aula-right { max-height: calc(100dvh - 168px); }
+    .has-cert-topbar .aula-video { width: min(100%, (100dvh - 264px) * 16 / 9); }
+}
+
+/* ── Responsivo (breakpoints do DS) ────────────────────────────── */
+@media (max-width: 1439px) {
+    .aula-layout { grid-template-columns: repeat(8, 1fr); }
+    .aula-main { grid-column: span 6; }
+    .aula-right { grid-column: span 2; }
+}
+@media (max-width: 1152px) {
+    /* abaixo de 1152px empilha (vídeo em cima, módulos embaixo) e a PÁGINA rola. */
+    body { height: auto; overflow: auto; }
+    .aula-wrap { flex: none; height: auto; min-height: 0; max-height: none; }
+    .aula-layout { display: flex; flex-direction: column; gap: 24px; min-height: 0; }
+    .aula-main { flex: 0 0 auto; max-height: none; }
+    .aula-stage { flex-direction: column; }   /* chat abaixo do vídeo */
+    .aula-chat { flex: 0 0 auto; height: 480px; }
+    .aula-video { width: 100%; }
+    .aula-right { max-height: none; width: 100%; align-self: stretch; overflow: visible; }
+    .aula-side {
+        width: 100%;
+        flex: 0 0 auto;        /* altura = conteúdo */
+        max-height: none;
+        overflow: visible;
+    }
+}
+@media (max-width: 576px) {
+    .aula-layout { gap: 16px; }
+    /* "Concluir aula" vai pro fim (depois de "Próxima aula") e ocupa uma linha própria */
+    .aula-nav { flex-wrap: wrap; }
+    .aula-nav [data-concluir-aula] { order: 1; flex-basis: 100%; }
+}
