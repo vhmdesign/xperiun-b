@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Squad , Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Form ActiveCampaign do Data Squad (Xperiun Corporate).
+     Id do form na AC: 437. É o form mais longo do conjunto: além do trio
+     nome/email/telefone, leva 1 texto (empresa) e 4 dropdowns de qualificação.
+
+     Mapa dos field[N], tirado do window.cfields do embed da AC. NÃO chutar
+     nenhum destes números, eles são por-conta na AC:
+       field[39]  empresa                (texto)
+       field[46]  funcionrios            (dropdown; o nome do campo na AC está
+                                          mesmo sem o "á", é o slug de lá)
+       field[44]  cargo                  (dropdown)
+       field[47]  departamento           (dropdown)
+       field[215] cp_principal_desafio   (dropdown)
+       field[2]   utm_campaign   field[3] utm_source   field[4] utm_medium
+       field[5]   utm_content    field[103] utm_term
+     Este form NÃO tem field[60] (sck). O form.js tenta preencher os 6 da URL e
+     pula silenciosamente os que não existem no HTML, então não falta nada.
+
+     Os 4 dropdowns são required sem precisar de atributo: o form.js valida TODO
+     .dropdown-group do modal exigindo valor no hidden do .input-group.
+     A marca é o mesmo lockup inline "Xperiun Corporate" do hero da página, e não
+     um <img>: a página desenha o lockup em SVG inline e não existe arquivo de
+     logo próprio do Data Squad pra referenciar. O fill currentColor puxa a cor do
+     texto do header. -->
+<div class="popup-form" id="popup-form-data-squads" style="--popup-accent-rgb: 100, 100, 255;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <svg viewBox="0 0 80 24" role="img" aria-label="Xperiun Corporate" style="width: 160px; height: auto; display: block; color: var(--bw);"><path d="M11.53 12.83c.22.67-.26 1.81-1.22 2.77l-3.09 3.09c-2.85 2.85-6.08 4.24-7.22 3.1l8.24-8.24c.96-.96 2.1-1.44 2.77-1.22L7.2 16.64l4.31-3.81Zm-3.29-2.38c.97.97 2.11 1.44 2.78 1.22L9.27 9.42l2.25 1.75c.22-.67-.25-1.81-1.22-2.78L6.18 4.27C5.04 5.41 5.5 7.72 7.21 9.42zm8.25-3.09-3.81 4.31c.67.22 1.81-.26 2.77-1.22l8.25-8.24c-1.14-1.14-4.37.25-7.21 3.09L13.4 8.39c-.96.96-1.44 2.1-1.22 2.77l4.31-3.81Zm-1.03 6.19c-.97-.97-2.11-1.44-2.78-1.22l1.75 2.25-2.25-1.75c-.22.67.25 1.81 1.22 2.78l4.12 4.12c1.14-1.14.68-3.45-1.03-5.15zm56.07-4.51h-.85v2.54c0 1.4-1.14 2.54-2.54 2.54s-2.54-1.14-2.54-2.54V9.04h-.85v2.54c0 1.87 1.52 3.39 3.39 3.39s3.39-1.52 3.39-3.39zM40.21 11.1a2.12 2.12 0 0 1-2.12 2.17h-4.66v1.69h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16 0 2.13.91 2.16 2.07Zm-.84.05c0-.7-.57-1.27-1.27-1.27h-4.66v2.54h4.66c.7 0 1.27-.57 1.27-1.27m22.01 3.81h.85V9.03h-.85zm17.77-5.92v4.85l-4.73-4.73a.42.42 0 0 0-.3-.12h-.48c-.23 0-.42.19-.42.42v5.5h.85V10l4.83 4.83c.08.08.19.12.3.12h.37c.23 0 .42-.19.42-.42v-5.5h-.85Zm-49.49 0-2.57 2.39-2.57-2.39h-1.24L26.47 12l-3.19 2.96h1.24l2.57-2.39 2.57 2.39h1.24L27.71 12l3.19-2.96zm19.02 5.08h-4.66c-.7 0-1.27-.57-1.27-1.27v-.42h5.93v-.85h-5.93v-.42c0-.7.57-1.27 1.27-1.27h4.66v-.85h-4.66c-1.17 0-2.12.95-2.12 2.12v1.69c0 1.17.95 2.12 2.12 2.12h4.66zm8.08-.85 2.08 1.69h-1.31l-2.08-1.69h-3.39v1.69h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16 0 2.13.91 2.16 2.07.03 1.18-.91 2.15-2.08 2.17Zm-.04-.85c.7 0 1.27-.57 1.27-1.27s-.57-1.27-1.27-1.27h-4.66v2.54zm-8.15 4.79c.12 0 .22.03.31.08a.5.5 0 0 1 .21.24h.66c-.07-.27-.21-.48-.42-.64s-.46-.23-.76-.23c-.24 0-.46.05-.64.16-.19.11-.34.26-.44.45-.11.19-.16.41-.16.66s.05.46.16.65.25.34.44.45.4.16.64.16c.29 0 .55-.08.76-.23s.35-.37.42-.63h-.66q-.075.15-.21.24a.6.6 0 0 1-.31.08c-.19 0-.34-.06-.45-.19s-.17-.3-.17-.52.06-.39.17-.52.27-.19.45-.19Zm5.24.06a1.35 1.35 0 0 1 0 1.31c-.11.2-.27.35-.46.45-.19.11-.41.16-.64.16s-.45-.05-.64-.16-.35-.26-.46-.45-.17-.41-.17-.66.06-.46.17-.65a1.24 1.24 0 0 1 1.1-.61 1.24 1.24 0 0 1 1.1.61m-.45.65c0-.22-.06-.39-.18-.52s-.28-.2-.48-.2-.36.06-.48.19-.18.31-.18.53.06.39.18.52.28.2.48.2.36-.07.48-.2.18-.31.18-.52m3.74.27.57.98h-.68l-.52-.94h-.14v.94h-.6v-2.48h1.01c.2 0 .36.03.5.1a.71.71 0 0 1 .41.68c0 .16-.05.31-.14.44s-.23.22-.41.28m-.06-.69c0-.09-.03-.17-.08-.22a.37.37 0 0 0-.25-.08h-.37v.61h.37c.11 0 .19-.03.25-.08s.08-.13.08-.23m4.19-.42c.07.12.1.26.1.41 0 .14-.03.27-.1.39s-.17.21-.3.29c-.14.07-.31.11-.51.11h-.37v.89h-.6v-2.48h.98c.2 0 .36.03.5.1s.24.16.31.28Zm-.51.41c0-.1-.03-.18-.08-.23a.38.38 0 0 0-.26-.08h-.33v.62h.33c.12 0 .2-.03.26-.08s.08-.13.08-.23m4.61-.22a1.35 1.35 0 0 1 0 1.31c-.11.19-.27.35-.46.45-.19.11-.41.16-.64.16s-.45-.05-.64-.16-.35-.26-.46-.45-.17-.41-.17-.66.06-.46.17-.65a1.24 1.24 0 0 1 1.1-.61 1.24 1.24 0 0 1 1.1.61m-.44.65c0-.22-.06-.39-.18-.52s-.28-.2-.48-.2-.36.06-.48.19-.18.31-.18.53.06.39.18.52.28.2.48.2.36-.07.48-.2.18-.31.18-.52m3.73.27.57.98h-.68l-.52-.94h-.14v.94h-.6v-2.48h1.01c.2 0 .36.03.5.1a.71.71 0 0 1 .41.68c0 .16-.05.31-.14.44s-.23.22-.41.28m-.06-.69c0-.09-.03-.17-.08-.22a.37.37 0 0 0-.25-.08h-.37v.61h.37c.11 0 .19-.03.25-.08s.08-.13.08-.23m3.84-.81.9 2.48h-.64l-.15-.44h-.93l-.15.44h-.63l.9-2.48zm-.05 1.58-.31-.91-.3.91zm2.5-1.09h.66v2h.6v-2h.66v-.48h-1.92zm3.63 1.99H80v-.48h-.91v-.54h.81v-.47h-.81v-.5H80v-.48h-1.52v2.48Z" fill="currentColor"/></svg>
+            </div>
+            <p class="popup-form-label">Preencha seus dados e um especialista entra em contato:</p>
+            <form
+                class="popup-form-form _form _form_437 _inline-form _dark"
+                id="_form_437_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <input type="hidden" name="u" value="437">
+                <input type="hidden" name="f" value="437">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <!-- TODO: substituir 'or' pelo UUID real do form 437 na AC -->
+                <input type="hidden" name="or" value="">
+
+                <input type="hidden" name="field[2]"   value="">
+                <input type="hidden" name="field[3]"   value="">
+                <input type="hidden" name="field[4]"   value="">
+                <input type="hidden" name="field[5]"   value="">
+                <input type="hidden" name="field[103]" value="">
+
+                <!-- Indicador de etapa. O texto é a informação (leitor de tela lê
+                     a contagem); as barras são o reforço visual e o JS marca as
+                     concluídas com .is-done. -->
+                <div class="popup-form-steps">
+                    <span class="popup-form-steps-label" role="status" aria-live="polite">Etapa 1 de 2</span>
+                    <span class="popup-form-steps-track">
+                        <button type="button" class="popup-form-steps-bar" aria-label="Voltar para a etapa 1"></button>
+                        <button type="button" class="popup-form-steps-bar" aria-label="Voltar para a etapa 2"></button>
+                    </span>
+                </div>
+
+                <!-- Etapa 1: contato + empresa. -->
+                <div class="popup-form-step">
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="you@domain.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Empresa</span>
+                    <input name="field[39]" class="input" type="text" placeholder="Nome da sua empresa" autocomplete="organization" required>
+                    <span class="input-error-text" style="display:none">Informe o nome da sua empresa.</span>
+                </div>
+                </div><!-- /etapa 1 -->
+
+                <!-- Etapa 2: qualificação (os 4 dropdowns). -->
+                <div class="popup-form-step" hidden>
+                <div class="input-group">
+                    <span class="input-label">Funcionários</span>
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Quantos funcionários a empresa tem</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-value="1 a 10">1 a 10</li>
+                            <li class="dropdown-option" data-value="11 a 50">11 a 50</li>
+                            <li class="dropdown-option" data-value="51 a 100">51 a 100</li>
+                            <li class="dropdown-option" data-value="101 a 500">101 a 500</li>
+                            <li class="dropdown-option" data-value="Acima de 500">Acima de 500</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="field[46]" value="">
+                    <span class="input-error-text" style="display:none">Selecione o número de funcionários.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Cargo</span>
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Selecione seu cargo atual</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-value="Presidente, VP ou CEO">Presidente, VP ou CEO</li>
+                            <li class="dropdown-option" data-value="Diretor/Gerente">Diretor/Gerente</li>
+                            <li class="dropdown-option" data-value="Supervisor/Coordenador">Supervisor/Coordenador</li>
+                            <li class="dropdown-option" data-value="Analista/Assistente">Analista/Assistente</li>
+                            <li class="dropdown-option" data-value="Outro">Outro</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="field[44]" value="">
+                    <span class="input-error-text" style="display:none">Selecione seu cargo.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Departamento</span>
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Selecione seu departamento</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-value="Comercial">Comercial</li>
+                            <li class="dropdown-option" data-value="Marketing">Marketing</li>
+                            <li class="dropdown-option" data-value="Financeiro">Financeiro</li>
+                            <li class="dropdown-option" data-value="Logística">Logística</li>
+                            <li class="dropdown-option" data-value="Tecnologia da Informação">Tecnologia da Informação</li>
+                            <li class="dropdown-option" data-value="Outro">Outro</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="field[47]" value="">
+                    <span class="input-error-text" style="display:none">Selecione seu departamento.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Principal desafio</span>
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Selecione o principal desafio</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-value="Saída de analista ou lacuna no time">Saída de analista ou lacuna no time</li>
+                            <li class="dropdown-option" data-value="Ambiente de BI desorganizado ou sem governança">Ambiente de BI desorganizado ou sem governança</li>
+                            <li class="dropdown-option" data-value="Modernização ou migração de plataforma">Modernização ou migração de plataforma</li>
+                            <li class="dropdown-option" data-value="Demandas contínuas que o time interno não atende">Demandas contínuas que o time interno não atende</li>
+                            <li class="dropdown-option" data-value="Dados inconsistentes ou não confiáveis">Dados inconsistentes ou não confiáveis</li>
+                            <li class="dropdown-option" data-value="Outro">Outro</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="field[215]" value="">
+                    <span class="input-error-text" style="display:none">Selecione o principal desafio.</span>
+                </div>
+                </div><!-- /etapa 2 -->
+
+                <!-- O form.js mostra o Próximo na etapa 1 e o Confirmar na última,
+                     escondendo o outro. type="button" no Próximo pra ele não
+                     submeter o form. -->
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
+                    <button type="button" class="btn" data-size="m" data-emphasis="subtle" data-step-back hidden>Voltar</button>
+                    <button type="button" class="btn" data-size="m" data-emphasis="neutral" data-step-next disabled>Próximo</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_437_submit" disabled>Confirmar</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Tudo certo! Em breve um especialista entra em contato com você.</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>

@@ -249,6 +249,10 @@
                     const err = ig?.querySelector('.input-error-text');
                     if (err) err.style.display = 'none';
                     closeDropdown();
+                    // o hidden não dispara change sozinho quando o valor vem do JS.
+                    // Sem isto o bloco de etapas não saberia que o campo foi
+                    // preenchido e o botão continuaria desabilitado.
+                    hidden?.dispatchEvent(new Event('change', { bubbles: true }));
                 };
                 opt.addEventListener('click', select);
                 opt.addEventListener('keydown', (e) => {
@@ -260,7 +264,12 @@
             });
         });
 
-        function close() { modal.classList.remove('is-open'); }
+        // o evento avisa o bloco de etapas pra voltar pra primeira. Quem não tem
+        // etapas simplesmente não escuta.
+        function close() {
+            modal.classList.remove('is-open');
+            modal.dispatchEvent(new CustomEvent('popup-form-reset'));
+        }
         cancels.forEach(b => b.addEventListener('click', close));
         backdrop?.addEventListener('click', close);
 
@@ -390,39 +399,160 @@
             if (err) err.style.display = show ? '' : 'none';
         }
 
-        function validate() {
+        // validate(escopo): sem argumento valida o form inteiro, que é o
+        // comportamento de sempre no submit. Com um elemento, valida só os campos
+        // dentro dele, que é o que o avanço de etapa precisa (ver o bloco de
+        // etapas abaixo): a etapa 2 existe no DOM desde o começo, então validar o
+        // form todo na etapa 1 reprovaria em dropdowns que o usuário ainda nem viu.
+        function validate(escopo, silencioso) {
+            const raiz = escopo || form;
+            const dentro = (el) => !!el && raiz.contains(el);
+            const marca = (input, erro) => { if (!silencioso) showError(input, erro); };
             let ok = true;
             const fullname = form.fullname;
             const email    = form.email;
             const phone    = form.phone;
 
-            const nameOk = fullname.value.trim().length >= 2;
-            showError(fullname, !nameOk); ok = ok && nameOk;
+            if (dentro(fullname)) {
+                const nameOk = fullname.value.trim().length >= 2;
+                marca(fullname, !nameOk); ok = ok && nameOk;
+            }
 
-            const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
-            showError(email, !emailOk); ok = ok && emailOk;
+            if (dentro(email)) {
+                const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+                marca(email, !emailOk); ok = ok && emailOk;
+            }
 
-            const phoneOk  = phoneValid(phone.value, country);
-            showError(phone, !phoneOk); ok = ok && phoneOk;
+            if (dentro(phone)) {
+                const phoneOk = phoneValid(phone.value, country);
+                marca(phone, !phoneOk); ok = ok && phoneOk;
+            }
 
-            if (recaptchaEl && window.grecaptcha) {
+            // Demais inputs de texto marcados required (ex.: field[39] empresa no
+            // form-data-squads). O trio acima tem validação de formato própria;
+            // estes só precisam estar preenchidos. Até o data-squads nenhum popup
+            // tinha um campo assim, então o laço não altera os que já existiam.
+            raiz.querySelectorAll('input[type="text"][required]').forEach((el) => {
+                if (el.name === 'fullname') return;
+                const filled = el.value.trim() !== '';
+                marca(el, !filled);
+                ok = ok && filled;
+            });
+
+            if (recaptchaEl && dentro(recaptchaEl) && window.grecaptcha) {
                 const wid = recaptchaEl.dataset.widgetId;
                 const token = window.grecaptcha.getResponse(wid === undefined ? undefined : Number(wid));
                 const captchaOk = !!token;
-                recaptchaEl.classList.toggle('is-error', !captchaOk);
+                if (!silencioso) recaptchaEl.classList.toggle('is-error', !captchaOk);
                 ok = ok && captchaOk;
             }
 
             for (const d of dropdowns) {
+                if (!dentro(d.group)) continue;
                 const dropOk = !!(d.hidden && d.hidden.value);
-                const ig = d.group.closest('.input-group');
-                if (ig) ig.classList.toggle('is-error', !dropOk);
-                const err = ig?.querySelector('.input-error-text');
-                if (err) err.style.display = dropOk ? 'none' : '';
+                if (!silencioso) {
+                    const ig = d.group.closest('.input-group');
+                    if (ig) ig.classList.toggle('is-error', !dropOk);
+                    const err = ig?.querySelector('.input-error-text');
+                    if (err) err.style.display = dropOk ? 'none' : '';
+                }
                 ok = ok && dropOk;
             }
 
             return ok;
+        }
+
+        // Erro por campo. Aparece no BLUR e não a cada tecla: marcar de vermelho
+        // enquanto a pessoa ainda está digitando o email é hostil. Depois de
+        // marcado, o erro sai sozinho no input assim que o campo fica válido.
+        // O escopo é o .input-group, que é o recorte que o validate() sabe
+        // percorrer: contém o input e, nos dropdowns, o .dropdown-group.
+        // É o mesmo par blur/input que o embed original da ActiveCampaign fazia.
+        form.querySelectorAll('.input-group').forEach((grupo) => {
+            const campo = grupo.querySelector('input:not([type="hidden"])');
+            if (!campo) return;
+            campo.addEventListener('blur', () => { validate(grupo); });
+            campo.addEventListener('input', () => {
+                if (grupo.classList.contains('is-error')) validate(grupo);
+            });
+        });
+
+        // Etapas (opcional). Só entra em ação se o form tiver .popup-form-step;
+        // os popups de uma etapa só não têm nenhum e seguem exatamente como antes.
+        // Mostra uma etapa por vez, o [data-step-next] avança depois de validar a
+        // etapa atual, e o submit só aparece na última.
+        const etapas = Array.from(form.querySelectorAll('.popup-form-step'));
+        if (etapas.length > 1) {
+            const btnNext   = form.querySelector('[data-step-next]');
+            const btnBack   = form.querySelector('[data-step-back]');
+            const btnCancel = form.querySelector('.popup-form-cancel');
+            const btnSubmit = form.querySelector('[type="submit"]');
+            const conta     = modal.querySelector('.popup-form-steps-label');
+            const barras    = modal.querySelectorAll('.popup-form-steps-bar');
+            let atual = 0;
+
+            // Só UM botão de avanço na tela por vez: o Próximo nas etapas do meio,
+            // o Confirmar na última, no mesmo lugar. O [hidden] só funciona porque
+            // o form.css re-aplica display:none nele (o .btn do DS é inline-flex,
+            // que sozinho vence o default do atributo).
+            const pintaEtapa = () => {
+                etapas.forEach((et, i) => { et.hidden = i !== atual; });
+                const ultima  = atual === etapas.length - 1;
+                const primeira = atual === 0;
+                if (btnNext)   btnNext.hidden = ultima;
+                if (btnSubmit) btnSubmit.hidden = !ultima;
+                // slot da esquerda: Cancelar na primeira etapa, Voltar nas demais.
+                // Sair de uma etapa do meio continua possível pelo Esc e pelo
+                // clique no backdrop, que o initModal já liga.
+                if (btnCancel) btnCancel.hidden = !primeira;
+                if (btnBack)   btnBack.hidden = primeira;
+                if (conta) conta.textContent = 'Etapa ' + (atual + 1) + ' de ' + etapas.length;
+                // barra clicável só pra etapa JÁ VISITADA: voltar é livre, avançar
+                // continua passando pela validação do Próximo. O disabled nas
+                // demais é o que dá o affordance (o CSS tira o cursor de mão).
+                barras.forEach((b, i) => {
+                    b.classList.toggle('is-done', i <= atual);
+                    b.disabled = i >= atual;
+                });
+                atualizaBotoes();
+            };
+
+            // navegação num lugar só. O foco vai pro 1º campo da etapa nova pra
+            // quem usa teclado não ter que tabular o formulário inteiro de volta.
+            const vai = (i) => {
+                atual = Math.max(0, Math.min(i, etapas.length - 1));
+                pintaEtapa();
+                etapas[atual].querySelector('input:not([type="hidden"]), .dropdown')?.focus();
+            };
+
+            barras.forEach((b, i) => {
+                b.addEventListener('click', () => { if (i < atual) vai(i); });
+            });
+            btnBack?.addEventListener('click', () => vai(atual - 1));
+
+            // O botão de avanço da etapa fica desabilitado até a etapa estar
+            // completa, então o usuário nunca clica pra ser recusado.
+            function atualizaBotoes() {
+                // silencioso: true — é a MESMA checagem do clique, só sem pintar erro.
+                // Antes isto vivia numa função paralela (preenchida()), e duas
+                // implementações da mesma regra podem divergir, que foi o que fez o
+                // Próximo habilitar com campo inválido. Agora existe um caminho só.
+                const pronta = validate(etapas[atual], true);
+                const alvo = atual === etapas.length - 1 ? btnSubmit : btnNext;
+                if (alvo) alvo.disabled = !pronta;
+            }
+            form.addEventListener('input',  atualizaBotoes);
+            form.addEventListener('change', atualizaBotoes);
+
+            btnNext?.addEventListener('click', () => {
+                if (!validate(etapas[atual])) return;
+                vai(atual + 1);
+            });
+
+            // Volta pra etapa 1 ao fechar, senão reabrir o popup cai no meio do
+            // formulário com os campos da etapa 1 já preenchidos e escondidos.
+            modal.addEventListener('popup-form-reset', () => { atual = 0; pintaEtapa(); });
+            pintaEtapa();
         }
 
         function serialize(f) {

@@ -16,6 +16,14 @@
     box-sizing: border-box;
     visibility: hidden;
     transition: visibility 0s linear 0.3s;
+    /* Tela baixa: quem rola é o OVERLAY, não o card. O card tem
+       overflow: hidden (o glow e o raio dependem disso) e é ele que o
+       getClipContainer() do form.js usa pra decidir onde abrir o menu dos
+       dropdowns, então dar scroll interno a ele quebraria as duas coisas.
+       overscroll-behavior: contain evita que o scroll do modal, ao chegar no
+       fim, continue rolando a página atrás. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 .popup-form.is-open {
     visibility: visible;
@@ -38,6 +46,12 @@
     z-index: 1;
     width: 100%;
     max-width: 688px;
+    /* margin: auto centra E preserva as duas pontas quando o card é mais alto
+       que o overlay. Com o align-items: center do pai fazendo o trabalho, um
+       item mais alto que o container tem o topo cortado e inalcançável pelo
+       scroll: o overflow vaza pro lado de início, que o scroll não alcança. */
+    margin: auto;
+    flex: 0 0 auto;
     opacity: 0;
     transform: translateY(16px) scale(0.98);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -265,4 +279,76 @@
 }
 .popup-form .popup-form-error[hidden] {
     display: none;
+}
+
+/* O .btn do DS é display: inline-flex, e display no elemento vence o display:none
+   que o atributo [hidden] traz por default do user-agent. Sem esta linha o
+   Próximo e o Confirmar apareciam OS DOIS, mesmo com o JS marcando um como
+   hidden. Mesma armadilha do .popup-form-success e do .popup-form-step. */
+.popup-form .popup-form-actions .btn[hidden] { display: none; }
+/* desabilitado no padrão do DS (o .textarea-group.is-disabled do root.css usa
+   exatamente isto), porque o DS não define um estado disabled pro .btn. */
+.popup-form .popup-form-actions .btn[disabled] { opacity: 0.25; pointer-events: none; }
+
+/* Indicador de etapa: contagem em texto + uma barra por etapa. As barras são
+   decorativas (a contagem já diz tudo em texto) e ficam com 4px, acima do mínimo
+   de 2px do DS pra traço visual. */
+.popup-form .popup-form-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+.popup-form .popup-form-steps-label { font: var(--label-xs); color: var(--bw-50); }
+.popup-form .popup-form-steps-track { display: flex; gap: 8px; align-items: center; margin: -8px 0; }
+/* as barras são <button> pra voltar de etapa, então precisam do reset de
+   aparência de botão (o UA dá border, padding e background próprios). A altura
+   de 4px é o traço, e o padding vertical de 8px em volta dá área de toque de
+   20px sem engordar a barra. */
+.popup-form .popup-form-steps-bar {
+    flex: 1 1 0;
+    height: 4px;
+    padding: 0;
+    border: 0;
+    background: var(--bw-15);
+    background-clip: content-box;
+    box-sizing: content-box;
+    margin: 8px 0;
+    cursor: default;
+    transition: background 0.3s ease;
+}
+/* habilitada = etapa já visitada = clicável pra voltar */
+.popup-form .popup-form-steps-bar:not([disabled]) { cursor: pointer; }
+.popup-form .popup-form-steps-bar:not([disabled]):hover { background: var(--pc200); }
+.popup-form .popup-form-steps-bar.is-done { background: var(--pc300); }
+
+/* Etapas do formulário (só os forms multi-etapa têm .popup-form-step; os de uma
+   etapa não têm nenhum e nada aqui os afeta).
+   O espaçamento entre campos vem do .input-group + .input-group acima, que é
+   irmão-adjacente: como os grupos continuam irmãos DENTRO de cada etapa, ele
+   segue valendo, e o primeiro grupo da etapa fica sem margem no topo, que é o
+   correto. Por isso a etapa não precisa de gap próprio.
+   O [hidden] explícito porque form.css e root.css dão display a vários
+   descendentes, e display no elemento vence o default do atributo. */
+.popup-form .popup-form-step[hidden] { display: none; }
+
+/* ── telas de altura baixa (celular deitado, janela curta) ──
+   Os 48px de padding do card, mais os gaps de 24, comem metade de uma tela de
+   ~420px de altura. Aqui o respiro encolhe e o overlay já rola pelo que sobrar.
+   O corte em 640px é onde o form de uma etapa (3 campos) deixa de caber inteiro
+   com o padding cheio. */
+@media (max-height: 640px) {
+    .popup-form { padding: 16px; align-items: flex-start; }
+    .popup-form .popup-form-card { padding: 24px; gap: 16px; }
+    .popup-form .popup-form-steps { margin-bottom: 8px; }
+    .popup-form .popup-form-actions { margin-top: 16px; }
+    /* o logo do header é o item mais dispensável quando falta altura */
+    .popup-form .popup-form-header { transform: scale(0.8); transform-origin: left center; }
+}
+/* muito baixa: o card ocupa a tela toda, sem raio nem margem, virando uma folha
+   em vez de um cartão flutuante. */
+@media (max-height: 480px) {
+    .popup-form { padding: 0; }
+    .popup-form .popup-form-content { max-width: none; }
+    .popup-form .popup-form-card { padding: 16px; border-radius: 0; min-height: 100%; }
 }

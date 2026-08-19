@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-07-07">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <title>Marketplace · Xperiun</title>
+    <meta name="description" content="Marketplace da Xperiun.">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=11">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/cp/data-squads/data-squads.css?v=86">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- Menu + footer controlados por URL: só carregam (e só pesam) quando
+     ?menu=ativo, mesmo esquema do /ed/pos-graduacoes/mba-fpa.html. Acesso direto
+     a esta página não monta nem baixa CSS/JS de nenhum dos dois.
+     Diferença em relação ao mba-fpa: os src são absolutos, não ../, porque em
+     /ed/ caminho relativo quebra quando a URL é servida com barra final. -->
+<script>
+(function () {
+    if (new URLSearchParams(location.search).get('menu') !== 'ativo') return;
+    document.body.classList.add('menu-top'); /* menu fixo no topo nesta página */
+    var ph = document.createElement('div');
+    ph.setAttribute('data-menu', '');
+    document.body.insertBefore(ph, document.body.firstChild);
+    var s = document.createElement('script');
+    s.src = '/ed/site-dependencias/site-menu/menu-include.js';
+    document.body.appendChild(s);
+
+    /* Footer no fim da página, mesmo padrão do template (data-footer + include).
+       Anexado só depois do parse do body pra cair após todo o conteúdo,
+       não logo abaixo deste script no topo. */
+    var mountFooter = function () {
+        var fph = document.createElement('div');
+        fph.setAttribute('data-footer', '');
+        document.body.appendChild(fph);
+        var fs = document.createElement('script');
+        fs.src = '/ed/site-dependencias/site-footer/footer-include.js';
+        document.body.appendChild(fs);
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mountFooter);
+    } else {
+        mountFooter();
+    }
+})();
+</script>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" data-cap-bottom="pointing-down-negative" style="--cap-color-bottom: var(--bb);">
+    <!-- Pêndulo de fundo (logo animado), contido no hero, atrás do conteúdo. -->
+    <div class="bg-pendulo" aria-hidden="true"></div>
+    <div class="hero-wave wave-section">
+        <div class="hero-top-tag" aria-hidden="true">
+            <div class="hero-top-tag-body">
+                <h3 class="hero-top-tag-label">Data Squads</h3>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-title-group">
+                <div class="hero-lockup">
+                    <svg class="hero-lockup-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 24" role="img" aria-label="Xperiun Corporate"><path d="M11.53 12.83c.22.67-.26 1.81-1.22 2.77l-3.09 3.09c-2.85 2.85-6.08 4.24-7.22 3.1l8.24-8.24c.96-.96 2.1-1.44 2.77-1.22L7.2 16.64l4.31-3.81Zm-3.29-2.38c.97.97 2.11 1.44 2.78 1.22L9.27 9.42l2.25 1.75c.22-.67-.25-1.81-1.22-2.78L6.18 4.27C5.04 5.41 5.5 7.72 7.21 9.42zm8.25-3.09-3.81 4.31c.67.22 1.81-.26 2.77-1.22l8.25-8.24c-1.14-1.14-4.37.25-7.21 3.09L13.4 8.39c-.96.96-1.44 2.1-1.22 2.77l4.31-3.81Zm-1.03 6.19c-.97-.97-2.11-1.44-2.78-1.22l1.75 2.25-2.25-1.75c-.22.67.25 1.81 1.22 2.78l4.12 4.12c1.14-1.14.68-3.45-1.03-5.15zm56.07-4.51h-.85v2.54c0 1.4-1.14 2.54-2.54 2.54s-2.54-1.14-2.54-2.54V9.04h-.85v2.54c0 1.87 1.52 3.39 3.39 3.39s3.39-1.52 3.39-3.39zM40.21 11.1a2.12 2.12 0 0 1-2.12 2.17h-4.66v1.69h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16 0 2.13.91 2.16 2.07Zm-.84.05c0-.7-.57-1.27-1.27-1.27h-4.66v2.54h4.66c.7 0 1.27-.57 1.27-1.27m22.01 3.81h.85V9.03h-.85zm17.77-5.92v4.85l-4.73-4.73a.42.42 0 0 0-.3-.12h-.48c-.23 0-.42.19-.42.42v5.5h.85V10l4.83 4.83c.08.08.19.12.3.12h.37c.23 0 .42-.19.42-.42v-5.5h-.85Zm-49.49 0-2.57 2.39-2.57-2.39h-1.24L26.47 12l-3.19 2.96h1.24l2.57-2.39 2.57 2.39h1.24L27.71 12l3.19-2.96zm19.02 5.08h-4.66c-.7 0-1.27-.57-1.27-1.27v-.42h5.93v-.85h-5.93v-.42c0-.7.57-1.27 1.27-1.27h4.66v-.85h-4.66c-1.17 0-2.12.95-2.12 2.12v1.69c0 1.17.95 2.12 2.12 2.12h4.66zm8.08-.85 2.08 1.69h-1.31l-2.08-1.69h-3.39v1.69h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16 0 2.13.91 2.16 2.07.03 1.18-.91 2.15-2.08 2.17Zm-.04-.85c.7 0 1.27-.57 1.27-1.27s-.57-1.27-1.27-1.27h-4.66v2.54zm-8.15 4.79c.12 0 .22.03.31.08a.5.5 0 0 1 .21.24h.66c-.07-.27-.21-.48-.42-.64s-.46-.23-.76-.23c-.24 0-.46.05-.64.16-.19.11-.34.26-.44.45-.11.19-.16.41-.16.66s.05.46.16.65.25.34.44.45.4.16.64.16c.29 0 .55-.08.76-.23s.35-.37.42-.63h-.66q-.075.15-.21.24a.6.6 0 0 1-.31.08c-.19 0-.34-.06-.45-.19s-.17-.3-.17-.52.06-.39.17-.52.27-.19.45-.19Zm5.24.06a1.35 1.35 0 0 1 0 1.31c-.11.2-.27.35-.46.45-.19.11-.41.16-.64.16s-.45-.05-.64-.16-.35-.26-.46-.45-.17-.41-.17-.66.06-.46.17-.65a1.24 1.24 0 0 1 1.1-.61 1.24 1.24 0 0 1 1.1.61m-.45.65c0-.22-.06-.39-.18-.52s-.28-.2-.48-.2-.36.06-.48.19-.18.31-.18.53.06.39.18.52.28.2.48.2.36-.07.48-.2.18-.31.18-.52m3.74.27.57.98h-.68l-.52-.94h-.14v.94h-.6v-2.48h1.01c.2 0 .36.03.5.1a.71.71 0 0 1 .41.68c0 .16-.05.31-.14.44s-.23.22-.41.28m-.06-.69c0-.09-.03-.17-.08-.22a.37.37 0 0 0-.25-.08h-.37v.61h.37c.11 0 .19-.03.25-.08s.08-.13.08-.23m4.19-.42c.07.12.1.26.1.41 0 .14-.03.27-.1.39s-.17.21-.3.29c-.14.07-.31.11-.51.11h-.37v.89h-.6v-2.48h.98c.2 0 .36.03.5.1s.24.16.31.28Zm-.51.41c0-.1-.03-.18-.08-.23a.38.38 0 0 0-.26-.08h-.33v.62h.33c.12 0 .2-.03.26-.08s.08-.13.08-.23m4.61-.22a1.35 1.35 0 0 1 0 1.31c-.11.19-.27.35-.46.45-.19.11-.41.16-.64.16s-.45-.05-.64-.16-.35-.26-.46-.45-.17-.41-.17-.66.06-.46.17-.65a1.24 1.24 0 0 1 1.1-.61 1.24 1.24 0 0 1 1.1.61m-.44.65c0-.22-.06-.39-.18-.52s-.28-.2-.48-.2-.36.06-.48.19-.18.31-.18.53.06.39.18.52.28.2.48.2.36-.07.48-.2.18-.31.18-.52m3.73.27.57.98h-.68l-.52-.94h-.14v.94h-.6v-2.48h1.01c.2 0 .36.03.5.1a.71.71 0 0 1 .41.68c0 .16-.05.31-.14.44s-.23.22-.41.28m-.06-.69c0-.09-.03-.17-.08-.22a.37.37 0 0 0-.25-.08h-.37v.61h.37c.11 0 .19-.03.25-.08s.08-.13.08-.23m3.84-.81.9 2.48h-.64l-.15-.44h-.93l-.15.44h-.63l.9-2.48zm-.05 1.58-.31-.91-.3.91zm2.5-1.09h.66v2h.6v-2h.66v-.48h-1.92zm3.63 1.99H80v-.48h-.91v-.54h.81v-.47h-.81v-.5H80v-.48h-1.52v2.48Z" fill="currentColor"/></svg>
+                    <span class="hero-lockup-rule" aria-hidden="true"></span>
+                    <span class="hero-lockup-text">Para empresas de<br>médio e grande porte</span>
+                </div>
+                <h1 class="hero-h1">Tenha um <span style="font-weight: 700">time de dados dedicado</span> exclusivamente à sua empresa</h1>
+            </div>
+            <div class="hero-bottom">
+                <p class="hero-p">A Xperiun Corporate aloca profissionais capacitados e certificados para atuar no seu ambiente de dados, trabalhar nas suas demandas e sustentar a operação depois que o projeto está pronto.</p>
+                <div class="hero-actions">
+                    <a class="btn" data-size="m" data-emphasis="high" href="#" data-open-popup="popup-form-data-squads">Fale com um especialista</a>
+                    <a class="btn" data-size="m" data-emphasis="subtle" href="#sec-desafios">Saber mais</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ PILARES ═══════════════ -->
+<section class="mk-pilares">
+    <!-- Cargos em flecha apontando pra baixo (1º no topo à esquerda, 5º na ponta
+         embaixo no centro, 9º no topo à direita), cada um conectado ao hub de
+         128px centrado abaixo. As duas pontas são cards duplicados e desfocados
+         (blur 2px na ponta, 1px no seguinte), sugerindo que a fila continua.
+         Os conectores (bézier cúbica, sem retas) são redesenhados pelo
+         data-squads.js a cada resize. O arrasto dos cards NÃO está implementado
+         (não existe handler de pointer/mouse/touch aqui), e é por isso que a
+         .mk-pilares pode levar pointer-events: none pra devolver o clique aos
+         botões do hero, que ela cobre com o margin-top negativo. -->
+    <div class="ds-squad">
+        <div class="ds-squad-stage">
+            <svg class="ds-conn-svg" aria-hidden="true"></svg>
+            <div class="ds-cargos">
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_hb.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Engenheiro de Dados</span>
+                        <span class="ds-cargo-name">Bruno Oliveira</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_hn.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Engenheiro de Dados</span>
+                        <span class="ds-cargo-name">Thiago Ramos</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_mb.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Analista de BI</span>
+                        <span class="ds-cargo-name">Juliana Costa</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Cientista de Dados</span>
+                        <span class="ds-cargo-name">Rafael Souza</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_hbg.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Gestor de Projetos</span>
+                        <span class="ds-cargo-name">Marcelo Andrade</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_mn.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Especialista em IA</span>
+                        <span class="ds-cargo-name">Camila Ferreira</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_mm.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Especialista em ERPs</span>
+                        <span class="ds-cargo-name">Patrícia Lima</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_mb-1.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Analista de BI</span>
+                        <span class="ds-cargo-name">Larissa Nunes</span>
+                    </div>
+                </div>
+                <div class="ds-cargo">
+                    <span class="ds-cargo-avatar"><img src="/cp/data-squads/dependencias/squad_hm.webp" alt=""></span>
+                    <div class="ds-cargo-info">
+                        <span class="ds-cargo-role">Analista de BI</span>
+                        <span class="ds-cargo-name">Diego Martins</span>
+                    </div>
+                </div>
+            </div>
+            <!-- hub: quadrado de 96px (raio 16) alinhado com a ponta da flecha.
+                 Ícone corporate_fare (U+F1D0, peso 200) como SVG inline, NÃO como
+                 ligadura da Material Symbols: assim ele não depende do subset da
+                 fonte e nunca cai pra texto se o glifo faltar ou o cache servir
+                 um woff2 antigo. -->
+            <div class="ds-hub">
+                <span class="ds-hub-avatar"><svg class="ds-hub-icon" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true"><path d="M109.23-153.85v-680h360v160h381.54v520H109.23Zm40-40h280v-120h-280v120Zm0-160h280v-120h-280v120Zm0-160h280v-120h-280v120Zm0-160h280v-120h-280v120Zm320 480h341.54v-440H469.23v440Zm95.39-280v-40H700v40H564.62Zm0 160v-40H700v40H564.62Z"/></svg></span>
+                <span class="ds-hub-label">Seu negócio</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ DESAFIOS ═══════════════
+     Reaproveita a sec-skills do formacoes (mesma estrutura e mesmos estilos, já
+     carregados pelo style.css); a classe .sec-desafios ajusta o container pro
+     grid Wide, desliga o ::before de lá e muda o padding-top. O .skills-grid
+     entra com reveal via formacoes/script.js. -->
+<!-- Desafios + Comparativo + Ganhos dividem um fundo unico: o brilho roxo
+     desfocado e o scrim de borda moram neste wrapper, nao nas secoes. -->
+<div class="ds-glow-wrap">
+<section class="sec-skills sec-desafios" id="sec-desafios">
+    <div class="skills-inner">
+
+        <div class="skills-grid">
+            <div class="skills-header">
+                <span class="skills-eyebrow sec-eyebrow">Desafios</span>
+                <h2 class="skills-title sec-title">Qual é o maior <span style="font-weight: 700">desafio na gestão de dados</span> da sua empresa?</h2>
+            </div>
+
+
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Dependência de uma pessoa</span>
+                    <p class="skill-tile-meta">O analista de dados que cuidava de tudo foi embora, e agora a operação travou enquanto a vaga não é preenchida.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Ambiente sem dono</span>
+                    <p class="skill-tile-meta">O BI da empresa cresceu sem planejamento: cada área fez o seu, ninguém cuida do ambiente como um todo e os números já não são confiáveis.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Migração parada</span>
+                    <p class="skill-tile-meta">A empresa precisa modernizar o ambiente de dados (migrar de plataforma, reestruturar o modelo, evoluir para Microsoft Fabric, Databricks, entre outros), mas não tem quem conduza isso internamente.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">TI sobrecarregada</span>
+                    <p class="skill-tile-meta">A área de TI acumula o BI junto com o ERP, o suporte e o dia a dia. Os dados ficam sempre em segundo plano.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Números sem confiança</span>
+                    <p class="skill-tile-meta">Os dashboards existem, mas ninguém garante que os números estão certos, e a diretoria já começou a questionar.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Fila de demandas</span>
+                    <p class="skill-tile-meta">A demanda de novas análises e relatórios não para de crescer, mas o time de dados não tem capacidade de atender tudo sem atrasar o que já está em andamento.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ COMPARATIVO ═══════════════
+     Mesma linguagem da conta-grid do hub de formações (linhas full-bleed com
+     rings de 2px e reveal em bloco), adaptada pra 3 colunas. A classe
+     .conta-grid fica só pelo reveal: quem observa é o formacoes/script.js; o
+     visual dela lá é escopado em body.formacoes-hub, então não vaza pra cá. -->
+<section class="sec-comp" id="sec-comp">
+    <div class="comp-inner">
+        <span class="sec-eyebrow">Comparativo</span>
+        <h2 class="sec-title">Contratar internamente ou ativar um <span style="font-weight: 700">Data Squad</span>?</h2>
+        <p class="sec-lede">Montar um time interno leva meses e carrega o risco da contratação. O Data Squad coloca um time da Xperiun operando nas suas demandas em dias.</p>
+    </div>
+    <div class="conta-grid comp-grid">
+        <div class="comp-row comp-row--head">
+            <div class="comp-row-inner">
+                <span class="comp-crit">Critério</span>
+                <span class="comp-cell comp-cell--interno">Contratar internamente</span>
+                <span class="comp-cell comp-cell--squad">Data Squad Xperiun</span>
+            </div>
+        </div>
+        <div class="comp-row">
+            <div class="comp-row-inner">
+                <span class="comp-crit">Tempo até operar</span>
+                <span class="comp-cell comp-cell--interno"><small class="comp-cap">Contratar internamente</small>3 a 6 meses: processo seletivo, onboarding, integração</span>
+                <span class="comp-cell comp-cell--squad"><small class="comp-cap">Data Squad Xperiun</small>Dias</span>
+            </div>
+        </div>
+        <div class="comp-row">
+            <div class="comp-row-inner">
+                <span class="comp-crit">Risco de contratação</span>
+                <span class="comp-cell comp-cell--interno"><small class="comp-cap">Contratar internamente</small>Alto: turnover, encargos, fit cultural, primeira contratação errada</span>
+                <span class="comp-cell comp-cell--squad"><small class="comp-cap">Data Squad Xperiun</small>Nenhum: time já formado e certificado</span>
+            </div>
+        </div>
+        <div class="comp-row">
+            <div class="comp-row-inner">
+                <span class="comp-crit">Gestão do projeto</span>
+                <span class="comp-cell comp-cell--interno"><small class="comp-cap">Contratar internamente</small>A cargo do gestor interno, que acumula com outras responsabilidades</span>
+                <span class="comp-cell comp-cell--squad"><small class="comp-cap">Data Squad Xperiun</small>Gestor de Projetos dedicado da Xperiun incluso em todo projeto</span>
+            </div>
+        </div>
+        <div class="comp-row">
+            <div class="comp-row-inner">
+                <span class="comp-crit">Flexibilidade de escala</span>
+                <span class="comp-cell comp-cell--interno"><small class="comp-cap">Contratar internamente</small>Baixa: cargo fixo, escopo rígido, difícil ajustar</span>
+                <span class="comp-cell comp-cell--squad"><small class="comp-cap">Data Squad Xperiun</small>Alta: time ajustado conforme a demanda real</span>
+            </div>
+        </div>
+        <div class="comp-row">
+            <div class="comp-row-inner">
+                <span class="comp-crit">Cobertura técnica</span>
+                <span class="comp-cell comp-cell--interno"><small class="comp-cap">Contratar internamente</small>Limitada ao perfil contratado: raramente cobre todas as especialidades</span>
+                <span class="comp-cell comp-cell--squad"><small class="comp-cap">Data Squad Xperiun</small>Time multidisciplinar desde o início</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ GANHOS ═══════════════
+     Mesma base da sec-skills usada em Desafios, trocando o vermelho pelo verde
+     de sucesso. Sem ícone: cada tile abre com a tag do DS e o texto embaixo. -->
+<section class="sec-skills sec-ganhos" id="sec-ganhos">
+    <div class="skills-inner">
+
+        <div class="skills-grid">
+            <div class="skills-header">
+                <span class="skills-eyebrow sec-eyebrow">Ganhos</span>
+                <h2 class="skills-title sec-title">O que você ganha com um <span style="font-weight: 700">time de dados dentro da empresa</span></h2>
+            </div>
+
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="success" data-size="m">Gestão contínua</span>
+                    <h3 class="skill-tile-name">Backlog gerenciado toda semana</h3>
+                    <p class="skill-tile-meta">O Gestor de Projetos do squad senta com você regularmente, atualiza as prioridades conforme o que o negócio precisa e entrega o que foi combinado no ciclo. Você sabe exatamente o que está sendo feito.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="success" data-size="m">Consistência de dados</span>
+                    <h3 class="skill-tile-name">A diretoria para de discutir qual número é o certo</h3>
+                    <p class="skill-tile-meta">Os profissionais da Xperiun trabalham lado a lado com o seu time para alinhar e validar os dados de cada área. Quando o número chega na reunião, já foi checado por todos.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="success" data-size="m">Sem ruptura tecnológica</span>
+                    <h3 class="skill-tile-name">Trabalhamos com o que você já usa</h3>
+                    <p class="skill-tile-meta">O squad chega certificado no ambiente da sua empresa: Power BI, Fabric, SAP, TOTVS, SQL Server. O que funciona fica. O que precisa evoluir, evolui.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="success" data-size="m">Continuidade operacional</span>
+                    <h3 class="skill-tile-name">O conhecimento não sai quando a pessoa sai</h3>
+                    <p class="skill-tile-meta">Quando alguém deixa o time interno, o conhecimento vai junto. Com o squad, cada processo é documentado, padronizado e transferido, e a operação continua funcionando independente de quem está no time.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="success" data-size="m">Sem lock-in</span>
+                    <h3 class="skill-tile-name">Seus dados, seus pipelines, sua documentação</h3>
+                    <p class="skill-tile-meta">Tudo que o Squad produz pertence à sua empresa. Pipelines, modelos, relatórios e documentação técnica são seus desde o primeiro dia. Se um dia quiser operar internamente, você consegue.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="success" data-size="m">Sênior desde o dia 1</span>
+                    <h3 class="skill-tile-name">Profissionais seniores, com histórico em indústria</h3>
+                    <p class="skill-tile-meta">O Squad é formado por profissionais com experiência real em empresas como a sua. Antes de começar, você conhece quem vai trabalhar com você: nome, experiência e referências verificáveis.</p>
+                </div>
+            </div>
+
+            <!-- orbita inspirada na .formacoes-cta da home: 3 aneis
+                 concentricos com avatares distribuidos em angulos fixos.
+                 10 + 8 + 4 = 22 boxes, um por foto do elenco: a orbita mostra o
+                 time inteiro sem repetir ninguem. Mexer na contagem de boxes
+                 reintroduz repeticao. -->
+            <div class="ganhos-panel">
+                <div class="ganhos-orbit" aria-hidden="true">
+                    <div class="ganhos-orbit-layer">
+                        <div class="ganhos-orbit-ring ganhos-orbit-ring--464"></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:18deg"><img class="ganhos-orbit-img ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_hb.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:84deg"><img class="ganhos-orbit-img ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_mn.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:152deg"><img class="ganhos-orbit-img" src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:214deg"><img class="ganhos-orbit-img" src="/cp/data-squads/dependencias/squad_hn.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:296deg"><img class="ganhos-orbit-img" src="/cp/data-squads/dependencias/squad_hb-1.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:52deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_mb.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:118deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_hbg.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:180deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_hm.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:250deg"><img class="ganhos-orbit-img ganhos-orbit-img--s" src="/cp/data-squads/dependencias/squad_hb-2.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:232px;--a:332deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_mm.webp" alt=""></div>
+                    </div>
+                    <div class="ganhos-orbit-layer">
+                        <div class="ganhos-orbit-ring ganhos-orbit-ring--336"></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:48deg"><img class="ganhos-orbit-img ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_hbc-1.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:126deg"><img class="ganhos-orbit-img ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_hn-1.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:238deg"><img class="ganhos-orbit-img" src="/cp/data-squads/dependencias/squad_mn-1.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:318deg"><img class="ganhos-orbit-img ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_hb-3.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:14deg"><img class="ganhos-orbit-img ganhos-orbit-img--s" src="/cp/data-squads/dependencias/squad_hbg-1.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:90deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_hbn.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:196deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_mb-1.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:168px;--a:282deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_hb-4.webp" alt=""></div>
+                    </div>
+                    <div class="ganhos-orbit-layer">
+                        <div class="ganhos-orbit-ring ganhos-orbit-ring--208"></div>
+                        <div class="ganhos-orbit-box" style="--r:104px;--a:8deg"><img class="ganhos-orbit-img ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_hbc-2.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:104px;--a:98deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o50" src="/cp/data-squads/dependencias/squad_mbg.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:104px;--a:188deg"><img class="ganhos-orbit-img" src="/cp/data-squads/dependencias/squad_hb-5.webp" alt=""></div>
+                        <div class="ganhos-orbit-box" style="--r:104px;--a:278deg"><img class="ganhos-orbit-img ganhos-orbit-img--s ganhos-orbit-img--o25" src="/cp/data-squads/dependencias/squad_hn-2.webp" alt=""></div>
+                    </div>
+                    <div class="hero-box is-visible">
+                    <svg width="96" height="96" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;flex-shrink:0;">
+                        <defs>
+                            <linearGradient id="heroBoxIconGrad" x1="42.11" y1="757.899" x2="757.9" y2="42.109" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="var(--pc400)"/>
+                                <stop offset="1" stop-color="var(--pc400)" stop-opacity="0.5"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z" fill="url(#heroBoxIconGrad)"/>
+                    </svg>
+                </div>
+                </div>
+
+                <div class="ganhos-panel-text">
+                    <h3 class="ganhos-panel-title">Conte com um time qualificado e certificado pela Xperiun</h3>
+                    <p class="ganhos-panel-desc">Profissionais escolhidos a dedo para transformar dados em resultado dentro da sua empresa. Time certificado pela Xperiun, com repertório e vivência real de mercado.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ COMPOSIÇÃO DO TIME ═══════════════
+     Infográfico de montagem modular: a faixa do Gestor de Projetos é a base
+     fixa do squad, e os 5 papéis variáveis aparecem como módulos plugados nela
+     por conectores de 2px. A leitura é "uma base sempre presente + peças que
+     entram conforme a demanda". -->
+</div>
+
+<section class="sec-time" id="sec-time">
+    <div class="time-inner">
+        <div class="time-header">
+            <span class="sec-eyebrow">Composição do squad</span>
+            <h2 class="sec-title">Um time montado para as <span style="font-weight: 700">necessidades do seu projeto</span></h2>
+            <p class="sec-lede">Cada Data Squad é composto de acordo com as demandas e o ambiente da sua empresa. Em todo projeto, alocamos um Gestor de Projetos dedicado para que você não precise se preocupar se as coisas estão evoluindo com qualidade.</p>
+        </div>
+
+        <div class="time-core">
+            <div class="time-card"><div class="time-card-inner">
+                <span class="time-stack" aria-hidden="true">
+                    <span class="time-stack-item" style="--x:-4.5px;--y:-7.1px;--r:4.9deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb.webp" alt=""></span>
+                    <span class="time-stack-item" style="--x:13.4px;--y:-7.0px;--r:-5.6deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mn.webp" alt=""></span>
+                    <span class="time-stack-item" style="--x:-15.2px;--y:-10.7px;--r:-1.9deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""></span>
+                    <span class="time-stack-item" style="--x:1.5px;--y:-11.1px;--r:-5.4deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn.webp" alt=""></span>
+                    <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn-1.webp" alt=""></span>
+                    <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mn-1.webp" alt=""></span>
+                    <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-3.webp" alt=""></span>
+                    <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbg-1.webp" alt=""></span>
+                </span>
+                <div class="time-mod"><span class="time-mod-bg"></span>
+                    <div class="time-label"><span>Profissional dedicado</span><h3 class="time-role">Gestor de Projetos</h3></div>
+                    <p class="time-desc">Garante que o projeto evolua com qualidade e no prazo. Seu ponto de contato direto com o squad.</p>
+                        <span class="tag-status is-light" data-semantic="success" data-size="s">Incluso em qualquer projeto</span>
+                    <span class="time-imgs"><img class="time-img" src="/cp/data-squads/dependencias/squad_hb.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_mn.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hn.webp" alt=""></span>
+                </div>
+            </div></div>
+        </div>
+
+        <div class="time-board">
+            <div class="time-mods">
+                <!-- conectores: um filete por módulo, ligando a base às peças -->
+                <ul class="time-mods-list">
+                    <li class="time-card"><div class="time-card-inner">
+                        <span class="time-stack" aria-hidden="true">
+                            <span class="time-stack-item" style="--x:12.7px;--y:-9.4px;--r:-11.1deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-1.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-8.1px;--y:-8.6px;--r:9.8deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mb.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-9.9px;--y:-12.6px;--r:12.8deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbg.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:8.3px;--y:-14.1px;--r:11.2deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hm.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbn.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mb-1.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-4.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc-2.webp" alt=""></span>
+                        </span>
+                        <div class="time-mod"><span class="time-mod-bg"></span><div class="time-label"><span>Profissionais</span><h3 class="time-role">Engenheiros de Dados</h3></div>
+                        <p class="time-desc">Pipelines, integração de sistemas, arquitetura de dados e migração de ambientes.</p>
+                        <span class="time-imgs"><img class="time-img" src="/cp/data-squads/dependencias/squad_hb-1.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_mb.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbg.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hm.webp" alt=""></span>
+                    </div>
+                    </div></li>
+                    <li class="time-card"><div class="time-card-inner">
+                        <span class="time-stack" aria-hidden="true">
+                            <span class="time-stack-item" style="--x:12.5px;--y:-11.3px;--r:-6.9deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-2.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-5.7px;--y:-15.8px;--r:4.3deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mm.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:11.2px;--y:-13.5px;--r:-0.2deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc-1.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-11.2px;--y:-13.4px;--r:-12.6deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn-1.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mbg.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-5.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn-2.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb.webp" alt=""></span>
+                        </span>
+                        <div class="time-mod"><span class="time-mod-bg"></span><div class="time-label"><span>Profissionais</span><h3 class="time-role">Analistas de BI</h3></div>
+                        <p class="time-desc">Dashboards, relatórios, modelagem analítica e sustentação do ambiente Power BI.</p>
+                        <span class="time-imgs"><img class="time-img" src="/cp/data-squads/dependencias/squad_hb-2.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_mm.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbc-1.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hn-1.webp" alt=""></span>
+                    </div>
+                    </div></li>
+                    <li class="time-card"><div class="time-card-inner">
+                        <span class="time-stack" aria-hidden="true">
+                            <span class="time-stack-item" style="--x:-4.7px;--y:-14.2px;--r:13.4deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mn-1.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:10.2px;--y:-6.7px;--r:-3.1deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-3.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-7.5px;--y:-12.3px;--r:-12.8deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbg-1.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:14.3px;--y:-9.6px;--r:-9.7deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbn.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mn.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-1.webp" alt=""></span>
+                        </span>
+                        <div class="time-mod"><span class="time-mod-bg"></span><div class="time-label"><span>Profissionais</span><h3 class="time-role">Cientistas de Dados</h3></div>
+                        <p class="time-desc">Modelos preditivos, análise estatística, ML e projetos de IA aplicada ao negócio.</p>
+                        <span class="time-imgs"><img class="time-img" src="/cp/data-squads/dependencias/squad_mn-1.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hb-3.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbg-1.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbn.webp" alt=""></span>
+                    </div>
+                    </div></li>
+                    <li class="time-card"><div class="time-card-inner">
+                        <span class="time-stack" aria-hidden="true">
+                            <span class="time-stack-item" style="--x:3.4px;--y:-12.7px;--r:3.4deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mb-1.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-10.2px;--y:-14.2px;--r:0.3deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-4.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-10.7px;--y:-10.8px;--r:13.9deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc-2.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-8.2px;--y:-7.4px;--r:13.4deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mbg.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mb.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbg.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hm.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-2.webp" alt=""></span>
+                        </span>
+                        <div class="time-mod"><span class="time-mod-bg"></span><div class="time-label"><span>Profissionais</span><h3 class="time-role">Especialistas em IA</h3></div>
+                        <p class="time-desc">Implementação de agentes, automações inteligentes, LLMs e IA generativa aplicada à operação.</p>
+                        <span class="time-imgs"><img class="time-img" src="/cp/data-squads/dependencias/squad_mb-1.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hb-4.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbc-2.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_mbg.webp" alt=""></span>
+                    </div>
+                    </div></li>
+                    <li class="time-card"><div class="time-card-inner">
+                        <span class="time-stack" aria-hidden="true">
+                            <span class="time-stack-item" style="--x:10.9px;--y:-15.7px;--r:-8.4deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hb-5.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-1.4px;--y:-7.3px;--r:2.4deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn-2.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:13.6px;--y:-7.6px;--r:-8.1deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mn.webp" alt=""></span>
+                            <span class="time-stack-item" style="--x:-9.3px;--y:-15.2px;--r:-0.2deg"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mm.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hbc-1.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_hn-1.webp" alt=""></span>
+                            <span class="time-stack-item"><img class="time-stack-img" src="/cp/data-squads/dependencias/squad_mn-1.webp" alt=""></span>
+                        </span>
+                        <div class="time-mod"><span class="time-mod-bg"></span><div class="time-label"><span>Profissionais</span><h3 class="time-role">Especialistas em ERPs</h3></div>
+                        <p class="time-desc">Integração e extração de dados de SAP, TOTVS, Protheus, Oracle e outros sistemas legados.</p>
+                        <span class="time-imgs"><img class="time-img" src="/cp/data-squads/dependencias/squad_hb-5.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hn-2.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_mn.webp" alt=""><img class="time-img" src="/cp/data-squads/dependencias/squad_hbc.webp" alt=""></span>
+                    </div>
+                    </div></li>
+                    <li class="time-note">O time certo para a demanda certa. Não alocamos papéis desnecessários: a composição é definida no diagnóstico inicial, alinhada com as prioridades reais da sua empresa.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ FASES ═══════════════
+     Cards no mesmo desenho do .mba-curriculum-card do MBA FP&A: número gigante
+     em Cormorant Infant itálico sangrando pelo canto (recortado pelo overflow do
+     card), rótulo da fase em sg300, e o gradiente 90° dn500-50 → transparent num
+     ::before atrás do conteúdo.
+
+     O .fases-oport-track é o mesmo reveal do .projetos-pilares-track de
+     /ed/formacoes/: a sec-fases fica sticky com offset negativo (bottom grudado
+     no rodapé do viewport) e o bloco seguinte sobe por cima dela. -->
+<div class="fases-oport-track">
+<section class="sec-fases" id="sec-fases">
+    <div class="fases-stage">
+        <div class="fases-header">
+            <div class="fases-header-inner">
+                <div class="fases-header-text">
+                    <span class="sec-eyebrow">Como funciona</span>
+                    <h2 class="sec-title">Como o squad <span style="font-weight: 700">opera dentro da sua empresa</span></h2>
+                    <p class="sec-lede">Três fases com entregáveis claros em cada etapa. O Gestor de Projetos está presente do início ao fim, garantindo alinhamento contínuo entre o squad e as áreas da empresa.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="fases-track">
+            <article class="fase-card fase-card--with-img">
+                <div class="fase-card-demo"><img class="fase-card-img" src="/cp/data-squads/dependencias/fase1.webp" width="960" height="960" alt="Reunião de kick-off do squad com as áreas da empresa" loading="lazy"></div>
+                <div class="fase-card-meta">
+                    <div class="fase-card-num" aria-hidden="true">01</div>
+                    <p class="fase-card-phase">Fase 01</p>
+                    <h3 class="fase-card-title">Diagnóstico</h3>
+                    <p class="fase-card-item">Reunião de kick-off com as áreas. Levantamento de prioridades, dependências e expectativas.</p>
+                    <p class="fase-card-item">Acesso a sistemas e infraestrutura existente. Mapeamento do estado atual do ambiente de dados.</p>
+                    <p class="fase-card-entrega"><span class="fase-card-entrega-label">Entregável:</span> Mapeamento do ambiente de dados + backlog priorizado por impacto</p>
+                </div>
+            </article>
+            <article class="fase-card fase-card--with-img">
+                <div class="fase-card-demo"><img class="fase-card-img" src="/cp/data-squads/dependencias/fase2.webp" width="960" height="960" alt="Alinhamento de sprint com dashboards do projeto na tela" loading="lazy"></div>
+                <div class="fase-card-meta">
+                    <div class="fase-card-num" aria-hidden="true">02</div>
+                    <p class="fase-card-phase">Fase 02</p>
+                    <h3 class="fase-card-title">Operação</h3>
+                    <p class="fase-card-item">Reunião periódica de alinhamento com o cliente. Atualização de prioridades conforme o negócio evolui.</p>
+                    <p class="fase-card-item">Execução de demandas em sprints. Entregas incrementais com visibilidade total do andamento.</p>
+                    <p class="fase-card-entrega"><span class="fase-card-entrega-label">Entregável:</span> Demandas entregues em produção + relatório de progresso por sprint</p>
+                </div>
+            </article>
+            <article class="fase-card fase-card--with-img">
+                <div class="fase-card-demo"><img class="fase-card-img" src="/cp/data-squads/dependencias/fase3.webp" width="960" height="960" alt="Revisão do roadmap de evolução do ambiente de dados" loading="lazy"></div>
+                <div class="fase-card-meta">
+                    <div class="fase-card-num" aria-hidden="true">03</div>
+                    <p class="fase-card-phase">Fase 03</p>
+                    <h3 class="fase-card-title">Evolução</h3>
+                    <p class="fase-card-item">Acompanhamento de sustentação. Proposta de evoluções com base no uso real do ambiente.</p>
+                    <p class="fase-card-item">Manutenção ativa, modernização progressiva e implementação de governança.</p>
+                    <p class="fase-card-entrega"><span class="fase-card-entrega-label">Entregável:</span> Governança ativa + documentação técnica + roadmap de evolução</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ OPORTUNIDADES ═══════════════
+     Equivalente do .pilares-profs da referência: é este wrapper que carrega o
+     fundo opaco e o z-index maior, então ele sobe cobrindo a sec-fases parada. -->
+<div class="fases-oport">
+
+<!-- ═══════════════ O QUE FALAM SOBRE NÓS ═══════════════
+     Cards em 2 colunas (span 5 no grid Wide de 10). Cada card: vídeo full-bleed
+     no topo e, abaixo, o .case-body com padding levando o controle, o rótulo, o
+     nome da empresa e o texto.
+     O play/pause é NOSSO botão, não o do YouTube: o data-squads.js monta o player
+     pela IFrame API (controls: 0) e o botão chama playVideo/pauseVideo, com o
+     ícone alternando pelo estado real que a API devolve.
+
+     O .case-veil é a camada opaca por cima do player: esconde o poster e o botão
+     de play do YouTube enquanto o iframe monta, e volta no fim do vídeo, antes da
+     grade de sugeridos aparecer.
+
+     A capa de cada card é o .case-cover dentro do véu, apontando pros
+     corporate-cases_thumb-*.webp das dependências, e o data-vid é o ID do vídeo
+     real de cada depoimento no YouTube.
+     O .case-veil-play é o botão de play sobre a capa, no desenho da .posicao-play
+     da /cp/consultoria/: círculo em repouso que CRESCE pra esquerda no hover,
+     abrindo o rótulo "Assistir vídeo" dentro dele. O rótulo vem antes do triângulo
+     no DOM porque o botão é uma linha flex e ele cresce à esquerda da ponta.
+     Ele é DECORATIVO: o véu já é aria-hidden e pointer-events: none, e quem
+     responde ao clique é a área do .case-video (via handler) mais o
+     <button class="case-play"> de verdade, ali embaixo no .case-head. O overlay do
+     Elementor usa role="button" + tabindex="0" no próprio marcador; aqui isso
+     criaria um SEGUNDO foco de teclado pra mesma ação, com o botão real já
+     existindo. -->
+<section class="sec-cases" id="sec-cases">
+    <div class="cases-inner">
+        <div class="cases-header">
+            <span class="sec-eyebrow">Depoimentos</span>
+            <h2 class="sec-title">O que falam <span style="font-weight: 700">sobre nós</span>?</h2>
+        </div>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="TwMWhtIMfFU">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-oni.webp" alt="Depoimento de Observatório Nacional da Indústria" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">Observatório Nacional da Indústria</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">No Mapa do Trabalho do Observatório Nacional da Indústria, transformamos dados em histórias visuais e acessíveis, tornando a informação clara e envolvente para todos.</p>
+            </div>
+        </article>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="79ad6vi5yCc">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-tecmaf.webp" alt="Depoimento de Tecmaf" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">TECMAF</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">A Tecmaf toma decisões estratégicas em tempo real, identifica oportunidades, maximiza receitas e desenvolve clientes com mais eficiência. Imagine isso na sua empresa!</p>
+            </div>
+        </article>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="yCp1CPIytKs">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-josecar.webp" alt="Depoimento de Josecar" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">Josecar</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">A Josecar Autopeças revolucionou o uso de dados, acessando informações precisas em qualquer dispositivo. Agora, responde com agilidade às demandas, otimiza processos e aumenta a produtividade.</p>
+            </div>
+        </article>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="MZeoz5XdpvQ">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-hidrofiltros.webp" alt="Depoimento de Hidrofiltros" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">Hidrofiltros</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">O que antes levava até 3 dias para que a empresa pudesse estar preparada para apresentar uma proposta comercial personalizada e com diferenciais para seus clientes agora é feito em poucas horas.</p>
+            </div>
+        </article>
+
+    </div><!-- /.cases-inner -->
+
+    <!-- ── subseção: Cases de Sucesso ──
+         Montada no padrão do .tese-rail da home: a .sec-cases é a coluna, o
+         header vai num container padeado e os dois cards vivem numa banda
+         full-bleed (.cases-sub), que é quem desenha os filetes horizontais de
+         ponta a ponta da viewport. Antes o bloco morava dentro da .cases-inner,
+         então os filetes paravam 16px antes das bordas e capavam em 1408.
+         Os separadores da copy original (travessão e ponto médio) viraram
+         layout: "Case N" é tag do DS, o perfil é linha própria, cada cargo do
+         squad é um chip e o resultado é métrica + detalhe. -->
+    <div class="cases-sub-header">
+        <h3 class="cases-sub-title sec-title">Cases de <span style="font-weight: 700">Sucesso</span></h3>
+    </div>
+    <div class="cases-sub">
+        <div class="cases-sub-inner">
+        <article class="caso-card">
+            <div class="tese-top-tag">
+                <div class="tese-top-tag-body">
+                    <p class="tese-tag-label">Case 1</p>
+                </div>
+            </div>
+            <div class="caso-quote">
+                <span class="champ-quote">&#8220;</span>
+                <p class="caso-dor">70% das demandas de dados paradas no backlog há mais de 60 dias. Time de TI apagando incêndio.</p>
+            </div>
+            <h4 class="caso-perfil skill-tile-name">Indústria de grande porte, 1.200 funcionários</h4>
+            <div class="caso-dados">
+                <div class="caso-bloco">
+                    <p class="caso-rotulo">Squad alocado</p>
+                    <ul class="caso-squad">
+                        <li class="caso-cargo">
+                            <span class="caso-cargo-avatar" aria-hidden="true"></span>
+                            <span class="caso-cargo-role">Gestor de Projetos</span>
+                        </li>
+                        <li class="caso-cargo">
+                            <span class="caso-cargo-avatar" aria-hidden="true"></span>
+                            <span class="caso-cargo-role">Engenheiro de Dados</span>
+                        </li>
+                        <li class="caso-cargo">
+                            <span class="caso-cargo-avatar" aria-hidden="true"></span>
+                            <span class="caso-cargo-role">Analista de BI</span>
+                        </li>
+                    </ul>
+                    <span class="tag-status caso-prazo" data-semantic="neutral" data-size="s">8 meses</span>
+                </div>
+                <div class="caso-bloco caso-bloco--res">
+                    <p class="caso-rotulo">Resultado</p>
+                    <p class="caso-metrica">
+                        <span class="caso-para">De 45 dias para apenas 5 dias</span>
+                    </p>
+                    <p class="caso-info">Tempo médio de atendimento de demandas de dados. Backlog zerado no terceiro mês de operação.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="caso-card">
+            <div class="tese-top-tag">
+                <div class="tese-top-tag-body">
+                    <p class="tese-tag-label">Case 2</p>
+                </div>
+            </div>
+            <div class="caso-quote">
+                <span class="champ-quote">&#8220;</span>
+                <p class="caso-dor">Migração de DW legado para Microsoft Fabric sem paralisar a operação de relatórios diários.</p>
+            </div>
+            <h4 class="caso-perfil skill-tile-name">Cooperativa financeira, 400 funcionários</h4>
+            <div class="caso-dados">
+                <div class="caso-bloco">
+                    <p class="caso-rotulo">Squad alocado</p>
+                    <ul class="caso-squad">
+                        <li class="caso-cargo">
+                            <span class="caso-cargo-avatar" aria-hidden="true"></span>
+                            <span class="caso-cargo-role">Gestor de Projetos</span>
+                        </li>
+                        <li class="caso-cargo">
+                            <span class="caso-cargo-avatar" aria-hidden="true"></span>
+                            <span class="caso-cargo-role">Engenheiro de Dados</span>
+                        </li>
+                        <li class="caso-cargo">
+                            <span class="caso-cargo-avatar" aria-hidden="true"></span>
+                            <span class="caso-cargo-role">Cientista de Dados</span>
+                        </li>
+                    </ul>
+                    <span class="tag-status caso-prazo" data-semantic="neutral" data-size="s">11 meses</span>
+                </div>
+                <div class="caso-bloco caso-bloco--res">
+                    <p class="caso-rotulo">Resultado</p>
+                    <p class="caso-metrica">
+                        <span class="caso-para">Zero interrupções</span>
+                    </p>
+                    <p class="caso-info">Migração concluída sem parada operacional. Manutenção do novo ambiente a 20% do custo do projeto.</p>
+                </div>
+            </div>
+        </article>
+        </div><!-- /.cases-sub-inner -->
+    </div><!-- /.cases-sub -->
+
+    <!-- ── subseção: Empresas que confiam na Xperiun ──
+             Traz o .depos-logos-section da home (ed/index.html + home.css) sem
+             mudar o componente: mesma grade celular de 6/4/3/2 colunas, mesmos
+             filetes inset de 2px em bw-15 e mesmos 12 slots vazios que o JS
+             popula e rotaciona. A faixa e irma do header, e nao filha de um
+             container padeado, exatamente como o .depos-logos-section dentro do
+             .depos-employers da home: e isso que deixa o filete horizontal
+             correr a viewport inteira.
+             O .enter-card da home NAO veio: aquela animacao e do home.js, que
+             esta pagina nao carrega, e sem o is-entered o bloco ficaria em
+             opacity: 0 pra sempre. -->
+    <div class="cases-sub-header">
+        <h3 class="cases-sub-title sec-title">Empresas que confiam na <span style="font-weight: 700">Xperiun</span>:</h3>
+    </div>
+    <div class="depos-logos-section">
+        <div class="depos-logos-wrap">
+        <div class="depos-logos-grid" id="depos-logos-grid">
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+        </div>
+        </div><!-- /.depos-logos-wrap -->
+    </div>
+</section>
+
+<!-- ═══════════════ AUTOQUALIFICAÇÃO ═══════════════
+     Fecha a página: em vez de listar benefício, devolve a pergunta pro leitor.
+     Arranjo editorial em duas colunas no grid Wide do DS (header à esquerda,
+     checklist à direita), empilhando em ≤864 como manda o sistema.
+     O ✓ da copy virou o marcador do .oferta-check do DS (formacoes/style.css): um
+     filete vertical de 2px na altura da primeira linha, e não um glifo. Além de ser
+     o componente que o DS já usa pra lista de itens inclusos, resolve o
+     alinhamento: glifo de ícone tem baseline própria e desencontra do texto quando
+     o item quebra em duas ou três linhas.
+     A lista é <ul>/<li> de verdade porque é lista, então leitor de tela anuncia a
+     contagem, e o marcador é ::before, que não entra na árvore de acessibilidade
+     nem precisa de aria-hidden. -->
+<section class="mk-sec sec-auto" id="sec-auto">
+    <div class="auto-inner">
+        <div class="auto-header">
+            <span class="sec-eyebrow">Autoqualificação</span>
+            <h2 class="sec-title">O Data Squad é <span style="font-weight: 700">para a sua empresa</span>?</h2>
+            <p class="sec-lede">Se algum dos cenários abaixo é familiar, o modelo foi feito para seu negócio:</p>
+        </div>
+
+        <ul class="auto-list">
+            <li class="auto-item">Sua empresa tem infraestrutura de dados (ERP, DW, BI) mas não tem um time dedicado para sustentá-la e evoluí-la.</li>
+            <li class="auto-item">Você precisa de dados funcionando em semanas, não pode esperar 3 a 6 meses para contratar o time certo.</li>
+            <li class="auto-item">Sua empresa tem entre 50 e 5.000 funcionários e opera com volume real de dados de negócio.</li>
+            <li class="auto-item">Você quer governança de dados real sem precisar criar um departamento interno do zero.</li>
+            <li class="auto-item">Já tentou contratar internamente e o processo foi longo, caro ou não deu o resultado esperado.</li>
+        </ul>
+
+        <div class="auto-cta">
+            <p class="auto-cta-text">Se marcou algum ponto, fale com a gente. Uma conversa de 30 minutos é suficiente para entender se o Data Squad faz sentido para o momento da sua empresa.</p>
+            <a class="btn" data-size="m" data-emphasis="high" href="#" data-open-popup="popup-form-data-squads">Falar com especialista</a>
+        </div>
+    </div>
+</section>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INCLUDES PADRÃO (não remover, mantêm consistência do site)
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Barra fixa de CTA no rodapé, portada do .ic-bottom-cta de /ed/evento/ICIAN/.
+     As 4 camadas de .bottom-cta-blur são o "gradient blur": todas cobrem a barra
+     inteira, cada uma com máscara que esmaece numa altura diferente, então onde
+     mais camadas se sobrepõem (a base) o backdrop-filter se compõe e fica mais
+     forte, criando uma rampa contínua de 16px a 0 em vez de um degrau.
+     A barra é pointer-events: none e só o botão volta a auto, senão a faixa de
+     140px comeria o clique de tudo que passasse por baixo dela. -->
+<div class="bottom-cta is-hidden">
+    <div class="bottom-cta-blur bottom-cta-blur-2" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-4" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-8" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-16" aria-hidden="true"></div>
+    <a class="btn bottom-cta-btn" data-size="m" data-emphasis="medium-core" href="#" data-open-popup="popup-form-data-squads">Fale com um especialista</a>
+</div>
+
+<!-- Popup do form ActiveCampaign (Data Squad, form 437). O placeholder é
+     substituído pelo .popup-form de form-data-squads.html; o form-include.js
+     injeta form.css e form.js. Abrir com openPopup('popup-form-data-squads'). -->
+<div data-popup-form="data-squads"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=7"></script>
+
+
+<!-- Reveal/animação de entrada do hero (mesmo setup das páginas de área). -->
+<script src="/ed/formacoes/script.js?v=10"></script>
+
+<!-- Smooth scroll global (links âncora com behavior: smooth) -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Cometa de partículas nos conectores do card Ecossistema -->
+<script src="/cp/data-squads/data-squads.js?v=22" defer></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>
