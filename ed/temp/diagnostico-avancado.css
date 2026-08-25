@@ -1,0 +1,982 @@
+/* CSS do Diagnóstico Avançado de BI.
+   Cópia do marketplace.css; daqui em diante os dois seguem separados. */
+/* ===== Marketplace (temp/lab) — overrides locais. O visual base do hero
+   (wave, top-tag, hero-h1/hero-p, reveal) vem de root.css + formacoes/style.css
+   + formacoes/script.js, igual às páginas de área/business-cases. ===== */
+
+/* ── hero (centralizado, igual ao business-cases) ── */
+.hero { background: linear-gradient(0deg, var(--pc500-25), transparent); }
+/* pêndulo de fundo (logo animado) do DS, contido no hero (absolute, não fixed).
+   z-index: -1 → atrás do conteúdo E do cap (::after), mas acima do fundo do
+   hero. O hero já é position: relative + z-index: 1 via [data-cap-bottom]. */
+.hero .bg-pendulo { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.hero .bg-pendulo::after {
+    content: "";
+    position: absolute;
+    left: auto;
+    right: 50%;
+    top: 0;
+    width: 50vw;
+    height: 50vw;
+    z-index: 0;
+    animation: bgpendulo 10s ease infinite;
+    background-image: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M386.73 434c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.6 46.51 762.3 0 715.79l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89L210.52 589.48zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.73c27.48 9 74.02-10.54 113.37-49.89L800 84.21c-46.51-46.51-159.62-8.81-252.63 84.21M168.42 84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01L631.59 715.8z' fill='url(%23a)'/%3E%3Cdefs%3E%3ClinearGradient id='a' x1='42.11' y1='757.9' x2='757.9' y2='42.11' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239696FF' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%239696FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E%0A");
+    background-size: 100%;
+    background-repeat: no-repeat; }
+/* ≥1440px: o pêndulo fica verticalmente centralizado no hero. Sem transform
+   (a animação bgpendulo já usa transform: rotate) — uso top/bottom 0 + margin
+   auto, que centra um elemento absoluto de altura fixa. */
+@media (min-width: 1440px) {
+    .hero .bg-pendulo::after { top: 0; bottom: 0; margin-top: auto; margin-bottom: auto; }
+}
+@media (max-width: 576px) {
+    .hero .bg-pendulo::after { top: 0; left: auto; right: -128px; width: 512px; height: 512px; }
+}
+@keyframes bgpendulo {
+    0%   { transform: rotate(0deg);   opacity: 0; }
+    50%  { transform: rotate(-15deg); opacity: 0.05; }
+    100% { transform: rotate(0deg);   opacity: 0; }
+}
+.hero-wave.wave-section { padding-top: 128px; }
+.hero-content { max-width: 832px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.hero-title-group, .hero-bottom { align-items: center; }
+.hero-tags, .hero-actions { justify-content: center; }
+
+/* ── seção genérica (cabeçalho eyebrow/título/lede do DS) ── */
+.mk-sec { padding: 128px 0; }
+.mk-sec-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
+    display: flex; flex-direction: column; gap: 16px; }
+.mk-sec .sec-lede { max-width: 720px; }
+
+/* ── pilares (grid DS: 10 cols ≥1440, 8 cols ≤1439) ── */
+.mk-pilares { padding: 0 0 128px 0; margin-top: -128px; position: relative; z-index: 2; }
+.mk-pilares-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
+    display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px; }
+/* card sem padding + overflow hidden (o padding vai nos containers internos;
+   o overflow contém os marquees dentro do raio do card). */
+.mk-card {
+    position: relative;
+    background: linear-gradient(45deg, var(--dn800), transparent);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bb-50);
+    backdrop-filter: blur(8px); }
+/* orb (sem blur) com o centro no bottom-center do card. z-index -1 fica contido
+   no stacking context do card (backdrop-filter) → atrás do conteúdo, acima do bg. */
+.mk-card-orb {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    z-index: -1;
+    pointer-events: none;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--pc500-25) 0%, transparent 60%); }
+.mk-card-body { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+/* título com gradiente de texto do DS (igual ao duo-card-title), versão sg
+   (dourado, --text-gradient-high), weight 400. */
+.mk-card-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.25em;
+    margin: 0;
+    width: fit-content;
+    max-width: 100%;
+    background-image: var(--text-gradient-high);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent; }
+.mk-card-text { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* ── profissionais em destaque (card 3): lista de perfis ── */
+/* só ilustrativo: sem interação nem seleção (leitura/acessibilidade tratada
+   com aria-hidden + tabindex -1 no HTML). */
+.mk-people { display: flex; flex-direction: column; gap: 8px; padding: 0 32px 0;
+    pointer-events: none; -webkit-user-select: none; user-select: none;
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+    mask-image: linear-gradient(to bottom, #000, transparent); }
+.mk-person { display: flex; align-items: center; gap: 16px; padding: 8px; background: var(--dn500-25); border-radius: 12px; }
+.mk-person-avatar { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 8px; overflow: hidden; }
+.mk-person-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mk-person-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.mk-person-name { font: var(--label-s); color: var(--bw-75); }
+.mk-person-role { font: var(--label-xs); color: var(--bw-50); }
+.mk-person .btn { flex: 0 0 auto; }
+
+/* ── bloco de logos (container abaixo do conteúdo, no card 1) ── */
+.mk-logos { position: relative; isolation: isolate; padding: 0 0 32px 0; }
+.mk-logos-stack { position: relative; display: flex; flex-direction: column; gap: 8px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%); }
+/* marquees: cada linha rola horizontalmente; overflow esconde o excedente.
+   Os boxes usam margin-right (não gap) p/ o loop -50% fechar exato. */
+.mk-marquee { overflow: hidden; }
+.mk-marquee-track { display: flex; width: max-content; will-change: transform; }
+.mk-marquee-track--left { animation: mk-marquee-left 30s linear infinite; }
+.mk-marquee-track--right { animation: mk-marquee-right 30s linear infinite; }
+.mk-logo-box { flex: 0 0 auto; width: 128px; height: 128px; margin-right: 8px; border-radius: 16px;
+    background: var(--dn500-25); display: flex; align-items: center; justify-content: center; }
+.mk-logo-img { width: 56px; height: 56px; object-fit: contain; display: block; }
+@keyframes mk-marquee-left  { from { transform: translateX(0); }      to { transform: translateX(-50%); } }
+@keyframes mk-marquee-right { from { transform: translateX(-50%); }   to { transform: translateX(0); } }
+/* box central, na frente e centralizado, com blur do fundo. */
+.mk-logos-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 128px;
+    height: 128px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: var(--pc300-15);
+    box-shadow: inset 0 0 0 2px var(--pc300-15), 0 0 96px 0 var(--pc500-50); }
+.mk-logos-center-inner { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; }
+.mk-logos-center-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (prefers-reduced-motion: reduce) {
+    .mk-marquee-track--left, .mk-marquee-track--right,
+    .mk-eco-comet-dot, .mk-eco-orbit { animation: none; }
+}
+/* pausa cometas + órbita quando o card sai da viewport (via JS/IntersectionObserver) */
+.mk-eco.is-paused .mk-eco-comet-dot,
+.mk-eco.is-paused .mk-eco-orbit { animation-play-state: paused; }
+
+/* ── ecossistema (card 2): 4 nodes 64px nos cantos + hub 192px no centro ── */
+/* sem padding: o stage ocupa 100% do card (borda a borda), pra que os cometas
+   horizontais alcancem as extremas esquerda/direita. Os elementos internos são
+   afastados +32px das laterais no lugar do antigo padding, então o diagrama fica
+   idêntico e sobra a faixa externa de 32px pros cometas até a borda. */
+.mk-eco { padding: 0 0 32px 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%); }
+.mk-eco-stage { position: relative; width: 100%; min-width: 512px; height: 320px; }
+/* nodes 64px (filler) nos 4 extremos: 2 na esquerda, 2 na direita. */
+.mk-eco-node { position: absolute; width: 64px; height: 64px; z-index: 2;
+    box-shadow: 0 0 64px 32px var(--dn900); border-radius: 12px; }
+.mk-eco-node img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 12px; }
+.mk-eco-node--tl { top: 0; left: 32px; }
+.mk-eco-node--bl { bottom: 0; left: 32px; }
+.mk-eco-node--tr { top: 0; right: 32px; }
+.mk-eco-node--br { bottom: 0; right: 32px; }
+/* hub 192px, círculo (b-radius 50%), centralizado H/V. */
+.mk-eco-hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 192px;
+    height: 192px;
+    border-radius: 50%;
+    z-index: 2;
+    box-sizing: border-box;
+    padding: 16px;
+    background: var(--dn800);
+    box-shadow: 0 0 64px 0 var(--pc500-15), 0 0 64px 32px var(--dn900), inset 0 0 16px 0 var(--pc300-5);
+    overflow: hidden; }
+.mk-eco-hub-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 16px;
+    background: var(--pc300-5);
+    /* box-shadow: 0 0 96px 0 var(--pc500-15); */
+}
+.mk-eco-hub-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* box-shadow: 0 8px 4px 0 var(--bb-25); */
+    background-color: var(--pc300-5); }
+.mk-eco-hub-icon svg { display: block; }
+/* conectores dos 4 nodes até perto do centro do hub (linha 2px, bw-25).
+   Cada um: sai do node (borda interna, centro vertical), degrau de 96px
+   (reto 32, curva 32r, 32, curva 32r) e reto até o x do centro do hub.
+   Stage de 320px → hub centrado em y=160; a queda de 96px a partir do centro do
+   node (y=32 no topo / y=288 embaixo) aterrissa 32px acima/abaixo do centro do
+   hub (y=128 / y=192). Mesmo path SVG, espelhado H/V por canto via transform. */
+.mk-eco-connector-step { position: absolute; width: 96px; height: 96px; overflow: visible; }
+.mk-eco-connector-step path { stroke: var(--bw-10); stroke-width: 2; fill: none; }
+.mk-eco-connector-step--tl { left: 96px;  top: 32px; }
+.mk-eco-connector-step--tr { right: 96px; top: 32px;    transform: scaleX(-1); }
+.mk-eco-connector-step--bl { left: 96px;  bottom: 32px; transform: scaleY(-1); }
+.mk-eco-connector-step--br { right: 96px; bottom: 32px; transform: scale(-1, -1); }
+.mk-eco-connector-line { position: absolute; height: 2px; width: calc(50% - 192px); background: var(--bw-10); }
+.mk-eco-connector-line--tl { left: 192px;  top: 127px; }
+.mk-eco-connector-line--tr { right: 192px; top: 127px; }
+.mk-eco-connector-line--bl { left: 192px;  bottom: 127px; }
+.mk-eco-connector-line--br { right: 192px; bottom: 127px; }
+/* linhas horizontais: centro do hub → extrema direita / esquerda (y=160).
+   width até a borda do hub (50% - 96px); faixa externa de 32px inclusa. */
+.mk-eco-connector-line--r { right: 0; top: 159px; width: calc(50% - 96px); }
+.mk-eco-connector-line--l { left: 0;  top: 159px; width: calc(50% - 96px); }
+
+/* ── cometa pc300 percorrendo o conector inteiro (degrau + reta), intermitente ──
+   Rastro de N partículas (dots) sobre um único offset-path por canto (montado no
+   marketplace.js a partir da largura do stage). offset-distance 0→100% na fase
+   ativa; cada dot com --ramp (opacidade cabeça→cauda) e animation-delay (a cauda)
+   → o conjunto lê como um gradiente liso que SEGUE a curva. Ciclo 3s com pausa. */
+.mk-eco-comets { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.mk-eco-comet-dot {
+    position: absolute; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--pc300); opacity: 0;
+    offset-rotate: 0deg; offset-anchor: center;
+    animation: mk-comet 3s linear infinite; }
+@keyframes mk-comet {
+    0%           { offset-distance: 0%;   opacity: var(--ramp); }
+    55%          { offset-distance: 100%; opacity: var(--ramp); }
+    55.01%, 100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* ── 2 cometas orbitando o hub, infinitamente (sem pausa) — CSS puro e leve ──
+   UM só elemento: o conic-gradient carrega os 2 cometas (duas caudas
+   pc300→transparent com cabeças a 180° e 360°, defasadas 180°), recortado por
+   máscara radial (só o aro no raio do hub), girando via transform: rotate
+   (compositado na GPU). Centrado no hub (top/left 50% do stage = centro do
+   hub, fixo → sem JS). */
+.mk-eco-orbit { position: absolute; top: 50%; left: 50%; z-index: 3; pointer-events: none;
+    width: 192px; height: 192px; border-radius: 50%;
+    background: conic-gradient(from 0deg,
+        transparent 0deg, transparent 100deg, var(--pc300) 180deg,
+        transparent 180deg, transparent 280deg, var(--pc300) 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 93px, #000 95px 97px, transparent 99px);
+    mask: radial-gradient(circle, transparent 0 93px, #000 95px 97px, transparent 99px);
+    animation: mk-orbit 6s linear infinite; }
+@keyframes mk-orbit {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/* órbita interna (dentro do hub-inner): menor, pra caber, a 25% de opacidade. */
+.mk-eco-orbit--inner {
+    width: 128px; height: 128px; opacity: 0.25;
+    animation-name: mk-orbit-rev;
+    -webkit-mask: radial-gradient(circle, transparent 0 60px, #000 62px 63px, transparent 64px);
+    mask: radial-gradient(circle, transparent 0 60px, #000 62px 63px, transparent 64px); }
+/* sentido contrário: espelha (scaleX -1) — inverte giro E gradiente juntos,
+   mantendo a cabeça do cometa liderando. */
+@keyframes mk-orbit-rev {
+    from { transform: translate(-50%, -50%) scaleX(-1) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) scaleX(-1) rotate(360deg); }
+}
+/* linha 1: card 1 (4) + card 2 (6) = 10. linha 2: card 3 (6) + notif (4). */
+/* Tamanhos invertidos: quem era 6 virou 4 e quem era 4 virou 6. As duas
+   primeiras linhas continuam fechando em 10 (6+4 e 4+6), e o --5 sozinho na
+   terceira agora deixa 6 colunas livres em vez de 4.
+   Os grandes são o --1 (arquitetura em fluxo) e o --4 (recomendações mais
+   antes/depois), que são as duas ilustrações mais densas: são justamente as que
+   ganham com a largura. */
+.mk-card--1 { grid-column: span 6; }
+.mk-card--2 { grid-column: span 4; }
+.mk-card--3 { grid-column: span 4; }
+.mk-card--4 { grid-column: span 6; }
+.mk-card--5 { grid-column: span 4; }
+@media (max-width: 1439px) {
+    .mk-pilares-inner { grid-template-columns: repeat(8, 1fr); }
+    .mk-card--1 { grid-column: span 5; }
+    .mk-card--2 { grid-column: span 3; }
+    .mk-card--3 { grid-column: span 3; }
+    .mk-card--4 { grid-column: span 5; }
+    .mk-card--5 { grid-column: span 3; }
+}
+@media (max-width: 864px) {
+    .mk-pilares-inner { grid-template-columns: 1fr; }
+    .mk-card--1, .mk-card--2, .mk-card--3,
+    .mk-card--4, .mk-card--5 { grid-column: 1; }
+}
+
+/* notification-card neutral (DS, hub de formações): gradiente 135° da variante
+   (neutral = pc300-15) → transparent, padding 32, radius 16, flex column gap 16. */
+.mk-notif {
+    align-self: start;
+    display: flex; flex-direction: column; gap: 16px;
+    padding: 32px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--pc300-15), transparent); }
+.mk-notif .tag-status { align-self: flex-start; }
+.mk-notif-text { font: var(--p); color: var(--bw-75); margin: 0; }
+
+/* override local dos botões subtle (só nesta página; não mexe no DS global). */
+.btn[data-emphasis="subtle"] {
+    background-color: var(--dn400);
+    color: var(--bw);
+    transition: 0.5s;
+    box-shadow: var(--ring-10);
+    filter: blur(2px); }
+
+/* ══════════════════════════════════════════════════════════════
+   PEÇA DO DIAGRAMA — compartilhada pelas ilustrações
+   O mesmo cartão aparece na ilustração 1 (esteira sob a lupa) e na 2 (escada).
+   Por isso mora aqui, fora das duas seções: são a MESMA peça, e duas cópias do
+   estilo divergiriam no primeiro ajuste.
+   Quem posiciona é cada ilustração, pelo wrapper de coluna dela; a peça só sabe
+   desenhar a si mesma.
+   ══════════════════════════════════════════════════════════════ */
+/* 192 de teto fecha exato com o conteúdo: 16 de padding da peça, 32 do container
+   do ícone, 96 do ícone, e os mesmos 32 e 16 do outro lado. */
+.dg-card {
+    position: relative;
+    max-width: 192px;
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 3 quadrados de 8px, sem raio */
+.dg-card-pontos { display: flex; gap: 8px; }
+.dg-card-pontos span { width: 8px; height: 8px; background: var(--sc500); }
+
+/* font: var(--h4) e não font-size cru: o --h4 é 400 1.5rem/1.25, o tamanho certo
+   com a métrica de label (1.25) em vez da de parágrafo. Com font-size solto num
+   <span> o line-height vinha do body (1.5 do --p) e a caixa da linha crescia 6px,
+   além de deixar família e peso implícitos. A escala de label do DS para em
+   --label-l (1.125rem), então nenhum token de label carrega 1.5rem: quem carrega
+   é o --h4. Está aqui pela métrica, não como título, e o elemento segue <span>. */
+.dg-card-label {
+    font: var(--h4);
+    color: var(--bw);
+    text-align: center;
+}
+
+/* mesmo fundo e mesmo raio da peça, com padding próprio de 32 */
+.dg-card-ico {
+    padding: 32px;
+    border-radius: 16px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* o wght 200 e o opsz 24 vêm da regra compartilhada .dg-arq .material-symbols-
+   outlined, no fim deste arquivo; aqui só o que é próprio da peça. */
+.dg-card-ico .material-symbols-outlined {
+    font-size: 96px;
+    color: var(--pc200);
+}
+
+/* A peça em falha (usada na ilustração 2): a caixa do ícone troca de família de cor
+   e o glifo vai em er500.
+   O gradiente é o MESMO desenho da caixa normal (132deg, 15% pra 5%), só mudando a
+   família de bw pra er. Espelhar os degraus em vez de escolher outros mantém a caixa
+   com o mesmo peso visual das vizinhas: o que muda é a cor, não a densidade.
+   O modificador fica na PEÇA, e não no ícone, porque é a etapa que está com defeito,
+   não o glifo. */
+.dg-card--alerta .dg-card-ico {
+    background: linear-gradient(132deg, var(--er500-15), var(--er500-5));
+}
+.dg-card--alerta .dg-card-ico .material-symbols-outlined { color: var(--er500); }
+
+/* Onde o defeito aparece na fileira de quadradinhos: no 2o da etapa em alerta e no
+   1o da etapa seguinte. Lê como o problema surgindo no meio de uma etapa e chegando
+   logo na abertura da outra.
+   O .dg-card--jusante é posto pelo script, a partir de quem tem o .dg-card--alerta:
+   a posição do alerta é o único lugar que descreve o problema, e mover o modificador
+   de peça leva junto os quadradinhos e as pontas dos traços. */
+.dg-card--alerta  .dg-card-pontos span:nth-child(2),
+.dg-card--jusante .dg-card-pontos span:nth-child(1) { background: var(--er500); }
+
+/* ══════════════════════════════════════════════════════════════
+   COLUNA E CONECTORES — compartilhados pelas ilustrações
+   As duas ilustrações agrupam peças em colunas do mesmo jeito e ligam essas peças
+   com o mesmo traço. Fica aqui, fora das seções, pelo mesmo motivo da peça: é o
+   mesmo desenho, e duas cópias divergiriam no primeiro ajuste.
+   O que cada ilustração acrescenta (o empilhamento da 1, a subida e a centragem da
+   2) fica na seção dela.
+   ══════════════════════════════════════════════════════════════ */
+/* --col vem do style inline; --span existe pra causa raiz da ilustração 2, que
+   ocupa 3 colunas, e --sobe pro degrau da escada. As duas com padrão, então a
+   ilustração 1 não declara nenhuma. */
+.dg-col {
+    /* relative NÃO é detalhe: o SVG dos conectores é posicionado, e posicionado
+       pinta por cima de não posicionado, independente da ordem no DOM. Sem isto os
+       traços passariam POR CIMA das peças. Com as colunas posicionadas também, a
+       ordem de pintura volta a ser a do DOM: SVG primeiro, peças depois. */
+    position: relative;
+    grid-column: var(--col) / span var(--span, 2);
+    margin-bottom: var(--sobe, 0);
+}
+
+/* ── conectores ────────────────────────────────────────────────
+   Nodes na técnica do .ds-squad de /cp/data-squads/: um <path> por ligação, com
+   a geometria medida do layout real pelo script. Sem as partículas de lá: o traço
+   é estático.
+
+   Medido e não calculado em CSS de propósito. A versão anterior desta ilustração
+   fazia as ligações com elementos posicionados por coordenada escrita à mão, e
+   cada mudança de padding, gap ou métrica de fonte desalinhava tudo em silêncio,
+   o que já aconteceu aqui mais de uma vez. Medindo, o traço acompanha o layout
+   sozinho, e de graça vira curva em vez de canto.
+
+   Não em SVG desenhado à mão porque a moldura é fluida: SVG esticado não
+   uniformemente deforma traço e pontilhado. Aqui o SVG só recebe as coordenadas
+   já em px da caixa, então cada segmento tem 2px exatos.
+
+   O SVG é o primeiro filho do canvas e as peças vêm depois, no mesmo nível de
+   empilhamento, então a ordem de pintura é a ordem do DOM e as peças ficam por
+   cima. As curvas encostam na borda das peças, não passam por baixo, o que
+   importa porque o fundo delas é translúcido. */
+.dg-conn { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.dg-conn path { stroke: var(--bw-15); stroke-width: 2; fill: none; }
+/* pontas do traço: retângulo de 4 por 16 montado na borda da peça (medidas e
+   posição vêm do script). Preenchimento, sem traço, senão o stroke engrossaria
+   os 4px. */
+.dg-conn rect { fill: var(--sc300); stroke: none; }
+/* As duas pontas do trecho que sai da peça em alerta vão em er500: a saída dela e a
+   entrada da peça seguinte. Quem marca é o script, lendo onde está o
+   .dg-card--alerta, então mover o alerta de etapa move a cor junto.
+   O traço em si continua bw-15: o que muda de cor é onde o caminho encosta nas
+   peças, não a linha inteira. */
+.dg-conn rect.is-erro { fill: var(--er500); }
+
+/* ══════════════════════════════════════════════════════════════
+   ILUSTRAÇÃO 1 — Diagnóstico técnico do ambiente
+   Esteira de etapas do ambiente de dados sob uma lupa. Linguagem de dashboard
+   SaaS: cantos arredondados, traço fino, ícone geométrico, muito vazio entre as
+   peças. Sem foto e sem pessoa.
+   1px é proibido no DS: todo traço aqui tem 2px (stroke dos conectores, pontas,
+   costura das máscaras).
+   ══════════════════════════════════════════════════════════════ */
+/* Moldura. A lupa NÃO se move: quem anda é o diagrama atrás dela, o que dá a
+   impressão de a lente estar varrendo o ambiente.
+   Altura de 384 = a lente de 256 mais 64 de folga em cima e embaixo, então sobra
+   contexto desfocado em volta sem a moldura virar uma faixa larga. O diagrama é
+   bem maior que ela de propósito: não tem fundo próprio, só as peças, então onde
+   ele acaba não existe borda visível, e sim o diagrama rareando. O que o
+   enquadramento tem que garantir é a lente sempre cheia, e isso está garantido
+   porque toda parada centra uma peça nela.
+   isolation: isolate fecha um contexto de empilhamento próprio, pra as camadas
+   daqui não se intercalarem com a .mk-card-orb do card, que é z-index -1. */
+.dg-arq {
+    --lupa: 256px;
+    position: relative;
+    isolation: isolate;
+    height: 384px;
+    /* Antes de o script medir, hidden contém o vazamento do blur e o diagrama
+       ainda sem transform, que fica com o canto no centro da moldura.
+       Depois de pronto vira visible: o diagrama passa a transbordar os 384px e o
+       que segura o recorte é o .mk-card, que já é overflow: hidden e arredondado.
+       Com isso a esteira continua para fora da faixa da lente em vez de morrer na
+       borda dela, e o blur não fica cortado reto. A altura de 384 segue valendo
+       pro espaço que a ilustração OCUPA no card: overflow não mexe em layout. */
+    overflow: hidden;
+}
+.dg-arq.is-pronto { overflow: visible; }
+/* O card segue com o overflow: hidden dele, que e quem passa a limitar o
+   transbordo: o diagrama se estende pela area toda do card e para na borda
+   arredondada, sem vazar pra secao.
+   O diagrama sobe na altura do titulo, e sem isto passaria POR CIMA dele: o
+   .mk-card-body vem antes no DOM e nao e posicionado, enquanto o .dg-arq e
+   position: relative, e posicionado ganha de nao posicionado na ordem de pintura.
+   Com relative + z-index no body, o titulo volta pra frente e o diagrama corre
+   POR BAIXO dele. */
+.mk-card--1 .mk-card-body { position: relative; z-index: 1; }
+
+/* As duas camadas são o MESMO diagrama (a de fundo é clonada pelo script) com
+   máscaras COMPLEMENTARES: a de fora tem um buraco redondo do tamanho da lente,
+   a de dentro só existe dentro dele. Complementares, e não sobrepostas, porque o
+   fundo das peças é translúcido (bw-15 a bw-5): se a camada desfocada continuasse
+   por baixo da nítida, ela apareceria através das peças e sujaria a lente.
+
+   A costura entre as duas tem 2px de esfumado (raio - 2 até raio) pra não serrar
+   o contorno do círculo. Ela cai debaixo dos anéis do SVG da lupa, que ocupam de
+   119 a 128 de raio, então não fica à vista. */
+/* O RECORTE ficava aqui, e nao em overflow nenhum: mask-clip vale border-box por
+   padrao, ou seja a mascara so e pintada dentro da caixa do proprio elemento.
+   Fora dessa caixa o valor da mascara e transparente, e transparente esconde. Como
+   a caixa da camada era inset: 0 (a moldura de 384px), todo o transbordo do canvas
+   era mascarado embora, e o diagrama aparecia cortado exatamente na borda da
+   faixa, logo abaixo do .mk-card-body. Liberar overflow no card, na moldura e no
+   canvas nao resolvia: quem cortava era a mascara, e mask-clip: no-clip nao tem
+   suporte confiavel.
+   A saida e dar a caixa a camada: ela cresce ate cobrir o canvas em qualquer
+   parada, e ai o border-box deixa de cortar nada que importe.
+   O crescimento e SIMETRICO de proposito. E isso que mantem o centro da camada em
+   cima do centro da moldura, que e onde a lente esta: o "at 50% 50%" do gradiente
+   continua caindo no lugar certo, sem correcao.
+   As medidas saem da geometria. Em toda parada UM card fica no centro, entao o
+   canvas se estende no maximo 1040px na horizontal (1152 de largura menos os 112
+   do centro do primeiro card) e 545 na vertical (684 de altura menos os 139 do
+   centro do card de cima). 1056 e 576 cobrem os dois com folga pro vazamento do
+   blur, e cobrem em qualquer largura de card, porque sao somados a ela.
+   mask-size, mask-position e mask-repeat sairam: com a caixa certa, o gradiente
+   preenche a camada uma vez (mask-size auto = 100%) e nao ha o que repetir. */
+.dg-arq-camada {
+    position: absolute;
+    inset: -576px -1056px;
+}
+
+/* Fora da lente. A camada carrega SO a mascara; o blur e a opacidade vao no
+   diagrama dentro dela. Uma caixa por efeito, e nao os tres na mesma: empilhados,
+   a opacidade acaba aplicada ao resultado ja mascarado e composto, em vez de ao
+   conteudo, e nao aparece. Separados, cada um age no que deve. */
+.dg-arq-camada--fundo {
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 calc(var(--lupa) / 2 - 2px), #000 calc(var(--lupa) / 2));
+            mask-image: radial-gradient(circle at 50% 50%, transparent 0 calc(var(--lupa) / 2 - 2px), #000 calc(var(--lupa) / 2));
+}
+.dg-arq-camada--fundo .dg-arq-canvas {
+    filter: blur(4px);
+    opacity: 0.5;
+}
+
+/* dentro da lente */
+.dg-arq-camada--nitido {
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 calc(var(--lupa) / 2 - 2px), transparent calc(var(--lupa) / 2));
+            mask-image: radial-gradient(circle at 50% 50%, #000 0 calc(var(--lupa) / 2 - 2px), transparent calc(var(--lupa) / 2));
+}
+
+/* A lupa inteira (vidro mais cabo), parada no centro e por cima das duas camadas.
+   Quem carrega o tamanho e a centralizacao e o container; o vidro preenche ele e o
+   cabo se ancora no canto. Sem o container, ancorar o cabo no proprio SVG nao
+   funciona: SVG nao e containing block pra filho HTML, e pendurar o cabo na
+   moldura faria a posicao dele depender do tamanho dela, nao da lente. */
+.dg-arq-lupa-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--lupa);
+    height: var(--lupa);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+.dg-arq-lupa { display: block; width: 100%; height: 100%; }
+/* cabo no canto inferior esquerdo do container. O canto do container fica FORA do
+   circulo (a lente e o circulo inscrito nele), entao o cabo encosta na diagonal do
+   vidro, que e como uma lupa se segura. */
+.dg-arq-lupa-cabo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 8px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--dn500), var(--dn500-75));
+    display: flex;
+}
+/* o wght 200 vem da regra compartilhada .dg-arq .material-symbols-outlined, no
+   fim deste arquivo; aqui so o tamanho e a cor. */
+.dg-arq-lupa-cabo .material-symbols-outlined {
+    font-size: 48px;
+    color: var(--bw);
+}
+
+/* Até o script medir as paradas o diagrama não tem transform e ficaria com o
+   canto no centro da moldura, então as camadas só aparecem com a animação já
+   resolvida. A animação vem pela MESMA classe, e não do CSS de base, porque é
+   isso que faz as duas cópias começarem no mesmo recálculo de estilo: em passo
+   diferente, a cópia nítida sairia de registro com a desfocada e a lente
+   mostraria um trecho que não bate com o entorno.
+   As @keyframes dg-arq-pan são geradas pelo script (dependem da medição). */
+.dg-arq:not(.is-pronto) .dg-arq-camada { visibility: hidden; }
+.dg-arq.is-pronto .dg-arq-canvas { animation: dg-arq-pan 20s ease-in-out infinite; }
+
+/* na esteira as colunas empilham até 2 peças, com 128 de vão */
+.dg-arq .dg-col { display: flex; flex-direction: column; gap: 128px; }
+
+/* ── o diagrama ────────────────────────────────────────────────
+   Canvas no grid Desktop do DS: 8 colunas, gap 32, padding lateral 16, o que dá
+   os 112 de coluna de qualquer tier. Uma etapa por par de colunas (1, 3, 5, 7).
+   Largura fixa de propósito: o diagrama é a peça que desliza, não o layout da
+   página, e as coordenadas das paradas dependem de ele não reflowar com o card.
+
+   Ancorado em left/top 50% da moldura: com essa referência, o transform de cada
+   parada é literalmente a coordenada do centro da peça, negativada, sem carregar
+   o tamanho da moldura na conta (ver as paradas no diagnostico-avancado.js).
+   Também é o box em que o script mede os conectores, e o containing block do
+   .dg-conn, que se ancora nele com inset: 0. */
+.dg-arq-canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1152px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    /* centra verticalmente as colunas de uma peça só; as de duas são as mais
+       altas e definem a altura da linha, pra elas centrar é inócuo */
+    align-items: center;
+    /* explícito, e não confiando no padrão: o canvas é mais alto que a moldura e
+       tem que transbordar. Deixa registrado que isso é intenção, pra ninguém
+       "arrumar" com hidden depois. */
+    overflow: visible;
+}
+
+/* ≤864: sem blur em composição animada. O blur está declarado uma vez, mas o
+   conteúdo por baixo dele se move, então é recalculado a cada frame: é custo de
+   blur animado, que é justamente o que não queremos em tela pequena. A varredura
+   continua, marcada só pela opacidade. */
+@media (max-width: 864px) {
+    .dg-arq-camada--fundo .dg-arq-canvas { filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    /* para na 1a parada, com Fontes de dados sob a lente */
+    .dg-arq.is-pronto .dg-arq-canvas { animation-play-state: paused; }
+}
+/* ══════════════════════════════════════════════════════════════
+   ILUSTRAÇÃO 2 — Problemas e causas identificados
+   Escada de peças subindo da esquerda pra direita, com a etapa do meio em falha e
+   a peça da causa raiz encaixada por baixo dela.
+   As peças são as MESMAS da ilustração 1 (seção "PEÇA DO DIAGRAMA"), e a coluna e
+   os conectores também são compartilhados (seção "COLUNA E CONECTORES").
+   ══════════════════════════════════════════════════════════════ */
+/* Moldura de 384px, a mesma altura da ilustração 1, pras duas terem o mesmo peso na
+   fileira de cards. A escada é maior que ela, e quem decide o enquadramento é a
+   etapa em alerta: o script centra o diagrama pela peça dela, nos dois eixos, então
+   o alerta cai sempre no meio da moldura, qualquer que seja o degrau ou a altura das
+   peças. O resto da escada entra e sai do quadro em volta dele.
+   Isso também resolve a diferença de largura: o diagrama tem 864 e o card tem 544
+   (span 4), e centrar pelo alerta mostra a parte que importa em vez de cortar o
+   diagrama pela ponta esquerda. */
+.dg-falha {
+    position: relative;
+    height: 384px;
+    overflow: hidden;
+}
+/* enquanto o script não mediu, o diagrama não tem transform e ficaria com o canto
+   no centro da moldura */
+.dg-falha:not(.is-pronto) .dg-falha-canvas { visibility: hidden; }
+
+/* Grid de 6 colunas, e não de 8 como na ilustração 1, mas com a MESMA proporção do
+   grid Desktop do DS em 1152: coluna de 112 e gap de 32, os valores que valem em
+   qualquer tier. Daí a largura, que é a soma e não um número escolhido:
+   6 x 112 + 5 x 32 + 16 + 16 de padding = 672 + 160 + 32 = 864.
+
+   Ancorado em left/top 50% da moldura: com essa referência, o transform que o script
+   aplica é só a coordenada negativa do centro da peça em alerta, sem carregar o
+   tamanho da moldura na conta, que é fluido com o card. */
+.dg-falha-canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 864px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    column-gap: 32px;
+    /* row-gap zerado de propósito: a causa raiz cai numa 2a linha, mas não se
+       posiciona por ela, e sim pela etapa em alerta (ver .dg-col--solta). Com um
+       row-gap qualquer, ele entraria na conta daquele deslocamento. */
+    row-gap: 0;
+    /* Base comum embaixo: é dela que cada peça sobe, e é o que dá chão à escada em
+       vez de as peças flutuarem soltas. Com o alinhamento no fim, a subida vira
+       margem INFERIOR positiva, e não margem negativa nem translate: a caixa do
+       diagrama cresce junto e passa a conter a escada inteira. Com margem negativa
+       ou com transform, a peça mais alta vazaria pra fora dele. */
+    align-items: end;
+}
+
+/* peça centrada no par de colunas: 256 do par menos 192 dela dá 32 de folga de cada
+   lado. margin-inline: auto, e não justify-content na coluna: a peça é um bloco com
+   max-width, e virando a coluna em flex a largura passaria a ser a do conteúdo, com
+   as de rótulo curto (Dashboard) encolhendo abaixo dos 192. */
+.dg-falha .dg-col .dg-card { margin-inline: auto; }
+
+/* A causa raiz está fora da corrente de conectores (quem lê essa classe é o
+   diagnostico-avancado.js) e também fora do chão comum: ela não se alinha à base
+   como as etapas, se pendura na etapa em alerta.
+
+   A conta: a peça cai na 2a linha do grid, que começa exatamente na base (row-gap é
+   zero). A base da etapa em alerta está --ancora acima dali. Pra o topo da causa
+   parar a --folga abaixo dessa base, ela sobe (ancora - folga), que é a margem
+   superior NEGATIVA abaixo. Com --folga negativa a peça passa DA base pra cima: em
+   -32 ela entra 32px na etapa em alerta, encaixando por baixo do canto dela.
+
+   align-self: start NÃO é detalhe, é o que faz essa conta valer. O diagrama alinha
+   em end, que é o certo pras etapas. Herdando end, esta peça seria alinhada pela
+   BASE da caixa de margem dela, e com margem superior negativa essa caixa tem altura
+   negativa: o navegador acaba encostando o cartão no chão, não a --folga da base do
+   alerta.
+
+   --ancora repete o --sobe da etapa em alerta, e os dois ficam no style inline do
+   HTML, um perto do outro, porque o CSS não lê a variável de um irmão. Mudando o
+   degrau do alerta, mude a âncora junto. */
+.dg-col--solta {
+    --folga: -32px;
+    align-self: start;
+    margin-top: calc(var(--folga) - var(--ancora));
+}
+/* preenche as 4 colunas, em vez de ficar nos 192 das etapas: aqui a largura é o
+   conteúdo da peça, e não uma peça de fluxo a mais */
+.dg-col--solta .dg-card { max-width: none; }
+/* Deslocada 32 pra direita: com isso a borda esquerda da peça cai em 336, que é
+   exatamente onde começa a peça da etapa em alerta (par 3-4, os 192 centrados vão de
+   336 a 528), e a direita vai até 848, o fim da coluna 6. Sem o deslocamento ela
+   começaria em 304, a borda da coluna 3, 32 antes da peça que ela investiga.
+   margin-left e não translate: a largura segue automática e o deslocamento sai da
+   direita em vez de estourar o diagrama, que acaba em 848. Com margem esquerda fixa
+   e largura automática, o auto da direita resolve em zero.
+   O seletor precisa de três níveis pra empatar com a regra de centragem, que é
+   margin-inline: auto e sobrescreveria um seletor mais curto. Vindo depois e com a
+   mesma especificidade, este vence. */
+.dg-falha .dg-col--solta .dg-card { margin-left: 32px; }
+
+/* ── a peça da causa raiz ────────────────────────────────────────
+   O mesmo .dg-card das etapas: o que muda é só o conteúdo, que aqui é uma linha
+   (lupa à esquerda, texto à direita) em vez da pilha de quadradinhos, rótulo e
+   caixa de ícone.
+   A lupa é o único ícone da ilustração fora de uma .dg-card-ico, mas o wght 200
+   dela vem da mesma regra compartilhada do fim deste arquivo, que é escopada em
+   .dg-falha. */
+.dg-causa { display: flex; align-items: center; gap: 16px; }
+.dg-causa-lupa { flex: 0 0 auto; font-size: 48px; color: var(--bw); }
+/* min-width: 0 pra o preview poder encolher: item de flex tem min-width auto, que é
+   o tamanho do conteúdo, e sem isto ele empurraria a lupa. */
+.dg-causa-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.dg-causa-label { font: var(--label); color: var(--er300); }
+/* representação de texto: barras de 4px, sem raio, na largura toda da coluna */
+.dg-causa-preview { display: flex; flex-direction: column; gap: 8px; }
+.dg-causa-preview span { height: 4px; width: 100%; background: var(--bw-50); }
+
+/* ══════════════════════════════════════════════════════════════
+   ILUSTRAÇÃO 3 — Riscos e impactos mapeados
+   ══════════════════════════════════════════════════════════════ */
+.dg-risco { padding: 0 24px 32px;
+    display: flex; flex-direction: row; align-items: stretch; gap: 16px; }
+/* grid de 3 colunas por 3 linhas: rótulo do eixo Y, faixas do Y, a grade, as
+   faixas do X e o rótulo do X. Assim os eixos ficam presos à grade sem px fixo. */
+.dg-risco-plot { flex: 1 1 auto; min-width: 0;
+    display: grid; grid-template-columns: auto auto 1fr;
+    grid-template-rows: 1fr auto auto; gap: 6px; align-items: center; }
+.dg-risco-eixo-y { grid-column: 1; grid-row: 1; justify-self: center;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font: var(--label-xs); color: var(--bw-50); }
+.dg-risco-faixas { display: flex; font: var(--label-xs); color: var(--bw-25); }
+.dg-risco-faixas--y { grid-column: 2; grid-row: 1;
+    flex-direction: column; justify-content: space-around; align-items: flex-end;
+    height: 100%; }
+.dg-risco-faixas--x { grid-column: 3; grid-row: 2;
+    flex-direction: row; justify-content: space-around; }
+.dg-risco-eixo-x { grid-column: 3; grid-row: 3; text-align: center;
+    font: var(--label-xs); color: var(--bw-50); }
+/* a grade: só a caixa e o recorte. O aspect-ratio mantém a matriz quadrada em
+   qualquer largura de card; a cor e as linhas vêm da camada de quadrantes. */
+.dg-risco-grade { grid-column: 3; grid-row: 1; position: relative;
+    aspect-ratio: 1 / 1; width: 100%; overflow: hidden; }
+/* os 9 quadrantes, em camada absoluta abaixo dos pontos (que vêm depois no DOM e
+   pintam por cima). O container não tem fundo: o gap de 2px deixa o card aparecer
+   e é isso que separa um quadrante do outro. */
+.dg-risco-quadrantes { position: absolute; inset: 0;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr); gap: 2px; }
+/* QUATRO niveis, os mesmos que a legenda lista, e o criterio e probabilidade
+   VEZES impacto: o modelo padrao de matriz de risco.
+   Era isso que faltava nas duas tentativas anteriores. Somar os eixos tratava
+   probabilidade e impacto como equivalentes; depois eu pesei impacto a ponto de
+   deixar a linha de impacto baixo verde inteira, e ai probabilidade parava de
+   contar naquela linha, incoerente com as outras duas.
+   No produto a matriz fica monotonica (cada passo pra direita ou pra cima so pode
+   manter ou subir o nivel) e simetrica em torno da diagonal, que e como ela se le:
+   impacto alto com probabilidade baixa pesa o mesmo que impacto baixo com
+   probabilidade alta.
+   Faixas do produto, com P e I valendo 1, 2, 3:
+     1 e 2 -> baixo    3 e 4 -> medio    6 -> alto    9 -> critico
+   Indices, com o grid preenchido linha por linha de cima pra baixo:
+     1 2 3 = impacto alto | 4 5 6 = impacto medio | 7 8 9 = impacto baixo
+   O verde ficou reservado ao canto 1x1, o unico caso em que nada pesa nos dois
+   eixos. Os outros dois de produto 2 (4 e 8) sobem pro amarelo fraco, que faz a
+   rampa do canto verde ate o vermelho passar por cinco intensidades em vez de
+   quatro degraus secos. Amarelo fraco e amarelo cheio leem os dois como medio na
+   legenda, so em graus diferentes.
+     baixo   (sc500-10): 7 (1x1=1)
+     medio   (wr500-5):  4 (1x2=2), 8 (2x1=2)
+     medio   (wr500-10): 1 (1x3=3), 5 (2x2=4), 9 (3x1=3)
+     alto    (er500-5):  2 (2x3=6), 6 (3x2=6)
+     critico (er500-10): 3 (3x3=9), o pior caso nos dois eixos, e so ele */
+.dg-risco-quadrantes span:nth-child(7) { background: var(--sc500-10); }
+.dg-risco-quadrantes span:nth-child(4),
+.dg-risco-quadrantes span:nth-child(8) { background: var(--wr500-5); }
+.dg-risco-quadrantes span:nth-child(1),
+.dg-risco-quadrantes span:nth-child(5),
+.dg-risco-quadrantes span:nth-child(9) { background: var(--wr500-10); }
+.dg-risco-quadrantes span:nth-child(2),
+.dg-risco-quadrantes span:nth-child(6) { background: var(--er500-5); }
+.dg-risco-quadrantes span:nth-child(3) { background: var(--er500-10); }
+/* ponto de risco: --x e --y vem do style inline, em porcentagem, entao a matriz
+   escala junto com o card e nenhuma posicao precisa de JS. bottom e nao top porque
+   o eixo Y cresce pra cima, como no grafico.
+   Vem depois da camada de quadrantes no DOM, entao pinta por cima dela sem
+   precisar de z-index. */
+.dg-risco-ponto { position: absolute; left: var(--x); bottom: var(--y);
+    transform: translate(-50%, 50%);
+    width: 10px; height: 10px; border-radius: 1920px;
+    background: var(--pc300); }
+/* o isolation nao e decoracao: sem ele o z-index -1 do halo escaparia pro
+   contexto de empilhamento de cima e o disco sumiria atras da camada de
+   quadrantes. Com ele o -1 fica preso no ponto, atras do circulo e na frente do
+   quadrante. */
+.dg-risco-ponto--critico { background: var(--er500); isolation: isolate; }
+/* o halo do critico: disco translucido em volta do ponto, e nao anel. O anel foi
+   junto com os outros contornos, mas o destaque nao podia sair: e o unico sinal
+   que separa esse ponto dos demais. */
+.dg-risco-ponto--critico::after { content: ""; position: absolute; z-index: -1;
+    inset: -7px; border-radius: 1920px; background: var(--er500-25); }
+.dg-risco-legenda { flex: 0 0 auto; list-style: none; margin: 0; padding: 0;
+    align-self: center;
+    display: flex; flex-direction: column; gap: 8px; }
+.dg-risco-legenda li { margin: 0; display: flex; align-items: center; gap: 8px;
+    font: var(--label-xs); color: var(--bw-50); white-space: nowrap; }
+.dg-risco-chip { width: 10px; height: 10px; border-radius: 1920px; }
+.dg-risco-chip--critico { background: var(--er500); }
+.dg-risco-chip--alto    { background: var(--er300); }
+/* wr e não sg: o chip tem que ser da mesma família da cor que ele explica na
+   matriz, e o quadrante médio é wr. Em sg (dourado) a legenda apontava pra uma
+   cor que não aparece no gráfico. */
+.dg-risco-chip--medio   { background: var(--wr500); }
+.dg-risco-chip--baixo   { background: var(--sc500); }
+
+/* ══════════════════════════════════════════════════════════════
+   ILUSTRAÇÃO 4 — Recomendações de melhoria
+   ══════════════════════════════════════════════════════════════ */
+.dg-rec { padding: 0 24px 32px; display: flex; flex-direction: column; gap: 16px; }
+/* as duas áreas da spec, lado a lado: só couberam depois da inversão, que trouxe
+   este card pra span 6. A lista pesa mais que a comparação (3 itens de texto
+   contra 2 quadros quadrados), por isso 3fr contra 2fr em vez de meio a meio. */
+.dg-rec-cols { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; }
+.dg-rec-cols > .dg-rec-lista { flex: 3 1 0; min-width: 0; }
+.dg-rec-cols > .dg-rec-evo   { flex: 2 1 0; min-width: 0; }
+.dg-rec-lista { list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 8px; }
+.dg-rec-item { margin: 0; display: flex; align-items: center; gap: 10px;
+    padding: 10px; border-radius: 10px;
+    background: var(--dn700); }
+.dg-rec-ico { flex: 0 0 auto; font-size: 18px; color: var(--pc200);
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bw-5); }
+.dg-rec-texto { flex: 1 1 auto; min-width: 0;
+    display: flex; flex-direction: column; gap: 6px; }
+.dg-rec-titulo { font: var(--label-xs); color: var(--bw);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* mesma medida da linha do card de causa raiz: as duas representam texto */
+.dg-rec-linha { height: 4px; width: 70%; background: var(--bw-10); }
+.dg-rec-check { flex: 0 0 auto; font-size: 18px; color: var(--sc500); }
+
+/* antes/depois. Os dois quadros dividem a linha por igual (flex 1) e a seta fica
+   no meio, com largura própria. */
+.dg-rec-evo { display: flex; align-items: stretch; gap: 8px; }
+.dg-rec-quadro { flex: 1 1 0; min-width: 0;
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 10px; border-radius: 10px;
+    background: var(--dn700); }
+.dg-rec-quadro-label { font: var(--label-xs); color: var(--bw-50); }
+.dg-rec-seta { align-self: center; font-size: 20px; color: var(--bw-25); }
+/* malha: mesma caixa nos dois quadros, o que muda é a disposição dos nós.
+   antes = espalhado sem centro; depois = hub no meio ligado a todos. */
+.dg-rec-malha { position: relative; aspect-ratio: 1 / 1; width: 100%; }
+.dg-rec-no { position: absolute; width: 8px; height: 8px; border-radius: 2px;
+    background: var(--bw-25); }
+/* antes: nós soltos, sem centro. As ligações ponto a ponto ficam sugeridas pela
+   própria dispersão, sem linha nenhuma: é o oposto do quadro do "depois". */
+.dg-rec-malha--antes .dg-rec-no:nth-child(1) { left: 8%;  top: 12%; }
+.dg-rec-malha--antes .dg-rec-no:nth-child(2) { left: 66%; top: 22%; }
+.dg-rec-malha--antes .dg-rec-no:nth-child(3) { left: 22%; top: 58%; }
+.dg-rec-malha--antes .dg-rec-no:nth-child(4) { left: 78%; top: 68%; }
+.dg-rec-malha--antes .dg-rec-no:nth-child(5) { left: 44%; top: 86%; }
+/* depois: os 4 nós nos cantos e o hub no centro, com as diagonais saindo dele */
+.dg-rec-malha--depois .dg-rec-no { background: var(--pc300); }
+.dg-rec-malha--depois .dg-rec-no:nth-child(1) { left: 14%; top: 14%; }
+.dg-rec-malha--depois .dg-rec-no:nth-child(2) { right: 14%; top: 14%; }
+.dg-rec-malha--depois .dg-rec-no:nth-child(3) { left: 14%; bottom: 14%; }
+.dg-rec-malha--depois .dg-rec-no:nth-child(4) { right: 14%; bottom: 14%; }
+.dg-rec-hub { position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); isolation: isolate;
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--pc200); background: var(--pc500-15);}
+.dg-rec-hub .material-symbols-outlined { font-size: 18px; }
+/* as diagonais do hub até os cantos, num elemento só. O isolation no hub prende
+   o z-index -1 nele, senão o traço escapa pra trás do quadro. */
+.dg-rec-hub::before { content: ""; position: absolute; z-index: -1;
+    width: 96px; height: 96px;
+    background:
+        linear-gradient(45deg,  transparent 48%, var(--pc300-25) 48% 52%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, var(--pc300-25) 48% 52%, transparent 52%); }
+.dg-rec-ganho { display: flex; align-items: center; gap: 8px;
+    font: var(--label-xs); color: var(--sc500); }
+.dg-rec-ganho .material-symbols-outlined { font-size: 18px; }
+
+/* ══════════════════════════════════════════════════════════════
+   ILUSTRAÇÃO 5 — Plano de ação priorizado
+   ══════════════════════════════════════════════════════════════ */
+.dg-plano { padding: 0 24px 32px; }
+/* o trilho é um ::before da lista, atrás dos números: acompanha a altura da
+   lista sem px fixo. Os 15px de left o centram nos números de 30px. */
+.dg-plano-lista { position: relative; list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 12px; }
+.dg-plano-lista::before { content: ""; position: absolute; z-index: 0;
+    left: 15px; top: 15px; bottom: 15px; width: 2px; background: var(--bw-10); }
+.dg-plano-etapa { margin: 0; position: relative;
+    display: flex; align-items: center; gap: 12px; }
+.dg-plano-num { position: relative; z-index: 1; flex: 0 0 auto;
+    width: 30px; height: 30px; border-radius: 1920px;
+    display: flex; align-items: center; justify-content: center;
+    font: var(--label-xs); color: var(--pc200);
+    background: var(--dn700); }
+.dg-plano-card { flex: 1 1 auto; min-width: 0;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; border-radius: 10px;
+    background: var(--dn700); }
+.dg-plano-acao { flex: 1 1 auto; min-width: 0; font: var(--label-xs); color: var(--bw); }
+.dg-plano-card .tag-status { flex: 0 0 auto; }
+
+/* ── tier estreito: 865 a 1439 ──
+   Aqui os cards pequenos são span 3 de 8, o pior caso da página (~368px). Abaixo
+   de 865 todo card vira largura cheia e o aperto desaparece, por isso a faixa tem
+   piso: sem o min-width estas regras vazariam pro mobile, onde há folga sobrando. */
+@media (max-width: 1439px) and (min-width: 865px) {
+    /* --3: a legenda ao lado comeria 80px dos 320. Desce pra baixo da matriz e
+       vira linha, que é o mesmo arranjo que o ≤576 já usava. */
+    .dg-risco { flex-direction: column; }
+    .dg-risco-legenda { flex-direction: row; flex-wrap: wrap; align-self: flex-start; }
+    /* --5: ação e etiqueta lado a lado esmagariam o texto da ação. */
+    .dg-plano-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media (max-width: 864px) {
+    /* card em largura cheia: a matriz ganha folga. Os trilhos das ilustrações 1 e
+       2 são todos em porcentagem, então acompanham sozinhos. */
+    .dg-risco-grade { max-width: 320px; }
+}
+@media (max-width: 576px) {
+    .dg-falha, .dg-risco, .dg-rec, .dg-plano { padding: 0 16px 24px; }
+    /* card estreito: a legenda desce pra baixo da matriz em vez de comer largura */
+    .dg-risco { flex-direction: column; }
+    .dg-risco-legenda { flex-direction: row; flex-wrap: wrap; align-self: flex-start; }
+    /* a ação e a etiqueta empilham, senão a etiqueta esmaga o texto */
+    .dg-plano-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+    /* --4: no card estreito as duas áreas voltam a empilhar, senão os quadros de
+       antes/depois caem pra menos de 100px cada. */
+    .dg-rec-cols { flex-direction: column; }
+}
+
+/* ── peso dos ícones das ilustrações ──
+   wght 200, o mesmo eixo que o DS usa nos ícones de componente (root.css). O
+   subset é gerado com wght@200..400, então 200 é o mínimo disponível: pedir menos
+   que isso cairia no fallback do navegador e o traço engrossaria em vez de afinar.
+   Traço fino é o que casa com a linguagem das ilustrações, que é linha fina,
+   ícone geométrico e pouco peso.
+   Só .dg-arq, .dg-falha e .dg-rec têm ícone; a matriz de risco e o roadmap são
+   desenhados sem glifo. */
+.dg-arq .material-symbols-outlined,
+.dg-falha .material-symbols-outlined,
+.dg-rec .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24; }

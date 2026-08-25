@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!-- Estudo da ilustração 1: Diagnóstico técnico do ambiente
+     Ambiente vazio. Marcação aqui no body, estilo no style.css desta pasta.
+     Sem moldura, sem régua e sem cabeçalho de propósito: nada recorta nem compete
+     com o desenho. -->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo 1, Diagnóstico técnico do ambiente</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-1/style.css?v=9">
+</head>
+<body>
+    <!-- Palco da lupa. A lupa nao se move: quem anda e o canvas atras dela, o que
+         da a impressao de que a lente esta varrendo o diagrama.
+         Duas camadas complementares do MESMO canvas, recortadas por mascaras que se
+         encaixam: a de fora tem um buraco redondo no meio e leva blur e opacity, a
+         de dentro so existe dentro do circulo e fica nitida. Complementares, e nao
+         sobrepostas, porque o fundo do card e translucido: se a camada desfocada
+         continuasse por baixo da nitida, ela apareceria atraves dos cards.
+         A copia desfocada e clonada pelo script, pra marcacao dos cards existir uma
+         vez so. -->
+    <div class="il-lupa-stage">
+        <div class="il-camada il-camada--fundo" aria-hidden="true"></div>
+        <div class="il-camada il-camada--nitido">
+            <div class="il-canvas">
+                <!-- conectores: os paths sao criados e medidos pelo script.js -->
+                <svg class="il-conn" aria-hidden="true"></svg>
+                <div class="il-col" style="--col: 1">
+                    <div class="il-card">
+                        <div class="il-card-pontos">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="il-card-label">Fontes de dados</span>
+                        <div class="il-card-ico">
+                            <span class="material-symbols-outlined">database</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="il-col" style="--col: 3">
+                    <div class="il-card">
+                        <div class="il-card-pontos">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="il-card-label">Integrações e processos</span>
+                        <div class="il-card-ico">
+                            <span class="material-symbols-outlined">account_tree</span>
+                        </div>
+                    </div>
+                    <div class="il-card">
+                        <div class="il-card-pontos">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="il-card-label">Integrações e processos</span>
+                        <div class="il-card-ico">
+                            <span class="material-symbols-outlined">account_tree</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="il-col" style="--col: 5">
+                    <div class="il-card">
+                        <div class="il-card-pontos">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="il-card-label">Modelagem</span>
+                        <div class="il-card-ico">
+                            <span class="material-symbols-outlined">schema</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="il-col" style="--col: 7">
+                    <div class="il-card">
+                        <div class="il-card-pontos">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="il-card-label">Relatórios e dashboards</span>
+                        <div class="il-card-ico">
+                            <span class="material-symbols-outlined">monitoring</span>
+                        </div>
+                    </div>
+                    <div class="il-card">
+                        <div class="il-card-pontos">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="il-card-label">Relatórios e dashboards</span>
+                        <div class="il-card-ico">
+                            <span class="material-symbols-outlined">monitoring</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- vidro da lupa: fica por cima das duas camadas, parado no centro. Os
+             gradientes ganharam prefixo il-lupa- porque id de gradiente e global no
+             documento, e "a".."d" colidiria com qualquer outro SVG da pagina. -->
+        <svg class="il-lupa" width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="128" cy="128" r="126" stroke="url(#il-lupa-a)" stroke-width="4"/><circle cx="128" cy="128" r="122" stroke="url(#il-lupa-b)" stroke-width="4"/><circle cx="128" cy="128" r="119" stroke="url(#il-lupa-c)" stroke-width="2"/><circle cx="128" cy="128" r="124" fill="url(#il-lupa-d)"/><defs><linearGradient id="il-lupa-a" x1="0" y1="256" x2="256" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff"/><stop offset="1" stop-color="#9696a0"/></linearGradient><linearGradient id="il-lupa-b" x1="252" y1="4" x2="4" y2="252" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff"/><stop offset="1" stop-color="#6464ff"/></linearGradient><linearGradient id="il-lupa-c" x1="248" y1="8" x2="8" y2="248" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff" stop-opacity=".25"/><stop offset="1" stop-color="#f5f5ff" stop-opacity="0"/></linearGradient><linearGradient id="il-lupa-d" x1="252" y1="4" x2="4" y2="252" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff" stop-opacity=".15"/><stop offset="1" stop-color="#f5f5ff" stop-opacity="0"/></linearGradient></defs></svg>
+    </div>
+
+    <script src="/ed/temp/dg-estudos/il-1/script.js?v=5"></script>
+</body>
+</html>

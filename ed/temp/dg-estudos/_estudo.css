@@ -1,0 +1,10 @@
+/* Ambiente dos estudos de ilustração. Compartilhado pelos 5 (il-1 a il-5).
+   Só o mínimo pra a página existir: fundo do DS e body sem margem. Nada de moldura,
+   régua ou cabeçalho, pra nada recortar nem competir com o desenho.
+   Não desenhe aqui: cada estudo tem o seu próprio style.css. */
+
+body {
+    margin: 0;
+    background: var(--bb);
+    min-height: 100vh;
+}

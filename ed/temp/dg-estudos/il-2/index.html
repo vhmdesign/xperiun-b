@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- Estudo da ilustração 2: Problemas e causas identificados
+     Ambiente vazio. Marcação aqui no body, estilo no style.css desta pasta.
+     Sem moldura, sem régua e sem cabeçalho de propósito: nada recorta nem compete
+     com o desenho. -->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo 2, Problemas e causas identificados</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-2/style.css?v=20">
+</head>
+<body>
+    <!-- Escada: uma peça por par de colunas, cada uma um degrau acima da anterior.
+         O degrau vive no --sobe do style inline; a base é o rodapé do canvas.
+         A moldura tem 384 e o script centra o diagrama pela peça em alerta, que por
+         isso fica sempre no meio do quadro. -->
+    <div class="il-frame">
+        <div class="il-canvas">
+            <!-- conectores: os paths sao criados e medidos pelo script.js -->
+            <svg class="il-conn" aria-hidden="true"></svg>
+            <div class="il-col" style="--col: 1">
+                <div class="il-card">
+                    <div class="il-card-pontos">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="il-card-label">Fonte de dados</span>
+                    <div class="il-card-ico">
+                        <span class="material-symbols-outlined">database</span>
+                    </div>
+                </div>
+            </div>
+            <div class="il-col" style="--col: 3; --sobe: 64px">
+                <div class="il-card il-card--alerta">
+                    <div class="il-card-pontos">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="il-card-label">Cálculo de métricas</span>
+                    <div class="il-card-ico">
+                        <span class="material-symbols-outlined">warning</span>
+                    </div>
+                </div>
+            </div>
+            <div class="il-col" style="--col: 5; --sobe: 128px">
+                <div class="il-card">
+                    <div class="il-card-pontos">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="il-card-label">Dashboard</span>
+                    <div class="il-card-ico">
+                        <span class="material-symbols-outlined">monitoring</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Causa raiz, nas colunas 3 a 6. Esse intervalo ja esta ocupado na 1a
+                 linha, entao o auto-placement do grid poe a peca na linha de baixo,
+                 sem precisar de grid-row escrito.
+                 --ancora repete o --sobe da etapa em alerta: e a partir da base dela
+                 que esta peca se posiciona (ver .il-col--solta no style.css).
+                 --solta tira a coluna da corrente de conectores: o script encadeia
+                 coluna com coluna seguinte, e sem isso ele ligaria o Dashboard aqui. -->
+            <div class="il-col il-col--solta" style="--col: 3; --span: 4; --ancora: 64px">
+                <div class="il-card">
+                    <div class="il-causa">
+                        <span class="material-symbols-outlined il-causa-lupa">search</span>
+                        <div class="il-causa-texto">
+                            <span class="il-causa-label">Causa raiz</span>
+                            <div class="il-causa-preview">
+                                <span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/ed/temp/dg-estudos/il-2/script.js?v=5"></script>
+</body>
+</html>

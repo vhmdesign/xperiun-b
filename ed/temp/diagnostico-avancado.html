@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<!-- Diagnóstico Avançado de BI.
+     Base: cópia do ed/temp/marketplace.html, com CSS e JS próprios
+     (diagnostico-avancado.css / .js) pra evoluir sem tocar no marketplace.
+     Herdou o scaffolding dele: hero com cap, .mk-pilares e .mk-sec. O conteúdo
+     ainda é o do marketplace e precisa ser reescrito seção por seção. -->
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-07-07">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <title>Diagnóstico Avançado de BI, Xperiun</title>
+    <meta name="description" content="Diagnóstico Avançado de BI da Xperiun.">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=11">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/ed/temp/diagnostico-avancado.css?v=41">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" data-cap-bottom="pointing-down-negative" style="--cap-color-bottom: var(--bb);">
+    <!-- Pêndulo de fundo (logo animado), contido no hero, atrás do conteúdo. -->
+    <div class="bg-pendulo" aria-hidden="true"></div>
+    <div class="hero-wave wave-section">
+        <div class="hero-top-tag" aria-hidden="true">
+            <div class="hero-top-tag-body">
+                <h3 class="hero-top-tag-label">Marketplace</h3>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-title-group">
+                <h1 class="hero-h1">A união perfeita entre profissionais e oportunidades</h1>
+            </div>
+            <div class="hero-bottom">
+                <p class="hero-p">Acreditamos que o verdadeiro potencial dos dados se revela quando talentos incomparáveis os manipulam.</p>
+                <div class="hero-actions">
+                    <a class="btn" data-size="m" data-emphasis="high" href="#">Buscar profissionais</a>
+                    <a class="btn" data-size="m" data-emphasis="subtle" href="#">Saber mais</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ PILARES ═══════════════ -->
+<section class="mk-pilares">
+    <div class="mk-pilares-inner">
+        <article class="mk-card mk-card--1">
+            <div class="mk-card-body">
+                <h3 class="mk-card-title">Diagnóstico técnico do ambiente</h3>
+            </div>
+            <!-- Ilustração 1: arquitetura em fluxo sob uma lupa.
+                 O diagrama é uma esteira de etapas: Fontes de dados, Integrações e
+                 processos (duas), Modelagem, Relatórios e dashboards (dois), ligadas
+                 por curvas que saem do centro de uma peça e chegam no centro da
+                 próxima. A lupa fica PARADA no centro; quem anda é o diagrama atrás
+                 dela, e a varredura para em cada tipo de etapa.
+                 Os ícones são Material Symbols do subset (database, account_tree,
+                 schema, monitoring). Fora do BASE do dl-symbols.cjs o glifo viraria
+                 texto.
+                 As duas camadas são o MESMO diagrama, com máscaras que se encaixam:
+                 fora da lente, desfocada; dentro, nítida. A cópia de fora é clonada
+                 pelo script, pra a marcação das peças existir uma vez só. -->
+            <div class="dg-arq" aria-hidden="true">
+                <div class="dg-arq-camada dg-arq-camada--fundo"></div>
+                <div class="dg-arq-camada dg-arq-camada--nitido">
+                    <div class="dg-arq-canvas">
+                        <!-- conectores: os paths são criados e medidos pelo script -->
+                        <svg class="dg-conn"></svg>
+                        <div class="dg-col" style="--col: 1">
+                            <div class="dg-card">
+                                <div class="dg-card-pontos">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="dg-card-label">Fontes de dados</span>
+                                <div class="dg-card-ico">
+                                    <span class="material-symbols-outlined">database</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dg-col" style="--col: 3">
+                            <div class="dg-card">
+                                <div class="dg-card-pontos">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="dg-card-label">Integrações e processos</span>
+                                <div class="dg-card-ico">
+                                    <span class="material-symbols-outlined">account_tree</span>
+                                </div>
+                            </div>
+                            <div class="dg-card">
+                                <div class="dg-card-pontos">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="dg-card-label">Integrações e processos</span>
+                                <div class="dg-card-ico">
+                                    <span class="material-symbols-outlined">account_tree</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dg-col" style="--col: 5">
+                            <div class="dg-card">
+                                <div class="dg-card-pontos">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="dg-card-label">Modelagem</span>
+                                <div class="dg-card-ico">
+                                    <span class="material-symbols-outlined">schema</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dg-col" style="--col: 7">
+                            <div class="dg-card">
+                                <div class="dg-card-pontos">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="dg-card-label">Relatórios e dashboards</span>
+                                <div class="dg-card-ico">
+                                    <span class="material-symbols-outlined">monitoring</span>
+                                </div>
+                            </div>
+                            <div class="dg-card">
+                                <div class="dg-card-pontos">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="dg-card-label">Relatórios e dashboards</span>
+                                <div class="dg-card-ico">
+                                    <span class="material-symbols-outlined">monitoring</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Lupa: container com o vidro mais o cabo no canto. Os ids dos
+                     gradientes levam prefixo porque id e global no documento, e a
+                     pagina tem outros SVGs. -->
+                <div class="dg-arq-lupa-wrap">
+                    <svg class="dg-arq-lupa" width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="128" cy="128" r="126" stroke="url(#dg-arq-lupa-a)" stroke-width="4"/><circle cx="128" cy="128" r="122" stroke="url(#dg-arq-lupa-b)" stroke-width="4"/><circle cx="128" cy="128" r="119" stroke="url(#dg-arq-lupa-c)" stroke-width="2"/><circle cx="128" cy="128" r="124" fill="url(#dg-arq-lupa-d)"/><defs><linearGradient id="dg-arq-lupa-a" x1="0" y1="256" x2="256" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff"/><stop offset="1" stop-color="#9696a0"/></linearGradient><linearGradient id="dg-arq-lupa-b" x1="252" y1="4" x2="4" y2="252" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff"/><stop offset="1" stop-color="#6464ff"/></linearGradient><linearGradient id="dg-arq-lupa-c" x1="248" y1="8" x2="8" y2="248" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff" stop-opacity=".25"/><stop offset="1" stop-color="#f5f5ff" stop-opacity="0"/></linearGradient><linearGradient id="dg-arq-lupa-d" x1="252" y1="4" x2="4" y2="252" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f5ff" stop-opacity=".15"/><stop offset="1" stop-color="#f5f5ff" stop-opacity="0"/></linearGradient></defs></svg>
+                    <span class="dg-arq-lupa-cabo">
+                        <span class="material-symbols-outlined">search</span>
+                    </span>
+                </div>
+            </div>
+        </article>
+        <article class="mk-card mk-card--2">
+            <div class="mk-card-body">
+                <h3 class="mk-card-title">Problemas e causas identificados</h3>
+            </div>
+            <!-- Ilustração 2: escada de etapas subindo da esquerda pra direita, com a
+                 do meio em falha e a peça da causa raiz encaixada por baixo dela.
+                 Mesma peça da ilustração 1 (o .dg-card é compartilhado), num grid de
+                 6 colunas em vez de 8, guardando a proporção do grid de 8 em 1152:
+                 coluna de 112 e gap de 32, o que dá 864 de largura.
+                 Um degrau de 64 por etapa; o --sobe carrega o degrau e a base é o
+                 rodapé do diagrama. A moldura tem 384 e o script centra o diagrama
+                 pela peça em alerta, que por isso fica sempre no meio do quadro.
+                 O er do alerta é declarado UMA vez, no .dg-card--alerta: o script
+                 deriva dele a etapa a jusante, os quadradinhos e as pontas em erro.
+                 Ícones database, warning e monitoring, todos no subset. -->
+            <div class="dg-falha" aria-hidden="true">
+                <div class="dg-falha-canvas">
+                    <!-- conectores: os paths são criados e medidos pelo script -->
+                    <svg class="dg-conn"></svg>
+                    <div class="dg-col" style="--col: 1">
+                        <div class="dg-card">
+                            <div class="dg-card-pontos">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <span class="dg-card-label">Fonte de dados</span>
+                            <div class="dg-card-ico">
+                                <span class="material-symbols-outlined">database</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dg-col" style="--col: 3; --sobe: 64px">
+                        <div class="dg-card dg-card--alerta">
+                            <div class="dg-card-pontos">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <span class="dg-card-label">Cálculo de métricas</span>
+                            <div class="dg-card-ico">
+                                <span class="material-symbols-outlined">warning</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dg-col" style="--col: 5; --sobe: 128px">
+                        <div class="dg-card">
+                            <div class="dg-card-pontos">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <span class="dg-card-label">Dashboard</span>
+                            <div class="dg-card-ico">
+                                <span class="material-symbols-outlined">monitoring</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Causa raiz, nas colunas 3 a 6. Esse intervalo já está
+                         ocupado na 1a linha, então o auto-placement do grid põe a
+                         peça na linha de baixo, sem precisar de grid-row escrito.
+                         --ancora repete o --sobe da etapa em alerta: é da base dela
+                         que esta peça se posiciona (ver .dg-col--solta no CSS).
+                         --solta tira a coluna da corrente de conectores: o script
+                         encadeia coluna com coluna seguinte, e sem isso ele ligaria
+                         o Dashboard aqui. -->
+                    <div class="dg-col dg-col--solta" style="--col: 3; --span: 4; --ancora: 64px">
+                        <div class="dg-card">
+                            <div class="dg-causa">
+                                <span class="material-symbols-outlined dg-causa-lupa">search</span>
+                                <div class="dg-causa-texto">
+                                    <span class="dg-causa-label">Causa raiz</span>
+                                    <div class="dg-causa-preview">
+                                        <span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="mk-card mk-card--3">
+            <div class="mk-card-orb" aria-hidden="true"></div>
+            <div class="mk-card-body">
+                <h3 class="mk-card-title">Riscos e impactos mapeados</h3>
+            </div>
+            <!-- Ilustração 3: matriz de risco em quadrantes. X = probabilidade,
+                 Y = impacto, os dois em 3 faixas.
+                 Os 9 quadrantes são elementos de verdade num grid 3x3, cada um com
+                 cor sólida. A ordem no DOM é linha por linha de cima pra baixo, e o
+                 CSS pinta por nth-child: quem soma probabilidade + impacto até 3 é
+                 verde, quem soma 4 (a anti-diagonal que passa pelo centro) é
+                 amarelo, quem soma 5 ou mais é vermelho.
+                 Os pontos vêm posicionados por --x/--y em porcentagem, então a
+                 matriz escala com o card sem recalcular nada. Um deles leva o halo
+                 de risco crítico. Ao lado, a legenda com os 4 níveis. -->
+            <div class="dg-risco" aria-hidden="true">
+                <div class="dg-risco-plot">
+                    <span class="dg-risco-eixo-y">Impacto</span>
+                    <div class="dg-risco-faixas dg-risco-faixas--y">
+                        <span>alto</span><span>médio</span><span>baixo</span>
+                    </div>
+                    <div class="dg-risco-grade">
+                        <div class="dg-risco-quadrantes">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="dg-risco-ponto" style="--x: 18%; --y: 74%"></span>
+                        <span class="dg-risco-ponto" style="--x: 34%; --y: 52%"></span>
+                        <span class="dg-risco-ponto" style="--x: 26%; --y: 22%"></span>
+                        <span class="dg-risco-ponto" style="--x: 52%; --y: 66%"></span>
+                        <span class="dg-risco-ponto" style="--x: 60%; --y: 34%"></span>
+                        <span class="dg-risco-ponto dg-risco-ponto--critico" style="--x: 74%; --y: 84%"></span>
+                        <span class="dg-risco-ponto" style="--x: 86%; --y: 58%"></span>
+                        <span class="dg-risco-ponto" style="--x: 68%; --y: 14%"></span>
+                    </div>
+                    <div class="dg-risco-faixas dg-risco-faixas--x">
+                        <span>baixa</span><span>média</span><span>alta</span>
+                    </div>
+                    <span class="dg-risco-eixo-x">Probabilidade</span>
+                </div>
+                <ul class="dg-risco-legenda">
+                    <li><span class="dg-risco-chip dg-risco-chip--critico"></span>crítico</li>
+                    <li><span class="dg-risco-chip dg-risco-chip--alto"></span>alto</li>
+                    <li><span class="dg-risco-chip dg-risco-chip--medio"></span>médio</li>
+                    <li><span class="dg-risco-chip dg-risco-chip--baixo"></span>baixo</li>
+                </ul>
+            </div>
+        </article>
+        <article class="mk-card mk-card--4">
+            <div class="mk-card-body">
+                <h3 class="mk-card-title">Recomendações de melhoria</h3>
+            </div>
+            <!-- Ilustração 4: recomendações mais antes/depois, em duas colunas.
+                 Com a inversão dos tamanhos este card virou span 6, e as duas áreas
+                 da spec (lista à esquerda, comparação à direita) finalmente cabem
+                 lado a lado. Enquanto era span 4 elas ficavam empilhadas, porque os
+                 dois quadros de arquitetura dariam ~110px cada.
+                 O "antes" espalha os nós sem centro; o "depois" tem o banco no meio
+                 ligado a todos, que é a mesma leitura de fragmentado -> organizado. -->
+            <div class="dg-rec" aria-hidden="true">
+                <div class="dg-rec-cols">
+                <ul class="dg-rec-lista">
+                    <li class="dg-rec-item">
+                        <span class="material-symbols-outlined dg-rec-ico">schema</span>
+                        <span class="dg-rec-texto">
+                            <span class="dg-rec-titulo">Padronizar fontes de dados</span>
+                            <span class="dg-rec-linha"></span>
+                        </span>
+                        <span class="material-symbols-outlined dg-rec-check">check</span>
+                    </li>
+                    <li class="dg-rec-item">
+                        <span class="material-symbols-outlined dg-rec-ico">api</span>
+                        <span class="dg-rec-texto">
+                            <span class="dg-rec-titulo">Automatizar integrações e cargas</span>
+                            <span class="dg-rec-linha"></span>
+                        </span>
+                        <span class="material-symbols-outlined dg-rec-check">check</span>
+                    </li>
+                    <li class="dg-rec-item">
+                        <span class="material-symbols-outlined dg-rec-ico">shield</span>
+                        <span class="dg-rec-texto">
+                            <span class="dg-rec-titulo">Fortalecer governança e qualidade</span>
+                            <span class="dg-rec-linha"></span>
+                        </span>
+                        <span class="material-symbols-outlined dg-rec-check">check</span>
+                    </li>
+                </ul>
+                <div class="dg-rec-evo">
+                    <div class="dg-rec-quadro">
+                        <span class="dg-rec-quadro-label">Antes</span>
+                        <div class="dg-rec-malha dg-rec-malha--antes">
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined dg-rec-seta">arrow_forward</span>
+                    <div class="dg-rec-quadro">
+                        <span class="dg-rec-quadro-label">Depois</span>
+                        <div class="dg-rec-malha dg-rec-malha--depois">
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-no"></span>
+                            <span class="dg-rec-hub">
+                                <span class="material-symbols-outlined">database</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                </div><!-- /.dg-rec-cols -->
+                <div class="dg-rec-ganho">
+                    <span class="material-symbols-outlined">trending_up</span>
+                    Mais confiabilidade, performance e escalabilidade.
+                </div>
+            </div>
+        </article>
+        <article class="mk-card mk-card--5">
+            <div class="mk-card-body">
+                <h3 class="mk-card-title">Plano de ação priorizado</h3>
+            </div>
+            <!-- Ilustração 5: roadmap vertical. Trilho à esquerda com 1, 2, 3,
+                 cada número alinhado a um card de ação com a etiqueta de prioridade.
+                 As etiquetas são .tag-status do DS, com o semantic carregando a
+                 hierarquia: error pra Alta, notification pra Média, neutral pra
+                 Baixa. O trilho é um ::before da lista, atrás dos números, então
+                 acompanha a altura sem medida fixa. -->
+            <div class="dg-plano" aria-hidden="true">
+                <ol class="dg-plano-lista">
+                <li class="dg-plano-etapa">
+                    <span class="dg-plano-num">1</span>
+                    <div class="dg-plano-card">
+                        <span class="dg-plano-acao">Corrigir problemas críticos de qualidade e integração</span>
+                        <span class="tag-status" data-semantic="error" data-size="s">Alta</span>
+                    </div>
+                </li>
+                <li class="dg-plano-etapa">
+                    <span class="dg-plano-num">2</span>
+                    <div class="dg-plano-card">
+                        <span class="dg-plano-acao">Reestruturar modelagem e padrões de dados</span>
+                        <span class="tag-status" data-semantic="notification" data-size="s">Média</span>
+                    </div>
+                </li>
+                <li class="dg-plano-etapa">
+                    <span class="dg-plano-num">3</span>
+                    <div class="dg-plano-card">
+                        <span class="dg-plano-acao">Evoluir governança e monitoramento</span>
+                        <span class="tag-status" data-semantic="neutral" data-size="s">Baixa</span>
+                    </div>
+                </li>
+                </ol>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- ═══════════════ OPORTUNIDADES ═══════════════ -->
+<section class="mk-sec mk-oportunidades">
+    <div class="mk-sec-inner">
+        <span class="sec-eyebrow">Oportunidades</span>
+        <h2 class="sec-title">Mais que uma plataforma de empregos, um ecossistema de oportunidades!</h2>
+        <p class="sec-lede">O Marketplace Xperiun é mais do que apenas uma plataforma de busca por empregos. É um ecossistema inovador que conecta empresas que buscam tomar decisões mais inteligentes e estratégicas com especialistas em dados altamente qualificados e engajados. Através do Marketplace Xperiun, você encontra:</p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INCLUDES PADRÃO (não remover, mantêm consistência do site)
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Menu de navegação (carregado dinamicamente via JS) -->
+<div data-menu></div>
+<script src="/ed/site-dependencias/site-menu/menu-include.js"></script>
+
+<!-- Footer com copyright legal (carregado dinamicamente via JS). -->
+<div data-footer></div>
+<script src="/ed/site-dependencias/site-footer/footer-include.js"></script>
+
+<!-- Reveal/animação de entrada do hero (mesmo setup das páginas de área). -->
+<script src="/ed/formacoes/script.js?v=10"></script>
+
+<!-- Smooth scroll global (links âncora com behavior: smooth) -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Cometa de partículas nos conectores do card Ecossistema -->
+<script src="/ed/temp/diagnostico-avancado.js?v=5" defer></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

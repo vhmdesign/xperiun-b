@@ -1,0 +1,14 @@
+/* Ilustração 3: Riscos e impactos mapeados
+   Card --3, span 4 de 10, 544px no tier base.
+
+   Vazio de propósito. Regras do desenho vão aqui.
+
+   Lembretes do projeto, pra não precisar refazer depois:
+   · traço mínimo 2px, nunca 1px, e borda por box-shadow inset e não por border;
+   · cor sempre por token do root.css, nunca hex solto;
+   · transition e animation só com keyword (ease, ease-out), sem cubic-bezier;
+   · nenhuma animação com filter blur abaixo de 864px;
+   · ícone só do subset do Material Symbols (conferir o BASE do dl-symbols.cjs) e
+     com font-variation-settings "wght" 200;
+   · posição que precisa acompanhar largura vai em porcentagem, não em px medido.
+*/

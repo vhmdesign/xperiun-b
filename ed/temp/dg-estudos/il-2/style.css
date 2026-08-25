@@ -1,0 +1,252 @@
+/* Ilustração 2: Problemas e causas identificados
+
+   Escada de peças subindo da esquerda pra direita, um degrau por peça.
+
+   Grid de 6 colunas, e não de 8 como na ilustração 1, mas guardando a MESMA
+   proporção do grid Desktop do DS em 1152: coluna de 112 e gap de 32, que são os
+   valores de qualquer tier do sistema. Daí a largura, que é a soma e não um número
+   escolhido:
+     6 x 112 + 5 x 32 + 16 + 16 de padding = 672 + 160 + 32 = 864.
+
+   A peça é a mesma da ilustração 1. Aqui ela está repetida porque cada estudo é um
+   ambiente fechado, com o seu próprio style.css (ver o _estudo.css). Na página, as
+   duas ilustrações dividem um componente só.
+*/
+
+/* Moldura de 384px. A escada e maior que ela, e o que decide o enquadramento e a
+   etapa em alerta: o script centra o diagrama pela peca dela, nos dois eixos, entao
+   o alerta cai sempre no meio da moldura, qualquer que seja o degrau ou a altura das
+   pecas. O resto da escada entra e sai do quadro em volta dele.
+   Medido, e nao somado a mao no CSS: a conta dependeria da altura da peca. */
+.il-frame {
+    position: relative;
+    width: 864px;
+    height: 384px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+/* enquanto o script nao mediu, o diagrama nao tem transform e ficaria com o canto
+   no centro da moldura */
+.il-frame:not(.is-pronto) .il-canvas { visibility: hidden; }
+
+.il-canvas {
+    /* Ancorado no centro da moldura: com left/top em 50%, o transform que o script
+       aplica e so a coordenada negativa do centro da peca em alerta, sem carregar o
+       tamanho da moldura na conta.
+       Tambem e o box em que o script mede os conectores, e o containing block do
+       .il-conn, que se ancora nele com inset: 0. */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 864px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    column-gap: 32px;
+    /* row-gap zerado de propósito: a causa raiz cai numa 2a linha, mas não se
+       posiciona por ela, e sim pela etapa em alerta (ver .il-col--solta). Com um
+       row-gap qualquer, ele entraria na conta daquele deslocamento. */
+    row-gap: 0;
+    /* Base comum embaixo: é dela que cada peça sobe, e é o que dá chão à escada em
+       vez de as peças flutuarem soltas. Com o alinhamento no fim, a subida vira
+       margem INFERIOR positiva, e não margem negativa nem translate: a caixa do
+       canvas cresce junto e passa a conter a escada inteira. Com margem negativa ou
+       com transform, a peça mais alta vazaria pra fora do canvas e a altura da
+       ilustração ficaria menor que o desenho. */
+    align-items: end;
+}
+
+/* cada peça ocupa 2 colunas; --col e --sobe vêm do style inline */
+.il-col {
+    /* relative NAO e detalhe: o SVG dos conectores e posicionado, e posicionado
+       pinta por cima de nao posicionado, independente da ordem no DOM. Sem isto os
+       tracos passariam POR CIMA das pecas. Com as colunas posicionadas tambem, a
+       ordem de pintura volta a ser a do DOM: SVG primeiro, pecas depois. */
+    position: relative;
+    /* --span é pra causa raiz, que ocupa 3 colunas; as etapas ficam no padrão de 2
+       sem declarar nada. */
+    grid-column: var(--col) / span var(--span, 2);
+    margin-bottom: var(--sobe, 0);
+}
+
+/* ── a peça ────────────────────────────────────────────────────
+   192 de teto fecha exato com o conteúdo: 16 de padding da peça, 32 do container do
+   ícone, 96 do ícone, e os mesmos 32 e 16 do outro lado. Ou seja, o ícone de 96
+   encaixa sem folga nem sobra.
+   O par de colunas tem 256, então sobram 64, 32 de cada lado com a peça centrada. */
+.il-card {
+    max-width: 192px;
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Peça centrada no par de colunas: 256 do par menos 192 dela dá 32 de folga de
+   cada lado.
+   margin-inline: auto, e não justify-content: center na coluna: a peça é um bloco
+   com max-width, então a margem automática a centra mantendo os 192. Virando a
+   coluna em flex, a largura da peça passaria a ser a do conteúdo, e as de rótulo
+   curto (Dashboard) encolheriam abaixo dos 192, cada uma com uma largura.
+   A regra fica na coluna, e não na peça, pra a peça seguir sem saber onde está. */
+.il-col .il-card { margin-inline: auto; }
+
+/* 3 quadrados de 8px, sem raio */
+.il-card-pontos { display: flex; gap: 8px; }
+.il-card-pontos span { width: 8px; height: 8px; background: var(--sc500); }
+/* Onde o defeito aparece na fileira: no 2o quadrado da etapa em alerta e no 1o da
+   etapa seguinte. Lido como o problema surgindo no meio de uma etapa e chegando
+   logo na abertura da outra.
+   O .il-card--jusante é posto pelo script, a partir de quem tem o
+   .il-card--alerta: a posição do alerta é o único lugar que descreve o problema, e
+   mover o modificador de peça leva junto os quadradinhos e as pontas dos traços. */
+.il-card--alerta  .il-card-pontos span:nth-child(2),
+.il-card--jusante .il-card-pontos span:nth-child(1) { background: var(--er500); }
+
+/* font: var(--h4) e não font-size cru. O --h4 é 400 1.5rem/1.25: o tamanho certo,
+   mas com a métrica de LABEL (line-height 1.25) em vez da de parágrafo. Com
+   font-size solto num <span>, o line-height viria do body (1.5 do --p) e a caixa da
+   linha cresceria 6px, além de deixar família e peso implícitos.
+   A escala de label do DS para em --label-l (1.125rem), então não existe token de
+   label em 1.5rem: quem carrega esse valor é o --h4. Está aqui pela métrica, não
+   como título, e o elemento segue sendo <span>. */
+.il-card-label {
+    font: var(--h4);
+    color: var(--bw);
+    text-align: center;
+}
+
+/* mesmo fundo e mesmo raio da peça, com padding próprio de 32 */
+.il-card-ico {
+    padding: 32px;
+    border-radius: 16px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.il-card-ico .material-symbols-outlined {
+    font-size: 96px;
+    color: var(--pc200);
+    /* opsz 24 e não 48: o subset é gerado com opsz@24 (ver dl-symbols.cjs), então é
+       o único valor desse eixo disponível. Pedir outro cai no fallback. */
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+}
+/* A peça do meio é a que carrega o problema: a caixa do ícone troca de família de
+   cor e o triângulo vai em er500.
+   O gradiente é o MESMO desenho da caixa normal (132deg, 15% pra 5%), só mudando a
+   família de bw pra er. Espelhar os degraus em vez de escolher outros mantém a
+   caixa com o mesmo peso visual das vizinhas: o que muda é a cor, não a densidade.
+   O modificador fica na PEÇA, e não no ícone, porque é a etapa que está com
+   defeito, não o glifo: se depois o alerta pedir borda ou rótulo em er, é aqui que
+   entra, sem mexer na marcação.
+   Segue em FILL 0, como os outros: a linguagem das ilustrações é traço fino, e um
+   triângulo cheio seria o único sólido do conjunto. Encher é trocar o FILL desta
+   regra por 1. */
+.il-card--alerta .il-card-ico {
+    background: linear-gradient(132deg, var(--er500-15), var(--er500-5));
+}
+.il-card--alerta .il-card-ico .material-symbols-outlined { color: var(--er500); }
+
+/* A causa raiz está fora da corrente de conectores (quem lê essa classe é o
+   script.js) e também fora do chão comum: ela não se alinha à base como as etapas,
+   se pendura na etapa em alerta.
+
+   A conta: a peça cai na 2a linha do grid, que começa exatamente na base (row-gap
+   é zero). A base da etapa em alerta está --ancora acima dali. Pra o topo da causa
+   parar a --folga abaixo dessa base, ela sobe (ancora - folga), que é a margem
+   superior NEGATIVA abaixo.
+   Com --folga negativa a peça passa DA base pra cima: em -32 ela entra 32px na
+   etapa em alerta, encaixando por baixo do canto dela em vez de ficar solta.
+
+   --ancora repete o --sobe da etapa em alerta, e os dois ficam no style inline do
+   index.html, um perto do outro, porque o CSS não tem como ler a variável de um
+   irmão. Mudando o degrau do alerta, mude a âncora junto. */
+.il-col--solta {
+    --folga: -32px;
+    /* align-self: start NÃO é detalhe, é o que faz a conta acima valer. O canvas
+       alinha em end, que é o certo pras etapas (todas nascem do chão). Herdando
+       end, esta peça é alinhada pela BASE da caixa de margem dela, e com a margem
+       superior negativa essa caixa tem altura negativa: o navegador acaba pondo o
+       cartão encostado no chão, não a --folga da base do alerta. Alinhando pelo
+       início, a margem negativa passa a contar a partir do topo da 2a linha, que é
+       exatamente a base do canvas, e o deslocamento vira o que a conta diz. */
+    align-self: start;
+    margin-top: calc(var(--folga) - var(--ancora));
+}
+/* preenche as 4 colunas, em vez de ficar nos 192 das etapas: aqui a largura é o
+   conteúdo da peça, e não uma peça de fluxo a mais */
+.il-col--solta .il-card { max-width: none; }
+/* Deslocada 32 pra direita: com isso a borda esquerda da peça cai em 336, que é
+   exatamente onde começa a peça da etapa em alerta (par 3-4, os 192 centrados vão de
+   336 a 528), e a direita vai até 848, o fim da coluna 6. Sem o deslocamento ela
+   começaria em 304, a borda da coluna 3, 32 antes da peça que ela investiga.
+   margin-left e não translate: a largura segue automática e o deslocamento sai da
+   direita em vez de estourar o diagrama, que acaba em 848. Com margem esquerda fixa
+   e largura automática, o auto da direita resolve em zero.
+   O seletor precisa de três níveis pra empatar com a regra de centragem, que é
+   margin-inline: auto e sobrescreveria um seletor mais curto. Vindo depois e com a
+   mesma especificidade, este vence. */
+.il-canvas .il-col--solta .il-card { margin-left: 32px; }
+
+/* ── a peça da causa raiz ────────────────────────────────────────
+   O mesmo .il-card das etapas, inclusive nos 192 de largura: o que muda é só o
+   conteúdo, que aqui é uma linha (lupa à esquerda, texto à direita) em vez da
+   pilha de quadradinhos, rótulo e caixa de ícone.
+   A lupa é o único ícone da ilustração fora de uma .il-card-ico, então o
+   font-variation-settings dela é declarado aqui: a regra dos outros é escopada
+   naquela caixa. */
+.il-causa { display: flex; align-items: center; gap: 16px; }
+.il-causa-lupa {
+    flex: 0 0 auto;
+    font-size: 48px;
+    color: var(--bw);
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+}
+/* min-width: 0 pra o preview poder encolher: item de flex tem min-width auto, que
+   é o tamanho do conteúdo, e sem isto ele empurraria a lupa. */
+.il-causa-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.il-causa-label { font: var(--label); color: var(--er300); }
+/* representação de texto: barras de 4px, sem raio, na largura toda da coluna */
+.il-causa-preview { display: flex; flex-direction: column; gap: 8px; }
+.il-causa-preview span { height: 4px; width: 100%; background: var(--bw-50); }
+
+/* ── conectores ────────────────────────────────────────────────
+   Um <path> por ligação, com a geometria medida do layout real pelo script.js.
+   Medido e não escrito em CSS porque a posição de cada ponta depende da altura da
+   peça e do degrau da coluna: em CSS isso viraria número somado à mão, que
+   desalinha em silêncio a cada ajuste.
+
+   As curvas encostam na borda das peças, não passam por baixo, o que importa
+   porque o fundo delas é translúcido e deixaria o traço aparecer através. */
+.il-conn { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.il-conn path { stroke: var(--bw-15); stroke-width: 2; fill: none; }
+/* pontas do traço: retângulo de 4 por 16 montado na borda da peça (medidas e
+   posição vêm do script). Preenchimento, sem traço, senão o stroke engrossaria os
+   4px. */
+.il-conn rect { fill: var(--sc300); stroke: none; }
+/* As duas pontas do trecho que sai da peça em alerta vão em er500: a saída dela e
+   a entrada da peça seguinte. Quem marca é o script, lendo onde está o
+   .il-card--alerta, então mover o alerta de etapa move a cor junto.
+   O traço em si continua bw-15: o que muda de cor é onde o caminho encosta nas
+   peças, não a linha inteira. */
+.il-conn rect.is-erro { fill: var(--er500); }
+
+/* ── notas ───────────────────────────────────────────────────────
+   1. Ícones: database, warning e monitoring, os três no subset do dl-symbols.cjs.
+      Fora do BASE o glifo viraria texto.
+
+   2. Sem padding vertical no canvas, seguindo o resto dos estudos: a peça mais
+      alta encosta no topo da página e a mais baixa no chão do canvas. Se atrapalhar
+      pra inspecionar, uma folga aqui não muda o desenho.
+*/
