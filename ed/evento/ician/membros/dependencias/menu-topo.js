@@ -1,11 +1,11 @@
-/* Menu do topo compartilhado: injeta /ed/evento/ICIAN/membros/dependencias/menu-topo.html no
+/* Menu do topo compartilhado: injeta /ed/evento/ician/membros/dependencias/menu-topo.html no
    placeholder <div data-menu-topo> e liga o dropdown de perfil.
    (fetch precisa de servidor http/https — não funciona em file://) */
 (function () {
     var slot = document.querySelector('[data-menu-topo]');
     if (!slot) return;
 
-    fetch('/ed/evento/ICIAN/membros/dependencias/menu-topo.html')
+    fetch('/ed/evento/ician/membros/dependencias/menu-topo.html')
         .then(function (r) { return r.text(); })
         .then(function (html) {
             slot.innerHTML = html;
@@ -44,7 +44,7 @@
                     if (window.XPCert && window.XPCert.abrirSeCompleto && window.XPCert.abrirSeCompleto()) return;
                     var cert = document.getElementById('aula-modal-certificado');
                     if (cert) cert.classList.add('is-open');           /* senão → popup de progresso */
-                    else location.href = '/ed/evento/ICIAN/membros/aulas/';  /* senão → vai pras aulas */
+                    else location.href = '/ed/evento/ician/membros/aulas/';  /* senão → vai pras aulas */
                 }
                 return;
             }

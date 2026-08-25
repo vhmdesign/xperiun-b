@@ -1,0 +1,1417 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Bê-a-Bá da IA (3ª edição) — layout portado da página antiga (Elementor)
+   pro grid e os tokens do design system. Nada de cor fora do root.css.
+
+   GRID (obrigatório, ver CLAUDE.md):
+     Wide    → max-width 1440, repeat(10,1fr), gap 32  (hero, professor)
+     Desktop → max-width 1152, repeat(8,1fr),  gap 32  (demais seções)
+     Quedas: ≤1439 → 8 cols · ≤864 → 6 cols/gap 24 · ≤576 → 4 cols/gap 16
+     Blocos viram 1 / -1 em ≤864 e ≤576.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+body {
+    background: var(--bb);
+    color: var(--bw);
+    margin: 0;
+}
+
+img { max-width: 100%; }
+
+h1 {
+    font: var(--h2);
+}
+
+/* ── Padrões de seção ──────────────────────────────────────────────────── */
+/* Título Gradiente Medium Emphasis: h2 horizontal (Syne) com o gradiente
+   --text-gradient-medium (pc100 → pc300) recortado no texto. Títulos das
+   seções escuras (o h1 do hero fica sólido em bw). */
+.sec-title {
+    font: var(--h2-horizontal);
+    margin: 0;
+    background-image: var(--text-gradient-medium);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.sec-lede { font: var(--p-l); color: var(--bw-75); margin: 0; }
+
+/* Títulos sobre fundo claro: mesmo recorte de gradiente no texto do .sec-title,
+   mas na faixa escura da escala (pc600 → pc800), que é o que segura contraste
+   em cima do --ln100. */
+.sec-title-light {
+    font: var(--h2-horizontal);
+    margin: 0;
+    background-image: linear-gradient(90deg, var(--pc600), var(--pc800));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.sec-lede-light { font: var(--p-l); color: var(--bb-75); margin: 0; }
+/* Titulo + lede dos blocos claros como um par. Vira um item so do grid, senao
+   o row-gap da secao (48px) abriria entre os dois como se fossem blocos
+   separados. A largura do lede e travada em 640px: linha de leitura, nao
+   largura de container. */
+.sec-header-light {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+/* balance distribui as linhas por igual: sem balance as duas frases centradas
+   deixavam uma palavra sozinha na segunda linha. */
+.sec-header-light .sec-lede-light { max-width: 640px; text-wrap: balance; }
+
+/* ══ Faixa de oferta AI Champion ═══════════════════════════════════════════
+   Portada da /ed/evento/ician/membros/ (cert-parabens.css), onde só aparecia
+   com ?oferta=1 e era montada por JS. Aqui é estática, sem parâmetro e sem
+   script. Os quadrados animados de fundo (.cert-topbar-squares) foram
+   removidos a pedido — eram justamente a parte que exigia JS pra popular.
+   ══════════════════════════════════════════════════════════════════════════ */
+/* sticky em vez de fixed: gruda no topo ao rolar igual, mas continua ocupando
+   o lugar dela no fluxo — com `fixed` a faixa sairia do fluxo e o hero subiria
+   64px por baixo dela, exigindo um padding de compensação no body. */
+.cert-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(90deg, var(--sc300), var(--sc500));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Some quando a oferta entra na tela (topbar-esmaece.js): os dois botões da
+   faixa levam pra lá, então dali em diante ela só atrapalha. pointer-events
+   junto, senão continuaria clicável invisível. */
+.cert-topbar { transition: opacity 0.8s ease; }
+.cert-topbar.is-esmaecida { opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+    .cert-topbar { transition: none; }
+}
+
+/* cantos côncavos (32px) pendurados abaixo da faixa, acompanhando as pontas
+   do gradiente: esquerdo em sc300, direito em sc500 */
+.cert-topbar::before,
+.cert-topbar::after {
+    content: '';
+    position: absolute;
+    bottom: -32px;
+    width: 32px; height: 32px;
+    pointer-events: none;
+}
+.cert-topbar::before {
+    left: 2px;          /* encosta na guia vertical, sem cobrir */
+    background: var(--sc300);
+    -webkit-mask: radial-gradient(circle 32px at 100% 100%, transparent 31.5px, #000 32px);
+            mask: radial-gradient(circle 32px at 100% 100%, transparent 31.5px, #000 32px);
+}
+.cert-topbar::after {
+    right: 2px;         /* idem, do outro lado */
+    background: var(--sc500);
+    -webkit-mask: radial-gradient(circle 32px at 0% 100%, transparent 31.5px, #000 32px);
+            mask: radial-gradient(circle 32px at 0% 100%, transparent 31.5px, #000 32px);
+}
+/* Conteúdo: lote (esquerda) | barra (centro) | botão (direita).
+   Container no padrão do DS: max-width 1440, centrado, padding 0 16px. Acima de
+   1440 o conteúdo para de encostar na borda da tela e passa a acompanhar a
+   mesma caixa das seções (as guias verticais NÃO: elas seguem na borda). */
+.cert-topbar-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    color: var(--bw);
+}
+/* Duas guias verticais de 2px descendo do topo da faixa até o fim da tela, uma
+   em cada BORDA DA TELA (por isso ficam num elemento próprio, esticado na faixa
+   inteira, e não no .cert-topbar-content, que agora para em 1440px). Cada uma
+   pega a cor da ponta correspondente do gradiente.
+
+   Altura: `100vh` como fallback e `100dvh` mandando no browser moderno. No
+   mobile o 100vh clássico usa a viewport GRANDE (sem a barra do navegador), o
+   que faria a linha passar do fim da tela; `dvh` acompanha a viewport que está
+   valendo naquele instante. `pointer-events: none` porque a faixa é um link e
+   as guias avançam por cima da página inteira. */
+.cert-topbar-guias {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.cert-topbar-guias::before,
+.cert-topbar-guias::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100vh;
+    height: 100dvh;
+}
+.cert-topbar-guias::before { left: 0; background: var(--sc300); }
+.cert-topbar-guias::after { right: 0; background: var(--sc500); }
+
+/* Barra de progresso do lote (ocupa o lugar da antiga frase). Escura sobre o
+   verde da faixa; o preenchimento é controlado pelo lote-progresso.js. */
+/* "Lote 01" na coluna da esquerda */
+.cert-topbar-lote {
+    grid-column: 1;
+    justify-self: start;
+    font: var(--label-l);
+    font-weight: 700;   /* depois do shorthand, senão o token reimpõe 400 */
+    color: var(--bb);
+    white-space: nowrap;
+}
+/* trilho + "xx% das vagas preenchidas", juntos e centralizados */
+.cert-topbar-barra {
+    grid-column: 2;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.cert-topbar-barra-pct {
+    font: var(--label-s);
+    color: var(--bb);
+    white-space: nowrap;
+}
+.cert-topbar-barra-trilho {
+    width: min(240px, 28vw);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bb-25);
+}
+.cert-topbar-barra-fill {
+    display: block;
+    width: 55%;                 /* piso, caso o JS não rode */
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--pc800), var(--pc500));
+    transition: width 0.6s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+    .cert-topbar-barra-fill { transition: none; }
+}
+.cert-topbar-offer { grid-column: 3; justify-self: end; display: flex; align-items: center; min-width: 96px; }
+
+/* Botão da faixa: componente padrão do DS (Medium Emphasis Core, tamanho S). O
+   único desvio é o radius, que precisa de (0,3,0) pra vencer o .btn[data-size]
+   da página, que fixa 16px em todos os botões. A largura mínima fica no
+   .cert-topbar-offer. Saiu daqui o visual do .vit-cta que a ICIAN usava
+   (gradiente pc/pp/er com wave animado, ring-25 e véu no hover). */
+.btn.cert-topbar-btn[data-size] { border-radius: 12px; }
+
+/* em tela menor o trilho encolhe, mas nada some: rótulo, barra e porcentagem
+   continuam visíveis em qualquer largura */
+@media (max-width: 864px) {
+    .cert-topbar-barra { gap: 8px; }
+    .cert-topbar-barra-trilho { width: min(96px, 18vw); }
+    /* a frase pode quebrar em duas linhas em vez de sumir ou estourar */
+    .cert-topbar-barra-pct { white-space: normal; }
+}
+/* telas estreitas: tudo continua visível, só aperta (padding, tipografia e
+   trilho). Testado até 320px, que é o menor celular em uso. */
+@media (max-width: 576px) {
+    .cert-topbar-content { padding: 0 8px; gap: 8px; }
+    .cert-topbar-lote { font: var(--label); }
+    .cert-topbar-barra-trilho { width: min(72px, 16vw); }
+    .cert-topbar-barra-pct { font: var(--label-xs); }
+}
+
+
+/* ══ Modo "aluno Xperiun" (?oferta=aluno-xperiun) ═══════════════════
+   Uma oferta paralela, sem lote e sem contagem: a faixa vira vermelha, o lote
+   vira "Lote 00" e a barra de progresso dá lugar a um aviso com prazo. Quem
+   liga a chave é o lote-progresso.js, que carimba `data-oferta` no <html> e
+   não roda o relógio nesse modo.
+
+   Os dois avisos já vivem no HTML e ficam ocultos: assim não há salto de
+   layout esperando o JS, e sem JS a página cai no modo normal. */
+.cert-topbar-aviso,
+.oferta-aviso { display: none; }
+
+[data-oferta="aluno-xperiun"] .cert-topbar-barra,
+[data-oferta="aluno-xperiun"] .oferta-barra { display: none; }
+
+/* faixa: verde -> vermelho, nas três peças que usam as pontas do gradiente
+   (fundo, cantos côncavos e guias verticais), senão sobra verde nas quinas */
+[data-oferta="aluno-xperiun"] .cert-topbar { background: linear-gradient(90deg, var(--er500), var(--er700)); }
+[data-oferta="aluno-xperiun"] .cert-topbar::before,
+[data-oferta="aluno-xperiun"] .cert-topbar-guias::before { background: var(--er500); }
+[data-oferta="aluno-xperiun"] .cert-topbar::after,
+[data-oferta="aluno-xperiun"] .cert-topbar-guias::after { background: var(--er700); }
+[data-oferta="aluno-xperiun"] .cert-topbar-lote { color: var(--bw); }
+/* O bloco segue centrado na faixa, como a barra que ele substitui. O
+   text-align: left vale para o texto DENTRO dele, que é o que aparece quando a
+   frase quebra em duas linhas nas telas estreitas. */
+[data-oferta="aluno-xperiun"] .cert-topbar-aviso {
+    display: block;
+    grid-column: 2;
+    justify-self: center;
+    font: var(--label-s);
+    color: var(--bw);
+    text-align: left;
+}
+
+/* card de oferta: preço na rampa de erro e o aviso no lugar da barra */
+[data-oferta="aluno-xperiun"] .oferta-preco { background-image: linear-gradient(90deg, var(--er100), var(--er300)); }
+[data-oferta="aluno-xperiun"] .oferta-lote { color: var(--er300); }
+[data-oferta="aluno-xperiun"] .oferta-aviso {
+    display: block;
+    margin: 0;
+    font: var(--label-s);
+    color: var(--er300);
+    text-align: center;
+}
+@media (max-width: 576px) {
+    [data-oferta="aluno-xperiun"] .cert-topbar-aviso { font: var(--label-xs); }
+}
+
+/* ══ Hero ═════════════════════════════════════════════════════════════════ */
+.hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 64px 0 128px;
+}
+/* Glow do hero: geometria do `be8bc8b::after` da referência, com as paradas do
+   gradiente trocadas por tokens do DS (a opacidade saiu das cores e virou
+   opacity da camada). */
+/* Sem filter: blur — o esfumado vem só do gradiente. Duas consequências:
+   1. a última parada vai a transparent antes da borda, o que dissolve o disco
+      (logo não precisa mais de border-radius: 50%);
+   2. a caixa cresceu de 1120 pra 1440 mantendo o MESMO centro (128px acima do
+      topo do hero), porque o blur de 80px sangrava pra fora da caixa e essa
+      área agora precisa caber dentro dela. O núcleo colorido segue na mesma
+      ordem de tamanho; o que ficou maior é a cauda do esfumado. */
+.hero-glow {
+    position: absolute;
+    top: -848px;
+    left: calc(50% - 720px);
+    width: 1440px;
+    height: 1440px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, var(--pc100) 0%, var(--pc200) 10%, var(--pc300) 25%, var(--pc500) 35%, var(--pc700) 45%, transparent 70%);
+    opacity: 0.5;
+}
+/* ── Textura ASCII animada sobre o glow ───────────────────────────────────
+   Duas camadas de gradiente recortadas por máscaras de caracteres: dois tiles
+   SVG de 128px com <text>, MESMAS posições e caracteres diferentes. Alternando
+   a opacidade das duas, o campo parece trocar de caractere no lugar.
+
+   Tipografia: pilha mono NATIVA do sistema (ui-monospace → Cascadia/Segoe UI
+   Mono no Windows, Menlo no macOS, DejaVu no Linux). Sem raster, sem webfont,
+   sem JS: ~1,6KB de vetor por quadro, cacheável, glifos desenhados pelo SO.
+
+   Custo: a animação é só de `opacity`, que roda na composição (GPU) e não
+   repinta nada. SVG usado como imagem de máscara não anima por dentro (o
+   browser ignora animação dentro dele), daí a alternância ser feita aqui. */
+.hero-glow::before,
+.hero-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%,
+        var(--bw) 0%,
+        var(--pc100) 28%,
+        var(--pc300) 48%,
+        transparent 68%);
+    -webkit-mask-size: 128px 128px;
+            mask-size: 128px 128px;
+    -webkit-mask-repeat: repeat;
+            mask-repeat: repeat;
+    will-change: opacity;
+}
+.hero-glow::before {
+    -webkit-mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-a.svg");
+            mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-a.svg");
+    animation: ascii-troca 6s ease-in-out infinite;
+}
+.hero-glow::after {
+    -webkit-mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-b.svg");
+            mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-b.svg");
+    /* delay de meio ciclo: enquanto um quadro sobe, o outro desce — crossfade
+       contínuo, sem os dois caírem no vale juntos. */
+    animation: ascii-troca 6s ease-in-out infinite -3s;
+}
+/* Respiração lenta e suave (ease-in-out, sem degraus): 0.15 é o teto de cada
+   camada, então a textura fica no limite do perceptível. */
+@keyframes ascii-troca {
+    0%, 100% { opacity: 0.15; }
+    50%      { opacity: 0.03; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hero-glow::before,
+    .hero-glow::after { animation: none; }
+    .hero-glow::before { opacity: 0.15; }
+    .hero-glow::after { opacity: 0.03; }
+}
+.hero-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 48px;
+    align-items: center;
+}
+.hero-logo {
+    grid-column: 1 / -1;
+    justify-self: center;
+    /* arquivo em 560px (2x) pra ficar nítido em tela retina, exibido em 280 */
+    width: 280px;
+    height: auto;
+    display: block;
+}
+.hero-copy {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+.hero-title {
+    font: var(--h1-horizontal);
+    margin: 0;
+    color: var(--bw);
+}
+.hero-lede { font: var(--p-l); color: var(--bw-75); margin: 0; }
+/* palavra/trecho em destaque na copy do hero */
+.hero-lede .destaque,
+.hero-bullets .destaque { color: var(--sc300); }
+.hero-kicker { font: var(--h6); color: var(--pc200); margin: 0; }
+.hero-bullets {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+/* Marcador da referência: traço de 24x4 com gradiente e blur(2px), no lugar de
+   ícone (o original usava #FF9664 → #FFFFC8 → #64FFFF; aqui em tokens pc). */
+/* display: block (não flex): com flex, o <span class="destaque"> vira item e o
+   browser come o espaço entre ele e o texto ("Sábado,29 de agosto"). O
+   marcador é absoluto, então não precisa de flex pra alinhar. */
+.hero-bullets li {
+    position: relative;
+    display: block;
+    padding-left: 32px;
+    font: var(--label);
+    color: var(--bw-75);
+}
+.hero-bullets li::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 0;
+    width: 24px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pc100), var(--pc300), var(--pc500));
+    filter: blur(2px);
+}
+
+/* Mãos como camada absoluta ancorada no TOPO do hero, simétricas ao centro —
+   exatamente como na referência (`left: calc(50% - 576px + 128px)` na humana e
+   `left: calc(50% + 128px)` na de robô, ambas `top: 0`, 576px, sem eventos de
+   ponteiro). Por serem absolutas, ficam presas ao topo da seção e passam por
+   baixo do conteúdo conforme a página rola, em vez de acompanhar a coluna.
+   As larguras aqui são as da própria imagem, não medida de layout. */
+.hero-visual {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+.hero-hand {
+    position: absolute;
+    top: 0;
+    width: 576px;
+    height: auto;
+    display: block;
+    will-change: transform;   /* transform vem do hero-maos.js, a cada scroll */
+}
+.hero-hand--human { left: calc(50% - 576px + 192px); }
+.hero-hand--ai { left: calc(50% + 192px); }
+
+@media (max-width: 1439px) {
+    .hero-inner { grid-template-columns: repeat(8, 1fr); }
+    .hero-copy { grid-column: span 4; }
+}
+/* As mãos só mudam de tamanho e posição a partir de 864px: aqui a copy passa a
+   ocupar a largura toda, elas encostam no centro (`right: 50%` / `left: 50%`,
+   como na referência) e vão pra base do hero — a referência usava `top` fixo,
+   que aqui atravessaria o texto, porque a copy quebra em mais linhas. O
+   padding reserva a altura delas: 400px de largura → 533px de altura. */
+@media (max-width: 864px) {
+    .hero { padding: 48px 0 96px; }
+    .hero-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 32px;
+        padding-bottom: 256px;
+    }
+    .hero-copy { grid-column: 1 / -1; }
+    .hero-hand { width: 400px; top: auto; bottom: 0; }
+    .hero-hand--human { left: auto; right: 50%; }
+    .hero-hand--ai { left: 50%; }
+}
+@media (max-width: 576px) {
+    .hero-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+        padding-bottom: 192px;
+    }
+    .hero-hand { width: 288px; }   /* → 384px de altura */
+}
+
+/* ══ Faixa de logos ═══════════════════════════════════════════════════════
+   Mesmo estilo do .depos-logos-grid (aichampion): grade celular desenhada com
+   rings de 2px, logos em opacity 0.5. Aqui em 4 colunas, uma linha só, e SEM
+   rotação de logos (lá um script troca as marcas de tempos em tempos).
+   ══════════════════════════════════════════════════════════════════════════ */
+.sec-logos {
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+    padding: 0 16px 0 16px;
+}
+.logos-grid {
+    max-width: 1440px;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    box-shadow: inset -2px 0 0 0 var(--bw-15);   /* fecha a última célula */
+}
+.logo-card {
+    /* o `li { margin: 0 0 1rem }` do root.css deixava 16px sobrando embaixo da
+       fileira; aqui a célula precisa encostar nas linhas da grade. */
+    margin: 0;
+    padding: 24px 16px;
+    min-height: 80px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 2px 0 0 0 var(--bw-15);    /* divisória entre células */
+}
+.logo-card img {
+    max-width: 100%;
+    max-height: 64px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.5;
+    display: block;
+}
+
+/* 4 colunas de logo em tela de celular ficam com ~65px úteis: cai pra 2, e a
+   linha de baixo da primeira fileira volta a ser desenhada. */
+@media (max-width: 576px) {
+    .logos-grid { grid-template-columns: repeat(2, 1fr); }
+    .logo-card:nth-child(-n+2) { box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15); }
+}
+
+/* ══ Por que este curso é para você ═══════════════════════════════════════ */
+.sec-porque { padding: 128px 0; }
+.porque-inner {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    row-gap: 48px;
+}
+.porque-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.porque-card {
+    position: relative;
+    isolation: isolate;
+    grid-column: 1 / -1;
+    background: var(--dn800);
+    border-radius: 16px;
+    /* padding da referência: o esquerdo enorme existe pra abrir espaço pro glow
+       do monograma, que fica colado em left: 0 (64/48/64/256). */
+    padding: 64px 48px 64px 256px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    overflow: hidden;
+}
+/* Monograma IA como glow atrás do card, colado na esquerda — mesmos valores da
+   referência (720px, centrado na vertical, blur 16px, opacity 0.25, z -1). */
+.porque-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: calc(50% - 360px);
+    width: 720px;
+    height: 720px;
+    z-index: -1;
+    pointer-events: none;
+    background: url(/ed/be-a-ba-ia-3/dependencias/babia_ia-logo.svg) no-repeat center / 100%;
+    filter: blur(16px);
+    opacity: 0.75;
+}
+.porque-card-title { font: var(--h4); color: var(--bw); margin: 0; }
+.porque-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+/* Mesmo marcador do hero, como na referência: traço de 24x4 com gradiente e
+   blur(2px), 32px à esquerda do texto e centrado na altura do item. */
+.porque-list li {
+    position: relative;
+    padding-left: 32px;
+}
+.porque-list li::before {
+    content: '';
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 0;
+    width: 24px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pc100), var(--pc300), var(--pc500));
+    filter: blur(2px);
+}
+.porque-list p { font: var(--p); color: var(--bw); margin: 0; }
+.porque-list strong { color: var(--pc300); }
+.porque-close { grid-column: 1 / -1; font: var(--h6); color: var(--bw); margin: 0; text-align: center; }
+.porque-actions { grid-column: 1 / -1; display: flex; justify-content: center; }
+
+@media (max-width: 864px) {
+    .sec-porque { padding: 96px 0; }
+    .porque-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 32px; }
+    .porque-header { grid-column: 1 / -1; }
+    .porque-card { padding: 32px 32px 32px 160px; gap: 24px; }
+    /* glow acompanha o padding: encolhe de 720 pra 512, seguindo centrado na
+       vertical (valores do ::after da referência no breakpoint equivalente) */
+    .porque-card::after { width: 512px; height: 512px; top: calc(50% - 256px); }
+}
+@media (max-width: 576px) {
+    .sec-porque { padding: 96px 0; }
+    .porque-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .porque-card { padding: 192px 24px 32px 24px; }
+    .porque-list { gap: 16px; }
+    /* no empilhado o vão migra pro topo do card, e o glow vai junto: 384px
+       ancorado em top: -96px em vez de centrado na vertical */
+    .porque-card::after { width: 384px; height: 384px; top: -96px; }
+}
+
+/* ══ O mercado já virou ════════════════════════════════════════════════════
+   Terceira seção DENTRO do .light-block: fundo, raio e recuo lateral vêm de
+   lá, como nas irmãs. Só o padding vertical é próprio, e ele fecha o bloco:
+   a .sec-levo já entrega 128px por baixo, então aqui o topo é zero. O rodapé
+   também é zero: quem fecha o trecho claro é a faixa de transição do
+   .sec-prof, que começa exatamente no --ln100 deste bloco. */
+.sec-mercado { padding: 0; }
+.mercado-grid {
+    grid-column: 1 / -1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 32px;
+}
+/* Scrim do DS (root.css) por cima de cada print: 3 stops, --bw no rodape ate
+   transparente na metade, direcao padrao (to top). --scrim-z: 0 poe o pseudo
+   ACIMA da imagem (o padrao do componente e -1, que ficaria por baixo). O
+   raio e o overflow recortam o scrim junto com a foto. */
+.mercado-grid li {
+    grid-column: span 2;
+    margin: 0;                  /* zera o li { margin: 0 0 1rem } do root.css */
+    --scrim-color: var(--bw);
+    --scrim-mid: transparent;
+    --scrim-mid-pos: 50%;
+    --scrim-z: 0;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.mercado-grid img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+@media (max-width: 864px) {
+    .mercado-grid { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+    .mercado-grid li { grid-column: span 3; }
+}
+@media (max-width: 576px) {
+    .mercado-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    /* Scrim do DS (root.css) por cima de cada print: 3 stops, --bw no rodape ate
+   transparente na metade, direcao padrao (to top). --scrim-z: 0 poe o pseudo
+   ACIMA da imagem (o padrao do componente e -1, que ficaria por baixo). O
+   raio e o overflow recortam o scrim junto com a foto. */
+.mercado-grid li {
+    grid-column: span 2;
+    margin: 0;                  /* zera o li { margin: 0 0 1rem } do root.css */
+    --scrim-color: var(--bw);
+    --scrim-mid: transparent;
+    --scrim-mid-pos: 50%;
+    --scrim-z: 0;
+    border-radius: 16px;
+    overflow: hidden;
+}
+}
+
+/* ══ Ferramentas ══════════════════════════════════════════════════════════ */
+.sec-tools { padding: 0 0 128px; }
+.tools-inner {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    row-gap: 48px;
+    /* acima dos aros do .light-block, que sobem por cima desta secao */
+    position: relative;
+    z-index: 1;
+}
+.tools-title { grid-column: span 6; }
+/* grid-auto-rows: 1fr iguala a altura de TODAS as linhas, não só dos cards
+   lado a lado (que já esticavam entre si). A faixa mínima cai de 328px (padrão
+   do .check-features-grid) pra 292px, então as colunas seguram por mais tempo
+   antes de quebrar. */
+.tools-grid {
+    grid-column: 1 / -1;
+    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(min(292px, 100%), 1fr));
+}
+/* Card Feature do DS (mm-patterns.css): imagem decorativa sangrando no rodapé,
+   mascarada, rotacionada e desfocada; revela ao entrar na viewport via .motion
+   (/ed/motion-cards.js adiciona .is-revealed e dispara a transição). */
+.tool-card {
+    position: relative;
+    isolation: isolate;
+    /* o `li { margin: 0 0 1rem }` do root.css impedia o card de esticar até a
+       altura da linha: ele parava 16px antes (e o :last-child, que não tem essa
+       margem, ficava 16px mais alto que os outros). */
+    margin: 0;
+    background: var(--dn800);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+.tool-card-title { font: var(--h5); color: var(--bw); margin: 0; position: relative; z-index: 1; }
+.tool-card-text { font: var(--p); color: var(--bw-75); margin: 0; position: relative; z-index: 1; }
+.tool-card-img {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-top: auto;      /* cola no rodapé quando o card estica na linha */
+    margin-bottom: -25%;   /* sangra pra fora do card (recortado pelo overflow) */
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), black);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), black);
+    transform: rotate(-7.5deg) scale(1.25);
+    filter: blur(4px);
+    opacity: 0.1;
+    pointer-events: none;
+    transition: 0.5s transform ease-out, 0.5s filter ease-out, 0.5s opacity ease-out;
+}
+.tool-card.is-revealed .tool-card-img {
+    transform: rotate(7.5deg) scale(1);
+    filter: blur(0);
+    opacity: 0.5;
+}
+
+@media (max-width: 864px) {
+    .sec-tools { padding: 0 0 96px; }
+    .tools-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 32px; }
+    .tools-title { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-tools { padding: 0 0 96px; }
+    .tools-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+}
+
+/* ══ Bloco claro: jornada + o que leva ════════════════════════════════════ */
+/* Aros do bloco claro: tres faixas de cor presas na borda arredondada, que
+   ENCOLHEM conforme a pagina rola. As tres sao multiplos exatos de 12/24/36
+   (o inicio, 192/384/576, e 16x o fim), entao uma unica variavel de escala
+   descreve o efeito inteiro: --aro vai de 16 ate 1, e quem a move e o
+   light-block-aros.js.
+
+   Sem JS, ou com prefers-reduced-motion, --aro fica no padrao 1, que e o
+   estado de repouso: 12/24/36. */
+.light-block {
+    background: var(--ln100);
+    border-radius: 128px 128px 0 0;
+    /* o desfoque anda junto com a escala, 128px no comeco e 0 no repouso, e sai
+       do proprio --aro pra nao precisar de uma segunda variavel: em --aro 16 da
+       15 x 8.5333 = 128px, em --aro 1 da zero. */
+    --aro-desfoque: calc((var(--aro, 1) - 1) * 8.5333px);
+    box-shadow:
+        0 0 var(--aro-desfoque) calc(var(--aro, 1) * 12px) var(--pc200),
+        0 0 var(--aro-desfoque) calc(var(--aro, 1) * 24px) var(--pc500),
+        0 0 var(--aro-desfoque) calc(var(--aro, 1) * 36px) var(--pc800);
+}
+.sec-jornada { padding: 256px 0 0; }
+.jornada-inner,
+.levo-inner,
+.mercado-inner {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    row-gap: 48px;
+}
+/* o header ocupa uma célula do grid de cards: com 5 cards, fecha 3 linhas de 2
+   sem deixar card órfão na última */
+.jornada-header {
+    margin: 0;                  /* zera o li do root.css */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 16px;
+}
+.jornada-grid { grid-column: 1 / -1; }
+.jornada-card {
+    /* zera o `li { margin: 0 0 1rem }` do root.css, senão o card não estica até
+       a altura da linha (mesmo caso dos tool-cards) */
+    margin: 0;
+    background: var(--bw);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px var(--bb-5);
+    display: flex;
+    flex-direction: column;
+}
+.jornada-card-media { position: relative; line-height: 0; }
+.jornada-card-media img { width: 100%; height: auto; display: block; }
+.jornada-card-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--bw-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+.jornada-card-badge .material-symbols-outlined {
+    font-size: 24px;
+    color: var(--pc500);
+    font-variation-settings: 'FILL' 0, 'wght' 200;   /* extremo fino do @font-face do subset */
+}
+.jornada-card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.jornada-card-title { font: var(--h6); color: var(--bb); margin: 0; }
+.jornada-card-text { font: var(--p); color: var(--bb-75); margin: 0; }
+
+.sec-levo { padding: 128px 0; }
+.levo-list {
+    grid-column: 3 / span 4;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.levo-list li {
+    margin: 0;                  /* zera o li { margin: 0 0 1rem } do root.css */
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bw);
+    border-radius: 8px;
+    padding: 16px 24px;
+    font: var(--label);
+    color: var(--bb);
+}
+.levo-list .material-symbols-outlined {
+    font-size: 24px;
+    color: var(--bb-50);
+    flex-shrink: 0;
+    font-variation-settings: 'FILL' 0, 'wght' 200;   /* extremo fino do @font-face do subset */
+}
+
+@media (max-width: 864px) {
+    .light-block { border-radius: 48px 48px 0 0; }
+    .sec-jornada { padding: 96px 0 0; }
+    .sec-levo { padding: 96px 0; }
+    .jornada-inner,
+    .levo-inner,
+    .mercado-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 32px; }
+    .levo-list { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .light-block { border-radius: 32px 32px 0 0; }
+    .sec-jornada { padding: 96px 0 0; }
+    .sec-levo { padding: 96px 0; }
+    .jornada-inner,
+    .levo-inner,
+    .mercado-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .levo-list li { padding: 16px 24px; }
+}
+
+/* ══ Quem vai te guiar ════════════════════════════════════════════════════ */
+.sec-prof {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    /* 320px fixos em cima em qualquer viewport: e a folga que a arte de
+       transicao precisa pra passar inteira antes do texto comecar. So o
+       rodape acompanha os breakpoints. */
+    padding: 320px 0 128px;
+}
+/* Transição de cor no topo da seção, como na referência: a arte de 1920x480
+   sangrando de borda a borda. Aqui ela é pseudo-elemento (não tem conteúdo, não
+   precisa de nó no DOM) e a altura vem do aspect-ratio, então a imagem escala
+   sem distorcer em qualquer largura. O z-index -1 vive no isolation da seção.
+
+   A arte entregue (mll_transition.png, 269KB) é opaca: começa no --ln100, que
+   é o fundo do .light-block logo acima, e termina em preto, que é o fundo da
+   página. Ou seja, a emenda entre o trecho claro e o escuro é a própria
+   imagem. Convertida pra WebP ficou em 7,6KB (sem canal alfa, que não existe
+   nesta versão). */
+.sec-prof::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Ate 1920 de viewport a arte fica no tamanho em que foi exportada, 1920 de
+       largura, e o excedente e cortado pelas laterais (o overflow: hidden da
+       secao faz o corte, centrado). Acima de 1920 ela passa a acompanhar a
+       tela em 100%. A altura sai sempre da proporcao, nunca de um numero
+       solto. */
+    width: max(100%, 1920px);
+    aspect-ratio: 1920 / 480;
+    z-index: -1;
+    pointer-events: none;
+    background: url("/ed/be-a-ba-ia-3/dependencias/mll_transition.webp") no-repeat center top / 100% 100%;
+}
+.prof-inner {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    /* sem row-gap: o header desce até encostar no card (o align-items: end já
+       empurra o texto pro rodapé da primeira linha). No empilhado o gap volta
+       em 32px, no bloco de ≤864. */
+    row-gap: 0;
+    align-items: end;
+}
+/* Sobreposição da referência: a coluna de texto avança 1 coluna sobre a foto
+   (lá era `margin-right: -144px` num container de 50%+144). Aqui o avanço vem
+   do próprio grid: header/card ocupam 1..6 e a foto começa na 6. */
+.prof-header {
+    grid-column: 1 / span 5;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+}
+.prof-card {
+    grid-column: 1 / span 5;
+    grid-row: 2;
+    /* a foto atravessa as duas linhas e as estica; com o align-items: end do
+       container, o card caía no RODAPÉ da linha 2 e abria um vão abaixo do
+       header. Ancorado no topo da própria linha, ele encosta. */
+    align-self: start;
+    position: relative;
+    z-index: 1;
+    background: var(--dn500-50);
+    border-radius: 16px;
+    padding: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+.prof-texto { font: var(--p); color: var(--bw-75); margin: 0; }
+.prof-photo {
+    grid-column: 5 / -1;     /* começa na coluna que o card invade */
+    grid-row: 1 / span 2;    /* acompanha header + card */
+    align-self: end;
+    z-index: 0;
+}
+.prof-photo img { width: 100%; height: auto; display: block; border-radius: 16px; }
+
+/* Mobile: ordem invertida (foto antes do card) e o card sobe por cima dela,
+   com fundo translúcido + blur — mesma intenção do `margin-top: -212px` e do
+   `backdrop-filter: blur(8px)` da referência. */
+@media (max-width: 864px) {
+    .sec-prof { padding: 320px 0 128px; }
+    .prof-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 32px; }
+    .prof-header { grid-column: 1 / -1; grid-row: 1; }
+    .prof-photo { grid-column: 1 / -1; grid-row: 2; align-self: auto; }
+    .prof-card {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        margin-top: -212px;
+        background: var(--dn500-50);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+}
+@media (max-width: 576px) {
+    .sec-prof { padding: 320px 0 128px; }
+    .prof-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .prof-card { padding: 32px 24px; margin-top: -160px; }
+}
+
+/* ══ Pra quem é / pra quem não é ═══════════════════════════════════════════
+   Componente .sec-cards-duo portado de /ed/areas/logistica/ sem alterar a
+   estrutura: dois cards com aresta de 8px no topo e lista com barra de 4px em
+   cada item (os filetes de gradiente do .duo-card-fx saíram a pedido).
+
+   Três desvios, todos por regra desta página: o peso do título vai a 400 (o
+   original usa 200, que não existe self-hosted em Syne), o padding vertical
+   segue o ritmo daqui (128/96/64 em vez de 208/176) e os acentos vêm do par
+   semântico do DS, um contra o outro: success (sc500 e
+   --text-gradient-special-success) no "é pra você", error (er500 e
+   --text-gradient-special-error) no "não é". */
+.sec-cards-duo { position: relative; padding: 0 0 128px; }
+.cards-duo-inner {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    /* stretch: os dois cards fecham na mesma altura mesmo com 6 tópicos de um
+       lado e 3 do outro (o original usava start, e o card menor encolhia). */
+    align-items: stretch;
+}
+.duo-card {
+    box-sizing: border-box;
+    position: relative;
+    margin: 0;
+    padding: 48px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.duo-card--sim { --duo-accent: var(--sc500); background: linear-gradient(45deg, var(--dn800), transparent); }
+.duo-card--nao { --duo-accent: var(--er500); background: linear-gradient(-135deg, var(--dn800), transparent); }
+/* aresta curta pendurada acima do card */
+.duo-card::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 32px;
+    width: 64px;
+    height: 8px;
+    background: var(--duo-accent);
+}
+.duo-card-title {
+    font-size: 1.5rem;
+    line-height: 1.25em;
+    margin: 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.duo-card--sim .duo-card-title { background-image: var(--text-gradient-special-success); }
+.duo-card--nao .duo-card-title { background-image: var(--text-gradient-special-error); }
+.duo-list {
+    list-style: none;
+    margin: 0 -48px;
+    padding: 0 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    color: var(--bw-75);
+}
+.duo-card--sim .duo-list { background-image: linear-gradient(90deg, var(--sc500-10), transparent); }
+.duo-card--nao .duo-list { background-image: linear-gradient(90deg, var(--er500-10), transparent); }
+.duo-list li {
+    position: relative;
+    margin: 0;                  /* zera o li { margin: 0 0 1rem } do root.css */
+    padding: 0;
+    font: var(--p);
+}
+/* A barra sai do texto e encosta na borda do card: o recuo negativo é o mesmo
+   padding lateral do .duo-card, então -48px a leva de volta ao x zero dele.
+   Altura cheia do item: sem padding no li e com 32px de gap entre eles, a
+   barra tem a altura exata do bloco de texto e o respiro fica por conta do
+   gap. */
+.duo-list li::before {
+    content: "";
+    position: absolute;
+    left: -48px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--duo-accent);
+}
+
+@media (max-width: 864px) {
+    .sec-cards-duo { padding: 0 0 96px; }
+    .cards-duo-inner { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 576px) {
+    .sec-cards-duo { padding: 0 0 96px; }
+    .duo-card { padding: 32px 24px; }
+    .duo-list { margin: 0 -24px; padding: 0 24px; }
+    .duo-list li::before { left: -24px; }   /* acompanha o padding menor do card */
+}
+
+/* ══ Oferta ═══════════════════════════════════════════════════════════════ */
+/* isolation + relative: o glow entra com z-index -1 e precisa de um contexto
+   de empilhamento proprio, senao cai atras do fundo do body. clip corta o que
+   passa da secao (o monograma de 640px e o glow de 1440px). */
+.sec-oferta { position: relative; isolation: isolate; padding: 0 0 128px; overflow: clip; }
+/* Mesmo glow do hero (gradiente + ASCII animado vem de .hero-glow), so que
+   ancorado na borda de BAIXO: a pagina fecha com a mesma luz com que abre. */
+.oferta-glow { top: auto; bottom: -848px; }
+.oferta-inner {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    row-gap: 48px;
+}
+/* Monograma IA grande atrás do bloco de oferta, centrado no container —
+   valores da referência (`a76375b::before`: 640x640, centro, opacity 0.5, sem
+   blur). Absoluto, então não entra como item do grid. */
+.oferta-inner::before {
+    content: '';
+    position: absolute;
+    top: auto;
+    bottom: -128px;
+    left: calc(50% - 320px);
+    width: 640px;
+    height: 640px;
+    z-index: -1;
+    pointer-events: none;
+    background: url("/ed/be-a-ba-ia-3/dependencias/babia_ia-logo.svg") no-repeat center / 100%;
+    opacity: 0.5;
+}
+.oferta-title { grid-column: 1 / -1; text-align: center; }
+/* -- Card em formato de ticket ---------------------------------------------
+   O recorte e feito por MASCARA, nao por desenho: cada metade do card carrega
+   duas radial-gradients de raio 32 ancoradas na sua propria borda (a de cima
+   embaixo, a de baixo em cima), compostas por intersecao. Como cada mascara
+   esta presa a borda do bloco, o furo nao depende da altura do conteudo. E o
+   mesmo desenho do SVG de referencia (64x128 com a meia-lua de raio 32).
+
+   Por isso o fundo mora nas metades e nao no .oferta-card: mascara nao passa
+   para o filho, um fundo no pai ficaria por baixo, sem furo. */
+.oferta-card {
+    /* Recorte do ticket, o path que veio do desenho: 64x128, uma lente que
+       entra 64px na horizontal e encosta na borda com concordancia curva de
+       raio 32 nas duas pontas (por isso nao ha bico onde ela encontra a
+       lateral do card). O retangulo externo e o mesmo path compoem um
+       fill-rule="evenodd", ou seja, a lente vira buraco. */
+    --recorte-e: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='128' viewBox='0 0 64 128'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M0 0H64V128H0Z M0 0V128C0 110.327 14.3269 96 32 96C49.6731 96 64 81.6731 64 64C64 46.3269 49.6731 32 32 32C14.3269 32 0 17.6731 0 0Z'/%3E%3C/svg%3E");
+    --recorte-d: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='128' viewBox='0 0 64 128'%3E%3Cg transform='translate(64,0) scale(-1,1)'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M0 0H64V128H0Z M0 0V128C0 110.327 14.3269 96 32 96C49.6731 96 64 81.6731 64 64C64 46.3269 49.6731 32 32 32C14.3269 32 0 17.6731 0 0Z'/%3E%3C/g%3E%3C/svg%3E");
+    --cheio: linear-gradient(#000, #000);
+    grid-column: 3 / span 4;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.oferta-card-topo,
+.oferta-card-base {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    /* uniao das camadas (mask-composite: add, que e o padrao):
+       [recorte esq] + [recorte dir] + [miolo] + [coluna esq] + [coluna dir] */
+    -webkit-mask-image: var(--recorte-e), var(--recorte-d), var(--cheio), var(--cheio), var(--cheio);
+    mask-image: var(--recorte-e), var(--recorte-d), var(--cheio), var(--cheio), var(--cheio);
+    -webkit-mask-size: 64px 128px, 64px 128px, calc(100% - 128px) 100%, 64px calc(100% - 64px), 64px calc(100% - 64px);
+    mask-size: 64px 128px, 64px 128px, calc(100% - 128px) 100%, 64px calc(100% - 64px), 64px calc(100% - 64px);
+}
+/* A metade de cima leva o recorte pendurado na borda DE BAIXO: a imagem de
+   128px e posicionada com o centro na emenda, entao so a sua metade superior
+   cai dentro da caixa. As duas colunas laterais completam o resto da altura. */
+.oferta-card-topo {
+    background: var(--pc300-25);
+    border-radius: 16px 16px 0 0;
+    padding: 40px 32px 64px 32px;
+    gap: 16px;
+    -webkit-mask-position: left calc(100% + 64px), right calc(100% + 64px), center, left top, right top;
+    mask-position: left calc(100% + 64px), right calc(100% + 64px), center, left top, right top;
+}
+/* Espelho da de cima: recorte presa a borda DE CIMA, colunas ancoradas embaixo. */
+.oferta-card-base {
+    background: linear-gradient(0deg, var(--sc500-50), var(--pc300-25));
+    border-radius: 0 0 16px 16px;
+    padding: 64px 32px 32px 32px;
+    gap: 16px;
+    -webkit-mask-position: left -64px, right -64px, center, left bottom, right bottom;
+    mask-position: left -64px, right -64px, center, left bottom, right bottom;
+}
+/* Linha pontilhada do destaque. Item de altura zero entre as metades, com o
+   traco centrado na emenda (top: -4px de 8px de altura). Fica no .oferta-card,
+   que NAO tem mascara, senao as proprias metades o recortariam. Recuo de 64px
+   de cada lado: e exatamente onde os furos terminam. */
+.oferta-card-corte { position: relative; height: 0; }
+.oferta-card-corte::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 64px;
+    right: 64px;
+    height: 8px;
+    background-image: repeating-linear-gradient(90deg, var(--bw-25) 0 8px, transparent 8px 16px);
+}
+/* Rotulo do lote e barra de progresso dentro do card: mesmos elementos da faixa
+   do topo (o lote-progresso.js atualiza os dois), so que empilhados e na
+   paleta clara, porque aqui o fundo e escuro. */
+.oferta-lote {
+    font: var(--label-l);
+    font-weight: 700;
+    color: var(--sc300);
+}
+.oferta-barra {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+.oferta-barra .cert-topbar-barra-trilho { width: 100%; background: var(--bw-25); }
+.oferta-barra .cert-topbar-barra-fill { background: linear-gradient(90deg, var(--sc100), var(--sc500)); }
+.oferta-barra .cert-topbar-barra-pct { font: var(--label-s); color: var(--sc300); white-space: normal; }
+
+.oferta-de { font: var(--label); color: var(--wr300); margin: 0; }
+.oferta-de del { color: var(--wr300); }
+.oferta-preco {
+    font: var(--h1-horizontal);
+    font-size: clamp(3.5rem, 2.5rem + 2.78vw, 5rem);
+    line-height: 1;
+    margin: 0;
+    background-image: linear-gradient(90deg, var(--sc100), var(--sc500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;   /* depois do shorthand, senao o token reimpoe o peso */
+}
+.oferta-preco-moeda { font-size: 1.5rem; }
+.oferta-btn { width: 100%; box-sizing: border-box; }
+/* Fora do card: prova social e canal de duvida nao fazem parte do ticket. */
+.oferta-apoio {
+    grid-column: 3 / span 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+}
+.oferta-breve { font: var(--h6); color: var(--wr700); margin: 0; }
+/* Lado a lado, com wrap: em tela estreita os dois selos voltam a empilhar
+   sozinhos em vez de espremer o texto. */
+.oferta-trust {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 32px;
+    row-gap: 8px;
+}
+/* margin: 0 zera o `li { margin: 0 0 1rem }` do root.css, que aqui empurrava
+   16px por baixo de cada selo. O respiro fica só por conta do gap da lista. */
+.oferta-trust li { margin: 0; display: flex; align-items: center; gap: 8px; font: var(--label-s); color: var(--bw-75); }
+/* wght 200 e o traco mais fino do eixo declarado no @font-face do subset
+   (200 a 400). O eixo real da fonte vai de 100 a 700, mas fora da faixa
+   declarada o browser nao garante a selecao. */
+.oferta-trust .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--sc500);
+    font-variation-settings: 'FILL' 0, 'wght' 200;
+}
+.oferta-zap { width: 100%; box-sizing: border-box; }
+
+@media (max-width: 864px) {
+    .sec-oferta { padding: 0 0 96px; }
+    .oferta-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 32px; }
+    .oferta-card, .oferta-apoio { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-oferta { padding: 0 0 96px; }
+    .oferta-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .oferta-card-topo { padding: 40px 24px 64px; }
+    .oferta-card-base { padding: 64px 24px 24px; }
+}
+
+/* ══ Tipografia da página em Syne ══════════════════════════════════════════
+   Syne é a família horizontal do DS (--font-family-horizontal). Os títulos
+   h1/h2/h3 já usam os tokens *-horizontal, que trazem a família embutida.
+
+   Os outros tokens (--h4/--h5/--h6, --p*, --label*, --btn*) embutem Poppins
+   no shorthand `font:`, então a família é reaplicada aqui. Este bloco fica no
+   FIM do arquivo de propósito: um `font:` declarado depois reescreveria a
+   font-family (mesma especificidade, quem vem depois ganha).
+
+   A página usa só o peso 400 do Syne (as faces self-hosted são 400 e 700, ver
+   site-fonts/fonts.css), incluindo títulos e <strong>. Ver bloco abaixo.
+   ══════════════════════════════════════════════════════════════════════════ */
+/* CTA "Garantir Lote 01": mantém o data-emphasis="high" do DS (texto --bb,
+   ring sg100 e a transição de background-position no hover) e troca só a rampa
+   de cor pela verde. [data-emphasis] no seletor pra vencer o componente sem
+   !important. */
+.btn.btn-lote[data-emphasis] {
+    background-image: linear-gradient(90deg, var(--sc300), var(--sc500), var(--sc100));
+    /* o ring do emphasis high é sg100 (areia) e destoava do verde.
+       --ring-25 é exatamente `inset 0 0 0 2px var(--bw-25)`. */
+    box-shadow: var(--ring-25);
+}
+
+/* Botões desta página: canto de 16px em vez da pílula do DS (o root.css usa
+   border-radius: 1920px no .btn). Seletor com [data-size] pra vencer as regras
+   do componente sem !important. */
+.btn[data-size] {
+    border-radius: 16px;
+}
+
+body,
+.cert-topbar-lote, .cert-topbar-barra-pct, .cert-topbar-aviso, .oferta-aviso,
+.sec-lede, .sec-lede-light,
+.hero-lede, .hero-kicker, .hero-bullets li,
+.porque-card-title, .porque-list p, .porque-close,
+.tool-card-title, .tool-card-text,
+.jornada-card-title, .jornada-card-text,
+.levo-list li,
+.prof-texto,
+.duo-card-title, .duo-list li,
+.oferta-lote, .oferta-de, .oferta-breve, .oferta-trust li,
+.btn[data-size] {
+    font-family: var(--font-family-horizontal);
+}
+
+/* Peso único na página: 400. Os tokens de título (h1/h2/h3-horizontal) e os
+   <strong> vêm em 700 do DS/browser, então o peso é normalizado aqui. */
+.hero-title,
+.sec-title,
+.sec-title-light,
+.hero-kicker,
+.porque-card-title,
+.porque-close,
+.porque-list strong,
+.tool-card-title,
+.jornada-card-title,
+.duo-card-title, .duo-destaque,
+.oferta-breve {
+    font-weight: 400;
+}
+
+/* ══ Noise ═════════════════════════════════════════════════════════════════
+   Overlay de grão portado da página antiga (post-112371.css, elemento
+   cc6d2fc): tile SVG de 128px com feTurbulence fractalNoise (baseFrequency
+   0.9), dessaturado e com alpha em degrau até 0.3, camada em opacity 0.75.
+
+   DIFERENÇA DE PERFORMANCE em relação ao original: lá o tremor animava
+   `background-position`, que é propriedade de PINTURA — repintava a viewport
+   inteira ~60x por segundo, o tempo todo. Aqui o mesmo tremor vem de
+   `translate3d`, que roda só na composição (GPU), sem repaint. Pra isso a
+   camada é maior que a tela (inset: -128px), senão o deslocamento mostraria
+   borda. Deslocamentos em px equivalentes aos % do original.
+   ══════════════════════════════════════════════════════════════════════════ */
+.noise {
+    position: fixed;
+    inset: -128px;
+    z-index: 888;
+    pointer-events: none;
+    will-change: transform;
+    background-image: url("data:image/svg+xml,%3Csvg width='128' height='128' viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pixelatedNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='saturate' values='0' result='grayscaleNoise'/%3E%3CfeComponentTransfer in='grayscaleNoise'%3E%3CfeFuncR type='discrete' tableValues='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'/%3E%3CfeFuncG type='discrete' tableValues='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'/%3E%3CfeFuncB type='discrete' tableValues='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'/%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0.05 0.1 0.15 0.2 0.25 0.3'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pixelatedNoise)' fill='transparent'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.75;
+    animation: noise-move 0.5s linear infinite;
+}
+@keyframes noise-move {
+    0%   { transform: translate3d(0, 0, 0); }
+    10%  { transform: translate3d(-6px, -13px, 0); }
+    20%  { transform: translate3d(-13px, 6px, 0); }
+    30%  { transform: translate3d(6px, -13px, 0); }
+    40%  { transform: translate3d(-6px, 19px, 0); }
+    50%  { transform: translate3d(13px, 13px, 0); }
+    60%  { transform: translate3d(6px, 0, 0); }
+    70%  { transform: translate3d(19px, -6px, 0); }
+    80%  { transform: translate3d(-13px, 6px, 0); }
+    90%  { transform: translate3d(0, -19px, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .noise { animation: none; }
+}
+
+/* ══ Leveza de render ══════════════════════════════════════════════════════
+   As seções abaixo da dobra entram com `content-visibility: auto`: o browser
+   pula layout/paint delas até chegarem perto da viewport. O
+   `contain-intrinsic-size: auto <altura>` dá a altura estimada (medida no
+   render real desta página) e o `auto` faz o browser memorizar a altura
+   verdadeira depois do primeiro render, então a barra de scroll não pula.
+   Não vale pro hero, que precisa pintar de imediato.
+
+   ATENÇÃO: o valor é a altura do CONTEÚDO, não da caixa. O padding da seção
+   é somado por cima, então declarar a altura total inflava cada seção pelo
+   próprio padding e a página pulava ao rolar (a .sec-prof, com 384px de
+   padding, era a pior). O reveal dos cards de
+   ferramenta (IntersectionObserver, .motion → .is-revealed) foi testado com a
+   seção sob content-visibility: revela os 8 normalmente.
+   ══════════════════════════════════════════════════════════════════════════ */
+.sec-porque  { content-visibility: auto; contain-intrinsic-size: auto 818px; }
+.sec-mercado { content-visibility: auto; contain-intrinsic-size: auto 684px; }
+.sec-tools   { content-visibility: auto; contain-intrinsic-size: auto 1063px; }
+.sec-prof    { content-visibility: auto; contain-intrinsic-size: auto 680px; }
+.sec-oferta  { content-visibility: auto; contain-intrinsic-size: auto 695px; }

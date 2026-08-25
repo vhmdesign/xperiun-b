@@ -1,29 +1,13 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   Popup "Parabéns" (certificado liberado).
-   Aparece no lugar do popup de progresso quando TODAS as aulas estão concluídas.
-   - Badge-ICIAN animado (float + swing) com reflexo, igual temp/generator.html.
+   Popup "Parabéns" + gerador de certificado (rascunho isolado).
+   - Badge animado (float + swing) com reflexo, igual temp/generator.html.
    - "Sair" no topo direito; "Baixar Badge" e "Baixar Certificado" no rodapé direito.
-   Compartilhado pela home e pelas aulas; o menu-topo.js chama XPCert.abrirSeCompleto().
-
-   Teste: ?cert=full força o estado concluído e abre o popup automaticamente.
+   Abre por qualquer elemento com [data-cert-abrir] (o botão da página) ou via
+   window.XPCert.abrir(). Sem gate de progresso: aqui está sempre liberado.
    ══════════════════════════════════════════════════════════════════════════ */
 (function () {
-    var TOTAL = 4;                                   /* nº de aulas da imersão */
-    var STORE_KEY = 'xp-imersao-concluidas';
-    var BADGE_SRC = '/ed/evento/ICIAN/membros/dependencias/Badge-ICIAN.png';        /* PNG grande, alta qualidade — só pro download */
-    var BADGE_PREVIEW = '/ed/evento/ICIAN/membros/dependencias/Badge-ICIAN-200.webp'; /* leve (200x200) — badge animado no popup */
-
-    function testeFull() {
-        return new URLSearchParams(location.search).get('cert') === 'full';
-    }
-    function estaCompleto() {
-        if (testeFull()) return true;
-        var conc = [];
-        try { conc = JSON.parse(localStorage.getItem(STORE_KEY) || '[]') || []; } catch (_) {}
-        var feitas = {};
-        conc.forEach(function (n) { if (n >= 0 && n < TOTAL) feitas[n] = 1; });
-        return Object.keys(feitas).length >= TOTAL;
-    }
+    var BADGE_SRC = '/temp/teste-certificado/dependencias/Badge-Pre-MBA-PosTech.png';        /* PNG grande, alta qualidade — só pro download */
+    var BADGE_PREVIEW = '/temp/teste-certificado/dependencias/Badge-Pre-MBA-PosTech-200.webp'; /* leve (200x200) — badge animado no popup */
 
     var modal = null;
 
@@ -114,8 +98,8 @@
        Certificado = JPEG (fundo, DCTDecode) + texto em Poppins embutido como
        fonte CID (Type0/Identity-H), com ToUnicode (texto selecionável/buscável).
        Sem pdf-lib/fontkit; o embutidor TrueType mínimo está aqui embaixo. */
-    var BASE = '/ed/evento/ICIAN/membros/dependencias/';
-    var CERT_JPG = BASE + 'certificado-ician.jpg';
+    var BASE = '/temp/teste-certificado/dependencias/';
+    var CERT_JPG = BASE + 'certificado-pre-mbe-postech.jpg';
     var FONT_REG = BASE + 'Poppins-Regular.ttf';
     var FONT_BOLD = BASE + 'Poppins-Bold.ttf';
     var CERT_W = 1754, CERT_H = 1240;   /* tamanho do JPEG/página, em pt */
@@ -177,8 +161,8 @@
 
         var L1 = 'Conferimos este certificado a';
         var L3 = 'pela participação na';
-        var L4 = 'Imersão Claude & IA para Negócios,';
-        var L5 = 'com carga horária de 4 horas, nos dias 21, 22 e 23 de julho de 2026.';
+        var L4 = 'Pré-MBA & Pós Tech,';
+        var L5 = 'com carga horária de 6 horas, nos dias 03, 04 e 05 de agosto de 2026.';
 
         /* Tamanhos e posições EXATOS da referência (nome regular; curso em bold). */
         var nameSize = 65, textoSize = 35, conferimosSize = 35;
@@ -262,72 +246,11 @@
         });
     }
 
-    /* Faixa de oferta (64px no topo, acima do menu). INDEPENDENTE do certificado:
-       fica oculta por padrão e só aparece com ?oferta=1 (teste). Depois será
-       ligada pelo comando/flag real; não tem relação com concluir as aulas. */
-    function topbarAtiva() {
-        return new URLSearchParams(location.search).get('oferta') === '1';
-    }
-    /* Preenche a faixa com quadrados 16px em checkerboard (tocam nos vértices),
-       incluídos aleatoriamente, cada um com opacity animada em tempo aleatório. */
-    function popularQuadrados(host) {
-        var s = 16, w = host.offsetWidth || window.innerWidth, h = 64;
-        var cols = Math.ceil(w / s) + 1, rows = Math.ceil(h / s), html = '', r, c;
-        for (r = 0; r < rows; r++) {
-            for (c = 0; c < cols; c++) {
-                if ((r + c) % 2 !== 0) continue;       /* checkerboard: cantos se tocam */
-                if (Math.random() > 0.6) continue;     /* distribuição aleatória */
-                var dur = (2 + Math.random() * 3).toFixed(2);
-                var del = (-Math.random() * 5).toFixed(2);
-                html += '<span class="cert-topbar-sq" style="left:' + (c * s) + 'px;top:' + (r * s) +
-                        'px;animation-duration:' + dur + 's;animation-delay:' + del + 's"></span>';
-            }
-        }
-        host.innerHTML = html;
-    }
+    /* O popup NÃO abre sozinho: só por [data-cert-abrir] (botão da página). */
+    document.addEventListener('click', function (e) {
+        var alvo = e.target.closest && e.target.closest('[data-cert-abrir]');
+        if (alvo) { e.preventDefault(); abrir(); }
+    });
 
-    function montarTopbar() {
-        if (!topbarAtiva() || document.querySelector('.cert-topbar')) return;
-        var bar = document.createElement('a');
-        bar.className = 'cert-topbar';
-        bar.href = '/ed/aichampion/';
-        bar.target = '_blank';
-        bar.rel = 'noopener noreferrer';
-        bar.setAttribute('aria-label', 'Ver oferta: Condições especiais para a Formação AI Champion');
-        bar.innerHTML =
-            '<span class="cert-topbar-squares" aria-hidden="true"></span>' +
-            '<div class="cert-topbar-content">' +
-                '<div class="cert-topbar-brand">' +
-                    '<span class="cert-topbar-logo" aria-hidden="true"></span>' +
-                '</div>' +
-                '<span class="cert-topbar-txt">Condições especiais para a Formação AI Champion</span>' +
-                '<div class="cert-topbar-offer">' +
-                    '<span class="btn cert-topbar-btn" data-size="s" aria-hidden="true">Ver Oferta</span>' +
-                '</div>' +
-            '</div>';
-        var slot = document.querySelector('[data-menu-topo]');
-        if (slot && slot.parentNode) slot.parentNode.insertBefore(bar, slot);
-        else document.body.insertBefore(bar, document.body.firstChild);
-        document.body.classList.add('has-cert-topbar');   /* ajusta o layout (bg/alturas) das páginas */
-
-        var host = bar.querySelector('.cert-topbar-squares');
-        popularQuadrados(host);
-        var t;
-        window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(function () { popularQuadrados(host); }, 200); });
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', montarTopbar);
-    else montarTopbar();
-
-    /* Exposto pro menu-topo.js e pro botão da sanfona decidirem quando abrir.
-       O popup NÃO abre sozinho: só pelo item "Certificado" do menu ou pelo
-       botão "Acessar meu Certificado" (que aparece no aula-progress em 100%). */
-    window.XPCert = {
-        estaCompleto: estaCompleto,
-        abrir: abrir,
-        fechar: fechar,
-        abrirSeCompleto: function () {
-            if (estaCompleto()) { abrir(); return true; }
-            return false;
-        }
-    };
+    window.XPCert = { abrir: abrir, fechar: fechar };
 })();

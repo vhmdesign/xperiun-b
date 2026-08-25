@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-08-07">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <title>Bê-a-Bá da IA | Xperiun</title>
+    <meta name="description" content="Pense com IA, não só dê comandos. Use as principais ferramentas para produzir mais em menos tempo e se destacar no mercado.">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/ed/be-a-ba-ia-3/style.css?v=4">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- Noise: overlay de grão fixo sobre a página (mesmo da página antiga) -->
+<div class="noise" aria-hidden="true"></div>
+
+<!-- Faixa de oferta AI Champion (a mesma da /membros/ da ICIAN, que lá só aparecia
+     com ?oferta=1 e era montada por JS). Aqui é markup fixo, sempre visível. -->
+<div class="cert-topbar">
+    <span class="cert-topbar-guias" aria-hidden="true"></span>
+    <div class="cert-topbar-content">
+        <span class="cert-topbar-lote" data-lote-nome>Lote 01</span>
+        <div class="cert-topbar-barra">
+            <div class="cert-topbar-barra-trilho" data-lote-barra role="progressbar"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="55" aria-label="Lote atual">
+                <span class="cert-topbar-barra-fill" data-lote-preenche></span>
+            </div>
+            <span class="cert-topbar-barra-pct" data-lote-pct>55% das vagas preenchidas</span>
+        </div>
+        <!-- Só aparece em ?oferta=aluno-xperiun, no lugar da barra -->
+        <span class="cert-topbar-aviso">Oferta limitada para alunos até 15/08</span>
+        <div class="cert-topbar-offer">
+            <a class="btn cert-topbar-btn" data-size="s" data-emphasis="medium-core"
+               href="#oferta" aria-label="Matricular: ir para a oferta">Matricular</a>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Hero: logo + copy (span 5) | mãos (span 5) ═══ -->
+<section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-inner">
+        <img class="hero-logo" src="/ed/be-a-ba-ia-3/dependencias/babia_logo.webp" width="560" height="64" alt="Bê-a-Bá da IA" fetchpriority="high" decoding="async">
+
+        <div class="hero-copy">
+            <h1 class="hero-title">Você está usando a IA como Google?</h1>
+            <p class="hero-lede">Ela monta apresentação, trata planilha e roda processo <span class="destaque">sozinha</span>. E você só usa ela pra tirar dúvidas?</p>
+            <p class="hero-kicker">Em um dia de treinamento ao vivo, você aprende a mandar ele fazer o trabalho por você.</p>
+            <a class="btn btn-lote" data-size="l" data-emphasis="high" href="#oferta">Garantir Lote 01</a>
+            <ul class="hero-bullets">
+                <li>Sábado, <span class="destaque">29 de agosto</span></li>
+                <li>Das 9h às 16h</li>
+                <li>Certificado incluso</li>
+            </ul>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+            <img class="hero-hand hero-hand--ai" src="/ed/be-a-ba-ia-3/dependencias/babia_finger-ai.webp" width="576" height="768" alt="" fetchpriority="high" decoding="async">
+            <img class="hero-hand hero-hand--human" src="/ed/be-a-ba-ia-3/dependencias/babia_finger-human.webp" width="576" height="768" alt="" fetchpriority="high" decoding="async">
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Faixa de logos das ferramentas (grid celular, padrão .depos-logos-grid) ═══ -->
+<section class="sec-logos">
+    <ul class="logos-grid">
+        <li class="logo-card"><img loading="lazy" decoding="async" src="/ed/be-a-ba-ia-3/dependencias/open-ai-logo.webp" width="128" height="40" alt="OpenAI"></li>
+        <li class="logo-card"><img loading="lazy" decoding="async" src="/ed/be-a-ba-ia-3/dependencias/claude-logo.webp" width="128" height="40" alt="Claude"></li>
+        <li class="logo-card"><img loading="lazy" decoding="async" src="/ed/be-a-ba-ia-3/dependencias/gemini-logo.webp" width="128" height="40" alt="Gemini"></li>
+        <li class="logo-card"><img loading="lazy" decoding="async" src="/ed/be-a-ba-ia-3/dependencias/nano-banana-logo.webp" width="192" height="40" alt="Nano Banana"></li>
+    </ul>
+</section>
+
+<!-- ═══ Por que este curso é para você ═══ -->
+<section class="sec-porque">
+    <div class="porque-inner">
+        <div class="porque-header">
+            <h2 class="sec-title">Como será a Imersão?</h2>
+            <p class="sec-lede">Se você já se sentiu perdido com tantas ferramentas que envolvem Inteligência Artificial, essa imersão foi feita pra você.</p>
+            <p class="sec-lede">Vamos simplificar o essencial com teoria objetiva e muita prática.</p>
+        </div>
+
+        <div class="porque-card">
+            <h3 class="porque-card-title">Você vai aprender, passo a passo:</h3>
+            <ul class="porque-list">
+                <li><p>Qual IA usar pra cada coisa, o que cada uma faz melhor, quando trocar de ferramenta e como fazer uma conversar com a outra.</p></li>
+                <li><p>Como pedir pra sair certo na primeira, por que a resposta vem rasa e o que muda nos comandos pra ela vir pronta.</p></li>
+                <li><p>A criar automações com prompts inteligentes</p></li>
+                <li><p>A aplicar IA de forma simples em tarefas reais do seu dia a dia</p></li>
+            </ul>
+        </div>
+
+        <p class="porque-close">Se você quer isso, então sim, o Bê-a-bá da IA é para você!</p>
+        <div class="porque-actions">
+            <a class="btn btn-lote" data-size="l" data-emphasis="high" href="#oferta">Garantir Lote 01</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Ferramentas: 8 cards (grid de cards do DS) ═══ -->
+<section class="sec-tools">
+    <div class="tools-inner">
+        <h2 class="sec-title tools-title">Conheça as ferramentas que você vai aprender</h2>
+        <ul class="check-features-grid tools-grid">
+            <li class="tool-card motion">
+                <h3 class="tool-card-title">ChatGPT:</h3>
+                <p class="tool-card-text">Vá além do “prompt pronto”. Aprenda a estruturar pedidos inteligentes, criar agentes personalizados e usar IA para análise de dados e apoio à tomada de decisão.</p>
+                <img class="tool-card-img" src="/ed/be-a-ba-ia-3/dependencias/babia_open-ai.webp" width="352" height="334" alt="" loading="lazy">
+            </li>
+            <li class="tool-card motion">
+                <h3 class="tool-card-title">Gemini</h3>
+                <p class="tool-card-text">Integração total com os ecossistemas Microsoft para automação de tarefas e produtividade extrema.</p>
+                <img class="tool-card-img" src="/ed/be-a-ba-ia-3/dependencias/babia_gemini.webp" width="352" height="334" alt="" loading="lazy">
+            </li>
+            <li class="tool-card motion">
+                <h3 class="tool-card-title">Copilot</h3>
+                <p class="tool-card-text">Conecte Google e Microsoft em um fluxo totalmente integrado para automatizar processos e elevar sua produtividade.</p>
+                <img class="tool-card-img" src="/ed/be-a-ba-ia-3/dependencias/babia_copilot.webp" width="352" height="334" alt="" loading="lazy">
+            </li>
+            <li class="tool-card motion">
+                <h3 class="tool-card-title">Gamma.app</h3>
+                <p class="tool-card-text">Crie apresentações profissionais e bem estruturadas em poucos minutos, usando IA para organizar ideias, conteúdo e visual.</p>
+                <img class="tool-card-img" src="/ed/be-a-ba-ia-3/dependencias/babia_gamma.webp" width="352" height="334" alt="" loading="lazy">
+            </li>
+            <li class="tool-card motion">
+                <h3 class="tool-card-title">Manus AI</h3>
+                <p class="tool-card-text">Um agente autônomo que vai além de responder: executa tarefas, toma decisões e trabalha por você como um estagiário inteligente.</p>
+                <img class="tool-card-img" src="/ed/be-a-ba-ia-3/dependencias/babia_manus.webp" width="352" height="334" alt="" loading="lazy">
+            </li>
+            <li class="tool-card motion">
+                <h3 class="tool-card-title">Claude</h3>
+                <p class="tool-card-text">Uma IA avançada que entende seu contexto, escreve do seu jeito e atua como um estagiário estratégico para acelerar sua produtividade.</p>
+                <img class="tool-card-img" src="/ed/be-a-ba-ia-3/dependencias/babia_claude.webp" width="352" height="334" alt="" loading="lazy">
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- ═══ Bloco claro: jornada + o que leva ═══ -->
+<div class="light-block">
+    <section class="sec-jornada">
+        <div class="jornada-inner">
+            <ul class="cards-capa-grid jornada-grid">
+                <li class="jornada-header">
+                    <h2 class="sec-title-light">E vai fazer junto, ao vivo:</h2>
+                    <p class="sec-lede-light">Cinco entregas prontas, do zero ao fim, no mesmo dia. Você abre a ferramenta junto com a turma, em vez de só assistir.</p>
+                </li>
+                <li class="jornada-card">
+                    <div class="jornada-card-media">
+                        <img src="/ed/be-a-ba-ia-3/dependencias/babia_box-capa01-2026.webp" width="960" height="480" alt="" loading="lazy">
+                        <span class="jornada-card-badge"><span class="material-symbols-outlined">check</span></span>
+                    </div>
+                    <div class="jornada-card-body">
+                        <h3 class="jornada-card-title">A apresentação:</h3>
+                        <p class="jornada-card-text">Do briefing ao deck pronto, com estrutura, texto e visual. No Gamma.</p>
+                    </div>
+                </li>
+                <li class="jornada-card">
+                    <div class="jornada-card-media">
+                        <img src="/ed/be-a-ba-ia-3/dependencias/babia_box-capa02.webp" width="960" height="480" alt="" loading="lazy">
+                        <span class="jornada-card-badge"><span class="material-symbols-outlined">check</span></span>
+                    </div>
+                    <div class="jornada-card-body">
+                        <h3 class="jornada-card-title">A planilha:</h3>
+                        <p class="jornada-card-text">Arquivo bagunçado entra, planilha tratada e analisada sai. No ChatGPT e no Claude.</p>
+                    </div>
+                </li>
+                <li class="jornada-card">
+                    <div class="jornada-card-media">
+                        <img src="/ed/be-a-ba-ia-3/dependencias/babia_box-capa02-2026.webp" width="960" height="480" alt="" loading="lazy">
+                        <span class="jornada-card-badge"><span class="material-symbols-outlined">check</span></span>
+                    </div>
+                    <div class="jornada-card-body">
+                        <h3 class="jornada-card-title">O relatório e o e-mail:</h3>
+                        <p class="jornada-card-text">Da primeira versão ao texto que você assina embaixo. No Claude e no Gemini.</p>
+                    </div>
+                </li>
+                <li class="jornada-card">
+                    <div class="jornada-card-media">
+                        <img src="/ed/be-a-ba-ia-3/dependencias/babia_box-capa04.webp" width="960" height="480" alt="" loading="lazy">
+                        <span class="jornada-card-badge"><span class="material-symbols-outlined">check</span></span>
+                    </div>
+                    <div class="jornada-card-body">
+                        <h3 class="jornada-card-title">O material visual:</h3>
+                        <p class="jornada-card-text">A imagem e a arte que hoje você pede pro designer. No Nano Banana.</p>
+                    </div>
+                </li>
+                <li class="jornada-card">
+                    <div class="jornada-card-media">
+                        <img src="/ed/be-a-ba-ia-3/dependencias/babia_box-capa05.webp" width="960" height="480" alt="" loading="lazy">
+                        <span class="jornada-card-badge"><span class="material-symbols-outlined">check</span></span>
+                    </div>
+                    <div class="jornada-card-body">
+                        <h3 class="jornada-card-title">A automação:</h3>
+                        <p class="jornada-card-text">Sua primeira automação de verdade: você monta, ela executa sozinha. No Manus.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="sec-levo">
+        <div class="levo-inner">
+            <div class="sec-header-light">
+                <h2 class="sec-title-light">O que eu levo da imersão?</h2>
+                <p class="sec-lede-light">O dia ao vivo é só a parte que tem hora pra começar. O resto fica com você depois.</p>
+            </div>
+            <ul class="levo-list">
+                <li><span class="material-symbols-outlined">check</span>Certificado oficial de participação</li>
+                <li><span class="material-symbols-outlined">check</span>E-book exclusivo: Framework de Ferramentas de IA</li>
+                <li><span class="material-symbols-outlined">check</span>Pack de prompts prontos: os comandos exatos das cinco entregas, pra você repetir na segunda-feira</li>
+                <li><span class="material-symbols-outlined">check</span>Acesso ao Notion de priorização: por onde começar a implantar IA na sua área, na ordem certa</li>
+                <li><span class="material-symbols-outlined">check</span>Grupo VIP no WhatsApp com os outros participantes</li>
+                <li><span class="material-symbols-outlined">check</span>Material de apoio com todos os fluxos ensinados</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ═══ O mercado já virou: 4 manchetes (bg claro) ═══ -->
+    <section class="sec-mercado">
+        <div class="mercado-inner">
+            <div class="sec-header-light">
+                <h2 class="sec-title-light">O mercado já virou</h2>
+                <p class="sec-lede-light">Não é promessa de futuro. É o que já está saindo no jornal sobre quem sabe usar IA.</p>
+            </div>
+            <ul class="mercado-grid">
+                <li class="scrim"><img src="/ed/be-a-ba-ia-3/dependencias/babia_manchete-print01.webp" width="400" height="800" alt="CNN Brasil: apesar de vantagem competitiva, Brasil tem mão de obra insuficiente para IA" loading="lazy"></li>
+                <li class="scrim"><img src="/ed/be-a-ba-ia-3/dependencias/babia_manchete-print02.webp" width="400" height="800" alt="Agência Brasil: número de empresas industriais que usam IA cresce 163% em dois anos" loading="lazy"></li>
+                <li class="scrim"><img src="/ed/be-a-ba-ia-3/dependencias/babia_manchete-print03.webp" width="400" height="800" alt="Forbes: demanda por profissionais de IA cresce 21% ao ano e impulsiona salários" loading="lazy"></li>
+                <li class="scrim"><img src="/ed/be-a-ba-ia-3/dependencias/babia_manchete-print04.webp" width="400" height="800" alt="Época Negócios: 95% das empresas que usam IA registram aumento de receita" loading="lazy"></li>
+            </ul>
+        </div>
+    </section>
+</div>
+
+<!-- ═══ Quem vai te guiar ═══ -->
+<section class="sec-prof">
+    <!-- 3 itens no grid (header, foto, card) pra reproduzir a sobreposição da
+         referência: no desktop o card avança sobre a foto; no mobile a ordem
+         inverte (foto antes) e o card sobe por cima dela. -->
+    <div class="prof-inner">
+        <div class="prof-header">
+            <h2 class="sec-title">Quem vai te guiar</h2>
+            <p class="sec-lede">O BÊ-A-BÁ da IA não é conduzido por quem só fala de futuro, mas por quem tem experiência prática conectando dados, negócios e muita tecnologia com linguagem acessível.</p>
+        </div>
+        <div class="prof-photo">
+            <img src="/ed/be-a-ba-ia-3/dependencias/n8n_professor.webp" width="544" height="680" alt="César Germano" loading="lazy">
+        </div>
+        <div class="prof-card">
+            <p class="prof-texto">César Germano é CEO e criador da plataforma de dashboards e dados Kalidash.</p>
+            <p class="prof-texto">Professor da trilha de IA e Automação na Xperiun.</p>
+            <p class="prof-texto">Já passou por grandes empresas como PicPay, Hotmart e RD Station. Tem experiência prática conectando dados, negócios e muita tecnologia com linguagem acessível.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Pra quem é (componente sec-cards-duo, portado de /ed/areas/logistica/) ═══ -->
+<section class="sec-cards-duo">
+    <div class="cards-duo-inner">
+        <article class="duo-card duo-card--sim">
+            <h2 class="duo-card-title">Essa imersão é <span class="duo-destaque">pra você</span> se:</h2>
+            <ul class="duo-list">
+                <li>Você usa IA todo dia pra perguntas e nunca transformou isso em processo;</li>
+                <li>Você já testou várias ferramentas e não sabe qual serve pra quê, nem como fazer uma conversar com a outra;</li>
+                <li>Você trabalha com financeiro, contábil, administrativo, compras, logística ou comercial e cansou de só achar conteúdo de IA pra marketing;</li>
+                <li>Você tem faculdade, pós, especialização e mesmo assim sente que ficou de fora do que o mercado está usando agora;</li>
+                <li>Você refaz o mesmo prompt três vezes e a resposta nunca sai como você imaginou;</li>
+                <li>Você quer ser a pessoa que resolve IA na sua área, não a que pergunta.</li>
+            </ul>
+        </article>
+        <article class="duo-card duo-card--nao">
+            <h2 class="duo-card-title"><span class="duo-destaque">Não é pra você</span> se:</h2>
+            <ul class="duo-list">
+                <li>Você quer uma aula teórica sobre o que é inteligência artificial;</li>
+                <li>Você procura conteúdo de IA para criação de conteúdo e redes sociais;</li>
+                <li>Você não pretende abrir o computador no sábado e fazer junto.</li>
+            </ul>
+        </article>
+    </div>
+</section>
+
+<!-- ═══ Oferta ═══ -->
+<section class="sec-oferta" id="oferta">
+    <div class="hero-glow oferta-glow" aria-hidden="true"></div>
+    <div class="oferta-inner">
+        <h2 class="sec-title oferta-title">Garanta seu acesso!</h2>
+
+        <!-- Card em formato de ticket: duas metades com o mesmo fundo, cada uma
+             recortada por uma mascara de meia-lua na propria borda. Juntas formam
+             o furo de 64px, e a linha pontilhada passa exatamente no meio dele. -->
+        <div class="oferta-card">
+            <div class="oferta-card-topo">
+                <span class="oferta-lote" data-lote-nome>Lote 01</span>
+                <div class="cert-topbar-barra oferta-barra">
+                    <div class="cert-topbar-barra-trilho" data-lote-barra role="progressbar"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="55" aria-label="Lote atual">
+                        <span class="cert-topbar-barra-fill" data-lote-preenche></span>
+                    </div>
+                    <span class="cert-topbar-barra-pct" data-lote-pct>55% das vagas preenchidas</span>
+                </div>
+                <!-- Só aparece em ?oferta=aluno-xperiun, no lugar da barra -->
+                <p class="oferta-aviso">Oferta limitada para alunos até 15/08</p>
+                <p class="oferta-de">De <del>R$297,00</del> por</p>
+                <p class="oferta-preco"><span class="oferta-preco-moeda">R$</span><span data-lote-preco>37</span></p>
+            </div>
+            <div class="oferta-card-corte" aria-hidden="true"></div>
+            <div class="oferta-card-base">
+                <a class="btn oferta-btn" data-size="l" data-emphasis="medium" href="#"
+                   onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup(document.documentElement.dataset.oferta === 'aluno-xperiun' ? 'popup-form-babia-aluno' : 'popup-form-babia')">Quero dominar Inteligência Artificial</a>
+                <!-- Estado "vendas fechadas": no original fica no DOM e oculto. -->
+                <p class="oferta-breve" hidden>VENDAS EM BREVE, AGUARDE!</p>
+            </div>
+        </div>
+        <div class="oferta-apoio">
+            <ul class="oferta-trust">
+                <li><span class="material-symbols-outlined">lock</span>Compra 100% Segura</li>
+                <li><span class="material-symbols-outlined">shield</span>7 Dias de Garantia Incondicional</li>
+            </ul>
+            <a class="btn oferta-zap" data-size="m" data-emphasis="subtle" href="https://api.whatsapp.com/send/?phone=%2B554831974984&amp;text&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener nofollow">Tirar dúvidas via WhatsApp</a>
+        </div>
+    </div>
+</section>
+
+<!-- Efeito de scroll das mãos do hero (afastamento horizontal) -->
+<script src="/ed/be-a-ba-ia-3/dependencias/hero-maos.js" defer></script>
+<script src="/ed/be-a-ba-ia-3/dependencias/lote-progresso.js" defer></script>
+
+<!-- Aros do bloco claro (encolhem com o scroll) -->
+<script src="/ed/be-a-ba-ia-3/dependencias/light-block-aros.js" defer></script>
+
+<!-- Faixa do topo some quando a oferta entra na tela -->
+<script src="/ed/be-a-ba-ia-3/dependencias/topbar-esmaece.js" defer></script>
+
+<!-- Reveal dos cards (.motion → .is-revealed) -->
+<script src="/ed/motion-cards.js" defer></script>
+
+<!-- Smooth scroll global (lerp em rAF + âncoras), o mesmo das outras páginas -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Popups de inscrição, abertos pelo CTA da oferta: o de cima é o geral, o de
+     baixo é o de aluno Xperiun (?oferta=aluno-xperiun). Quem escolhe é o
+     onclick do botão, olhando o data-oferta que o lote-progresso.js carimba. -->
+<div data-popup-form="babia"></div>
+<div data-popup-form="babia-aluno"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=1"></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C e drag de imagem. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

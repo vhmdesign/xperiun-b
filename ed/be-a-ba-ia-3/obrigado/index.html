@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-08-10">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <title>Inscrição confirmada | Bê-a-Bá da IA | Xperiun</title>
+    <meta name="description" content="Sua vaga no Bê-a-Bá da IA está garantida. Responda a pesquisa rápida e libere o acesso ao grupo oficial da turma.">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/ed/be-a-ba-ia-3/obrigado/style.css?v=3">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- Noise: overlay de grão fixo sobre a página (o mesmo da LP) -->
+<div class="noise" aria-hidden="true"></div>
+
+<main class="obr">
+    <div class="obr-glow" aria-hidden="true"></div>
+
+    <img class="obr-logo" src="/ed/be-a-ba-ia-3/dependencias/babia_logo.webp" width="560" height="64" alt="Bê-a-Bá da IA" fetchpriority="high" decoding="async">
+
+    <div class="obr-head">
+        <h1 class="obr-title">Sua vaga está <span class="obr-destaque">garantida</span></h1>
+
+        <!-- Progresso: 3 fases (Pagamento = feito, Pesquisa = atual, Grupo VIP
+             = pendente, liberado no fim da pesquisa) -->
+        <ol class="obr-prog" aria-label="Progresso da inscrição">
+            <li class="obr-prog-step is-done">
+                <span class="obr-prog-dot">1</span>
+                <span class="obr-prog-label">Pagamento</span>
+            </li>
+            <li class="obr-prog-step is-current" aria-current="step">
+                <span class="obr-prog-dot">2</span>
+                <span class="obr-prog-label">Pesquisa</span>
+            </li>
+            <li class="obr-prog-step">
+                <span class="obr-prog-dot">3</span>
+                <span class="obr-prog-label">Grupo VIP</span>
+            </li>
+        </ol>
+    </div>
+
+    <div class="obr-body">
+        <p>Pagamento confirmado! Você está dentro do Bê-a-Bá da IA, sábado, 29 de agosto, das 9h às 16h.</p>
+        <p class="obr-hl">Falta um passo. Preparamos uma pesquisa rápida, leva menos de 3 minutos, e é ela que libera o link do grupo oficial da turma.</p>
+        <p>No grupo você vai receber:</p>
+        <ul class="obr-list">
+            <li>O link da sala ao vivo e todos os avisos do dia</li>
+            <li>Conteúdos de aquecimento para chegar pronto</li>
+            <li>Orientações para aproveitar ao máximo a imersão</li>
+        </ul>
+    </div>
+
+    <button class="btn obr-cta" type="button" data-size="l" data-emphasis="high" id="obr-open">Responder Pesquisa</button>
+
+</main>
+
+<!-- Popup com a pesquisa (Typeform inline), desliza da direita -->
+<div class="obr-popup" id="obr-popup" aria-hidden="true">
+    <div class="obr-popup-bar">
+        <button class="btn obr-popup-exit" type="button" id="obr-close" data-size="m" data-emphasis="subtle">Sair</button>
+    </div>
+    <div class="obr-popup-inner">
+        <div class="obr-popup-loading" role="status">
+            <span class="obr-spinner" aria-hidden="true"></span>
+            <span class="obr-loading-text">Carregando pesquisa...</span>
+        </div>
+        <!-- Pesquisa do Bê-a-Bá no Typeform. O <script> do embed está no fim do
+             body, junto com os outros. -->
+        <div data-tf-live="01KZP56X0KPS9GN4RWAYD97TN7"></div>
+    </div>
+</div>
+
+<script src="//embed.typeform.com/next/embed.js"></script>
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+<script>
+(function () {
+    var openBtn = document.getElementById('obr-open');
+    var closeBtn = document.getElementById('obr-close');
+    var popup = document.getElementById('obr-popup');
+    if (!openBtn || !popup) return;
+    function openPopup() { popup.classList.add('is-open'); popup.setAttribute('aria-hidden', 'false'); document.documentElement.style.overflow = 'hidden'; }
+    function closePopup() { popup.classList.remove('is-open'); popup.setAttribute('aria-hidden', 'true'); document.documentElement.style.overflow = ''; }
+    openBtn.addEventListener('click', openPopup);
+    if (closeBtn) closeBtn.addEventListener('click', closePopup);
+    popup.addEventListener('click', function (e) { if (e.target === popup) closePopup(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePopup(); });
+
+    // Esconde o loading quando o iframe do Typeform aparece e carrega
+    var loading = popup.querySelector('.obr-popup-loading');
+    var tf = popup.querySelector('[data-tf-live]');
+    if (loading && tf) {
+        var hidden = false;
+        function hideLoading() { if (hidden) return; hidden = true; loading.classList.add('is-hidden'); }
+        function watchIframe(ifr) { ifr.addEventListener('load', hideLoading); }
+        var existing = tf.querySelector('iframe');
+        if (existing) watchIframe(existing);
+        else if (window.MutationObserver) {
+            var obs = new MutationObserver(function () {
+                var ifr = tf.querySelector('iframe');
+                if (ifr) { obs.disconnect(); watchIframe(ifr); }
+            });
+            obs.observe(tf, { childList: true, subtree: true });
+        }
+        setTimeout(hideLoading, 8000); // fallback: nunca trava o loading
+    }
+})();
+</script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

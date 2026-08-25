@@ -150,11 +150,13 @@ RewriteCond %{REQUEST_URI} ^/ed/?$
 RewriteCond %{DOCUMENT_ROOT}/ed/index.html -f
 RewriteRule ^ /ed/index.html [L,END]
 
-# 0.1) A pasta do evento é /ed/evento/ICIAN/ (maiúsculo) e o servidor é
-#      case-sensitive: /ed/evento/ician (minúsculo ou qualquer caixa) daria
-#      404. Redireciona qualquer variação de caixa pro canônico maiúsculo.
-RewriteCond %{REQUEST_URI} !^/ed/evento/ICIAN(/.*)?$
-RewriteRule ^evento/ician(/.*)?$ /ed/evento/ICIAN$1 [R=301,L,NC,NE]
+# 0.1) A pasta do evento é /ed/evento/ician/ (minúsculo) e o servidor é
+#      case-sensitive: /ed/evento/ICIAN (maiúsculo ou qualquer outra caixa)
+#      daria 404. Redireciona qualquer variação de caixa pro canônico
+#      minúsculo, o que também preserva os links antigos em maiúsculo que já
+#      circularam (301, não quebra nada).
+RewriteCond %{REQUEST_URI} !^/ed/evento/ician(/.*)?$
+RewriteRule ^evento/ician(/.*)?$ /ed/evento/ician$1 [R=301,L,NC,NE]
 
 # 1) Redireciona /caminho/index ou /caminho/index.html -> /caminho/ (301)
 #    Aplica-se também a /index e /index.html no root.

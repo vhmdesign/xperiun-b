@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Área de Membros | Imersão Claude & IA para Negócios
-   Lógica exclusiva da home da área de membros (/ed/evento/ICIAN/membros/).
+   Lógica exclusiva da home da área de membros (/ed/evento/ician/membros/).
    Antes ficava inline no index.html; externalizado aqui.
    Três blocos: (1) popup Certificado, (2) carrossel + min-height do bg,
    (3) popup ao clicar num card.
@@ -124,10 +124,10 @@
     ];
     /* vídeos por card (0,1,3 têm; o 2/aula02 só tem imagem) */
     var CARD_VIDEOS = [
-        '/ed/evento/ICIAN/membros/dependencias/plat-card-img-aula00.mp4',
-        '/ed/evento/ICIAN/membros/dependencias/plat-card-img-aula01.mp4',
+        '/ed/evento/ician/membros/dependencias/plat-card-img-aula00.mp4',
+        '/ed/evento/ician/membros/dependencias/plat-card-img-aula01.mp4',
         '',
-        '/ed/evento/ICIAN/membros/dependencias/plat-card-img-aula03.mp4'
+        '/ed/evento/ician/membros/dependencias/plat-card-img-aula03.mp4'
     ];
     var projects = cards.map(function (c, i) {
         var img = c.querySelector('.plat-card-img');
@@ -139,7 +139,7 @@
             title: title ? title.textContent : '',
             data: d.data || '', horario: d.horario || '', professor: d.professor || '',
             desc: d.desc || [],
-            assistirHref: '/ed/evento/ICIAN/membros/aulas/?aula=' + i
+            assistirHref: '/ed/evento/ician/membros/aulas/?aula=' + i
         };
     });
 

@@ -1,0 +1,16 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Página do certificado (rascunho): fundo bb, botão único centralizado.
+   Todo o estilo do popup vem do cert-parabens.css; tokens vêm do root.css.
+   ══════════════════════════════════════════════════════════════════════════ */
+html, body { margin: 0; min-height: 100%; }
+body { background: var(--bb); }
+
+.cert-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}

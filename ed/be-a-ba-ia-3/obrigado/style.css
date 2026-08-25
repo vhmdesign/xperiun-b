@@ -1,0 +1,418 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Bê-a-Bá da IA (3ª edição) — página de obrigado (pós-compra).
+
+   Estrutura portada de /ed/evento/ician/obrigado.css (mesma página: título +
+   progresso de 3 fases + CTA que abre a pesquisa num popup), com a identidade
+   do Bê-a-Bá no lugar da do ICIAN: glow roxo/azul do hero da LP, overlay de
+   noise, títulos em Syne 400 e o verde (--sc) como cor de avanço.
+
+   Tokens: todos do root.css. Nenhuma cor escrita à mão.
+
+   Sem grid de colunas aqui: é uma coluna de leitura centrada (864px), o mesmo
+   arranjo da página de referência. Por isso não se aplica o container de
+   1440/1152 do DS, que vale para layouts em grid.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bb);
+    color: var(--bw);
+}
+
+img { max-width: 100%; }
+
+/* ══ Noise ═════════════════════════════════════════════════════════════════
+   Mesmo overlay de grão da LP (ver style.css da página): tile SVG de 128px com
+   feTurbulence, tremido por translate3d (composição/GPU, sem repaint). A
+   camada é maior que a tela (inset: -128px) pra o deslocamento não mostrar
+   borda.
+   ══════════════════════════════════════════════════════════════════════════ */
+.noise {
+    position: fixed;
+    inset: -128px;
+    z-index: 888;
+    pointer-events: none;
+    will-change: transform;
+    background-image: url("data:image/svg+xml,%3Csvg width='128' height='128' viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pixelatedNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='saturate' values='0' result='grayscaleNoise'/%3E%3CfeComponentTransfer in='grayscaleNoise'%3E%3CfeFuncR type='discrete' tableValues='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'/%3E%3CfeFuncG type='discrete' tableValues='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'/%3E%3CfeFuncB type='discrete' tableValues='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'/%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0.05 0.1 0.15 0.2 0.25 0.3'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pixelatedNoise)' fill='transparent'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.75;
+    animation: noise-move 0.5s linear infinite;
+}
+@keyframes noise-move {
+    0%   { transform: translate3d(0, 0, 0); }
+    10%  { transform: translate3d(-6px, -13px, 0); }
+    20%  { transform: translate3d(-13px, 6px, 0); }
+    30%  { transform: translate3d(6px, -13px, 0); }
+    40%  { transform: translate3d(-6px, 19px, 0); }
+    50%  { transform: translate3d(13px, 13px, 0); }
+    60%  { transform: translate3d(6px, 0, 0); }
+    70%  { transform: translate3d(19px, -6px, 0); }
+    80%  { transform: translate3d(-13px, 6px, 0); }
+    90%  { transform: translate3d(0, -19px, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ══ Coluna central ════════════════════════════════════════════════════════ */
+.obr {
+    position: relative;
+    isolation: isolate;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;       /* mobile: dvh evita o bug do 100vh atrás da UI */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Glow do topo: a MESMA geometria e a mesma rampa do .hero-glow da LP (disco
+   de 1440px com o centro bem acima da dobra), só que `fixed` em vez de
+   `absolute`, porque aqui não existe seção de hero pra ancorar nele. */
+.obr-glow {
+    position: fixed;
+    top: -848px;
+    left: calc(50% - 720px);
+    width: 1440px;
+    height: 1440px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, var(--pc100) 0%, var(--pc200) 10%, var(--pc300) 25%, var(--pc500) 35%, var(--pc700) 45%, transparent 70%);
+    opacity: 0.5;
+}
+/* ── Textura ASCII animada sobre o glow ───────────────────────────────────
+   A mesma da LP, com os mesmos dois tiles de máscara. Duas camadas de
+   gradiente recortadas por máscaras de caracteres: dois SVGs de 128px com
+   <text>, MESMAS posições e caracteres diferentes. Alternando a opacidade das
+   duas, o campo parece trocar de caractere no lugar.
+
+   Tipografia: pilha mono NATIVA do sistema (ui-monospace → Cascadia/Segoe UI
+   Mono no Windows, Menlo no macOS, DejaVu no Linux). Sem raster, sem webfont,
+   sem JS: ~1,6KB de vetor por quadro, cacheável, glifos desenhados pelo SO.
+
+   Custo: a animação é só de `opacity`, que roda na composição (GPU) e não
+   repinta nada. SVG usado como imagem de máscara não anima por dentro (o
+   browser ignora animação dentro dele), daí a alternância ser feita aqui. */
+.obr-glow::before,
+.obr-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%,
+        var(--bw) 0%,
+        var(--pc100) 28%,
+        var(--pc300) 48%,
+        transparent 68%);
+    -webkit-mask-size: 128px 128px;
+            mask-size: 128px 128px;
+    -webkit-mask-repeat: repeat;
+            mask-repeat: repeat;
+    will-change: opacity;
+}
+.obr-glow::before {
+    -webkit-mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-a.svg");
+            mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-a.svg");
+    animation: ascii-troca 6s ease-in-out infinite;
+}
+.obr-glow::after {
+    -webkit-mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-b.svg");
+            mask-image: url("/ed/be-a-ba-ia-3/dependencias/babia_ascii-b.svg");
+    /* delay de meio ciclo: enquanto um quadro sobe, o outro desce, num
+       crossfade contínuo, sem os dois caírem no vale juntos. */
+    animation: ascii-troca 6s ease-in-out infinite -3s;
+}
+/* Respiração lenta e suave (ease-in-out, sem degraus): 0.15 é o teto de cada
+   camada, então a textura fica no limite do perceptível. */
+@keyframes ascii-troca {
+    0%, 100% { opacity: 0.15; }
+    50%      { opacity: 0.03; }
+}
+
+/* arquivo em 560px (2x) pra ficar nítido em tela retina, exibido em 280 */
+.obr-logo {
+    width: 280px;
+    height: auto;
+    display: block;
+}
+
+/* ── Título + progresso ─────────────────────────────────────────────────── */
+.obr-head {
+    width: 100%;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+.obr-title {
+    margin: 0;
+    font: var(--h1-horizontal);
+    font-weight: 400;         /* peso único da LP (Syne 400), depois do shorthand */
+    color: var(--bw);
+}
+/* mesmo destaque verde da copy do hero da LP */
+.obr-destaque { color: var(--sc300); }
+
+/* ── Progresso (3 fases) ────────────────────────────────────────────────────
+   Trilho + barra preenchida (verde, a mesma rampa do CTA da LP) até a fase
+   atual. Círculos: branco (feito), verde com pulso (atual), translúcido
+   (pendente). Grid de 3 colunas com o label EM FLUXO, então os três labels
+   ficam sempre alinhados entre si. */
+.obr-prog {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.obr-prog::before,
+.obr-prog::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 14px;               /* centro vertical da bolinha de 32px */
+    height: 4px;
+    border-radius: 8px;
+}
+.obr-prog::before {          /* trilho: centro da 1ª col -> centro da 3ª col */
+    left: 16.6667%;
+    width: 66.6667%;
+    background: var(--bw-25);
+}
+.obr-prog::after {           /* preenchido até a fase atual (a do meio) */
+    left: 16.6667%;
+    width: 33.3333%;
+    background-image: linear-gradient(90deg, var(--sc300), var(--sc500));
+    transition: width 0.5s ease-in-out;
+}
+.obr-prog-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.obr-prog-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--label-s);
+    line-height: 1;
+    color: var(--bw);
+    background: var(--bw-25);            /* pendente: translúcido */
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+}
+.obr-prog-step.is-done .obr-prog-dot {   /* feito: branco */
+    background: var(--bw);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+}
+.obr-prog-step.is-current .obr-prog-dot { /* atual: verde + pulso (2 anéis) */
+    background: var(--sc500);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    animation: obr-pulse 1.5s ease-out infinite;
+}
+@keyframes obr-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--sc500-50),  0 0 0 0 var(--sc500-25); }
+    15%  { box-shadow: 0 0 0 0 var(--sc500-25),  0 0 0 0 var(--sc500-15); }
+    100% { box-shadow: 0 0 0 16px transparent,   0 0 0 32px transparent; }
+}
+.obr-prog-label {
+    font: var(--label-s);
+    color: var(--bw-50);
+    white-space: nowrap;
+}
+.obr-prog-step.is-done .obr-prog-label,
+.obr-prog-step.is-current .obr-prog-label { color: var(--bw); }
+
+/* ── Corpo ──────────────────────────────────────────────────────────────── */
+.obr-body {
+    width: 100%;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+.obr-body p {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+.obr-body .obr-hl { color: var(--bw); }
+
+/* Lista com o marcador do .hero-bullets da LP: traço de 24x4 com gradiente e
+   blur(2px), no lugar de bullet ou ícone. */
+.obr-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 32px;      /* espaço do traço, que é absoluto em left: 0 */
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+.obr-list li {
+    position: relative;
+    display: block;
+    font: var(--p);
+    color: var(--bw-75);
+}
+.obr-list li::after {
+    content: "";
+    position: absolute;
+    top: calc(0.75rem - 2px);   /* centro da primeira linha do item */
+    left: -32px;
+    width: 24px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pc100), var(--pc300), var(--pc500));
+    filter: blur(2px);
+}
+
+/* ── CTA (abre o popup da pesquisa) ─────────────────────────────────────────
+   Componente .btn do DS. Os dois desvios são os mesmos da LP: canto de 16px em
+   vez da pílula, e a rampa verde no lugar da areia do emphasis high (o
+   [data-size]/[data-emphasis] no seletor vence o componente sem !important). */
+.btn[data-size] { border-radius: 16px; }
+.btn.obr-cta[data-emphasis] {
+    background-image: linear-gradient(90deg, var(--sc300), var(--sc500), var(--sc100));
+    box-shadow: var(--ring-25);
+}
+.obr-cta { margin-top: 32px; }
+
+/* ── Popup da pesquisa (Typeform inline, desliza da direita) ────────────────
+   Coluna: barra do botão "Sair" (espaço reservado) em cima, form embaixo.
+   Assim o botão nunca é coberto pelo form, mesmo em viewports baixas. */
+.obr-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;            /* acima do noise (888) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background: var(--bb-75);
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+    transform: translateX(100%);
+    opacity: 0;
+    filter: blur(2px);
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease;
+}
+.obr-popup.is-open {
+    transform: translateX(0);
+    opacity: 1;
+    filter: blur(0);
+    pointer-events: auto;
+}
+.obr-popup-bar {
+    position: relative;
+    z-index: 2;                 /* sempre acima do iframe -> botão clicável */
+    flex: none;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.obr-popup-inner {
+    position: relative;
+    z-index: 1;                 /* contexto próprio: o iframe fica contido aqui */
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+}
+.obr-popup-inner [data-tf-live] {
+    width: 100%;
+    height: 100%;
+}
+
+/* Indicador de carregamento do Typeform (some quando o iframe carrega) */
+.obr-popup-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 2;                 /* por cima do iframe enquanto carrega */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--bb);
+    transition: opacity 0.3s ease;
+}
+.obr-popup-loading.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.obr-spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, var(--pc300));
+    -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+            mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+    animation: obr-spin 0.8s linear infinite;
+}
+@keyframes obr-spin { to { transform: rotate(360deg); } }
+.obr-loading-text {
+    font: var(--label);
+    color: var(--bw-50);
+}
+
+/* ══ Tipografia: Syne na página inteira ════════════════════════════════════
+   Mesma regra da LP. Só os tokens `--h*-horizontal` já trazem Syne dentro do
+   shorthand `font:`; os outros (--p, --label*, --btn*) embutem Poppins, então
+   a família é reaplicada aqui, elemento a elemento.
+
+   Este bloco fica no FIM do arquivo de propósito: um `font:` declarado depois
+   reescreveria a font-family (mesma especificidade, quem vem depois ganha).
+
+   A página usa só o peso 400 do Syne, incluindo o título (as faces
+   self-hosted são 400 e 700, ver site-fonts/fonts.css).
+   ══════════════════════════════════════════════════════════════════════════ */
+body,
+.obr-prog-dot, .obr-prog-label,
+.obr-body p,
+.obr-list li,
+.obr-loading-text,
+.btn[data-size] {
+    font-family: var(--font-family-horizontal);
+}
+
+/* ── Responsivo ─────────────────────────────────────────────────────────── */
+@media (max-width: 576px) {
+    .obr-logo { width: 240px; }
+    .obr-head { margin-top: 48px; }
+    .obr-body { margin-top: 48px; }
+    .obr-popup { padding: 12px; gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .noise { animation: none; }
+    /* a textura para de respirar, mas continua visível (uma camada em cada
+       ponta da faixa de opacidade, como na LP) */
+    .obr-glow::before,
+    .obr-glow::after { animation: none; }
+    .obr-glow::before { opacity: 0.15; }
+    .obr-glow::after { opacity: 0.03; }
+    .obr-prog-step.is-current .obr-prog-dot { animation: none; }
+    .obr-spinner { animation-duration: 1.5s; }
+    .obr-popup,
+    .obr-popup.is-open { transform: none; filter: none; transition: opacity 0.2s ease; }
+}

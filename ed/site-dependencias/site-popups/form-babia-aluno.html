@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bê-a-Bá da IA (alunos) , Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Form ActiveCampaign do Bê-a-Bá da IA, versão ALUNOS XPERIUN.
+     É o par do form-babia.html: mesma estrutura, outro destino na AC, porque
+     esta é a oferta paralela de ?oferta=aluno-xperiun (Lote 00, R$19).
+
+     Id do form na AC: 503 (o público geral, a partir do Lote 01, é o 505). Os
+     dois PRECISAM ser diferentes entre si: o form.js acha o modal pelo id
+     _form_<id>_, e ids repetidos com os dois popups no mesmo DOM quebrariam o
+     callback de sucesso. O name="or" (UUID de origem na AC) está vazio. -->
+<div class="popup-form" id="popup-form-babia-aluno" style="--popup-accent-rgb: 255, 0, 50;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <img src="/ed/be-a-ba-ia-3/dependencias/babia_logo.webp" alt="Bê-a-Bá da IA" style="height: 32px; width: auto; display: block;">
+            </div>
+            <p class="popup-form-label">Condição de aluno Xperiun. Preencha seus dados pra garantir sua vaga:</p>
+            <form
+                class="popup-form-form _form _form_503 _inline-form _dark"
+                id="_form_503_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <input type="hidden" name="u" value="503">
+                <input type="hidden" name="f" value="503">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <input type="hidden" name="or" value="">
+
+                <input type="hidden" name="field[2]"   value="">
+                <input type="hidden" name="field[3]"   value="">
+                <input type="hidden" name="field[4]"   value="">
+                <input type="hidden" name="field[5]"   value="">
+                <input type="hidden" name="field[60]"  value="">
+                <input type="hidden" name="field[195]" value="">
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="you@domain.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 50199-5019" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_503_submit">Confirmar</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Tudo certo! Você será redirecionado para finalizar sua inscrição...</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>

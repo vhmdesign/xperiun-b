@@ -181,17 +181,17 @@
 /* preenche as 4 colunas, em vez de ficar nos 192 das etapas: aqui a largura é o
    conteúdo da peça, e não uma peça de fluxo a mais */
 .il-col--solta .il-card { max-width: none; }
-/* Deslocada 32 pra direita: com isso a borda esquerda da peça cai em 336, que é
-   exatamente onde começa a peça da etapa em alerta (par 3-4, os 192 centrados vão de
-   336 a 528), e a direita vai até 848, o fim da coluna 6. Sem o deslocamento ela
-   começaria em 304, a borda da coluna 3, 32 antes da peça que ela investiga.
+/* Deslocada 64 pra direita: a borda esquerda da peça cai em 368, 32 pra dentro da
+   peça da etapa em alerta (par 3-4, os 192 centrados vão de 336 a 528), e a direita
+   vai até 848, o fim da coluna 6. Sem o deslocamento ela começaria em 304, a borda
+   da coluna 3, bem antes da peça que ela investiga.
    margin-left e não translate: a largura segue automática e o deslocamento sai da
    direita em vez de estourar o diagrama, que acaba em 848. Com margem esquerda fixa
    e largura automática, o auto da direita resolve em zero.
    O seletor precisa de três níveis pra empatar com a regra de centragem, que é
    margin-inline: auto e sobrescreveria um seletor mais curto. Vindo depois e com a
    mesma especificidade, este vence. */
-.il-canvas .il-col--solta .il-card { margin-left: 32px; }
+.il-canvas .il-col--solta .il-card { margin-left: 64px; }
 
 /* ── a peça da causa raiz ────────────────────────────────────────
    O mesmo .il-card das etapas, inclusive nos 192 de largura: o que muda é só o

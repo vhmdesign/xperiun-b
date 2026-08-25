@@ -75,8 +75,8 @@
 .cert-topbar-logo {
     height: 40px; aspect-ratio: 158 / 48; width: auto; display: block;
     background-color: var(--bw);
-    -webkit-mask: url("/ed/evento/ICIAN/membros/dependencias/aic-brand.svg") no-repeat center / contain;
-            mask: url("/ed/evento/ICIAN/membros/dependencias/aic-brand.svg") no-repeat center / contain;
+    -webkit-mask: url("/ed/evento/ician/membros/dependencias/aic-brand.svg") no-repeat center / contain;
+            mask: url("/ed/evento/ician/membros/dependencias/aic-brand.svg") no-repeat center / contain;
 }
 /* texto centralizado no container */
 .cert-topbar-txt { grid-column: 2; justify-self: center; text-align: center; font: var(--label); color: var(--bw); white-space: nowrap; }

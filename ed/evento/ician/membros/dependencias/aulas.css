@@ -26,7 +26,7 @@ body {
 .aula-bg {
     position: absolute; inset: 0; z-index: 0;
     pointer-events: none;          /* camada decorativa não captura cliques */
-    background: url("/ed/evento/ICIAN/membros/dependencias/plat-bg.webp") center / cover no-repeat;
+    background: url("/ed/evento/ician/membros/dependencias/plat-bg.webp") center / cover no-repeat;
     filter: blur(16px);
     transform: scale(1.08);        /* esconde as bordas suavizadas pelo blur */
 }
