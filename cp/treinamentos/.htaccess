@@ -12,7 +12,7 @@
 # liberado pro botão "Copiar link".
 # ══════════════════════════════════════════════════════════════════════════
 
-# Herda as regras do .htaccess pai (inclusive a catch-all do WordPress).
+# Herda as regras do .htaccess pai.
 RewriteEngine On
 RewriteOptions inherit
 
