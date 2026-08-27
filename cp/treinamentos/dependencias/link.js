@@ -21,6 +21,7 @@
        preview ou local, o link precisa continuar apontando pro site real. */
     var PAGINA = 'https://xperiun.com/cp/treinamentos/certificado/';
     var SECULO = '20';                         /* o ano é 20 + os dois dígitos do campo */
+    var ALTURA_LISTA = 280;                    /* max-height da lista + folga (ver style.css) */
 
     var q = function (sel) { return document.querySelector(sel); };
     var val = function (sel) { return (q(sel).value || '').trim(); };
@@ -100,10 +101,13 @@
             group.classList.toggle('is-open', sim);
             trigger.setAttribute('aria-expanded', sim ? 'true' : 'false');
             icone.textContent = sim ? 'expand_less' : 'expand_more';
-            /* sem espaço abaixo, a lista sobe (o DS já prevê o is-open-up) */
+            /* Escolhe o lado com mais espaço (o DS já prevê o is-open-up). Se não
+               couber inteira em nenhum dos dois, fica pra baixo e rola por dentro,
+               que é o que o max-height do .dropdown-options garante. */
             if (sim) {
                 var r = trigger.getBoundingClientRect();
-                group.classList.toggle('is-open-up', window.innerHeight - r.bottom < 240);
+                var abaixo = window.innerHeight - r.bottom, acima = r.top;
+                group.classList.toggle('is-open-up', abaixo < ALTURA_LISTA && acima > abaixo);
             } else {
                 group.classList.remove('is-open-up');
             }
