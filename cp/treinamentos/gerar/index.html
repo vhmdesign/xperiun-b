@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Fora dos buscadores (reforçado pelo X-Robots-Tag do .htaccess) ─── -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="referrer" content="same-origin">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-08-27">
+
+    <!-- ─── Título ───────────────────────────────────────────── -->
+    <title>Gerar link · Xperiun</title>
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/cp/treinamentos/dependencias/style.css?v=25">
+
+    <!-- Guard: bloqueia file:// e iframe de terceiro (externo por causa da CSP) -->
+    <script src="/cp/treinamentos/dependencias/guard.js?v=1"></script>
+</head>
+<body>
+    <img src="/ed/site-dependencias/site-imagens/Base White Logo.svg" alt="Xperiun" class="hero-logo">
+
+    <!-- Uso interno: monta o link que o treinador manda pra turma. -->
+    <main class="cert-page">
+        <div class="cert-badge-media" data-cert-badge></div>
+
+        <section class="cert-conteudo">
+            <div class="cert-head">
+                <h1 class="cert-title" data-titulo>Acesso restrito</h1>
+                <p class="cert-desc" data-desc>Entre com o usuário e a senha do treinador para gerar o link.</p>
+            </div>
+
+            <form class="cert-form" data-login-form novalidate>
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="login-usuario">Usuário</label>
+                    <input class="input" type="text" id="login-usuario" data-login-usuario autocomplete="username" autocapitalize="none" spellcheck="false">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="login-senha">Senha</label>
+                    <input class="input" type="password" id="login-senha" data-login-senha autocomplete="current-password">
+                </div>
+
+                <p class="cert-msg cert-msg-erro" data-login-erro></p>
+
+                <div class="cert-actions">
+                    <button class="btn" data-size="m" data-emphasis="high" type="submit" data-login-entrar>Entrar</button>
+                </div>
+            </form>
+
+            <form class="cert-form" data-link-form novalidate hidden>
+                <!-- Dropdowns do DS: o JS preenche as opções e cuida do is-open -->
+                <div class="dropdown-group" data-dd="curso">
+                    <span class="input-label input-label-s">Treinamento</span>
+                    <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="dropdown-placeholder" data-dd-valor>Selecione</span>
+                        <span class="dropdown-icon material-symbols-outlined" data-dd-icone>expand_more</span>
+                    </div>
+                    <ul class="dropdown-options" role="listbox"></ul>
+                </div>
+
+                <div class="cert-datas">
+                    <div class="input-group">
+                        <label class="input-label input-label-s" for="link-dia-i">Dia de início</label>
+                        <input class="input" type="text" id="link-dia-i" data-link-dia-i inputmode="numeric" maxlength="2" placeholder="00">
+                    </div>
+                    <div class="dropdown-group" data-dd="mes-i">
+                        <span class="input-label input-label-s">Mês de início</span>
+                        <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-placeholder" data-dd-valor>Selecione</span>
+                            <span class="dropdown-icon material-symbols-outlined" data-dd-icone>expand_more</span>
+                        </div>
+                        <ul class="dropdown-options" role="listbox"></ul>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label input-label-s" for="link-dia-f">Dia de término</label>
+                        <input class="input" type="text" id="link-dia-f" data-link-dia-f inputmode="numeric" maxlength="2" placeholder="00">
+                    </div>
+                    <div class="dropdown-group" data-dd="mes-f">
+                        <span class="input-label input-label-s">Mês de término</span>
+                        <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-placeholder" data-dd-valor>Selecione</span>
+                            <span class="dropdown-icon material-symbols-outlined" data-dd-icone>expand_more</span>
+                        </div>
+                        <ul class="dropdown-options" role="listbox"></ul>
+                    </div>
+
+                    <div class="input-group cert-data-ano">
+                        <label class="input-label input-label-s" for="link-ano">Ano</label>
+                        <div class="input-wrap">
+                            <span class="input-icon input-icon-left cert-prefixo" aria-hidden="true">20</span>
+                            <input class="input input-has-icon-left" type="text" id="link-ano" data-link-ano inputmode="numeric" maxlength="2" placeholder="26">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="link-base">Endereço da página do certificado</label>
+                    <input class="input" type="text" id="link-base" data-link-base spellcheck="false">
+                </div>
+
+                <div class="input-group" data-link-saida-grupo hidden>
+                    <label class="input-label input-label-s" for="link-saida">Link gerado</label>
+                    <textarea class="input cert-link-saida" id="link-saida" data-link-saida rows="3" readonly spellcheck="false"></textarea>
+                </div>
+
+                <p class="cert-msg cert-msg-erro" data-link-erro></p>
+                <p class="cert-msg cert-msg-ok" data-link-ok></p>
+
+                <div class="cert-actions">
+                    <button class="btn" data-size="m" data-emphasis="medium" type="button" data-link-copiar disabled>Copiar link</button>
+                    <button class="btn" data-size="m" data-emphasis="high" type="submit" data-link-gerar>Gerar link</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="/cp/treinamentos/dependencias/cursos.js?v=3"></script>
+    <script src="/cp/treinamentos/dependencias/cofre.js?v=2"></script>
+    <script src="/cp/treinamentos/dependencias/link.js?v=7"></script>
+
+    <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+    <script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+    <!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+    <!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+</body>
+</html>

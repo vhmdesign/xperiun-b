@@ -1,0 +1,190 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Página do certificado: a própria página é o form. Componentes e tokens vêm
+   do root.css (.input, .radio, .control-group, .btn); aqui só o layout.
+
+   Grid do DS, container Desktop: max-width 1152 (8 cols base), caindo pra
+   6 cols em ≤864 e 4 cols em ≤576, com gaps 32/24/16. Badge e conteúdo ficam
+   lado a lado (span 4 + span 4) e empilham (1 / -1) a partir de 864.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Gutter reservado: quando a página precisa rolar de verdade (viewport baixo),
+   o layout centralizado não pula de lado ao ganhar a barra. */
+html { scrollbar-gutter: stable; }
+html, body { margin: 0; min-height: 100%; }
+body { background: var(--bb); position: relative; }
+
+/* Brilho pc200 descendo do topo, na largura inteira da página */
+body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--pc200) 15%, transparent), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cert-page {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 64px 16px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+    align-content: center;
+    align-items: center;
+    overflow: clip;   /* o reflexo do badge some ao passar do limite da página,
+                         em vez de virar área rolável; conteúdo em fluxo continua
+                         crescendo a caixa e rolando normalmente */
+}
+.cert-badge-media {
+    grid-column: span 4;
+    align-self: start;   /* badge no topo da linha: o reflexo cai no espaço livre abaixo */
+}
+.cert-conteudo {
+    grid-column: span 4;
+    position: relative;
+    z-index: 1;   /* acima do reflexo do badge */
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+/* Link inválido: sem badge, a mensagem ocupa a largura toda */
+.cert-page.is-bloqueado .cert-conteudo { grid-column: 1 / -1; }
+
+/* Logo fixo no topo direito, mesmas medidas do .hero-logo da home
+   (ed/site-dependencias/home.css). */
+.hero-logo {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 120px;
+    height: 36px;
+    display: block;
+    opacity: 0.5;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* ── Cabeçalho ── */
+.cert-head { display: flex; flex-direction: column; gap: 16px; }
+.cert-title { font: var(--h4); color: var(--sg300); margin: 0; }
+.cert-desc { font: var(--p); color: var(--sg100); margin: 0; }
+.cert-desc:empty { display: none; }
+
+/* ── Badge animado (mesmo movimento do preview do temp/generator.html) ──
+   O conjunto flutua 16px (8 pra cada lado) e o badge balança como pêndulo,
+   com pivô no topo; o reflexo é uma cópia espelhada 32px abaixo. */
+.cert-badge-media { display: flex; align-items: flex-start; justify-content: center; }
+.cert-badge {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    animation: cert-badge-float 3s ease-in-out infinite;
+}
+.cert-badge-stage {
+    position: relative;
+    width: 280px;
+    max-width: 100%;
+    transform-origin: top center;
+    animation: cert-badge-swing 4s ease-in-out infinite;
+}
+.cert-badge-stage img { width: 100%; height: auto; display: block; }
+
+.cert-badge-reflexo {
+    position: absolute;
+    top: calc(100% + 32px);
+    left: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+}
+.cert-badge-flip { transform: scaleY(-1); }
+
+@keyframes cert-badge-float {
+    0%, 100% { transform: translateY(-8px); }
+    50%      { transform: translateY(8px); }
+}
+@keyframes cert-badge-swing {
+    0%, 100% { transform: rotateZ(-3.75deg) skewY(-3.75deg); }
+    50%      { transform: rotateZ(3.75deg) skewY(3.75deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cert-badge, .cert-badge-stage { animation: none; }
+}
+
+/* ── Form ── */
+.cert-form { display: flex; flex-direction: column; gap: 24px; }
+.cert-form .input,
+.cert-form .dropdown { background-color: var(--bw-15); }
+.cert-form .input-label { color: var(--bw-75); }
+
+/* O DS traz is-open/is-open-up pro dropdown, mas não o estado de erro:
+   mesmo ring er500 que o .input-group.is-error usa nos inputs. */
+.dropdown-group.is-error .dropdown { box-shadow: inset 0 0 0 2px var(--er500); }
+.dropdown-group.is-error .dropdown-icon { color: var(--er300); }
+
+/* "20" fixo antes dos dois dígitos do ano */
+.cert-prefixo {
+    font: var(--p);
+    color: var(--bw-50);
+    font-variation-settings: normal;
+}
+
+/* Radio do DS: .control-group + .radio + .control-label, com o input só
+   escondido (o estado vem do input[type="radio"]:checked + .radio do root.css) */
+.cert-opcoes { display: flex; flex-direction: column; gap: 12px; }
+.cert-opcoes input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+
+/* Datas e link gerado (página /link/): dia + mês por linha, ano na largura toda */
+.cert-datas {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    column-gap: 8px;
+    row-gap: 16px;
+    align-items: end;   /* campo e dropdown alinhados pela base, mesmo com label de 2 linhas */
+}
+.cert-data-ano { grid-column: 1 / -1; }
+select.input { cursor: pointer; color-scheme: dark; }   /* seta e lista nativas no tom escuro */
+.cert-link-saida {
+    resize: vertical;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+/* Mensagens */
+.cert-msg { font: var(--p-s); margin: 0; }
+.cert-msg-erro { color: var(--er300); }
+.cert-msg-ok { color: var(--sc300); }
+.cert-msg:empty { display: none; }
+
+.cert-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+.cert-actions .btn { flex: 1; }
+/* .btn do DS não tem estado disabled próprio, replica o padrão (opacity 0.25);
+   o <a> sem href (link ainda não gerado) segue a mesma regra */
+.cert-actions .btn:disabled,
+.cert-actions a.btn:not([href]) { opacity: 0.25; pointer-events: none; }
+
+/* [hidden] precisa vencer o display dos componentes (.input-group, .btn, flex) */
+.cert-page [hidden] { display: none; }
+
+/* Media queries do grid depois das regras base de grid-column (senão a base
+   sobrescreve e o layout trava num span só). */
+@media (max-width: 864px) {
+    .cert-page {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        padding: 96px 16px 48px;   /* folga pro logo fixo */
+    }
+    .cert-badge-media, .cert-conteudo { grid-column: 1 / -1; }
+}
+
+@media (max-width: 576px) {
+    .cert-page { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .cert-badge-media, .cert-conteudo { grid-column: 1 / -1; }
+    .cert-badge-stage { width: 220px; }
+}

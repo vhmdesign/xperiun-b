@@ -1,0 +1,27 @@
+# ══════════════════════════════════════════════════════════════════════════
+# /cp/treinamentos/gerar/ — página interna (só treinador).
+# Herda tudo de /cp/treinamentos/.htaccess: sem indexação, sem crawler,
+# CSP, headers. Aqui só o que é específico desta pasta.
+# ══════════════════════════════════════════════════════════════════════════
+
+RewriteEngine On
+RewriteOptions inherit
+
+# ──────────────────────────────────────────────────────────────────
+# BASIC AUTH (recomendado ligar em produção)
+#
+# É o que realmente protege: sem autenticação o cofre.js nem sai do servidor,
+# então ninguém baixa o arquivo pra tentar senhas offline. O login da página
+# continua valendo por cima disso.
+#
+# Jeito mais simples de ligar no cPanel/Hostinger: "Proteção de diretório"
+# (Directory Privacy) apontando pra esta pasta — ele cria o .htpasswd com o
+# hash certo e insere as diretivas sozinho.
+#
+# Na mão: gerar o .htpasswd (htpasswd -B -c .htpasswd usuario), subir pra cá
+# e descomentar o bloco abaixo, com o caminho absoluto real da hospedagem.
+# ──────────────────────────────────────────────────────────────────
+# AuthType Basic
+# AuthName "Xperiun - area do treinador"
+# AuthUserFile /home/USUARIO/public_html/cp/treinamentos/gerar/.htpasswd
+# Require valid-user

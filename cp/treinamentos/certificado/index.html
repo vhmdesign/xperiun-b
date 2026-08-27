@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Fora dos buscadores (reforçado pelo X-Robots-Tag do .htaccess) ─── -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="referrer" content="same-origin">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-08-27">
+
+    <!-- ─── Título ───────────────────────────────────────────── -->
+    <title>Certificado · Xperiun</title>
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/cp/treinamentos/dependencias/style.css?v=25">
+
+    <!-- Guard: bloqueia file:// e iframe de terceiro (externo por causa da CSP) -->
+    <script src="/cp/treinamentos/dependencias/guard.js?v=1"></script>
+</head>
+<body>
+    <!-- A página inteira é o form: curso e período vêm da URL, o resto o aluno preenche. -->
+    <img src="/ed/site-dependencias/site-imagens/Base White Logo.svg" alt="Xperiun" class="hero-logo">
+
+    <main class="cert-page">
+        <div class="cert-badge-media" data-cert-badge></div>
+
+        <section class="cert-conteudo">
+            <div class="cert-head">
+                <h1 class="cert-title">Parabéns</h1>
+                <p class="cert-desc" data-cert-desc></p>
+            </div>
+
+            <p class="cert-msg cert-msg-erro cert-bloqueio" data-cert-bloqueio hidden>Este não é um endereço válido para acesso ao certificado, consulte o treinador para obter o endereço válido.</p>
+
+            <form class="cert-form" data-cert-form novalidate>
+                <!-- Definidos pelo link do treinador (?curso=&diaInicio=&mesInicio=&diaFinal=&mesFinal=&anoInicio=&token=) -->
+                <input type="hidden" data-cert-curso>
+                <input type="hidden" data-cert-dia-i>
+                <input type="hidden" data-cert-mes-i>
+                <input type="hidden" data-cert-dia-f>
+                <input type="hidden" data-cert-mes-f>
+                <input type="hidden" data-cert-ano>
+                <input type="hidden" data-cert-token>
+
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="cert-nome">Nome Completo</label>
+                    <input class="input" type="text" id="cert-nome" data-cert-nome placeholder="Seu nome como sairá no certificado" autocomplete="name">
+                </div>
+
+                <div class="input-group" data-cert-bloco-sexo hidden>
+                    <span class="input-label input-label-s">Escolha como o texto do certificado vai falar de você</span>
+                    <div class="cert-opcoes">
+                        <label class="control-group">
+                            <input type="radio" name="cert-sexo" value="Masculino" checked>
+                            <span class="radio"></span>
+                            <span class="control-label" data-cert-fecho-m>Masculino</span>
+                        </label>
+                        <label class="control-group">
+                            <input type="radio" name="cert-sexo" value="Feminino">
+                            <span class="radio"></span>
+                            <span class="control-label" data-cert-fecho-f>Feminino</span>
+                        </label>
+                    </div>
+                </div>
+
+                <p class="cert-msg cert-msg-erro" data-cert-erro></p>
+                <p class="cert-msg cert-msg-ok" data-cert-ok></p>
+
+                <div class="cert-actions">
+                    <a class="btn" data-size="m" data-emphasis="medium" download href="#" data-cert-baixar-badge hidden>Baixar Badge</a>
+                    <button class="btn" data-size="m" data-emphasis="high" type="submit" data-cert-baixar-certificado>Baixar Certificado</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="/cp/treinamentos/dependencias/cursos.js?v=3"></script>
+    <script src="/cp/treinamentos/dependencias/cert-form.js?v=23"></script>
+
+    <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+    <script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+    <!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+    <!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+</body>
+</html>

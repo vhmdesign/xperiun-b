@@ -1,0 +1,124 @@
+# ══════════════════════════════════════════════════════════════════════════
+# /cp/treinamentos/ — emissão de certificado (aluno) e geração de link (interno)
+#
+# Área que NÃO deve aparecer em busca nenhuma nem ser varrida por crawler:
+# além do <meta name="robots"> das páginas, o X-Robots-Tag abaixo cobre TODOS
+# os arquivos da pasta (inclusive PNG, PDF gerado, JS e CSS), e os crawlers
+# conhecidos levam 403 antes de ler qualquer coisa.
+#
+# Espelha o endurecimento de /ed/.htaccess, com três diferenças: bloqueia
+# também os buscadores (lá eles são bem-vindos), a CSP entra em enforcement
+# (não Report-Only, porque aqui não há script inline) e o clipboard fica
+# liberado pro botão "Copiar link".
+# ══════════════════════════════════════════════════════════════════════════
+
+# Herda as regras do .htaccess pai (inclusive a catch-all do WordPress).
+RewriteEngine On
+RewriteOptions inherit
+
+# Sem listagem de diretório e sem content negotiation.
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+DirectoryIndex index.html
+
+# ──────────────────────────────────────────────────────────────────
+# FORA DOS BUSCADORES
+# ──────────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noydir, noodp"
+</IfModule>
+
+# Crawler que se identifique como tal não passa. Inclui os buscadores
+# (Googlebot, Bingbot e cia.), os de IA, os de SEO e os de scraping.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} (Googlebot|Google-InspectionTool|Storebot-Google|APIs-Google|AdsBot|Mediapartners|Bingbot|BingPreview|msnbot|Slurp|DuckDuckBot|DuckAssistBot|Baiduspider|YandexBot|Sogou|Exabot|facebot|facebookexternalhit|ia_archiver|archive\.org_bot|Applebot|PetalBot|Qwantify|Neevabot) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|anthropic-ai|Claude-Web|PerplexityBot|Perplexity-User|cohere-ai|CCBot|Bytespider|Amazonbot|Diffbot|Omgilibot|FacebookBot|meta-externalagent|Google-Extended|Applebot-Extended|Timpibot|Webzio|ImagesiftBot) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (SemrushBot|AhrefsBot|MJ12Bot|DotBot|BLEXBot|DataForSeoBot|MegaIndex|serpstatbot|sistrix|linkfluence|Screaming\ Frog|SiteAuditBot) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (HTTrack|WebCopier|WebReaper|WebStripper|Offline\ Explorer|SiteSucker|Teleport|Wget|GrabNet|libwww|BlackWidow|CFNetwork) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (scrapy|python-requests|Go-http-client|httpx|curl/|aiohttp|node-fetch|axios|Java/|PostmanRuntime|Insomnia) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+    RewriteCond %{HTTP_USER_AGENT} ^-?$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────
+# MÉTODOS E ARQUIVOS
+# ──────────────────────────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|DELETE|PUT|PATCH|CONNECT)$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+<FilesMatch "\.(md|markdown|log|bak|backup|tmp|swp|swo|orig|psd|fig|sketch|xd|ai|indd|zip|tar|gz|tgz|7z|rar|env|config|ini|conf|yml|yaml|sql|sqlite|db|sh|ps1|bat|exe|cjs|mjs|htpasswd|DS_Store)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<FilesMatch "^(Thumbs\.db|\.htaccess|\.htpasswd|\.git.*|\.env.*)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Assets (fonte, arte, badge, css, js) só servem a partir das nossas páginas.
+# Requisição sem referer nosso, ou aberta direto na barra de endereço, vira 404.
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_REFERER} !^https?://(www\.)?xperiun\.com/ [NC]
+    RewriteCond %{HTTP_REFERER} !^https?://app\.xperiun\.com/ [NC]
+    RewriteRule \.(jpe?g|png|gif|webp|svg|avif|css|js|ttf|woff2?)$ - [R=404,NC,L]
+
+    RewriteCond %{HTTP:Sec-Fetch-Dest} ^.+$
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !^style$ [NC]
+    RewriteRule \.css$ - [R=404,NC,L]
+
+    RewriteCond %{HTTP:Sec-Fetch-Dest} ^.+$
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !^script$ [NC]
+    RewriteRule \.js$ - [R=404,NC,L]
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────
+# SECURITY HEADERS
+# ──────────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Nada de iframe: nem no próprio site (não há motivo pra embutir isto).
+    Header set X-Frame-Options "DENY"
+
+    # same-origin, não no-referrer: para fora nada é enviado (a URL do
+    # certificado leva o token na query), mas as requisições internas seguem
+    # mandando referer, que é o que o hotlink protection de /ed/ exige pra
+    # servir root.css, fontes e o logo.
+    Header set Referrer-Policy "same-origin"
+
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cross-Origin-Resource-Policy "same-origin"
+    Header set Cross-Origin-Opener-Policy "same-origin"
+
+    # Clipboard liberado (botão "Copiar link"); o resto das APIs, fechado.
+    Header set Permissions-Policy "clipboard-write=(self), clipboard-read=(), camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+    Header unset X-Powered-By
+    Header unset Server
+
+    # CSP em enforcement: não há script inline nestas páginas, então
+    # script-src 'self' basta. blob: cobre o PDF montado no navegador.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+
+    # Nada de cache em disco compartilhado pra área interna.
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, private"
+    </FilesMatch>
+</IfModule>
