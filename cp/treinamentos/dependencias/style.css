@@ -125,8 +125,8 @@ body::after {
 
 /* O DS traz is-open/is-open-up pro dropdown, mas não o estado de erro:
    mesmo ring er500 que o .input-group.is-error usa nos inputs. */
-.dropdown-group.is-error .dropdown { box-shadow: inset 0 0 0 2px var(--er500); }
-.dropdown-group.is-error .dropdown-icon { color: var(--er300); }
+.input-group.is-error .dropdown { box-shadow: inset 0 0 0 2px var(--er500); }
+.input-group.is-error .dropdown-icon { color: var(--er300); }
 
 /* "20" fixo antes dos dois dígitos do ano */
 .cert-prefixo {
@@ -151,15 +151,9 @@ body::after {
 .cert-data-ano { grid-column: 1 / -1; }
 select.input { cursor: pointer; color-scheme: dark; }   /* seta e lista nativas no tom escuro */
 
-/* O DS deixa .dropdown-options com overflow-y: auto mas sem altura máxima. Sem
-   limite, a lista dos 12 meses passa do rodapé da tela e os últimos meses ficam
-   inalcançáveis (a página não rola porque a lista é absolute). Com max-height,
-   o próprio auto vira scroll dentro da lista. 264px = 6 itens de 44px
-   (12 de padding + 12 + 20 de linha); em tela baixa, 50vh manda. */
-.dropdown-options {
-    max-height: min(264px, 50vh);
-    overscroll-behavior: contain;   /* chegou no fim da lista, não rola a página junto */
-}
+/* A lista rola por dentro quando o JS do DS aplica max-height (caso de não
+   caber nem abaixo nem acima do gatilho). O overflow-y: auto vem do root.css. */
+.dropdown-options { overscroll-behavior: contain; }
 .cert-link-saida {
     resize: vertical;
     line-height: 1.5;

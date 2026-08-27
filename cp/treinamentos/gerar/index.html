@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
 
     <!-- ─── CSS específico desta página ──────────────────────── -->
-    <link rel="stylesheet" href="/cp/treinamentos/dependencias/style.css?v=26">
+    <link rel="stylesheet" href="/cp/treinamentos/dependencias/style.css?v=27">
 
     <!-- Guard: bloqueia file:// e iframe de terceiro (externo por causa da CSP) -->
     <script src="/cp/treinamentos/dependencias/guard.js?v=1"></script>
@@ -62,13 +62,16 @@
 
             <form class="cert-form" data-link-form novalidate hidden>
                 <!-- Dropdowns do DS: o JS preenche as opções e cuida do is-open -->
-                <div class="dropdown-group" data-dd="curso">
+                <div class="input-group" data-dd="curso">
                     <span class="input-label input-label-s">Treinamento</span>
-                    <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
-                        <span class="dropdown-placeholder" data-dd-valor>Selecione</span>
-                        <span class="dropdown-icon material-symbols-outlined" data-dd-icone>expand_more</span>
+                    <div class="dropdown-group">
+                        <input type="hidden" name="curso" value="">
+                        <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-placeholder">Selecione</span>
+                            <span class="dropdown-icon material-symbols-outlined">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached" role="listbox"></ul>
                     </div>
-                    <ul class="dropdown-options" role="listbox"></ul>
                 </div>
 
                 <div class="cert-datas">
@@ -76,26 +79,32 @@
                         <label class="input-label input-label-s" for="link-dia-i">Dia de início</label>
                         <input class="input" type="text" id="link-dia-i" data-link-dia-i inputmode="numeric" maxlength="2" placeholder="00">
                     </div>
-                    <div class="dropdown-group" data-dd="mes-i">
+                    <div class="input-group" data-dd="mes-i">
                         <span class="input-label input-label-s">Mês de início</span>
-                        <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
-                            <span class="dropdown-placeholder" data-dd-valor>Selecione</span>
-                            <span class="dropdown-icon material-symbols-outlined" data-dd-icone>expand_more</span>
+                        <div class="dropdown-group">
+                            <input type="hidden" name="mes-i" value="">
+                            <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="dropdown-placeholder">Selecione</span>
+                                <span class="dropdown-icon material-symbols-outlined">expand_more</span>
+                            </div>
+                            <ul class="dropdown-options dropdown-options-detached" role="listbox"></ul>
                         </div>
-                        <ul class="dropdown-options" role="listbox"></ul>
                     </div>
 
                     <div class="input-group">
                         <label class="input-label input-label-s" for="link-dia-f">Dia de término</label>
                         <input class="input" type="text" id="link-dia-f" data-link-dia-f inputmode="numeric" maxlength="2" placeholder="00">
                     </div>
-                    <div class="dropdown-group" data-dd="mes-f">
+                    <div class="input-group" data-dd="mes-f">
                         <span class="input-label input-label-s">Mês de término</span>
-                        <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
-                            <span class="dropdown-placeholder" data-dd-valor>Selecione</span>
-                            <span class="dropdown-icon material-symbols-outlined" data-dd-icone>expand_more</span>
+                        <div class="dropdown-group">
+                            <input type="hidden" name="mes-f" value="">
+                            <div class="dropdown" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="dropdown-placeholder">Selecione</span>
+                                <span class="dropdown-icon material-symbols-outlined">expand_more</span>
+                            </div>
+                            <ul class="dropdown-options dropdown-options-detached" role="listbox"></ul>
                         </div>
-                        <ul class="dropdown-options" role="listbox"></ul>
                     </div>
 
                     <div class="input-group cert-data-ano">
@@ -130,7 +139,7 @@
 
     <script src="/cp/treinamentos/dependencias/cursos.js?v=3"></script>
     <script src="/cp/treinamentos/dependencias/cofre.js?v=2"></script>
-    <script src="/cp/treinamentos/dependencias/link.js?v=8"></script>
+    <script src="/cp/treinamentos/dependencias/link.js?v=9"></script>
 
     <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
     <script src="/ed/site-dependencias/anti-copy.js" defer></script>
