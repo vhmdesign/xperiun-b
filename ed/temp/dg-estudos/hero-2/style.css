@@ -1,0 +1,785 @@
+/* ══════════════════════════════════════════════════════════════
+   ESTUDO DO HERO (2a versão) — diagrama sobre o grid de 10 colunas
+   Só o desenho. O ambiente (fundo, body) vem do _estudo.css.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── o grid ──────────────────────────────────────────────────────
+   Grid Wide do DS, sem invenção: container de 1440 com 16 de padding de cada lado,
+   coluna de 112 e gap de 32. As colunas caem 10 → 8 (≤1439) → 6 (≤864) → 4 (≤576) com
+   gaps 32/32/24/16, e o max-width NUNCA muda, só a contagem de colunas.
+
+   As media queries vêm DEPOIS das regras base de posicionamento (fim do arquivo), que
+   é o que faz o remapeamento de span valer: com a mesma especificidade, quem vem
+   depois vence, e uma regra base escrita abaixo travaria o layout num span só.
+
+   Sem align-items: start aqui, ou seja, no stretch que é o padrão do grid: os grupos
+   esticam todos até a altura da linha, que é a do mais alto. É isso que dá à coluna das
+   fontes uma altura pra distribuir as peças dentro (ver .hr-grupo-lista); com start
+   cada grupo teria a altura do próprio conteúdo e não haveria folga nenhuma pra
+   repartir. */
+.hr {
+    position: relative;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+
+/* Eixos da fonte de ícone, iguais aos das outras ilustrações: sem preenchimento e
+   peso 200, que é o traço fino que combina com o desenho. O opsz 24 é o único valor
+   do eixo no subset self-hosted (ver dl-symbols.cjs), então é ele mesmo com o glifo
+   desenhado em 48. */
+.hr .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+}
+
+/* ── grupo de colunas ────────────────────────────────────────────
+   Uma etapa do diagrama: título em cima e as peças dela empilhadas embaixo.
+   --col e --span vêm do style inline, como na .dg-col das outras ilustrações: a
+   posição fica no HTML, junto do conteúdo, e o CSS só sabe ler as variáveis.
+
+   Sem moldura: o contorno, o raio e o padding ficaram comentados de propósito. As
+   peças já são caixas translúcidas com raio próprio, e uma moldura em volta delas
+   virava caixa dentro de caixa, com dois cantos arredondados concêntricos disputando
+   a leitura. Quem agrupa agora é o título mais a proximidade das peças, que é o
+   bastante: o grupo é uma coluna do grid, então o alinhamento já o separa do vizinho.
+   As linhas seguem no arquivo, comentadas, porque a moldura pode voltar quando as
+   outras etapas existirem e for preciso distinguir uma coluna da outra. */
+.hr-grupo {
+    grid-column: var(--col) / span var(--span, 2);
+    /* border-radius: 16px; */
+    /* padding: 16px; */
+    box-sizing: border-box;
+    /* box-shadow: var(--ring-10); */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* O título do grupo em --label-l, um degrau de tamanho acima do --label das peças, e no
+   mesmo bw-75 delas: agora quem separa o título do conteúdo é só o tamanho e o espaço,
+   não mais o tom.
+
+   A margem de 16 SOMA ao gap de 16 do .hr-grupo, então o título fica a 32 da lista, o
+   dobro do respiro que há entre as peças. É isso que o mantém lendo como cabeçalho da
+   coluna e não como o primeiro item dela. */
+.hr-grupo-titulo {
+    font: var(--label-l);
+    color: var(--bw-75);
+    margin-bottom: 16px;
+}
+
+/* As peças empilhadas e repartidas pela altura. flex: 1 faz a lista tomar toda a sobra
+   do grupo, que agora estica até a altura da coluna mais alta (ver .hr), e
+   space-between reparte essa sobra em folgas iguais: a primeira peça encosta no topo, a
+   última no fim, e o vão entre elas é sempre o mesmo.
+
+   O gap de 16 continua valendo como piso, pro caso de a coluna vizinha encolher a ponto
+   de não haver sobra: aí as peças voltam a ficar a 16 uma da outra em vez de se
+   encostarem. */
+.hr-grupo-lista {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* ── a peça ──────────────────────────────────────────────────────
+   A receita da .dg-card da .dg-falha, com raio 16, mas em dn500 no lugar do bw: o
+   gradiente 132deg vai de dn500-75 a dn500-15. O bw translúcido clareava conforme o que
+   estivesse atrás, e agora há muita coisa atrás, do baralho da governança às ligações
+   que cruzam as colunas. O cinza da escala escura dá uma peça de tom estável.
+   Padding de 12 e não os 16 de lá: a peça aqui é uma linha de lista e não um cartão de
+   etapa, e com o ícone dentro os 16 davam uma caixa alta demais pra cinco repetições
+   numa coluna só.
+   Sem o teto de 192px que a peça tem lá: nas fontes ela preenche a largura do grupo. O
+   teto volta na governança, mas declarado no baralho, que é o item de lá. */
+.hr-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 12px;
+    box-sizing: border-box;
+    background: linear-gradient(132deg, var(--dn500-75), var(--dn500-15));
+}
+
+/* A peça em estado: mesmo desenho de gradiente, só a família de cor muda. A receita é a
+   da .hi-no--wr e da .hi-no--er do hero v1, 15% num canto e 5% no outro, e não os 75/15
+   do cinza. Não é escolha estética: em cima do fundo quase preto, 15% de amarelo puro
+   chega perto da mesma luminosidade que 75% do dn500, então a peça marcada fica com o
+   mesmo peso das vizinhas em vez de virar um bloco berrante. Com 75 de amarelo ela
+   deixaria de ser uma peça e viraria o assunto da página.
+
+   .hr-wr e .hr-er entram AO LADO da classe da peça, como o .hr-fake do baralho: o estado
+   não é uma variante do card nem do nó, é uma condição que qualquer peça do desenho pode
+   ter. Uma variante por tipo de peça obrigaria a repetir a receita a cada peça nova.
+
+   Os seletores nomeiam as duas peças e dobram a classe pra o modificador não depender de
+   vir depois no arquivo. */
+.hr-card.hr-wr,
+.hr-conector.hr-wr {
+    background: linear-gradient(132deg, var(--wr500-15), var(--wr500-5));
+}
+.hr-card.hr-er,
+.hr-conector.hr-er {
+    background: linear-gradient(132deg, var(--er500-15), var(--er500-5));
+}
+
+/* ── o baralho ───────────────────────────────────────────────────
+   Um card de verdade com vazios atrás, escapando um degrau cada um: a pilha diz que ali
+   não há um item só, e sim uma lista que continua. Serve aos itens da governança e à
+   peça da plataforma, que são cards diferentes (.hr-card e .dg-card), então a regra
+   fala do baralho e do papel de cada filho, nunca da peça em si.
+
+   O padding-bottom reserva o espaço da pilha, de um degrau por vazio: sem ele o último
+   item de uma coluna escaparia por baixo dela, porque transform não ocupa layout. */
+.hr-baralho {
+    --degrau: 16px;
+    --fakes: 3;
+
+    position: relative;
+    padding-bottom: calc(var(--degrau) * var(--fakes));
+    box-sizing: border-box;
+}
+
+/* Na governança o baralho é o item da lista, e é nele que moram o teto de largura e a
+   centragem, não no card. align-self porque a lista é uma coluna de flex, onde o eixo
+   cruzado é o horizontal, então é o align que centra e não o justify; width: 100% junto
+   do teto porque item de flex centrado encolhe pro tamanho do conteúdo se não tiver
+   largura declarada. */
+[data-etapa="governanca"] .hr-baralho {
+    width: 100%;
+    max-width: 192px;
+    align-self: center;
+}
+
+/* O card com conteúdo precisa ser posicionado pra disputar pintura com os vazios, que
+   são absolutos: elemento posicionado pinta acima de bloco comum, então sem isto os
+   vazios cobririam o card mesmo vindo antes no HTML. A .hr-card já é posicionada por
+   conta do selo (ver .hr-card); aqui sobra a .dg-card, que vem da folha do diagnóstico
+   e não sabe nada disto. */
+.hr-baralho > .dg-card {
+    position: relative;
+}
+
+/* Os vazios: mesma caixa do card de verdade, via inset: 0 no baralho, então "do mesmo
+   tamanho" sai de graça e continua valendo se o card mudar de altura (um rótulo que
+   quebre em duas linhas, por exemplo).
+
+   O deslocamento é transform, que não entra no layout. Quem reserva o espaço da pilha é
+   o padding-bottom do baralho, de um degrau por vazio: assim o último item da coluna
+   termina no fim dela com a pilha inteira dentro, em vez de a pilha escapar por baixo.
+
+   E é por isso que o inset não é 0 nos quatro lados: com a folga reservada, um inset: 0
+   esticaria o vazio até o fim do padding e ele deixaria de ter o tamanho do card.
+   Descontando a mesma folga embaixo, a caixa do vazio volta a ser a do card, e o
+   translateY do último o leva exatamente até a borda de baixo do baralho.
+
+   .hr-fake entra ao lado da classe da peça (.hr-card ou .dg-card) em vez de ser uma
+   variante de cada uma: o que muda num vazio não é a peça, é o papel dela no baralho.
+
+   --i é a posição no baralho e --o a opacidade, os dois no style inline, como o resto do
+   desenho. */
+.hr-baralho > .hr-fake {
+    position: absolute;
+    inset: 0 0 calc(var(--degrau) * var(--fakes)) 0;
+    transform: translateY(calc(var(--i) * var(--degrau)));
+    opacity: var(--o);
+}
+
+/* A linha da peça: ícone à esquerda, rótulo e preview à direita. É a mesma montagem
+   da .dg-causa (a peça da causa raiz da ilustração 2). */
+.hr-fonte {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* flex: 0 0 auto pra o ícone não ceder largura quando o rótulo crescer: quem encolhe
+   é o texto, não o glifo.
+   bw-50 e não a cor de marca: a fonte de dados é matéria-prima do diagrama, não o que
+   ele quer destacar, e cinco ícones coloridos numa coluna puxariam o olho pra etapa
+   mais banal do desenho. O roxo fica reservado pro que vem depois. */
+.hr-fonte-ico {
+    flex: 0 0 auto;
+    font-size: 40px;
+    color: var(--bw-50);
+}
+
+/* min-width: 0 porque item de flex tem min-width auto, que é o tamanho do conteúdo:
+   sem isto um rótulo longo (Banco Operacional) empurraria o ícone em vez de quebrar
+   em duas linhas. */
+.hr-fonte-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* bw-75 e não bw cheio: o rótulo é o que se lê primeiro dentro da peça, mas a peça
+   inteira é secundária no desenho. Fica um degrau acima do ícone em bw-50 e um abaixo
+   do título do grupo, que é quem nomeia a etapa. */
+.hr-fonte-label {
+    font: var(--label);
+    color: var(--bw-75);
+}
+
+/* Representação de texto: duas barras de 4px de altura, sem raio, em bw-15, na largura
+   toda da coluna de texto. O tom é o mais fraco da peça de propósito, porque a barra
+   não diz nada, só sugere que ali existe conteúdo; em bw-50 ela competia com o ícone.
+   O gap é 4px, o mesmo da altura da barra, então o bloco lê como linhas de texto
+   miúdas e não como duas réguas separadas. */
+.hr-fonte-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.hr-fonte-preview span {
+    height: 4px;
+    width: 100%;
+    background: var(--bw-15);
+}
+
+/* ── as ligações entre colunas ───────────────────────────────────
+   O SVG cobre o grid inteiro e é o script.js quem escreve os traços dentro dele, a
+   partir da medida de cada peça. inset: 0 casa a origem dele com a das medidas: um
+   absoluto se apoia na borda de padding do ancestral posicionado, que é a mesma origem
+   do offsetLeft/offsetTop lidos lá.
+
+   z-index: 1 pra ficar acima das peças, e não atrás. É o que faz o quadrado da ponta
+   aparecer inteiro: ele nasce centrado na borda do nó, então metade dele cai por dentro
+   da peça, e por baixo só se veria a metade de fora, virando uma abinha em vez de um
+   quadrado. Os traços só existem no vão entre colunas, então estar por cima não cobre
+   nada.
+
+   O traço é o mesmo bw-15 de 2px das outras ilustrações. Os quadrados de ponta vão em
+   dn500, que é opaco: eles marcam onde a ligação encosta, e um tom translúcido mudaria
+   de cor conforme a peça atrás. */
+.hr-fluxo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: visible;
+    pointer-events: none;
+}
+.hr-fluxo path {
+    fill: none;
+    stroke: var(--bw-15);
+    stroke-width: 2;
+}
+.hr-fluxo rect {
+    fill: var(--dn500);
+}
+/* A ponta na peça em estado vai na cor cheia da família, e não no cinza. É o degrau que
+   faltava pra o alerta atravessar o desenho inteiro: o selo marca a peça, o fundo tinge
+   a peça, e a ponta leva o aviso até onde a ligação começa. Cor cheia e não translúcida
+   porque o quadrado é pequeno e fica sobre a peça: qualquer transparência aí o faria
+   mudar de tom conforme o fundo atrás. */
+.hr-fluxo rect.is-wr {
+    fill: var(--wr500);
+}
+.hr-fluxo rect.is-er {
+    fill: var(--er500);
+}
+/* A ponta limpa, em sc900: é a marca que mais se repete no desenho, quase vinte vezes, e
+   por isso é a que precisa falar mais baixo. No verde cheio o diagrama viraria uma pista
+   de natal, e mesmo o 700 ainda puxava o olho pra cada junção. O 900 mantém a família da
+   cor, então quem procura vê que aquilo está certo, sem que o certo grite mais que a
+   exceção.
+
+   Com ela como padrão dos dois lados, o dn500 do .hr-fluxo rect deixou de ser a regra e
+   virou a exceção: sobra só nas chegadas contaminadas. */
+.hr-fluxo rect.is-ok {
+    fill: var(--sc900);
+}
+
+/* A lista dos relatórios recuada em 16 à esquerda, e o recuo tem função: é nele que a
+   ligação vinda da governança termina. Nas outras colunas o traço encosta na peça,
+   porque lá ele entrega num item; aqui ele entrega na coluna, e parar no vão é o que
+   diz isso. Sem o recuo a ponta cairia em cima do card do meio e a leitura viraria
+   "a governança alimenta este relatório", que não é o caso.
+
+   padding e não margin porque a lista é item de flex esticado: margem sairia do espaço
+   dela e o recuo viraria uma sobra no fim da coluna. */
+[data-etapa="bi"] .hr-grupo-lista {
+    padding-left: 16px;
+    box-sizing: border-box;
+}
+
+/* ── a peça dos relatórios ───────────────────────────────────────
+   Raio de 12 e padding de 16, contra os 16 de raio e 12 de padding das outras peças: um
+   degrau menos de canto e um a mais de folga. O papel é outro, e as duas medidas seguem
+   dele. Nas outras colunas o card é item de lista, e o raio o arredonda como objeto;
+   aqui ele é moldura de gráfico, então o canto recua um pouco pra não competir com a
+   marca de dentro, e o padding cresce pra a marca não encostar na borda.
+
+   Preso ao data-etapa e não na .hr-card, que é compartilhada com as fontes e a
+   governança. */
+[data-etapa="bi"] .hr-card {
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* ── o gráfico dos relatórios ────────────────────────────────────
+   A moldura dos três: uma caixa de 120 de altura dividida em três quadrantes de 40 por
+   duas linhas. A altura é o único número fixo aqui; tudo o que se desenha dentro é
+   fração dela, então mudar 120 muda o gráfico inteiro sem mais nenhuma conta.
+
+   Os quadrantes existem pra dar escala à marca: sem eles uma barra alta e uma baixa só
+   dizem "maior" e "menor", e com eles dá pra ler quanto. */
+.hr-graf {
+    position: relative;
+    height: 120px;
+}
+
+/* A linha divisória, posicionada por --q (o quadrante em que ela fecha), contada de
+   baixo pra cima porque é de baixo que a barra cresce. Os 2px são o mínimo do projeto,
+   e a barra de 1 quadrante encosta o topo exatamente nesta linha. */
+.hr-graf-linha {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--q) / 3 * 100%);
+    height: 2px;
+    background: var(--bw-10);
+}
+
+/* As colunas: 9 marcas de 4px repartidas na largura, crescendo do chão. --q é a altura
+   em quadrantes, então 1 fecha na primeira linha, 2,5 fica no meio do último quadrante,
+   e a leitura sai da moldura em vez de depender de comparar barra com barra.
+   flex: 0 0 4px porque item de flex encolhe por padrão, e uma marca de 4 que cede
+   largura deixa de ser a mesma marca em todas as peças. */
+.hr-graf-barras {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+/* O gradiente desce, e não desce igual em todas: 180deg parte do topo de CADA barra,
+   então a mais alta atravessa a escala inteira e a mais baixa só o começo dela. A
+   altura passa a ter duas leituras, a medida e a intensidade, sem nenhuma conta a mais
+   no HTML. */
+.hr-graf-barras span {
+    flex: 0 0 4px;
+    height: calc(var(--q) / 3 * 100%);
+    background: linear-gradient(180deg, var(--pc300-50), var(--pc300-15));
+}
+
+/* O painel do meio: três medidas, cada uma com o seu alvo. É a leitura que as outras
+   duas peças não dão. As colunas e as séries falam de tempo, e esta fala de distância
+   até a meta, que é o que um painel de BI mostra e um gráfico de barras não.
+
+   Aqui as três faixas da moldura são três medidas independentes, e é por isso que esta
+   peça é a única sem as divisórias: linha entre elas sugeriria uma escala comum, que é o
+   que as outras duas peças têm e esta não. O grid de três linhas segue dando as faixas;
+   o que saiu foi só o traço.
+
+   A medida e o alvo são pseudo-elementos e não caixas no HTML porque não são conteúdo:
+   são duas leituras da mesma barra, e o HTML já diz as duas em --v e --alvo. */
+.hr-graf-kpi {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+}
+
+/* O trilho: a barra inteira é o total, e o que ela tem de fundo é o que falta. */
+.hr-graf-medida {
+    position: relative;
+    align-self: center;
+    height: 8px;
+    background: var(--bw-10);
+}
+
+/* A medida, do começo até --v por cento, na cor da marca: chegou no alvo. */
+.hr-graf-medida::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--v) * 1%);
+    background: var(--pc300-25);
+}
+
+/* Quem não alcançou o alvo, em er500-25. A comparação já estava no desenho, na posição
+   do traço em relação ao preenchido; a cor só a diz mais rápido, antes de o olho medir.
+
+   O seletor dobra a classe de propósito. Base e modificador têm a mesma especificidade,
+   então quem venceria seria só quem viesse depois no arquivo, e uma regra que depende
+   de ordem é uma regra que quebra sozinha quando alguém reorganiza o CSS. Com a classe
+   repetida o modificador ganha sempre.
+
+   Quem decide o estado é o HTML, porque só ele sabe os dois números: CSS não compara
+   --v com --alvo. */
+.hr-graf-medida.hr-graf-medida--abaixo::before {
+    background: var(--er500-25);
+}
+
+/* O alvo: um traço de 2px atravessando o trilho, 4px pra fora de cada lado pra ele ser
+   uma marca sobre a barra e não um pedaço dela. É a comparação que dá sentido ao
+   desenho: a primeira medida passou do alvo, a segunda não chegou, a terceira encostou.
+   Sem ele as três barras só diriam "cheia", "meia" e "quase cheia".
+   Em sc700 quando a meta foi batida. Sem alfa, ao contrário do er500-50 do outro caso:
+   a escala do DS não tem --sc700-50, e valor de cor não se inventa. Isso deixa o traço
+   verde um pouco mais presente que o vermelho. */
+.hr-graf-medida::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: calc(var(--alvo) * 1%);
+    width: 2px;
+    background: var(--sc700);
+}
+
+/* O traço da barra que não chegou, em er500. Agora a peça diz a mesma coisa de três
+   jeitos: pela posição do traço, pela cor do preenchido e pela cor do traço. É
+   redundância de propósito, porque num hero o desenho é lido de relance e cada leitura
+   dessas funciona sozinha se o olho pegar só uma. */
+.hr-graf-medida.hr-graf-medida--abaixo::after {
+    background: var(--er500-50);
+}
+
+/* A série: SVG esticado pela caixa toda, com viewBox de 100 por 30 (10 unidades por
+   quadrante) e preserveAspectRatio: none, pra os pontos serem lidos em quadrante e não
+   em pixel. É non-scaling-stroke que salva o traço disso: sem ele a distorção do
+   esticamento chegaria na espessura e o traço afinaria num eixo e engrossaria no outro.
+   Os pontos ficam nos mesmos nove lugares das colunas, então as três peças falam da
+   mesma série de tempo. */
+.hr-graf-serie {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+.hr-graf-serie polyline {
+    fill: none;
+    stroke: var(--pc300);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-linejoin: round;
+}
+/* A segunda do par, no roxo da marca contra o azul da primeira. Elas se separam por
+   MATIZ e não por intensidade: as duas deviam bater, ou seja, valem o mesmo, e uma
+   delas mais apagada diria que é a menos importante. Duas cores irmãs da mesma família
+   dizem "duas medidas" sem hierarquia e sem legenda.
+
+   O seletor repete o polyline de propósito: a regra de cima é .hr-graf-serie polyline,
+   que tem uma classe MAIS um tipo, e uma classe sozinha perde pra ela. Sem isto o
+   modificador não pinta nada, e as duas séries saem da mesma cor sem erro nenhum
+   aparecer. */
+.hr-graf-serie polyline.hr-graf-serie--b {
+    stroke: var(--pp300);
+}
+
+/* ── o nó de integração ──────────────────────────────────────────
+   A peça da seção 4 do hero v1 (a .hi-no de lá): quadrado de 64 com raio 16 e o mesmo
+   gradiente 132deg de bw-15 pra bw-5 das outras peças, com o ícone centrado em 28.
+
+   align-self: center porque a lista é uma coluna de flex e estica os filhos na
+   largura: sem isto o nó viraria uma faixa de 256 de largo. As fontes preenchem a
+   coluna porque são cartões de linha; o nó é um bloco, e bloco centrado é o que o faz
+   ler como ponto de passagem entre as duas colunas vizinhas.
+
+   position: relative pra ancorar o selo, que fica por cima da quina. */
+.hr-conector {
+    position: relative;
+    align-self: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Filho direto, e não descendente: o ícone do selo também é um material-symbols e
+   herdaria daqui o tamanho e a cor se o seletor fosse solto. */
+.hr-conector > .material-symbols-outlined {
+    font-size: 28px;
+    color: var(--bw-50);
+}
+
+/* O selo de estado, a .hi-badge do hero v1: a cor cheia da família sobre o 15% dela de
+   fundo, que é o que o faz aparecer em cima da peça. Sem o raio que ele tinha lá, ou
+   seja, quadrado: a peça e os quadradinhos do desenho todo são de canto reto, e o disco
+   era a única forma redonda da ilustração.
+
+   No v1 o selo nascia a meio caminho da aresta de cima. Aqui ele subiu pra quina
+   porque o meio da borda direita deixou de estar livre: é lá que a ligação encosta, e o
+   quadrado de ponta passava por cima dele. Na quina o selo não disputa espaço com nada,
+   nem com o ícone, nem com o traço.
+
+   O mesmo selo serve ao nó da integração e ao card das outras colunas: os dois são
+   peças posicionadas, e o selo só sabe se pendurar na quina de quem o hospeda. */
+.hr-selo {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hr-selo .material-symbols-outlined {
+    font-size: 13px;
+    color: currentColor;
+}
+.hr-selo--wr { background: var(--wr500-15); color: var(--wr500); }
+.hr-selo--er { background: var(--er500-15); color: var(--er500); }
+/* A terceira variante, o selo de conferido, na mesma receita das outras duas: cor cheia
+   da família sobre o 15% dela. É a do .hi-badge--ok do hero v1. */
+.hr-selo--ok { background: var(--sc500-15); color: var(--sc500); }
+
+/* ── a pilha de planos ───────────────────────────────────────────
+   Cinco losangos empilhados no mesmo eixo vertical, cada um cobrindo parte do de cima:
+   é o mesmo truque da referência, onde planos 2D em perspectiva isométrica leem como
+   uma estrutura 3D sem nenhum transform 3D no meio. A profundidade vem só de duas
+   coisas: a proporção 2:1 (o losango parece um quadrado visto de cima, inclinado) e a
+   sobreposição, que diz quem está na frente.
+
+   A profundidade vai ao contrário da ordem do HTML: quanto mais acima na tela, mais na
+   frente, com a base no fundo, atrás do penúltimo. Como a ordem de pintura natural é a
+   do HTML (o último por cima), ela sozinha daria o inverso disso, e por isso cada plano
+   declara o seu --z. A escala anda de dez em dez (50 no topo até 10 na base) pra sobrar
+   degrau entre dois planos: o SVG das ligações mora num deles.
+
+   isolation: isolate faz da pilha um contexto de empilhamento próprio, então esses --z
+   só disputam entre si e nunca com o resto da página. */
+.hr-pilha {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+}
+
+/* O losango é a caixa inteira recortada, e não um quadrado girado 45°: girando, o
+   losango passa a medir lado × √2 e a caixa de layout continua quadrada, então toda
+   medida da coluna vira conta com raiz de dois e a altura no fluxo deixa de bater com
+   a altura desenhada. Com clip-path a caixa de layout É o losango: 100% da largura do
+   grupo (2 colunas do grid) por metade disso de altura, e o desenho acompanha a queda
+   de 10 → 8 → 6 → 4 colunas sem nenhum número fixo.
+
+   Sem fundo aqui: cada plano diz o seu no modificador, porque dois deles são só malha
+   de quadradinhos sobre o vazio e dois são superfície cheia.
+
+   min-height: 0 porque o plano é item de um flex column, e item de flex tem mínimo
+   automático igual ao conteúdo: a malha de dentro é mais alta que o losango de
+   propósito (ver .hr-malha), e sem isto ela esticaria o plano e mataria a proporção
+   2:1, que é o que faz o losango parecer um quadrado visto de cima.
+
+   grid-template: 100% / 100% é o que centra a malha de verdade, e não é enfeite. Sem
+   trilha declarada, a linha do grid é auto, ou seja, do tamanho do conteúdo: como a
+   malha é mais alta que o plano, a linha ficava maior que o plano, começava no topo e
+   transbordava só pra baixo. O place-items: center então centrava a malha DENTRO DA
+   LINHA, não dentro do losango, e ela descia cerca de um décimo da largura do plano.
+   Era o que fazia a malha parecer fora de lugar, e desalinhava as duas malhas entre si,
+   porque o erro é proporcional ao tamanho de cada uma. Com a trilha fixada em 100% ela
+   passa a ser exatamente o plano, e centrar na linha é centrar no losango.
+
+   position: relative porque z-index só vale em elemento posicionado, e é o --z que
+   define a profundidade (ver .hr-pilha). */
+.hr-plano {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    min-height: 0;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    display: grid;
+    grid-template: 100% / 100%;
+    place-items: center;
+    z-index: var(--z, 0);
+}
+
+/* A superfície da base, do azul da marca pro roxo, agora translúcida como as outras:
+   pc300-25 num canto e pp500-50 no outro. Sendo o plano mais ao fundo (--z: 10), ela
+   opaca puxava o olho pro lugar errado; translúcida, ela fecha a pilha por baixo sem
+   virar o assunto do desenho. */
+.hr-plano--pc {
+    background: linear-gradient(132deg, var(--pc300-25), var(--pp500-50));
+}
+
+/* A superfície do meio, na mesma cor mas translúcida, pra ler como camada de vidro e
+   deixar passar o que está atrás. */
+.hr-plano--pc-fraco {
+    background: linear-gradient(132deg, var(--pc300-50), var(--pc300-15));
+}
+
+/* Superfície translúcida, o mesmo 132deg de bw-15 pra bw-5 da peça da coluna 1. Como
+   ela é translúcida, onde dois planos se cruzam as camadas somam e a área fica mais
+   densa sozinha: a sobreposição se marca pela própria transparência, sem contorno. */
+.hr-plano--bw {
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+
+/* O passo entre os planos, em porcentagem da largura do grupo pra escalar junto com o
+   grid: 50% é a altura de um losango (a proporção 2:1), então subtrair dela o passo dá
+   a margem negativa que sobrepõe. Porcentagem de margem resolve sempre contra a
+   LARGURA do bloco pai, inclusive no eixo vertical, o que aqui é a favor: os dois
+   valores da conta falam da mesma medida.
+
+   32% (um passo de 82px na largura cheia, contra 128px de altura do losango) põe o
+   vértice de cima de cada plano acima da linha mais larga do anterior: eles se cruzam
+   o bastante pra ler como pilha e de menos pra virar um borrão só. */
+.hr-plano ~ .hr-plano {
+    margin-top: calc(var(--passo, 32%) - 50%);
+}
+
+/* ── a malha de quadradinhos ─────────────────────────────────────
+   Aqui o quadrado girado 45° é justamente o que se quer, e por isso a conta com raiz de
+   dois que o plano evita aparece nesta regra: a malha é um grid quadrado de n por n que
+   leva o mesmo transform da projeção, então cada célula quadrada vira um losango
+   pequeno E as fileiras saem paralelas às arestas do losango grande. Uma malha sem
+   transform teria fileiras horizontais cortando o plano em diagonal, e a leitura de
+   quadradinhos deitados sobre a superfície iria embora.
+
+   70.7107% é 1/√2: girado 45°, um quadrado de lado L passa a medir L×√2 de diagonal,
+   então o lado precisa ser a largura do plano dividida por √2 pra diagonal bater
+   exatamente com a largura do losango. A malha fica mais alta que o plano (um lado de
+   altura contra meia largura), e é por isso que ela é centrada por place-items e que o
+   plano tem min-height: 0; o que sobra pra fora some no clip-path do losango.
+
+   Cada quadradinho é um elemento, um por célula, e não um padrão de máscara. A máscara
+   parecia a saída econômica (são 256 e 144 nas malhas maiores), mas mask-image joga o
+   elemento numa superfície de composição à parte: o navegador desenha os quadrados no
+   espaço local, rasteriza, e só então aplica o transform ao bitmap pronto. O resultado
+   era serrilha e quadrado de tamanho desigual, porque o que girava era imagem e não
+   forma, e contaminava até os nós, que já eram elementos. Sem máscara, o transform
+   entra na matriz do desenho e cada caixa é convertida como geometria, com a aresta
+   calculada já na posição final.
+
+   Os quadrados são centrados na célula (place-self), então a folga entre eles é a mesma
+   em toda a malha e a borda externa fica com meio vão de recuo em todos os lados: a
+   distribuição sai regular por construção, sem depender de arredondamento. */
+.hr-malha {
+    width: calc(70.7107% * var(--esc, 1));
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    grid-template-rows: repeat(var(--n), 1fr);
+    transform: scaleY(.5) rotate(45deg);
+}
+
+/* --ponto é a fração da célula que o quadrado ocupa: o resto vira a folga. Por cima
+   dela, --t e --o variam tamanho e opacidade por célula entre 1, 1/2 e 1/4, sorteados
+   no HTML. A malha regular, com todos os quadrados iguais, lia como tabuleiro; com os
+   dois eixos variando ela vira textura, e o olho encontra profundidade onde antes só
+   via repetição. Os dois são multiplicadores com valor 1 por padrão, então quem não
+   traz --t nem --o (a malha do plano 4) sai uniforme. */
+.hr-malha > i {
+    place-self: center;
+    width: calc(var(--ponto, .55) * var(--t, 1) * 100%);
+    aspect-ratio: 1;
+    opacity: var(--o, 1);
+    background: var(--bw-25);
+}
+
+/* O quadradinho que entra numa ligação, dos dois lados: o que envia e o que recebe.
+   Fica em bw-50, um degrau acima do bw-25 dos vizinhos, e fora do sorteio de --t e --o,
+   ou seja, no tamanho e na opacidade máximos. São os três degraus juntos (cor, tamanho
+   e opacidade), e é isso que faz a ponta da linha ter onde chegar em vez de morrer num
+   quadrado igual a todos os outros. */
+.hr-malha > i.hr-no {
+    --t: 1;
+    --o: 1;
+    background: var(--bw-50);
+}
+
+/* ── as ligações entre dois planos ───────────────────────────────
+   SVG cobrindo a pilha inteira. O viewBox é 1000 por 1780 porque a pilha tem proporção
+   fixa: largura W, altura W/2 do losango mais quatro passos de 0,32W, ou seja 1,78W
+   sempre, em qualquer breakpoint. Como a proporção não muda, o SVG encaixa sem
+   distorcer e as coordenadas dos caminhos, calculadas uma vez, valem em toda largura.
+
+   As curvas seguem a convenção das outras ilustrações: bézier com as duas alças na
+   metade do vão, saindo e chegando perpendicular ao plano. Nenhuma sai reta: cada
+   origem foi escolhida com desvio horizontal mínimo em relação ao alvo (e alternando o
+   lado), porque com x igual nas duas pontas a bézier degenera numa vertical. non-scaling-stroke mantém o
+   traço em 2px reais em qualquer tamanho, em vez de afinar junto com o desenho e furar
+   o mínimo de 2px do projeto.
+
+   O --z de 25 põe as linhas entre o 3º plano (30) e o 4º (20), que é onde elas estão no
+   espaço: descem de um plano e chegam nos quadradinhos do de baixo, então passam atrás
+   do plano de origem, que está na frente, e na frente da superfície de destino, que
+   está atrás. Com todos os planos em position: relative e sem z-index, a
+   ordem do HTML é a ordem de pintura, e essa posição resolve as duas coisas. */
+.hr-ligacoes {
+    position: absolute;
+    inset: 0;
+    z-index: var(--z, 0);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+/* --traco deixa cada feixe dizer o seu tom, com bw-25 de padrão: as ligações do 1º
+   plano pro 3º vêm em bw-10, dois degraus mais fracas, porque atravessam duas camadas
+   e com o mesmo peso das outras dominariam o desenho. */
+.hr-ligacoes path {
+    fill: none;
+    stroke: var(--traco, var(--bw-25));
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+}
+
+/* ── as duas peças abaixo da pilha ───────────────────────────────
+   São a .dg-card do .dg-pilar--4 da ilustração 4, vindas do diagnostico-avancado.css
+   ligado no head e não copiadas pra cá: enquanto forem a mesma peça, é melhor que
+   sigam sendo o mesmo código.
+
+   Os acertos ficam TODOS aqui, presos ao .hr-grupo, e não na folha de origem. A
+   .dg-card é peça compartilhada: mexer no raio e no padding dela lá muda junto todas
+   as ilustrações do diagnóstico, e isso é decisão de outro desenho, não deste estudo.
+   Se estes valores forem pra valer em todo lugar, o certo é mudar na origem e apagar
+   este bloco.
+
+   O teto de 192px sai porque a peça o traz pensada pro cartão quadrado das outras
+   ilustrações: lá na 4 quem o remove é a .dg-rec-lista, porque a peça preenche a
+   coluna, e aqui ela preenche o grupo. Raio e padding caem de 16 pra 12, e a folga
+   entre as barras do preview cai de 8 pra 4: a peça aqui é uma linha baixa, e os
+   valores de origem, feitos pra uma linha com ícone de 48, deixavam ar demais.
+
+   O selo perde o check e vira só o quadrado, de 32 pra 24. Lá na 4 o check nasce
+   invisível e é a animação da .dg-rec-lista que o acende; sem a lista ele seria
+   marcação morta no HTML. O respiro entre a peça e a pilha continua sendo o gap de 16
+   do próprio .hr-grupo, sem regra nova.
+
+   O fundo vira o mesmo dn500 da .hr-card, no lugar do bw translúcido de origem, pelo
+   mesmo motivo dela: com o baralho atrás e as ligações cruzando a coluna, o bw mudava
+   de tom conforme o que estivesse embaixo, e as peças das duas colunas deixavam de
+   parecer a mesma coisa. */
+.hr-grupo .dg-card {
+    max-width: none;
+    border-radius: 12px;
+    padding: 12px;
+    background: linear-gradient(132deg, var(--dn500-75), var(--dn500-15));
+}
+.hr-grupo .dg-card .dg-rec-texto {
+    gap: 4px;
+}
+.hr-grupo .dg-card .dg-rec-selo {
+    width: 24px;
+    height: 24px;
+}
+
+/* ── quedas de coluna do grid ────────────────────────────────────
+   Depois das regras base de propósito (ver o comentário do .hr). O grupo segue em
+   span 2 em todos os tiers: 2 colunas continuam 2 colunas, e o que muda é quanto elas
+   medem. O 1 / -1 dos blocos de conteúdo em ≤864 e ≤576 não se aplica a uma coluna de
+   diagrama, que perderia o sentido esticada na largura toda; o arranjo dos tiers
+   pequenos se resolve quando as outras colunas do desenho existirem. */
+@media (max-width: 1439px) {
+    .hr { grid-template-columns: repeat(8, 1fr); column-gap: 32px; }
+}
+@media (max-width: 864px) {
+    .hr { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+}
+@media (max-width: 576px) {
+    .hr { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+}

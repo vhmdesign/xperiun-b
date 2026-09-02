@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<!-- Estudo da ilustração do hero (2a versão)
+     Ambiente vazio. Marcação aqui no body, estilo no style.css desta pasta.
+     Sem moldura, sem régua e sem cabeçalho de propósito: nada recorta nem compete
+     com o desenho.
+
+     Diferente da 1a versão do hero (../hero/), que era um canvas de 1600x900 escalado
+     por coordenada, esta usa o GRID de 10 colunas do DS: cada bloco do diagrama ocupa
+     um trecho de colunas reais, então o desenho acompanha o grid da página em vez de
+     ter uma régua própria. -->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo do hero, diagrama em 10 colunas</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
+    <!-- A folha da ilustração 4, pelas duas peças abaixo da pilha: é ela quem tem a
+         .dg-card e a .dg-rec, e ligar a folha é o que mantém as peças sendo as MESMAS
+         em vez de uma cópia que envelhece sozinha. Tudo nela é escopado em .dg-, então
+         nada aqui muda de aparência por causa disso. -->
+    <link rel="stylesheet" href="/ed/temp/diagnostico-avancado.css">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/hero-2/style.css?v=61">
+</head>
+<body>
+    <!-- Grid Wide do DS: 10 colunas, container de 1440. Cada grupo do diagrama se
+         posiciona por --col (coluna inicial) e --span (quantas ocupa), do mesmo jeito
+         que a .dg-col das outras ilustrações, então acrescentar as colunas seguintes é
+         só somar grupos com outro --col. -->
+    <div class="hr">
+        <!-- As ligações entre colunas. Vazio no HTML de propósito: os traços saem de
+             medida de layout, não de coordenada escrita, porque entre colunas não há
+             proporção fixa nenhuma (ver o script.js). A topologia, essa sim, está
+             escrita, nos data-de e data-para de cada nó. -->
+        <svg class="hr-fluxo" aria-hidden="true"></svg>
+        <!-- Colunas 1 e 2: as fontes de dados.
+             O grupo é uma moldura só de contorno (sem fundo) com o título em cima: as
+             peças dentro dela já têm fundo translúcido, e um fundo no grupo somaria
+             camada sobre camada e apagaria a diferença entre a moldura e as peças.
+             As peças são a mesma do .dg-card da .dg-falha, na variante de linha
+             (ícone à esquerda, rótulo e preview de texto à direita), com o rótulo em
+             bw e o preview com 4px de gap. -->
+        <div class="hr-grupo" style="--col: 1; --span: 2" data-etapa="fontes">
+            <span class="hr-grupo-titulo">Fontes de dados</span>
+            <div class="hr-grupo-lista">
+                <div class="hr-card">
+                    <div class="hr-fonte">
+                        <span class="material-symbols-outlined hr-fonte-ico">deployed_code</span>
+                        <div class="hr-fonte-texto">
+                            <span class="hr-fonte-label">ERP</span>
+                            <div class="hr-fonte-preview">
+                                <span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-card">
+                    <div class="hr-fonte">
+                        <span class="material-symbols-outlined hr-fonte-ico">contacts</span>
+                        <div class="hr-fonte-texto">
+                            <span class="hr-fonte-label">CRM</span>
+                            <div class="hr-fonte-preview">
+                                <span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-card">
+                    <div class="hr-fonte">
+                        <span class="material-symbols-outlined hr-fonte-ico">cloud</span>
+                        <div class="hr-fonte-texto">
+                            <span class="hr-fonte-label">APIs</span>
+                            <div class="hr-fonte-preview">
+                                <span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-card hr-wr">
+                    <span class="hr-selo hr-selo--wr">
+                        <span class="material-symbols-outlined">warning</span>
+                    </span>
+                    <div class="hr-fonte">
+                        <span class="material-symbols-outlined hr-fonte-ico">table_view</span>
+                        <div class="hr-fonte-texto">
+                            <span class="hr-fonte-label">Planilhas</span>
+                            <div class="hr-fonte-preview">
+                                <span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-card">
+                    <div class="hr-fonte">
+                        <span class="material-symbols-outlined hr-fonte-ico">database</span>
+                        <div class="hr-fonte-texto">
+                            <span class="hr-fonte-label">Banco Operacional</span>
+                            <div class="hr-fonte-preview">
+                                <span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colunas 3 e 4: as integrações, a etapa entre as fontes e a plataforma.
+             É a seção 4 do hero v1 (../hero/), trazida pro grid: os mesmos quatro nós
+             e os mesmos ícones, agora numa lista que se reparte pela altura da coluna
+             em vez de coordenadas num canvas.
+
+             Duas diferenças pedidas: os nós ficam todos na mesma cor, sem as variantes
+             de estado que lá pintavam o fundo de amarelo e vermelho, e o ícone vai em
+             bw-50, o mesmo tom das fontes. Saíram também o selo de OK e as legendas.
+             Ficaram os selos de alerta e de erro, que lá marcam o gargalo da carga
+             noturna e a conexão instável. -->
+        <div class="hr-grupo" style="--col: 3; --span: 2">
+            <span class="hr-grupo-titulo">Integrações</span>
+            <div class="hr-grupo-lista">
+                <div class="hr-conector" data-de="1,2">
+                    <span class="material-symbols-outlined">hub</span>
+                </div>
+                <div class="hr-conector hr-wr" data-de="3,5">
+                    <span class="material-symbols-outlined">plug_connect</span>
+                    <span class="hr-selo hr-selo--wr">
+                        <span class="material-symbols-outlined">warning</span>
+                    </span>
+                </div>
+                <div class="hr-conector" data-de="1,4">
+                    <span class="material-symbols-outlined">code</span>
+                </div>
+                <div class="hr-conector hr-er" data-de="3,5">
+                    <span class="material-symbols-outlined">link</span>
+                    <span class="hr-selo hr-selo--er">
+                        <span class="material-symbols-outlined">close</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colunas 5 e 6: a plataforma, desenhada como pilha de planos.
+             Cinco losangos no mesmo eixo vertical, cada um sobrepondo parte do anterior,
+             que é o arranjo da referência: planos 2D em proporção isométrica que juntos
+             leem como um bloco 3D. Não há transform 3D nem z-index aqui, só recorte,
+             proporção 2:1 e a ordem do HTML (o último pinta por cima e vira o plano da
+             frente). Os planos ainda estão vazios de propósito: primeiro a estrutura,
+             depois o que mora em cada camada. -->
+        <div class="hr-grupo" style="--col: 5; --span: 2">
+            <span class="hr-grupo-titulo">Plataforma de dados</span>
+            <!-- Os planos vêm na ordem do topo pra base. A profundidade, porém, é a
+                 inversa: quanto mais acima, mais na frente, e a base fica no fundo,
+                 atrás do penúltimo. Quem diz isso é o --z de cada plano, de 50 no topo
+                 a 10 na base, porque a ordem de pintura do HTML sozinha daria o
+                 contrário. -->
+            <div class="hr-pilha">
+                <!-- 1, topo: malha solta, sem superfície. Os quadradinhos variam em
+                     tamanho (--t) e opacidade (--o) entre 1, 1/2 e 1/4, sorteados por
+                     célula: é a variação que dá textura e profundidade à camada, no
+                     lugar do tabuleiro regular que ela era antes. -->
+                <div class="hr-plano" style="--z: 50">
+                    <div class="hr-malha" style="--n: 12">
+                        <i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: .5"></i>
+                        <i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: 1"></i>
+                        <i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: 1"></i>
+                        <i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .5; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: .5"></i>
+                        <i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: 1"></i><i class="hr-no"></i><i style="--t: 1; --o: .5"></i>
+                        <i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .25"></i>
+                        <i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: .5"></i><i class="hr-no"></i><i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: 1"></i>
+                        <i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .5"></i>
+                        <i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .5"></i><i class="hr-no"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .25"></i>
+                        <i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: .25"></i>
+                        <i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .5"></i><i class="hr-no"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: .5"></i><i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: .5"></i>
+                        <i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: 1"></i><i style="--t: .5; --o: .5"></i>
+                    </div>
+                </div>
+                <!-- As 6 ligações do 1º plano pro 3º, saindo de 4 quadrados: os
+                     dois das pontas se abrem em duas. O --z de 45 as põe logo atrás do
+                     plano de origem (50) e na frente de tudo abaixo, inclusive da
+                     superfície do 2º (40), que elas atravessam. -->
+                <svg class="hr-ligacoes" style="--z: 45; --traco: var(--bw-10)" viewBox="0 0 1000 1780" aria-hidden="true">
+                    <path d="M250.0 312.5 C250.0 580.4, 125.0 580.4, 125.0 848.3" />
+                    <path d="M250.0 312.5 C250.0 580.4, 375.0 580.4, 375.0 848.3" />
+                    <path d="M583.3 312.5 C583.3 590.8, 416.7 590.8, 416.7 869.2" />
+                    <path d="M750.0 312.5 C750.0 580.4, 458.3 580.4, 458.3 848.3" />
+                    <path d="M416.7 312.5 C416.7 580.4, 541.7 580.4, 541.7 848.3" />
+                    <path d="M416.7 312.5 C416.7 580.4, 625.0 580.4, 625.0 848.3" />
+                </svg>
+                <!-- 2 -->
+                <div class="hr-plano hr-plano--pc-fraco" style="--z: 40"></div>
+                <!-- 3: a mesma malha do topo, e é dela que saem as ligações. -->
+                <div class="hr-plano" style="--z: 30">
+                    <div class="hr-malha" style="--n: 12">
+                        <i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: .5"></i>
+                        <i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .25"></i>
+                        <i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: .5"></i>
+                        <i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .5"></i><i class="hr-no"></i><i style="--t: .5; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .5"></i>
+                        <i style="--t: .5; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: 1"></i><i class="hr-no"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: .5"></i>
+                        <i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .5"></i><i class="hr-no"></i><i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .5"></i>
+                        <i style="--t: .5; --o: 1"></i><i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: .5"></i><i class="hr-no"></i><i class="hr-no"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: 1"></i>
+                        <i style="--t: .25; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: 1"></i>
+                        <i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .25"></i>
+                        <i class="hr-no"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .5; --o: 1"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: 1"></i>
+                        <i style="--t: 1; --o: .5"></i><i style="--t: 1; --o: .5"></i><i style="--t: .5; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .25"></i><i style="--t: 1; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: .25; --o: .5"></i><i style="--t: 1; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: 1; --o: .5"></i>
+                        <i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: 1"></i><i style="--t: 1; --o: .5"></i><i style="--t: .25; --o: .5"></i><i style="--t: .25; --o: 1"></i><i style="--t: .25; --o: .25"></i><i style="--t: .25; --o: 1"></i><i style="--t: .5; --o: .5"></i><i style="--t: 1; --o: .25"></i><i style="--t: .5; --o: 1"></i><i style="--t: .5; --o: 1"></i>
+                    </div>
+                </div>
+                <!-- As 6 ligações, do plano 3 pro 4, logo abaixo. O --z de 25 as põe
+                     entre os dois planos, que é a posição delas no espaço. -->
+                <svg class="hr-ligacoes" style="--z: 25" viewBox="0 0 1000 1780" aria-hidden="true">
+                    <path d="M625.0 848.3 C625.0 975.4, 500.0 975.4, 500.0 1102.5" />
+                    <path d="M458.3 848.3 C458.3 1029.2, 715.0 1029.2, 715.0 1210.0" />
+                    <path d="M541.7 848.3 C541.7 1029.2, 428.3 1029.2, 428.3 1210.0" />
+                    <path d="M416.7 869.2 C416.7 1093.3, 643.3 1093.3, 643.3 1317.5" />
+                    <path d="M375.0 848.3 C375.0 1011.2, 213.3 1011.2, 213.3 1174.2" />
+                    <path d="M125.0 848.3 C125.0 1082.9, 356.7 1082.9, 356.7 1317.5" />
+                    <path d="M416.7 869.2 C416.7 1039.6, 141.7 1039.6, 141.7 1210.0" />
+                    <path d="M625.0 848.3 C625.0 1029.2, 858.3 1029.2, 858.3 1210.0" />
+                </svg>
+                <!-- 4 -->
+                <div class="hr-plano hr-plano--bw" style="--z: 20">
+<div class="hr-malha" style="--n: 6; --ponto: .62; --esc: .86">
+                        <i></i><i></i><i></i><i></i><i></i><i class="hr-no"></i>
+                        <i></i><i class="hr-no"></i><i></i><i></i><i class="hr-no"></i><i></i>
+                        <i></i><i></i><i></i><i></i><i></i><i></i>
+                        <i></i><i></i><i class="hr-no"></i><i></i><i></i><i class="hr-no"></i>
+                        <i class="hr-no"></i><i></i><i></i><i></i><i></i><i></i>
+                        <i class="hr-no"></i><i></i><i></i><i class="hr-no"></i><i></i><i></i>
+                    </div>
+                </div>
+                <!-- 5, base -->
+                <div class="hr-plano hr-plano--pc" style="--z: 10"></div>
+            </div>
+            <!-- A peça do .dg-pilar--4, tirando o ícone e o rótulo que você pediu pra
+                 sair: sobram o preview, agora em par, e o selo. Uma só, em baralho, com
+                 os mesmos três vazios atrás dos itens da governança: a pilha diz que a
+                 lista continua, e dizer isso com um card e três sombras custa menos
+                 altura do que repetir a peça. -->
+            <div class="hr-baralho">
+                <div class="dg-card hr-fake" style="--i: 3; --o: .25"></div>
+                <div class="dg-card hr-fake" style="--i: 2; --o: .5"></div>
+                <div class="dg-card hr-fake" style="--i: 1; --o: .75"></div>
+                <div class="dg-card">
+                    <span class="hr-selo hr-selo--ok">
+                        <span class="material-symbols-outlined">check</span>
+                    </span>
+                    <div class="dg-rec-item">
+                        <div class="dg-rec-texto">
+                            <div class="dg-rec-preview"><span></span></div>
+                            <div class="dg-rec-preview"><span></span></div>
+                        </div>
+                        <span class="dg-rec-selo"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colunas 7 e 8: a governança, o que a plataforma entrega adiante. É a seção
+             6 do hero v1, com os mesmos três itens e os mesmos ícones de lá.
+
+             A peça é a mesma da coluna 1, a .hr-card com a linha .hr-fonte dentro: as
+             duas colunas são listas de itens rotulados, e um segundo desenho pra dizer
+             a mesma coisa só faria as duas divergirem com o tempo. O nome das classes
+             ficou falando de "fonte" porque nasceu ali; o que elas descrevem é a linha
+             da peça, não a etapa.
+
+             Cada item é um baralho: os três cards vazios vêm ANTES do de verdade no
+             HTML de propósito. Todos são posicionados e nenhum tem z-index, então quem
+             pinta por cima é o último, e o último precisa ser o card com conteúdo.
+
+             data-etapa é o que o script.js lê pra saber quem liga em quem, no lugar de
+             contar filhos numa ordem que uma coluna nova no meio quebraria. -->
+        <div class="hr-grupo" style="--col: 7; --span: 2" data-etapa="governanca">
+            <span class="hr-grupo-titulo">Governança</span>
+            <div class="hr-grupo-lista">
+                <div class="hr-baralho">
+                    <div class="hr-card hr-fake" style="--i: 3; --o: .25"></div>
+                    <div class="hr-card hr-fake" style="--i: 2; --o: .5"></div>
+                    <div class="hr-card hr-fake" style="--i: 1; --o: .75"></div>
+                    <div class="hr-card">
+                        <div class="hr-fonte">
+                            <span class="material-symbols-outlined hr-fonte-ico">verified</span>
+                            <div class="hr-fonte-texto">
+                                <span class="hr-fonte-label">Qualidade</span>
+                                <div class="hr-fonte-preview">
+                                    <span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-baralho">
+                    <div class="hr-card hr-fake" style="--i: 3; --o: .25"></div>
+                    <div class="hr-card hr-fake" style="--i: 2; --o: .5"></div>
+                    <div class="hr-card hr-fake" style="--i: 1; --o: .75"></div>
+                    <div class="hr-card">
+                        <div class="hr-fonte">
+                            <span class="material-symbols-outlined hr-fonte-ico">lock</span>
+                            <div class="hr-fonte-texto">
+                                <span class="hr-fonte-label">Segurança</span>
+                                <div class="hr-fonte-preview">
+                                    <span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-baralho">
+                    <div class="hr-card hr-fake" style="--i: 3; --o: .25"></div>
+                    <div class="hr-card hr-fake" style="--i: 2; --o: .5"></div>
+                    <div class="hr-card hr-fake" style="--i: 1; --o: .75"></div>
+                    <div class="hr-card hr-wr">
+                        <span class="hr-selo hr-selo--wr">
+                            <span class="material-symbols-outlined">warning</span>
+                        </span>
+                        <div class="hr-fonte">
+                            <span class="material-symbols-outlined hr-fonte-ico">schema</span>
+                            <div class="hr-fonte-texto">
+                                <span class="hr-fonte-label">Metadados</span>
+                                <div class="hr-fonte-preview">
+                                    <span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colunas 9 e 10: BI e relatórios, a leitura que sai da plataforma. É a seção
+             7 do hero v1, aqui como três peças de gráfico.
+
+             Cada peça responde a uma pergunta diferente: as colunas dizem quanto em
+             cada tempo, as duas séries dizem se o que devia andar junto anda, e o painel
+             do fim diz onde cada medida está em relação ao alvo dela.
+
+             As duas primeiras dividem a moldura de três quadrantes, porque as duas leem
+             uma escala de altura. O painel não: ali as três faixas são três medidas
+             independentes, e uma divisória entre elas sugeriria uma escala comum que não
+             existe. Ele fecha a coluna em baralho, como os itens da governança. -->
+        <div class="hr-grupo" style="--col: 9; --span: 2" data-etapa="bi">
+            <span class="hr-grupo-titulo">BI e relatórios</span>
+            <!-- data-alvo na LISTA, não numa peça: a governança entrega na coluna, e a
+                 ponta para no recuo de 16 da lista, sem encostar em card nenhum. -->
+            <div class="hr-grupo-lista" data-alvo>
+                <div class="hr-card">
+                    <div class="hr-graf">
+                        <span class="hr-graf-linha" style="--q: 1"></span>
+                        <span class="hr-graf-linha" style="--q: 2"></span>
+                        <div class="hr-graf-barras">
+                            <span style="--q: 1"></span>
+                            <span style="--q: 0.5"></span>
+                            <span style="--q: 0.5"></span>
+                            <span style="--q: 1"></span>
+                            <span style="--q: 2.5"></span>
+                            <span style="--q: 1.5"></span>
+                            <span style="--q: 0.5"></span>
+                            <span style="--q: 2.5"></span>
+                            <span style="--q: 1"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-card hr-er">
+                    <span class="hr-selo hr-selo--er">
+                        <span class="material-symbols-outlined">close</span>
+                    </span>
+                    <div class="hr-graf">
+                        <span class="hr-graf-linha" style="--q: 1"></span>
+                        <span class="hr-graf-linha" style="--q: 2"></span>
+                        <svg class="hr-graf-serie" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
+                            <polyline points="0,17 20,13 40,10 60,7 80,4 100,2" />
+                            <polyline class="hr-graf-serie--b" points="0,22 20,19 40,17 60,17 80,19 100,21" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="hr-baralho">
+                    <div class="hr-card hr-fake" style="--i: 3; --o: .25"></div>
+                    <div class="hr-card hr-fake" style="--i: 2; --o: .5"></div>
+                    <div class="hr-card hr-fake" style="--i: 1; --o: .75"></div>
+                    <div class="hr-card">
+                        <div class="hr-graf">
+                            <div class="hr-graf-kpi">
+                                <div class="hr-graf-medida" style="--v: 78; --alvo: 64"></div>
+                                <div class="hr-graf-medida hr-graf-medida--abaixo" style="--v: 52; --alvo: 71"></div>
+                                <div class="hr-graf-medida" style="--v: 91; --alvo: 86"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/ed/temp/dg-estudos/hero-2/script.js?v=14" defer></script>
+</body>
+</html>

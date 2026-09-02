@@ -1,8 +1,11 @@
 /* CSS do Diagnóstico Avançado de BI.
-   Cópia do marketplace.css; daqui em diante os dois seguem separados. */
-/* ===== Marketplace (temp/lab) — overrides locais. O visual base do hero
-   (wave, top-tag, hero-h1/hero-p, reveal) vem de root.css + formacoes/style.css
-   + formacoes/script.js, igual às páginas de área/business-cases. ===== */
+   Só o que é desta página: o hero, a seção de pilares e as cinco ilustrações.
+   O visual base do hero (wave, top-tag, hero-h1/hero-p, reveal) vem de root.css
+   + formacoes/style.css + formacoes/script.js, igual às páginas de área e de
+   business-cases; aqui ficam apenas os overrides.
+   O prefixo dos seletores é dg-: dg-pilares/dg-pilar para a seção e os cards,
+   dg-card para a peça compartilhada das ilustrações, e dg-arq/dg-falha/dg-risco/
+   dg-rec/dg-plano para as ilustrações 1 a 5. */
 
 /* ── hero (centralizado, igual ao business-cases) ── */
 .hero { background: linear-gradient(0deg, var(--pc500-25), transparent); }
@@ -39,22 +42,745 @@
 }
 .hero-wave.wave-section { padding-top: 128px; }
 .hero-content { max-width: 832px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+/* lockup acima do titulo: logo + filete vertical + linha de contexto. O fill do
+   SVG virou currentColor, entao a cor vem do color do proprio svg (bw-50) e nao
+   de um hex cravado na marcacao. O filete tem 2px, o minimo de traco do DS, e
+   estica pela altura da linha com align-self: stretch. */
+.hero-lockup { display: flex; align-items: center; gap: 12px; margin-bottom: 64px; }
+.hero-lockup-logo { height: 48px; width: auto; display: block; color: var(--bw-50); }
+.hero-lockup-rule { flex: 0 0 auto; align-self: stretch; width: 2px; background: var(--bw-10); }
+.hero-lockup-text { font: var(--label-xs); color: var(--bw-75); text-align: left; }
 .hero-title-group, .hero-bottom { align-items: center; }
-.hero-tags, .hero-actions { justify-content: center; }
+.hero-actions { justify-content: center; }
 
-/* ── seção genérica (cabeçalho eyebrow/título/lede do DS) ── */
-.mk-sec { padding: 128px 0; }
-.mk-sec-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
-    display: flex; flex-direction: column; gap: 16px; }
-.mk-sec .sec-lede { max-width: 720px; }
+/* ══════════════════════════════════════════════════════════════
+   SEÇÃO DIAGNÓSTICO — Varredura completa → dashboard → Plano de ação
+   Portada do .sec-fluxo de /ed/areas/logistica/style.css, com o mesmo desenho:
+   dois orbitais pulsando nas pontas e o dashboard inclinado no meio, que se
+   endireita conforme a página rola (o tilt vive no diagnostico-avancado.js).
+   Fica logo abaixo do hero e sobe 80px dentro do cap dele, que é a razão do
+   translateY(-128px) inicial: o dashboard nasce encostado no hero.
+   Escopado em .sec-diagnostico pra não vazar, porque .anel, .center e .orbital
+   são nomes genéricos. Os filhos vieram renomeados de fluxo-* pra diagnostico-*;
+   .orbital/.orbital-recebe/.anel/.center ficaram como estão, já que o escopo da
+   seção resolve. */
+/* --dg-varre é o compasso da varredura, no mesmo espírito do --ciclo da ilustração 5.
+   Mora aqui porque os DOIS carros (o dos painéis escuros e o do feixe) precisam da
+   mesma duração pra andar em passo: com o número escrito em dois lugares, mexer num só
+   dessincronizaria o escuro do feixe. */
+.sec-diagnostico { position: relative; z-index: 2; margin-top: -80px; --dg-varre: 8s; }
+.sec-diagnostico .diagnostico-inner { max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box; }
+.sec-diagnostico .diagnostico-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sec-diagnostico .diagnostico-dash {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    width: calc(100% - 288px);
+    /* padding: 8px; */
+    border-radius: 16px;
+    background-color: rgba(245, 245, 255, 0.05);
+    /* box-shadow: inset 0 0 4px 0 var(--bw-25); */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transform: perspective(512px) rotateX(15deg) translateY(-128px);
+    will-change: transform;
+}
+/* A placa agora tem imagem: o diagrama ANTES do diagnóstico, sem nenhum alerta. Ela
+   entrou no lugar do campo de cor chapada que servia de demonstração, e com ela o
+   contraste entre revelado e não revelado passou a vir do desenho, que era o que aquele
+   dn400 provisório imitava.
+   O render tem fundo transparente, então quem pinta o fundo é a última camada do
+   background. É isso que faz o desenho flutuar na placa em vez de trazer um retângulo
+   próprio, e é isso que faz a revelação mostrar só o que MUDA de um estado pro outro,
+   já que os vazios dos dois heros coincidem.
+
+   Essa última camada é bb-25 e não bb: translúcida, ela deixa passar o vidro da moldura
+   e o degradê da seção que estão atrás, e a placa deixa de ser um retângulo preto colado
+   na página pra virar uma tela por onde o fundo aparece.
+
+   Entre o desenho e essa base entra a textura de pontos do MBA, em ladrilho de 8px, na
+   variante de 10% de opacidade. Ela dá superfície à placa: sem nada atrás o desenho
+   pairava sobre um vazio, e com a trama ele passa a estar EM cima de alguma coisa, que é
+   o que faz a peça ler como tela e não como recorte. Fica atrás do hero de propósito,
+   pra não virar grão por cima do diagrama, e por isso recebe também o escurecimento da
+   primeira camada: os 10% do arquivo chegam à tela como uns 5%, que é o peso certo pra
+   uma trama que se repete no quadro inteiro.
+
+   O bb-50 da primeira camada é o escurecimento do não revelado, e ele é CONSTANTE: o
+   estado sem diagnóstico tem sempre o mesmo peso, do primeiro ao último quadro do ciclo.
+   Era o véu de rearme que dava esse tom antes, mas ele entrava e saía, então o quadro
+   pulsava a cada volta. Agora o escuro é do próprio fundo, e o que a varredura faz é
+   trazer o hero revelado em cheio por cima dele.
+
+   O aspect-ratio de 16/9 continua sendo o que dá altura à placa, e o render foi feito
+   nessa proporção pra o cover não cortar nada.
+   Mantém o raio de 12, o traço interno e a camada (z-index 1, debaixo dos filetes e da
+   tela). */
+.sec-diagnostico .diagnostico-placa {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    background:
+        linear-gradient(var(--bb-50), var(--bb-50)),
+        url("/ed/temp/dg-estudos/_img/hero-3.webp") center / cover no-repeat,
+        url("/ed/site-dependencias/site-media/pos-graduacoes/mba-fpa/mba-fpa-bg-texture-10.png") 0 0 / 8px 8px repeat,
+        var(--bb-25);
+    box-shadow: inset 0 0 4px 0 var(--bw-25);
+    position: relative;
+    z-index: 1;
+}
+.sec-diagnostico .diagnostico-dash::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 0;
+    width: 2px;
+    height: calc(100% - 32px);
+    background-image: linear-gradient(0deg, rgba(0,255,150,0), rgba(0,255,150,0.5), rgba(0,255,150,0));
+    z-index: 2;
+}
+.sec-diagnostico .diagnostico-dash::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    right: 0;
+    width: 2px;
+    height: calc(100% - 32px);
+    background-image: linear-gradient(0deg, rgba(150,150,255,0), rgba(150,150,255,0.5), rgba(150,150,255,0));
+    z-index: 2;
+}
+
+/* ── vinheta + varredura reveladora ──
+   A placa não fica à mostra: ela nasce escura e o que a revela é a varredura, uma
+   fresta clara que atravessa em loop.
+
+   São DUAS camadas sobre a placa, e a separação existe por causa do recorte:
+
+   1. .diagnostico-tela, recortada (overflow hidden + radius 12): leva a vinheta e os
+      painéis escuros. Tudo aqui tem que morrer na borda da placa, senão escuro e
+      vinheta vazariam pelos cantos arredondados por cima da moldura de vidro.
+   2. .diagnostico-feixe, recortada SÓ na horizontal: leva a linha e o halo, que
+      precisam passar 64px acima e abaixo da placa. Um overflow: hidden aqui cortaria
+      exatamente o que se quer ver; um clip-path com inset vertical negativo segura os
+      lados e libera as pontas. Sem `round` porque esta camada não tem canto a
+      arredondar, ela não pinta fundo nenhum.
+
+   O escuro NÃO é uma camada fixa com buraco móvel, que precisaria de máscara animada.
+   É um painel que viaja JUNTO com o feixe, atrás dele, com 100% da largura da janela,
+   o que basta pra cobrir até a borda em qualquer ponto do percurso. A borda interna dele
+   é gradiente, não corte seco, então a sombra tem beirada macia em vez de retângulo.
+
+   Quem diz o que já foi varrido e o que não foi é a revelação, que troca um diagrama
+   pelo outro na passagem do feixe. A sombra é só a esteira dele.
+
+   Os dois carros compartilham a MESMA keyframe, duração e início, então andam em passo
+   sem nada a sincronizar: é o mesmo apoio que as duas camadas da ilustração 1 usam.
+
+   Continua tudo em transform: translateX, sem máscara animada, sem filter e sem blend.
+   A regra do projeto contra desfoque animado segue respeitada, e por isso a varredura
+   pode valer abaixo de 864 também. */
+/* inset: 0 e não 8, porque a moldura perdeu o padding: as duas camadas cobrem a placa
+   inteira, que agora ocupa o dash todo. Os dois números andam juntos; se o padding
+   voltar, estes voltam a 8. */
+.sec-diagnostico .diagnostico-tela,
+.sec-diagnostico .diagnostico-feixe {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.sec-diagnostico .diagnostico-tela {
+    z-index: 3;
+    border-radius: 12px;
+    overflow: hidden;
+}
+/* clipa só na horizontal: o feixe passa 64 acima e abaixo da placa, mas não vaza
+   pelos lados, onde encostaria nos orbitais. */
+.sec-diagnostico .diagnostico-feixe {
+    z-index: 4;
+    clip-path: inset(-64px 0px);
+}
+/* Vinheta: escurece as beiradas e deixa o miolo respirar, então a varredura entrega
+   mais placa quando passa pelo centro do que quando raspa os cantos. Vem antes dos
+   painéis no DOM: o escuro deles soma por cima dela. */
+.sec-diagnostico .diagnostico-vinheta {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 45%, var(--bb-15) 70%, var(--bb-50) 100%);
+}
+/* Os dois carros: 100% da largura da janela, com TODAS as peças centradas na borda
+   esquerda deles (x = 0). Assim o translateX(100%) vale 100% da largura da placa, e não
+   a largura de uma linha de 4px: a varredura acompanha qualquer largura sem JS e sem
+   container query. */
+.sec-diagnostico .diagnostico-sombra,
+.sec-diagnostico .diagnostico-feixe-carro {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    animation: dg-varre var(--dg-varre) linear infinite;
+}
+/* O feixe ganha uma segunda animação em cima do percurso: ele não chega ao fim e
+   desaparece de uma vez, esmaece antes de sumir e volta acendendo do outro lado. Os
+   12% de cada ponta são a entrada e a saída; no meio do caminho ele fica cheio.
+   Só a opacidade está aqui: o deslocamento continua no dg-varre, compartilhado com os
+   painéis escuros, então as duas coisas não se misturam. */
+.sec-diagnostico .diagnostico-feixe-carro {
+    animation: dg-varre var(--dg-varre) linear infinite,
+               dg-feixe var(--dg-varre) linear infinite;
+}
+.sec-diagnostico .diagnostico-sombra-esq,
+.sec-diagnostico .diagnostico-sombra-dir {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+/* ATRÁS do feixe: a trilha do que já foi varrido. Sobrou sozinha, sem o painel que
+   antes escurecia o que estava à frente.
+
+   Tirar o da frente muda o que a peça diz. Antes o não varrido era escuro, e a varredura
+   parecia acender uma tela apagada. Agora o ambiente ANTES do diagnóstico fica visível o
+   tempo todo, e o que a varredura faz é trocar um diagrama pelo outro, que é a leitura
+   certa: o problema não é a falta de luz, é o que só aparece quando alguém olha.
+
+   E ela ficou menos abrangente. Antes o escuro tomava a peça desde o começo do painel e
+   só desaparecia perto do feixe; agora acaba em 40%, então a sombra é uma esteira curta
+   na cauda da varredura, não um véu sobre metade do quadro. O bb-50 no lugar do bb-75
+   segue a mesma direção: sombra, e não apagão.
+   A opacidade dela some no fim do percurso, pra o último quadro bater com o primeiro. */
+.sec-diagnostico .diagnostico-sombra-esq {
+    right: calc(100% + 24px);
+    background: linear-gradient(90deg, var(--bb-50) 0, transparent 40%);
+    animation: dg-trilha var(--dg-varre) linear infinite;
+}
+/* A revelação: o mesmo diagrama DEPOIS do diagnóstico, com os problemas marcados. São
+   três peças, e a divisão existe por causa da borda de trás.
+
+   1. .diagnostico-revela é um carro igual ao do feixe e ao da sombra: 100% da largura da
+      janela, mesma keyframe, mesmo compasso. A borda esquerda dele é o feixe.
+   2. .diagnostico-revela-faixa é a janela revelada, pendurada À ESQUERDA do carro
+      (right: 100%) com meia largura de placa. Ela viaja junto, e é isso que permite que
+      a máscara dela seja ESTÁTICA: no sistema de coordenadas da faixa, a beirada macia
+      está sempre no mesmo lugar. A regra da seção contra máscara animada continua de pé.
+   3. .diagnostico-revela-img carrega o hero e desfaz o movimento do carro, andando meia
+      largura pra cada lado enquanto ele anda uma inteira. As duas animações são lineares,
+      de mesma duração e mesmo início, então se cancelam quadro a quadro e a imagem fica
+      parada em relação à placa. Sem isso o desenho revelado viajaria junto com o feixe,
+      que é o oposto do que a peça diz.
+
+   A máscara é o degradê que você vê na cauda: transparente na ponta de trás, cheia da
+   metade da faixa em diante. A borda da frente segue sendo corte seco, e é a linha de
+   4px do feixe que a esconde.
+
+   O overflow corta o que sobra da imagem além da janela; o clip-path que fazia esse
+   papel saiu, porque agora a largura da faixa é a própria janela.
+
+   A opacidade reaproveita a keyframe do feixe: o hero revelado nasce e morre com ele, e
+   é isso que emenda o loop. */
+.sec-diagnostico .diagnostico-revela {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    animation: dg-varre var(--dg-varre) linear infinite,
+               dg-feixe var(--dg-varre) linear infinite;
+}
+.sec-diagnostico .diagnostico-revela-faixa {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 100%;
+    width: 50%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 50%, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 50%, #000 100%);
+}
+/* 200% da faixa é 100% da placa: é a largura que faz o hero revelado ter o mesmo
+   enquadramento do hero de fundo, então os dois coincidem pixel a pixel e a faixa mostra
+   só o que mudou. */
+.sec-diagnostico .diagnostico-revela-img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    background: url("/ed/temp/dg-estudos/_img/hero-2.webp") center / cover no-repeat;
+    animation: dg-revela var(--dg-varre) linear infinite;
+}
+
+
+/* A linha tem 4px e é 128px MAIS ALTA que a placa: os -64px de cada lado a fazem
+   extrapolar em cima e embaixo, então ela lê como um feixe atravessando o quadro em
+   vez de uma barra encaixada nele.
+   O esmaecimento das pontas é em px, não em %: 128 de fade em cada extremidade cobre
+   justamente o trecho que sobra pra fora (64) mais outros 64 já dentro da placa, e
+   como a altura é fluida uma % daria fade diferente a cada largura. */
+.sec-diagnostico .diagnostico-scan-linha {
+    position: absolute;
+    top: -48px;
+    bottom: -48px;
+    left: -1px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--pc200-15) 0, var(--pc200) 256px, var(--pc200) calc(100% - 256px), var(--pc200-15) 100%);
+}
+/* Faixa de influência: 70 de largura centrados no feixe, 35 de cada lado, e a mesma
+   sobra vertical da linha, senão o halo acabaria na borda da placa e o pedaço que
+   extrapola ficaria sem ele. O gradiente horizontal é o halo (e é gradiente, não
+   filter: blur, pelo mesmo motivo de sempre); a máscara vertical repete o
+   esmaecimento da linha. */
+/* .sec-diagnostico .diagnostico-scan-faixa {
+    position: absolute;
+    top: -64px;
+    bottom: -64px;
+    left: -35px;
+    width: 70px;
+    background: linear-gradient(90deg, transparent, var(--pc300-10), transparent);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 128px, #000 calc(100% - 128px), transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 128px, #000 calc(100% - 128px), transparent 100%);
+} */
+@keyframes dg-varre {
+    from { transform: translateX(0); }
+    to   { transform: translateX(100%); }
+}
+/* O contrapasso da imagem revelada: meia largura pra cada lado, contra a largura inteira
+   que o carro anda. Os dois sinais opostos são o que mantém o hero parado na placa
+   enquanto a janela passa por cima dele. */
+@keyframes dg-revela {
+    from { transform: translateX(50%); }
+    to   { transform: translateX(-50%); }
+}
+@keyframes dg-feixe {
+    0%, 100% { opacity: 0; }
+    12%, 88% { opacity: 1; }
+}
+/* a trilha some no fim do percurso, pra o quadro 100% ser igual ao 0% */
+@keyframes dg-trilha {
+    0%, 88% { opacity: 1; }
+    100%    { opacity: 0; }
+}
+
+/* orbitais: irmãos externos (208×208), relative. Ícone centrado → cai no extremo esq/dir da composição.
+   Verticalmente centrados com a imagem via align-items: center na row. */
+.sec-diagnostico .orbital,
+.sec-diagnostico .orbital-recebe {
+    position: relative;
+    z-index: 1;
+    width: 144px;
+    height: 144px;
+    flex-shrink: 0;
+}
+/* container dos anéis (208×208). Esquerda: concêntrico com o ícone (centrado no orbital).
+   Direita: centro no left:0 do orbital-recebe. */
+.sec-diagnostico .anel-container {
+    position: absolute;
+    top: calc(50% - 104px);
+    width: 208px;
+    height: 208px;
+}
+.sec-diagnostico .orbital .anel-container { left: -64px; }
+.sec-diagnostico .orbital-recebe .anel-container { left: -100%; }
+
+.sec-diagnostico .orbital .anel,
+.sec-diagnostico .orbital-recebe .anel {
+    position: absolute;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.sec-diagnostico .orbital .anel { background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%2080%2080%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22sg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%220%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300FFC8%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%2300FFC8%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300FFC8%22%20stop-opacity%3D%221%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2239%22%20fill%3D%22none%22%20stroke%3D%22url(%23sg)%22%20stroke-width%3D%222%22%20vector-effect%3D%22non-scaling-stroke%22/%3E%3C/svg%3E"); }
+.sec-diagnostico .orbital-recebe .anel { background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%2080%2080%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22sg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%220%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%239696FF%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%239696FF%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%239696FF%22%20stop-opacity%3D%221%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2239%22%20fill%3D%22none%22%20stroke%3D%22url(%23sg)%22%20stroke-width%3D%222%22%20vector-effect%3D%22non-scaling-stroke%22/%3E%3C/svg%3E"); }
+
+.sec-diagnostico .anelA,
+.sec-diagnostico .anelB,
+.sec-diagnostico .anelC,
+.sec-diagnostico .anelD {
+    width: 100%;
+    height: 100%;
+    animation: pulsarAnel 4s linear infinite;
+}
+.sec-diagnostico .anelA { animation-delay: 0s; }
+.sec-diagnostico .anelB { animation-delay: -1s; }
+.sec-diagnostico .anelC { animation-delay: -2s; }
+.sec-diagnostico .anelD { animation-delay: -3s; }
+
+@keyframes pulsarAnel {
+    0%   { background-size: 40% 40%;  opacity: 1; }
+    100% { background-size: 100% 100%; opacity: 0; }
+}
+
+/* O ícone deixou de ser SVG embutido e passou a ser glifo do Material Symbols, o
+   sistema de ícone do projeto: o subset é auto-descoberto pelo dl-symbols.cjs a partir
+   dos <span class="material-symbols-outlined"> do HTML, então o ícone vive na marcação
+   e não num data-URI de 2KB aqui.
+   O flex substitui o background-position: center que centrava o SVG. O ::before do
+   rótulo é absolute, então segue fora do fluxo do flex. */
+.sec-diagnostico .orbital .center {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    top: calc(50% - 40px);
+    left: 0;
+    border-radius: 50%;
+    background-color: rgba(0,255,150,0.1);
+    box-shadow: inset 0 0 0 2px rgba(0,255,150,0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sec-diagnostico .orbital .center::before {
+    content: "Varredura completa";
+    position: absolute;
+    display: block;
+    width: 128px;
+    left: 0;
+    /* ancorado pelo bottom, sem height: o rótulo cresce pra cima quando quebra em duas
+       linhas e o vão de 16 até o círculo continua exato em qualquer breakpoint. */
+    bottom: calc(100% + 16px);
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.25em;
+    color: rgba(0,255,150,0.75);
+}
+.sec-diagnostico .orbital-recebe .center {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    top: calc(50% - 40px);
+    right: 0;
+    border-radius: 50%;
+    background-color: rgba(150,150,255,0.1);
+    box-shadow: inset 0 0 0 2px rgba(150,150,255,0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sec-diagnostico .orbital-recebe .center::before {
+    content: "Plano de ação";
+    position: absolute;
+    display: block;
+    width: 128px;
+    left: -48px;
+    /* espelho do rótulo da esquerda: ancorado pelo top, cresce pra baixo. */
+    top: calc(100% + 16px);
+    text-align: right;
+    font-size: 1rem;
+    line-height: 1.25em;
+    color: rgba(150,150,255,0.75);
+}
+/* 32px era o background-size dos SVGs que saíram: mesmo tamanho de desenho.
+   A cor de cada um é a que estava no fill do SVG antigo, agora pelo token: o
+   %2300ff96 é o --sc500 e o %239696ff é o --pc200 (conferidos no root.css). */
+.sec-diagnostico .center .material-symbols-outlined { font-size: 32px; }
+.sec-diagnostico .orbital .center .material-symbols-outlined { color: var(--sc500); }
+.sec-diagnostico .orbital-recebe .center .material-symbols-outlined { color: var(--pc200); }
+
+@media (max-width: 1152px) {
+    .sec-diagnostico .orbital .center::before,
+    .sec-diagnostico .orbital-recebe .center::before { font-size: 0.825rem; width: 80px; left: calc(50% - 40px); }
+}
+
+@media (max-width: 864px) {
+    .sec-diagnostico { margin-top: -40px; }
+    .sec-diagnostico .diagnostico-row { flex-direction: column; }
+    .sec-diagnostico .diagnostico-dash { width: 100%; transform: none; }
+    .sec-diagnostico .orbital .anel-container,
+    .sec-diagnostico .orbital-recebe .anel-container { left: calc(50% - 104px); transform: none; }
+    .sec-diagnostico .orbital .anel-container { top: -64px; }
+    .sec-diagnostico .orbital-recebe .anel-container { top: -100%; }
+    .sec-diagnostico .orbital .center,
+    .sec-diagnostico .orbital-recebe .center { left: calc(50% - 40px); right: auto; }
+    .sec-diagnostico .orbital .center { top: 0; }
+    .sec-diagnostico .orbital-recebe .center { top: auto; bottom: 0; }
+    .sec-diagnostico .orbital .anel,
+    .sec-diagnostico .orbital-recebe .anel { transform: rotate(90deg); }
+    .sec-diagnostico .orbital .center::before { left: calc(50% - 64px); width: 128px; text-align: center; }
+    .sec-diagnostico .orbital-recebe .center::before { left: calc(50% - 64px); width: 128px; text-align: center; }
+
+    .sec-diagnostico .diagnostico-dash::after { top: 0; left: 16px; width: calc(100% - 32px); height: 2px; background-image: linear-gradient(90deg, rgba(0,255,150,0), rgba(0,255,150,0.5), rgba(0,255,150,0)); }
+    .sec-diagnostico .diagnostico-dash::before { top: auto; bottom: 0; left: 16px; width: calc(100% - 32px); height: 2px; background-image: linear-gradient(90deg, rgba(150,150,255,0), rgba(150,150,255,0.5), rgba(150,150,255,0)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sec-diagnostico .orbital .anel,
+    .sec-diagnostico .orbital-recebe .anel,
+    .sec-diagnostico .diagnostico-sombra,
+    .sec-diagnostico .diagnostico-sombra-esq,
+    .sec-diagnostico .diagnostico-revela,
+    .sec-diagnostico .diagnostico-revela-img,
+    .sec-diagnostico .diagnostico-feixe-carro { animation: none; }
+    /* Paradas as animações, o carro voltaria pro começo do percurso e a faixa ficaria
+       inteira fora da placa. Estes dois transforms são o último quadro do ciclo, escrito
+       à mão: metade direita revelada, parada, dizendo a mesma coisa sem movimento nenhum.
+       O par tem que ser mantido junto, porque um desfaz o outro. */
+    .sec-diagnostico .diagnostico-revela {
+        transform: translateX(100%);
+        opacity: 1;
+    }
+    .sec-diagnostico .diagnostico-revela-img { transform: translateX(-50%); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SEÇÃO O PROBLEMA — sintomas em tiles
+   Reaproveita a .sec-skills do formacoes/style.css (já carregada pela página) no
+   arranjo da .sec-desafios de /cp/data-squads/: o .skills-header entra DENTRO do
+   .skills-grid e ocupa a célula de um tile, e cada sintoma é um .skill-tile com a
+   tag-status do DS na semântica de erro mais o texto embaixo.
+   Nada do visual base é reescrito aqui: só os mesmos quatro ajustes que a
+   .sec-desafios faz, cada um comentado abaixo.
+   O .skills-grid nasce em opacity 0 e quem o revela é o observeSingle('.skills-grid')
+   do formacoes/script.js, que a página já carrega.
+   ══════════════════════════════════════════════════════════════ */
+/* Container no Wide do DS (1440 / 10 colunas) no lugar do Desktop (1152 / 8) da
+   sec-skills original. Como este seletor tem especificidade maior que o .skills-inner
+   de lá, os tiers de baixo precisam ser repetidos aqui: sem isso a regra base perderia
+   DENTRO das media queries do formacoes e o grid ficaria travado em 10 colunas. */
+.sec-problema .skills-inner { max-width: 1440px; grid-template-columns: repeat(10, 1fr); }
+/* Tile mais discreto: mesmo gradiente 135° do original com dn500-25 no lugar do
+   dn500-50. Quem carrega a cor do bloco é a tag; fundo colorido competia com ela. */
+.sec-problema .skill-tile { background: linear-gradient(135deg, var(--dn500-25), transparent); }
+/* O header é filho do .skills-grid aqui (no formacoes é irmão), então perde o span 4
+   que valia no grid externo. Sem painel, o auto-placement resolve header + 6 tiles em
+   duas colunas. */
+.sec-problema .skills-header { grid-column: auto; }
+/* Sem ícone: o tile abre com a tag, então o conteúdo vira coluna. */
+.sec-problema .skill-tile > div { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.sec-problema .skill-tile-meta { margin: 0; }
+/* content: none apaga de uma vez a elipse radial que a .sec-skills pinta neste
+   ::before: ela é um blur(64px) sobre uma caixa maior que a seção, e esta página já
+   tem fundo próprio (o gradiente do hero e os orbes dos pilares). */
+.sec-problema::before { content: none; }
+/* O 208 de rodapé do base sobraria: quem dá o vão até os pilares é o padding-top
+   deles, igual ao resto da página. */
+.sec-problema { padding: 128px 0 0; }
+/* Fecho da seção, DENTRO do .skills-grid: header + 6 tiles são 7 células em duas
+   colunas, então a oitava fica vaga ao lado do último tile, e é essa que o fecho ocupa.
+   Sem grid-column: o auto-placement põe o oitavo filho justamente ali, e assim a
+   posição continua certa se um sintoma entrar ou sair.
+   Sem fundo e sem padding: é conclusão, não sintoma, então não vira card, e sem card
+   não há borda pra descolar o texto. O padding só faria sentido acompanhando uma caixa
+   visível; solto, ele afasta o texto da coluna do grid sem nada que justifique o recuo.
+   Assim o texto começa na linha da coluna, alinhado com a borda dos tiles de cima.
+   justify-content: center porque a célula esticada acompanha a altura do tile vizinho;
+   sem isso o texto ficaria pendurado no topo de uma caixa alta. */
+.problema-foot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+}
+.problema-foot p { font: var(--p); color: var(--bw-75); margin: 0; }
+@media (max-width: 1439px) {
+    .sec-problema .skills-inner { grid-template-columns: repeat(8, 1fr); }
+}
+@media (max-width: 864px) {
+    .sec-problema .skills-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+}
+@media (max-width: 576px) {
+    .sec-problema .skills-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .sec-problema { padding-top: 96px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SEÇÃO ERRO COMUM — só texto
+   Cabeçalho de seção do DS (eyebrow, título, lede) mais o corpo, em span 4 nas
+   primeiras colunas do grid Wide. Vem DEPOIS da .sec-problema: os sintomas abrem a
+   narrativa e aqui se explica a causa comum deles, fechando em "É isso que o
+   Diagnóstico Avançado de BI avalia", que é a deixa pros pilares logo abaixo.
+
+   overflow: hidden é a convenção do DS pra qualquer seção que abrigue um .sec-title:
+   ele tem padding 64 com margin -64 (net zero no layout, folga pro halo do blur da
+   animação de entrada), e sem o corte esse halo empurraria a largura da página. É o
+   mesmo que a .sec-skills do formacoes/style.css faz.
+   ══════════════════════════════════════════════════════════════ */
+.sec-erro { position: relative; overflow: hidden; padding: 128px 0 0; }
+.erro-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+/* ── o card ──
+   .formacoes-cta-card é o card de CTA do DS. Ele mora no ed/site-dependencias/home.css,
+   que esta página NÃO carrega, então a casca está portada aqui: gradiente 135° em
+   pc300-25, raio 16, overflow hidden e padding generoso.
+   Uma diferença deliberada: o padding do original é 112px 160px 112px 464px, e aquele
+   464 à esquerda é a reserva pra órbita decorativa (.formacoes-cta, 464x464 ancorada no
+   canto). Sem a órbita esse recuo seria um vão vazio de 464, e com ele não caberiam duas
+   colunas de texto. Aqui o padding é simétrico, e os degraus responsivos seguem os do
+   original menos essa reserva.
+   O grid interno é 1fr 1fr, do jeito que os componentes do DS subdividem por dentro (o
+   .skills-grid do formacoes faz igual): a divisão em colunas da PÁGINA é a do
+   .erro-inner, e daqui pra dentro é layout de componente. */
+.erro-card {
+    grid-column: 1 / -1;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 112px 160px;
+    background: linear-gradient(135deg, var(--pc300-25), transparent);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Áreas nomeadas, e não auto-placement, por causa do botão: ele precisa ficar logo
+       ABAIXO do título, e um terceiro item solto cairia na linha 2, ou seja embaixo do
+       corpo inteiro, que é a coluna mais alta e define a altura da linha 1.
+       Com o corpo ocupando as duas linhas e a linha 1 em auto, ela mede exatamente a
+       altura do cabeçalho: o botão, no topo da linha 2, encosta no título. O 1fr da
+       linha 2 absorve a sobra quando o corpo é mais alto. */
+    grid-template-areas:
+        "cabeca corpo"
+        "cta    corpo";
+    grid-template-rows: auto 1fr;
+    gap: 32px;
+    align-items: start;
+}
+.erro-header { grid-area: cabeca; }
+.erro-corpo { grid-area: corpo; }
+/* justify-self: start pra o botão ter a largura do conteúdo em vez da coluna toda;
+   align-self: start pra ele encostar no topo da linha 2, logo abaixo do cabeçalho. */
+.erro-cta {
+    grid-area: cta;
+    justify-self: start;
+    align-self: start;
+}
+/* Entrada em bloco, no gesto do cta-card-enter do DS. É ela que resolve o defeito que
+   havia aqui: antes o primeiro parágrafo era .sec-lede (revelado pelo
+   formacoes/script.js) e os outros três eram visíveis desde o início, porque o
+   querySelector de lede de lá é singular e um segundo ficaria invisível pra sempre.
+   Dava um buraco no topo da coluna, com três parágrafos já à mostra, e só então o
+   primeiro aparecia.
+   Agora nenhum parágrafo é .sec-lede: o card entra inteiro de uma vez e o título faz o
+   char-by-char por dentro, que é a mesma combinação da .sec-problema (o .skills-grid
+   entra em bloco e o .sec-title dele digita).
+   Quem acende é o observer do diagnostico-avancado.js.
+   A keyframe é própria, e não o cta-card-enter do DS, justamente pra poder redefini-la
+   sem blur abaixo de 864 sem mexer na keyframe compartilhada, que a .sec-problema
+   também usa nesta página. */
+.erro-card { opacity: 0; }
+.erro-card.is-entered { animation: dg-erro-entra 0.6s ease-out both; }
+@keyframes dg-erro-entra {
+    from { opacity: 0; filter: blur(32px); transform: translateY(-64px); }
+    to   { opacity: 1; filter: blur(0px);  transform: translateY(0); }
+}
+.erro-header,
+.erro-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.erro-p { font: var(--p); color: var(--bw-75); margin: 0; }
+@media (prefers-reduced-motion: reduce) {
+    .erro-card { opacity: 1; }
+    .erro-card.is-entered { animation: none; }
+}
+/* degraus de padding do card, espelhando os do original sem a reserva da órbita */
+@media (max-width: 1439px) {
+    .erro-inner { grid-template-columns: repeat(8, 1fr); }
+    .erro-card { padding: 80px; }
+}
+@media (max-width: 864px) {
+    .erro-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    /* uma coluna: as duas metades voltam a ser texto corrido, e o gap de 32 abriria um
+       vão de separar blocos entre o título e o primeiro parágrafo.
+       As áreas se reempilham e o botão vai pro fim, depois do corpo, que é também a
+       ordem em que os três estão no DOM. */
+    .erro-card {
+        padding: 64px;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "cabeca"
+            "corpo"
+            "cta";
+        grid-template-rows: auto auto auto;
+        gap: 24px;
+    }
+    /* sem blur na entrada abaixo de 864: sobram opacidade e deslocamento. */
+    @keyframes dg-erro-entra {
+        from { opacity: 0; transform: translateY(-64px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+}
+@media (max-width: 576px) {
+    .erro-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .erro-card { padding: 64px 32px; }
+    .sec-erro { padding-top: 96px; }
+}
 
 /* ── pilares (grid DS: 10 cols ≥1440, 8 cols ≤1439) ── */
-.mk-pilares { padding: 0 0 128px 0; margin-top: -128px; position: relative; z-index: 2; }
-.mk-pilares-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
+/* sem margin-top negativo: quem se encaixa no cap do hero agora é a
+   .sec-diagnostico, logo acima. Aqui fica o ritmo de 128 das seções do DS. */
+.dg-pilares { padding: 128px 0; position: relative; z-index: 2; }
+.dg-pilares-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
     display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px; }
-/* card sem padding + overflow hidden (o padding vai nos containers internos;
-   o overflow contém os marquees dentro do raio do card). */
-.mk-card {
+/* ── cabeçalho da seção ──
+   O cabeçalho é a primeira célula do grid de cards, no lugar que era do --1: span 6 à
+   esquerda, com o --1 ao lado dele em span 4. Não leva margin: ele entra no mesmo ritmo
+   de 32 das outras linhas, porque agora divide linha com um card em vez de ter a faixa
+   inteira.
+
+   Os parágrafos NÃO são .sec-lede. O reveal do formacoes/script.js pega um lede só por
+   cabeçalho (querySelector singular), então marcar o primeiro deixaria o segundo visível
+   desde o início, com um buraco no lugar do primeiro até ele acender: é o mesmo defeito
+   que a .sec-erro tinha. Aqui os dois dividem estado inicial e reveal, escalonados, e o
+   script de lá só cuida do eyebrow e do título. Quem acende é o observer do
+   diagnostico-avancado.js. */
+.pilares-header {
+    grid-column: 1 / span 6;
+    /* O card ao lado é muito mais alto (traz ilustração). Sem align-self a célula do
+       cabeçalho esticaria pela altura inteira da linha; com center ela fica com a altura
+       do próprio conteúdo e centrada verticalmente contra o card. */
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* estado inicial e transição idênticos aos do .sec-lede do DS, e o escalonamento parte
+   dos 150ms que o DS dá ao lede depois do cabeçalho */
+.pilares-p {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.pilares-header.is-entered .pilares-p {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+}
+.pilares-header.is-entered .pilares-p:nth-of-type(1) { transition-delay: 150ms; }
+.pilares-header.is-entered .pilares-p:nth-of-type(2) { transition-delay: 230ms; }
+/* abaixo de 864 o blur sai da transição: desfoque animado é o que o projeto evita em
+   tela pequena. Sobram opacidade e deslocamento. */
+@media (max-width: 864px) {
+    .pilares-p { filter: none; transition: opacity 0.5s ease, transform 0.5s ease; }
+    .pilares-header.is-entered .pilares-p { filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .pilares-p { opacity: 1; filter: none; transform: none; transition: none; }
+}
+
+/* card sem padding + overflow hidden (o padding vai no .dg-pilar-body; o overflow
+   é quem recorta as ilustrações, que transbordam a moldura de propósito). */
+.dg-pilar {
     position: relative;
     background: linear-gradient(45deg, var(--dn800), transparent);
     border-radius: 16px;
@@ -65,7 +791,7 @@
     backdrop-filter: blur(8px); }
 /* orb (sem blur) com o centro no bottom-center do card. z-index -1 fica contido
    no stacking context do card (backdrop-filter) → atrás do conteúdo, acima do bg. */
-.mk-card-orb {
+.dg-pilar-orb {
     position: absolute;
     left: 50%;
     bottom: 0;
@@ -76,10 +802,10 @@
     height: 800px;
     border-radius: 50%;
     background: radial-gradient(circle, var(--pc500-25) 0%, transparent 60%); }
-.mk-card-body { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+.dg-pilar-body { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
 /* título com gradiente de texto do DS (igual ao duo-card-title), versão sg
    (dourado, --text-gradient-high), weight 400. */
-.mk-card-title {
+.dg-pilar-title {
     font-size: 1.5rem;
     font-weight: 400;
     line-height: 1.25em;
@@ -90,220 +816,35 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent; }
-.mk-card-text { font: var(--p); color: var(--bw-75); margin: 0; }
-
-/* ── profissionais em destaque (card 3): lista de perfis ── */
-/* só ilustrativo: sem interação nem seleção (leitura/acessibilidade tratada
-   com aria-hidden + tabindex -1 no HTML). */
-.mk-people { display: flex; flex-direction: column; gap: 8px; padding: 0 32px 0;
-    pointer-events: none; -webkit-user-select: none; user-select: none;
-    -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
-    mask-image: linear-gradient(to bottom, #000, transparent); }
-.mk-person { display: flex; align-items: center; gap: 16px; padding: 8px; background: var(--dn500-25); border-radius: 12px; }
-.mk-person-avatar { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 8px; overflow: hidden; }
-.mk-person-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.mk-person-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.mk-person-name { font: var(--label-s); color: var(--bw-75); }
-.mk-person-role { font: var(--label-xs); color: var(--bw-50); }
-.mk-person .btn { flex: 0 0 auto; }
-
-/* ── bloco de logos (container abaixo do conteúdo, no card 1) ── */
-.mk-logos { position: relative; isolation: isolate; padding: 0 0 32px 0; }
-.mk-logos-stack { position: relative; display: flex; flex-direction: column; gap: 8px;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%); }
-/* marquees: cada linha rola horizontalmente; overflow esconde o excedente.
-   Os boxes usam margin-right (não gap) p/ o loop -50% fechar exato. */
-.mk-marquee { overflow: hidden; }
-.mk-marquee-track { display: flex; width: max-content; will-change: transform; }
-.mk-marquee-track--left { animation: mk-marquee-left 30s linear infinite; }
-.mk-marquee-track--right { animation: mk-marquee-right 30s linear infinite; }
-.mk-logo-box { flex: 0 0 auto; width: 128px; height: 128px; margin-right: 8px; border-radius: 16px;
-    background: var(--dn500-25); display: flex; align-items: center; justify-content: center; }
-.mk-logo-img { width: 56px; height: 56px; object-fit: contain; display: block; }
-@keyframes mk-marquee-left  { from { transform: translateX(0); }      to { transform: translateX(-50%); } }
-@keyframes mk-marquee-right { from { transform: translateX(-50%); }   to { transform: translateX(0); } }
-/* box central, na frente e centralizado, com blur do fundo. */
-.mk-logos-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    width: 128px;
-    height: 128px;
-    padding: 8px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    background: var(--pc300-15);
-    box-shadow: inset 0 0 0 2px var(--pc300-15), 0 0 96px 0 var(--pc500-50); }
-.mk-logos-center-inner { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; }
-.mk-logos-center-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-@media (prefers-reduced-motion: reduce) {
-    .mk-marquee-track--left, .mk-marquee-track--right,
-    .mk-eco-comet-dot, .mk-eco-orbit { animation: none; }
-}
-/* pausa cometas + órbita quando o card sai da viewport (via JS/IntersectionObserver) */
-.mk-eco.is-paused .mk-eco-comet-dot,
-.mk-eco.is-paused .mk-eco-orbit { animation-play-state: paused; }
-
-/* ── ecossistema (card 2): 4 nodes 64px nos cantos + hub 192px no centro ── */
-/* sem padding: o stage ocupa 100% do card (borda a borda), pra que os cometas
-   horizontais alcancem as extremas esquerda/direita. Os elementos internos são
-   afastados +32px das laterais no lugar do antigo padding, então o diagrama fica
-   idêntico e sobra a faixa externa de 32px pros cometas até a borda. */
-.mk-eco { padding: 0 0 32px 0;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%); }
-.mk-eco-stage { position: relative; width: 100%; min-width: 512px; height: 320px; }
-/* nodes 64px (filler) nos 4 extremos: 2 na esquerda, 2 na direita. */
-.mk-eco-node { position: absolute; width: 64px; height: 64px; z-index: 2;
-    box-shadow: 0 0 64px 32px var(--dn900); border-radius: 12px; }
-.mk-eco-node img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 12px; }
-.mk-eco-node--tl { top: 0; left: 32px; }
-.mk-eco-node--bl { bottom: 0; left: 32px; }
-.mk-eco-node--tr { top: 0; right: 32px; }
-.mk-eco-node--br { bottom: 0; right: 32px; }
-/* hub 192px, círculo (b-radius 50%), centralizado H/V. */
-.mk-eco-hub {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 192px;
-    height: 192px;
-    border-radius: 50%;
-    z-index: 2;
-    box-sizing: border-box;
-    padding: 16px;
-    background: var(--dn800);
-    box-shadow: 0 0 64px 0 var(--pc500-15), 0 0 64px 32px var(--dn900), inset 0 0 16px 0 var(--pc300-5);
-    overflow: hidden; }
-.mk-eco-hub-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    overflow: hidden;
-    box-sizing: border-box;
-    padding: 16px;
-    background: var(--pc300-5);
-    /* box-shadow: 0 0 96px 0 var(--pc500-15); */
-}
-.mk-eco-hub-icon {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    /* box-shadow: 0 8px 4px 0 var(--bb-25); */
-    background-color: var(--pc300-5); }
-.mk-eco-hub-icon svg { display: block; }
-/* conectores dos 4 nodes até perto do centro do hub (linha 2px, bw-25).
-   Cada um: sai do node (borda interna, centro vertical), degrau de 96px
-   (reto 32, curva 32r, 32, curva 32r) e reto até o x do centro do hub.
-   Stage de 320px → hub centrado em y=160; a queda de 96px a partir do centro do
-   node (y=32 no topo / y=288 embaixo) aterrissa 32px acima/abaixo do centro do
-   hub (y=128 / y=192). Mesmo path SVG, espelhado H/V por canto via transform. */
-.mk-eco-connector-step { position: absolute; width: 96px; height: 96px; overflow: visible; }
-.mk-eco-connector-step path { stroke: var(--bw-10); stroke-width: 2; fill: none; }
-.mk-eco-connector-step--tl { left: 96px;  top: 32px; }
-.mk-eco-connector-step--tr { right: 96px; top: 32px;    transform: scaleX(-1); }
-.mk-eco-connector-step--bl { left: 96px;  bottom: 32px; transform: scaleY(-1); }
-.mk-eco-connector-step--br { right: 96px; bottom: 32px; transform: scale(-1, -1); }
-.mk-eco-connector-line { position: absolute; height: 2px; width: calc(50% - 192px); background: var(--bw-10); }
-.mk-eco-connector-line--tl { left: 192px;  top: 127px; }
-.mk-eco-connector-line--tr { right: 192px; top: 127px; }
-.mk-eco-connector-line--bl { left: 192px;  bottom: 127px; }
-.mk-eco-connector-line--br { right: 192px; bottom: 127px; }
-/* linhas horizontais: centro do hub → extrema direita / esquerda (y=160).
-   width até a borda do hub (50% - 96px); faixa externa de 32px inclusa. */
-.mk-eco-connector-line--r { right: 0; top: 159px; width: calc(50% - 96px); }
-.mk-eco-connector-line--l { left: 0;  top: 159px; width: calc(50% - 96px); }
-
-/* ── cometa pc300 percorrendo o conector inteiro (degrau + reta), intermitente ──
-   Rastro de N partículas (dots) sobre um único offset-path por canto (montado no
-   marketplace.js a partir da largura do stage). offset-distance 0→100% na fase
-   ativa; cada dot com --ramp (opacidade cabeça→cauda) e animation-delay (a cauda)
-   → o conjunto lê como um gradiente liso que SEGUE a curva. Ciclo 3s com pausa. */
-.mk-eco-comets { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.mk-eco-comet-dot {
-    position: absolute; width: 4px; height: 4px; border-radius: 50%;
-    background: var(--pc300); opacity: 0;
-    offset-rotate: 0deg; offset-anchor: center;
-    animation: mk-comet 3s linear infinite; }
-@keyframes mk-comet {
-    0%           { offset-distance: 0%;   opacity: var(--ramp); }
-    55%          { offset-distance: 100%; opacity: var(--ramp); }
-    55.01%, 100% { offset-distance: 100%; opacity: 0; }
-}
-
-/* ── 2 cometas orbitando o hub, infinitamente (sem pausa) — CSS puro e leve ──
-   UM só elemento: o conic-gradient carrega os 2 cometas (duas caudas
-   pc300→transparent com cabeças a 180° e 360°, defasadas 180°), recortado por
-   máscara radial (só o aro no raio do hub), girando via transform: rotate
-   (compositado na GPU). Centrado no hub (top/left 50% do stage = centro do
-   hub, fixo → sem JS). */
-.mk-eco-orbit { position: absolute; top: 50%; left: 50%; z-index: 3; pointer-events: none;
-    width: 192px; height: 192px; border-radius: 50%;
-    background: conic-gradient(from 0deg,
-        transparent 0deg, transparent 100deg, var(--pc300) 180deg,
-        transparent 180deg, transparent 280deg, var(--pc300) 360deg);
-    -webkit-mask: radial-gradient(circle, transparent 0 93px, #000 95px 97px, transparent 99px);
-    mask: radial-gradient(circle, transparent 0 93px, #000 95px 97px, transparent 99px);
-    animation: mk-orbit 6s linear infinite; }
-@keyframes mk-orbit {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to   { transform: translate(-50%, -50%) rotate(360deg); }
-}
-/* órbita interna (dentro do hub-inner): menor, pra caber, a 25% de opacidade. */
-.mk-eco-orbit--inner {
-    width: 128px; height: 128px; opacity: 0.25;
-    animation-name: mk-orbit-rev;
-    -webkit-mask: radial-gradient(circle, transparent 0 60px, #000 62px 63px, transparent 64px);
-    mask: radial-gradient(circle, transparent 0 60px, #000 62px 63px, transparent 64px); }
-/* sentido contrário: espelha (scaleX -1) — inverte giro E gradiente juntos,
-   mantendo a cabeça do cometa liderando. */
-@keyframes mk-orbit-rev {
-    from { transform: translate(-50%, -50%) scaleX(-1) rotate(0deg); }
-    to   { transform: translate(-50%, -50%) scaleX(-1) rotate(360deg); }
-}
-/* linha 1: card 1 (4) + card 2 (6) = 10. linha 2: card 3 (6) + notif (4). */
-/* Tamanhos invertidos: quem era 6 virou 4 e quem era 4 virou 6. As duas
-   primeiras linhas continuam fechando em 10 (6+4 e 4+6), e o --5 sozinho na
-   terceira agora deixa 6 colunas livres em vez de 4.
-   Os grandes são o --1 (arquitetura em fluxo) e o --4 (recomendações mais
-   antes/depois), que são as duas ilustrações mais densas: são justamente as que
-   ganham com a largura. */
-.mk-card--1 { grid-column: span 6; }
-.mk-card--2 { grid-column: span 4; }
-.mk-card--3 { grid-column: span 4; }
-.mk-card--4 { grid-column: span 6; }
-.mk-card--5 { grid-column: span 4; }
+/* Zigue-zague de 6+4 em três linhas, com o cabeçalho abrindo a primeira:
+     L1  cabeçalho (6)  |  --1 (4)
+     L2  --2 (6)        |  --3 (4)
+     L3  --4 (6)        |  --5 (4)
+   Cada linha fecha exatamente em 10, e o lado largo alterna: o cabeçalho e os pares
+   --2 e --4 à esquerda com 6, os ímpares --1, --3 e --5 à direita com 4.
+   Nada de posição explícita: com estes spans o auto-placement monta as três linhas na
+   ordem do DOM, e é ele que mantém o arranjo se um card entrar ou sair. */
+.dg-pilar--1 { grid-column: span 4; }
+.dg-pilar--2 { grid-column: span 6; }
+.dg-pilar--3 { grid-column: span 4; }
+.dg-pilar--4 { grid-column: span 6; }
+.dg-pilar--5 { grid-column: span 4; }
 @media (max-width: 1439px) {
-    .mk-pilares-inner { grid-template-columns: repeat(8, 1fr); }
-    .mk-card--1 { grid-column: span 5; }
-    .mk-card--2 { grid-column: span 3; }
-    .mk-card--3 { grid-column: span 3; }
-    .mk-card--4 { grid-column: span 5; }
-    .mk-card--5 { grid-column: span 3; }
+    .dg-pilares-inner { grid-template-columns: repeat(8, 1fr); }
+    /* mesmo zigue-zague remapeado: 5+3 fecha as 8 em cada linha */
+    .pilares-header { grid-column: 1 / span 5; }
+    .dg-pilar--1 { grid-column: span 3; }
+    .dg-pilar--2 { grid-column: span 5; }
+    .dg-pilar--3 { grid-column: span 3; }
+    .dg-pilar--4 { grid-column: span 5; }
+    .dg-pilar--5 { grid-column: span 3; }
 }
 @media (max-width: 864px) {
-    .mk-pilares-inner { grid-template-columns: 1fr; }
-    .mk-card--1, .mk-card--2, .mk-card--3,
-    .mk-card--4, .mk-card--5 { grid-column: 1; }
+    .dg-pilares-inner { grid-template-columns: 1fr; }
+    .pilares-header,
+    .dg-pilar--1, .dg-pilar--2, .dg-pilar--3,
+    .dg-pilar--4, .dg-pilar--5 { grid-column: 1; }
 }
-
-/* notification-card neutral (DS, hub de formações): gradiente 135° da variante
-   (neutral = pc300-15) → transparent, padding 32, radius 16, flex column gap 16. */
-.mk-notif {
-    align-self: start;
-    display: flex; flex-direction: column; gap: 16px;
-    padding: 32px; border-radius: 16px;
-    background: linear-gradient(135deg, var(--pc300-15), transparent); }
-.mk-notif .tag-status { align-self: flex-start; }
-.mk-notif-text { font: var(--p); color: var(--bw-75); margin: 0; }
 
 /* override local dos botões subtle (só nesta página; não mexe no DS global). */
 .btn[data-emphasis="subtle"] {
@@ -458,31 +999,37 @@
    enquadramento tem que garantir é a lente sempre cheia, e isso está garantido
    porque toda parada centra uma peça nela.
    isolation: isolate fecha um contexto de empilhamento próprio, pra as camadas
-   daqui não se intercalarem com a .mk-card-orb do card, que é z-index -1. */
+   daqui não se intercalarem com a .dg-pilar-orb do card, que é z-index -1. */
 .dg-arq {
     --lupa: 256px;
     position: relative;
     isolation: isolate;
-    height: 384px;
+    height: 352px;
     /* Antes de o script medir, hidden contém o vazamento do blur e o diagrama
        ainda sem transform, que fica com o canto no centro da moldura.
-       Depois de pronto vira visible: o diagrama passa a transbordar os 384px e o
-       que segura o recorte é o .mk-card, que já é overflow: hidden e arredondado.
+       Depois de pronto vira visible: o diagrama passa a transbordar os 352px e o
+       que segura o recorte é o .dg-pilar, que já é overflow: hidden e arredondado.
        Com isso a esteira continua para fora da faixa da lente em vez de morrer na
-       borda dela, e o blur não fica cortado reto. A altura de 384 segue valendo
+       borda dela, e o blur não fica cortado reto. A altura de 352 segue valendo
        pro espaço que a ilustração OCUPA no card: overflow não mexe em layout. */
     overflow: hidden;
+    /* meio tom: a ilustração recua e o título do card ganha a frente */
+    opacity: 0.5;
+    /* inclinação comum às cinco ilustrações. Só visual: quem mede o layout no JS
+       usa coordenadas de offset, que transform não altera (ver o pos() no
+       diagnostico-avancado.js). */
+    transform: skew(0deg, -7.5deg);
 }
 .dg-arq.is-pronto { overflow: visible; }
 /* O card segue com o overflow: hidden dele, que e quem passa a limitar o
    transbordo: o diagrama se estende pela area toda do card e para na borda
    arredondada, sem vazar pra secao.
    O diagrama sobe na altura do titulo, e sem isto passaria POR CIMA dele: o
-   .mk-card-body vem antes no DOM e nao e posicionado, enquanto o .dg-arq e
+   .dg-pilar-body vem antes no DOM e nao e posicionado, enquanto o .dg-arq e
    position: relative, e posicionado ganha de nao posicionado na ordem de pintura.
    Com relative + z-index no body, o titulo volta pra frente e o diagrama corre
    POR BAIXO dele. */
-.mk-card--1 .mk-card-body { position: relative; z-index: 1; }
+.dg-pilar--1 .dg-pilar-body { position: relative; z-index: 1; }
 
 /* As duas camadas são o MESMO diagrama (a de fundo é clonada pelo script) com
    máscaras COMPLEMENTARES: a de fora tem um buraco redondo do tamanho da lente,
@@ -498,7 +1045,7 @@
    Fora dessa caixa o valor da mascara e transparente, e transparente esconde. Como
    a caixa da camada era inset: 0 (a moldura de 384px), todo o transbordo do canvas
    era mascarado embora, e o diagrama aparecia cortado exatamente na borda da
-   faixa, logo abaixo do .mk-card-body. Liberar overflow no card, na moldura e no
+   faixa, logo abaixo do .dg-pilar-body. Liberar overflow no card, na moldura e no
    canvas nao resolvia: quem cortava era a mascara, e mask-clip: no-clip nao tem
    suporte confiavel.
    A saida e dar a caixa a camada: ela cresce ate cobrir o canvas em qualquer
@@ -526,6 +1073,8 @@
     -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 calc(var(--lupa) / 2 - 2px), #000 calc(var(--lupa) / 2));
             mask-image: radial-gradient(circle at 50% 50%, transparent 0 calc(var(--lupa) / 2 - 2px), #000 calc(var(--lupa) / 2));
 }
+/* Atenção ao acúmulo: a .dg-arq inteira também está em opacity 0.5, e opacidade
+   multiplica. Fora da lente o diagrama fica em 0.25 efetivo, não em 0.5. */
 .dg-arq-camada--fundo .dg-arq-canvas {
     filter: blur(4px);
     opacity: 0.5;
@@ -577,9 +1126,14 @@
    isso que faz as duas cópias começarem no mesmo recálculo de estilo: em passo
    diferente, a cópia nítida sairia de registro com a desfocada e a lente
    mostraria um trecho que não bate com o entorno.
-   As @keyframes dg-arq-pan são geradas pelo script (dependem da medição). */
+   As @keyframes dg-arq-pan são geradas pelo script (dependem da medição).
+   10s: com 4 paradas o passo é um quarto do ciclo, então encurtar o ciclo é o que
+   encurta a pausa. O PAUSA do script acompanha, e os dois valores andam sempre em par.
+   Histórico: 20s/0.72 dava 3,6s parado, 14s/0.6 dava 2,1s, e 10s/0.5 dá 1,25s parado
+   contra 1,25s andando. A lente deixou de descansar mais do que anda; abaixo disso o
+   rótulo revelado passa a não dar tempo de ser lido. */
 .dg-arq:not(.is-pronto) .dg-arq-camada { visibility: hidden; }
-.dg-arq.is-pronto .dg-arq-canvas { animation: dg-arq-pan 20s ease-in-out infinite; }
+.dg-arq.is-pronto .dg-arq-canvas { animation: dg-arq-pan 10s ease-in-out infinite; }
 
 /* na esteira as colunas empilham até 2 peças, com 128 de vão */
 .dg-arq .dg-col { display: flex; flex-direction: column; gap: 128px; }
@@ -632,18 +1186,25 @@
    As peças são as MESMAS da ilustração 1 (seção "PEÇA DO DIAGRAMA"), e a coluna e
    os conectores também são compartilhados (seção "COLUNA E CONECTORES").
    ══════════════════════════════════════════════════════════════ */
-/* Moldura de 384px, a mesma altura da ilustração 1, pras duas terem o mesmo peso na
+/* Moldura de 352px, a mesma altura da ilustração 1, pras duas terem o mesmo peso na
    fileira de cards. A escada é maior que ela, e quem decide o enquadramento é a
    etapa em alerta: o script centra o diagrama pela peça dela, nos dois eixos, então
    o alerta cai sempre no meio da moldura, qualquer que seja o degrau ou a altura das
-   peças. O resto da escada entra e sai do quadro em volta dele.
-   Isso também resolve a diferença de largura: o diagrama tem 864 e o card tem 544
-   (span 4), e centrar pelo alerta mostra a parte que importa em vez de cortar o
-   diagrama pela ponta esquerda. */
+   peças.
+   overflow: visible, então quem recorta o excedente não é mais esta caixa, e sim o
+   .dg-pilar, que já é overflow: hidden e arredondado: a escada passa a continuar até a
+   borda do card em vez de morrer na da moldura. O diagrama tem 864 contra os 832 do
+   card (span 6), e é centrar pelo alerta que mantém a parte que importa no quadro. */
 .dg-falha {
     position: relative;
-    height: 384px;
-    overflow: hidden;
+    height: 352px;
+    overflow: visible;
+    /* meio tom: a ilustração recua e o título do card ganha a frente */
+    opacity: 0.5;
+    /* inclinação comum às cinco ilustrações. Só visual: quem mede o layout no JS
+       usa coordenadas de offset, que transform não altera (ver o pos() no
+       diagnostico-avancado.js). */
+    transform: skew(0deg, -7.5deg);
 }
 /* enquanto o script não mediu, o diagrama não tem transform e ficaria com o canto
    no centro da moldura */
@@ -712,17 +1273,17 @@
 /* preenche as 4 colunas, em vez de ficar nos 192 das etapas: aqui a largura é o
    conteúdo da peça, e não uma peça de fluxo a mais */
 .dg-col--solta .dg-card { max-width: none; }
-/* Deslocada 32 pra direita: com isso a borda esquerda da peça cai em 336, que é
-   exatamente onde começa a peça da etapa em alerta (par 3-4, os 192 centrados vão de
-   336 a 528), e a direita vai até 848, o fim da coluna 6. Sem o deslocamento ela
-   começaria em 304, a borda da coluna 3, 32 antes da peça que ela investiga.
+/* Deslocada 64 pra direita: a borda esquerda da peça cai em 368, 32 pra dentro da
+   peça da etapa em alerta (par 3-4, os 192 centrados vão de 336 a 528), e a direita
+   vai até 848, o fim da coluna 6. Sem o deslocamento ela começaria em 304, a borda
+   da coluna 3, bem antes da peça que ela investiga.
    margin-left e não translate: a largura segue automática e o deslocamento sai da
    direita em vez de estourar o diagrama, que acaba em 848. Com margem esquerda fixa
    e largura automática, o auto da direita resolve em zero.
    O seletor precisa de três níveis pra empatar com a regra de centragem, que é
    margin-inline: auto e sobrescreveria um seletor mais curto. Vindo depois e com a
    mesma especificidade, este vence. */
-.dg-falha .dg-col--solta .dg-card { margin-left: 32px; }
+.dg-falha .dg-col--solta .dg-card { margin-left: 64px; }
 
 /* ── a peça da causa raiz ────────────────────────────────────────
    O mesmo .dg-card das etapas: o que muda é só o conteúdo, que aqui é uma linha
@@ -749,223 +1310,1149 @@
 
 /* ══════════════════════════════════════════════════════════════
    ILUSTRAÇÃO 3 — Riscos e impactos mapeados
+   Matriz de risco em 4 quadrantes, com a legenda numa peça do mesmo estilo das
+   outras ilustrações (a .dg-card compartilhada), pendurada na base da matriz. A
+   matriz fica solta: só a legenda mora na peça. Sem rótulo de eixo e sem faixa.
    ══════════════════════════════════════════════════════════════ */
-.dg-risco { padding: 0 24px 32px;
-    display: flex; flex-direction: row; align-items: stretch; gap: 16px; }
-/* grid de 3 colunas por 3 linhas: rótulo do eixo Y, faixas do Y, a grade, as
-   faixas do X e o rótulo do X. Assim os eixos ficam presos à grade sem px fixo. */
-.dg-risco-plot { flex: 1 1 auto; min-width: 0;
-    display: grid; grid-template-columns: auto auto 1fr;
-    grid-template-rows: 1fr auto auto; gap: 6px; align-items: center; }
-.dg-risco-eixo-y { grid-column: 1; grid-row: 1; justify-self: center;
-    writing-mode: vertical-rl; transform: rotate(180deg);
-    font: var(--label-xs); color: var(--bw-50); }
-.dg-risco-faixas { display: flex; font: var(--label-xs); color: var(--bw-25); }
-.dg-risco-faixas--y { grid-column: 2; grid-row: 1;
-    flex-direction: column; justify-content: space-around; align-items: flex-end;
-    height: 100%; }
-.dg-risco-faixas--x { grid-column: 3; grid-row: 2;
-    flex-direction: row; justify-content: space-around; }
-.dg-risco-eixo-x { grid-column: 3; grid-row: 3; text-align: center;
-    font: var(--label-xs); color: var(--bw-50); }
-/* a grade: só a caixa e o recorte. O aspect-ratio mantém a matriz quadrada em
-   qualquer largura de card; a cor e as linhas vêm da camada de quadrantes. */
-.dg-risco-grade { grid-column: 3; grid-row: 1; position: relative;
-    aspect-ratio: 1 / 1; width: 100%; overflow: hidden; }
-/* os 9 quadrantes, em camada absoluta abaixo dos pontos (que vêm depois no DOM e
-   pintam por cima). O container não tem fundo: o gap de 2px deixa o card aparecer
-   e é isso que separa um quadrante do outro. */
-.dg-risco-quadrantes { position: absolute; inset: 0;
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr); gap: 2px; }
-/* QUATRO niveis, os mesmos que a legenda lista, e o criterio e probabilidade
-   VEZES impacto: o modelo padrao de matriz de risco.
-   Era isso que faltava nas duas tentativas anteriores. Somar os eixos tratava
-   probabilidade e impacto como equivalentes; depois eu pesei impacto a ponto de
-   deixar a linha de impacto baixo verde inteira, e ai probabilidade parava de
-   contar naquela linha, incoerente com as outras duas.
-   No produto a matriz fica monotonica (cada passo pra direita ou pra cima so pode
-   manter ou subir o nivel) e simetrica em torno da diagonal, que e como ela se le:
-   impacto alto com probabilidade baixa pesa o mesmo que impacto baixo com
-   probabilidade alta.
-   Faixas do produto, com P e I valendo 1, 2, 3:
-     1 e 2 -> baixo    3 e 4 -> medio    6 -> alto    9 -> critico
-   Indices, com o grid preenchido linha por linha de cima pra baixo:
-     1 2 3 = impacto alto | 4 5 6 = impacto medio | 7 8 9 = impacto baixo
-   O verde ficou reservado ao canto 1x1, o unico caso em que nada pesa nos dois
-   eixos. Os outros dois de produto 2 (4 e 8) sobem pro amarelo fraco, que faz a
-   rampa do canto verde ate o vermelho passar por cinco intensidades em vez de
-   quatro degraus secos. Amarelo fraco e amarelo cheio leem os dois como medio na
-   legenda, so em graus diferentes.
-     baixo   (sc500-10): 7 (1x1=1)
-     medio   (wr500-5):  4 (1x2=2), 8 (2x1=2)
-     medio   (wr500-10): 1 (1x3=3), 5 (2x2=4), 9 (3x1=3)
-     alto    (er500-5):  2 (2x3=6), 6 (3x2=6)
-     critico (er500-10): 3 (3x3=9), o pior caso nos dois eixos, e so ele */
-.dg-risco-quadrantes span:nth-child(7) { background: var(--sc500-10); }
-.dg-risco-quadrantes span:nth-child(4),
-.dg-risco-quadrantes span:nth-child(8) { background: var(--wr500-5); }
-.dg-risco-quadrantes span:nth-child(1),
-.dg-risco-quadrantes span:nth-child(5),
-.dg-risco-quadrantes span:nth-child(9) { background: var(--wr500-10); }
-.dg-risco-quadrantes span:nth-child(2),
-.dg-risco-quadrantes span:nth-child(6) { background: var(--er500-5); }
-.dg-risco-quadrantes span:nth-child(3) { background: var(--er500-10); }
-/* ponto de risco: --x e --y vem do style inline, em porcentagem, entao a matriz
-   escala junto com o card e nenhuma posicao precisa de JS. bottom e nao top porque
-   o eixo Y cresce pra cima, como no grafico.
-   Vem depois da camada de quadrantes no DOM, entao pinta por cima dela sem
-   precisar de z-index. */
-.dg-risco-ponto { position: absolute; left: var(--x); bottom: var(--y);
+/* Carrega as duas medidas da ilustração e serve de referência pra peça da legenda,
+   que se ancora aqui com right/bottom.
+   384 é a altura de moldura das ilustrações 1 e 2, pras três terem o mesmo peso na
+   fileira de cards. A largura acompanha o card.
+   O box-sizing do root.css é border-box, então o padding sai de dentro dos 384: a
+   matriz, que é 100% da caixa de conteúdo, fica com 336 de altura e recuada 16 de
+   cada lado. Os 48 embaixo são o vão em que a peça da legenda desce. */
+.dg-risco {
+    position: relative;
+    width: 100%;
+    /* mesma altura da ilustração 2 (.dg-falha): as duas dividem a linha 2 do grid, e o
+       box-sizing é border-box (universal no root.css), então este 352 é a caixa toda,
+       igual à de lá. Descontando os 48 de padding embaixo, sobram 304 pra matriz.
+       Nada mais precisa de ajuste: os quadrantes são 1fr, os riscos dentro deles estão
+       em %, e a peça da legenda é absoluta contra a caixa de padding. Tudo acompanha. */
+    height: 352px;
+    padding: 0 16px 48px 16px;
+    /* meio tom: a ilustração recua e o título do card ganha a frente */
+    opacity: 0.5;
+    /* inclinação comum às cinco ilustrações. Só visual: quem mede o layout no JS
+       usa coordenadas de offset, que transform não altera (ver o pos() no
+       diagnostico-avancado.js). */
+    transform: skew(0deg, -7.5deg);
+}
+
+/* A peça da legenda é a .dg-card compartilhada, com o que não se aplica aqui
+   sobrescrito: ela não é uma etapa do fluxo, então perde o teto de 192, e sai do
+   fluxo pra se ancorar na borda da matriz em vez de dividir espaço com ela.
+   right e bottom medem pela caixa de PADDING, não pela de conteúdo. Com 48 de padding
+   embaixo e bottom 16, o fundo da peça para 32 abaixo da base da matriz e ainda 16
+   acima do fim da linha; com right 32 contra os 16 de padding lateral, ela entra 16
+   pra dentro da borda direita da matriz. A peça atravessa a base, com parte dela
+   sobre o quadrante de baixo à direita, e nada escapa do card.
+
+   Sem backdrop-filter: o fundo da peça é translúcido (bw-15 a bw-5), então o
+   quadrante por baixo aparece através dela. Na prática ele é o de baixo à direita em
+   10%, fraco o bastante pra não disputar com o texto da legenda. */
+.dg-risco .dg-card {
+    position: absolute;
+    right: 32px;
+    bottom: 16px;
+    max-width: none;
+}
+
+/* A matriz ocupa a linha toda, sem disputar espaço com nada: a peça saiu do fluxo.
+   A altura vem da linha (100%), e não de uma proporção: os quadrantes não têm
+   conteúdo próprio (os riscos são absolutos), então sem ela a matriz mediria zero.
+   O gap de 2px não tem cor: quem aparece entre os quadrantes é o fundo do card, e é
+   isso que separa um do outro, sem borda nem 1px (proibido no DS). */
+.dg-risco-quadrantes {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2px;
+}
+
+/* Com o grid preenchido linha por linha de cima pra baixo:
+     1 (cima, esquerda) wr500-10      2 (cima, direita) er500-10
+     3 (baixo, esquerda) sc500-10     4 (baixo, direita) wr500-10
+   É a leitura clássica da matriz: o eixo que cresce pra direita e o que cresce pra
+   cima se multiplicam. O canto de baixo à esquerda é o único em que nada pesa nos
+   dois eixos, e fica verde; o de cima à direita é o pior nos dois, e fica vermelho;
+   os dois cantos cruzados pesam um em cada eixo, então empatam em amarelo. A matriz
+   fica simétrica em torno da diagonal, que é como ela se lê. */
+.dg-risco-quadrantes span:nth-child(1) { background: var(--wr500-10); }
+.dg-risco-quadrantes span:nth-child(2) { background: var(--er500-10); }
+.dg-risco-quadrantes span:nth-child(3) { background: var(--sc500-10); }
+.dg-risco-quadrantes span:nth-child(4) { background: var(--wr500-10); }
+
+/* ── os riscos ──────────────────────────────────────────────────
+   Cada risco mora DENTRO do quadrante dele, e não numa camada absoluta sobre a
+   matriz inteira. É de propósito: assim a posição decide a cor, porque quem pinta o
+   risco é a MESMA lista de nth-child que pinta o fundo. Numa camada única, a cor
+   viria de uma classe escrita à mão e poderia discordar do quadrante onde o risco
+   caiu, que é o desencontro entre gráfico e legenda que a versão anterior desta
+   ilustração já teve.
+
+   --x e --y vêm do style inline, em % do quadrante, então a matriz escala com o card
+   sem recalcular nada. bottom e não top porque o eixo Y cresce pra cima, como no
+   gráfico.
+
+   Quadrado, sem raio, como os quadradinhos de estado das outras ilustrações. O risco
+   vai na cor CHEIA da família, a mesma do chip da legenda, sobre o fundo em 10% do
+   quadrante: é o contraste que o faz aparecer. */
+.dg-risco-quadrantes span { position: relative; }
+.dg-risco-ponto {
+    position: absolute;
+    left: var(--x);
+    bottom: var(--y);
     transform: translate(-50%, 50%);
-    width: 10px; height: 10px; border-radius: 1920px;
-    background: var(--pc300); }
-/* o isolation nao e decoracao: sem ele o z-index -1 do halo escaparia pro
-   contexto de empilhamento de cima e o disco sumiria atras da camada de
-   quadrantes. Com ele o -1 fica preso no ponto, atras do circulo e na frente do
-   quadrante. */
-.dg-risco-ponto--critico { background: var(--er500); isolation: isolate; }
-/* o halo do critico: disco translucido em volta do ponto, e nao anel. O anel foi
-   junto com os outros contornos, mas o destaque nao podia sair: e o unico sinal
-   que separa esse ponto dos demais. */
-.dg-risco-ponto--critico::after { content: ""; position: absolute; z-index: -1;
-    inset: -7px; border-radius: 1920px; background: var(--er500-25); }
-.dg-risco-legenda { flex: 0 0 auto; list-style: none; margin: 0; padding: 0;
-    align-self: center;
-    display: flex; flex-direction: column; gap: 8px; }
-.dg-risco-legenda li { margin: 0; display: flex; align-items: center; gap: 8px;
-    font: var(--label-xs); color: var(--bw-50); white-space: nowrap; }
-.dg-risco-chip { width: 10px; height: 10px; border-radius: 1920px; }
-.dg-risco-chip--critico { background: var(--er500); }
-.dg-risco-chip--alto    { background: var(--er300); }
-/* wr e não sg: o chip tem que ser da mesma família da cor que ele explica na
-   matriz, e o quadrante médio é wr. Em sg (dourado) a legenda apontava pra uma
-   cor que não aparece no gráfico. */
-.dg-risco-chip--medio   { background: var(--wr500); }
-.dg-risco-chip--baixo   { background: var(--sc500); }
+    width: 10px;
+    height: 10px;
+}
+/* O --halo acompanha a cor: mesma família em 50%, e é ele que o sonar dispara.
+   Declarado junto do background pra os dois nunca saírem de par. Em 25% o anel ficava
+   sutil demais; em 50% ele sai visível e mesmo assim apaga até zero no fim do ciclo. */
+.dg-risco-quadrantes span:nth-child(1) .dg-risco-ponto,
+.dg-risco-quadrantes span:nth-child(4) .dg-risco-ponto {
+    background: var(--wr500);
+    --halo: var(--wr500-50);
+}
+.dg-risco-quadrantes span:nth-child(2) .dg-risco-ponto {
+    background: var(--er500);
+    --halo: var(--er500-50);
+}
+.dg-risco-quadrantes span:nth-child(3) .dg-risco-ponto { background: var(--sc500); }
+
+/* Sonar nos riscos que não são baixos, ou seja os amarelos e os vermelhos.
+   O seletor é :not(:nth-child(3)), e não a lista dos outros três: assim ele não pode
+   sair de sincronia com as regras de cor acima. Quem fica de fora é o quadrante
+   baixo, que é justamente o que não deve chamar atenção.
+
+   O anel vive num ::after, e não no próprio quadradinho: assim o risco fica sempre
+   sólido e só o anel abre e apaga. Antes a animação mexia na opacidade do risco
+   junto, e ele piscava inteiro em vez de emitir.
+
+   Anel DURO: o box-shadow vai com blur 0 e só o spread cresce, então a borda é reta
+   em vez de esfumada, que é o que dá a leitura de sonar. Como o risco é quadrado, o
+   anel também é, e os dois combinam.
+   Tempo linear e não ease: o anel avança em velocidade constante e recomeça seco, sem
+   acelerar nem frear. Foi isso que saiu do "smooth".
+   O atraso vem negativo do style inline, então cada risco já entra no meio do ciclo
+   e os cinco não disparam juntos.
+
+   DOIS anéis por risco, um no ::before e outro no ::after, com a mesma animação e
+   meio ciclo de diferença: quando um está na metade do caminho o outro acabou de
+   sair, então há sempre dois anéis abertos, um por cima do outro. O offset é
+   calculado (atraso - 1s, metade dos 2s) em vez de escrito, pra ele acompanhar
+   sozinho se a duração mudar.
+   Os dois ficam em inset: 0, ou seja concêntricos e do mesmo tamanho de partida: o
+   que os separa é só a fase. */
+.dg-risco-quadrantes span:not(:nth-child(3)) .dg-risco-ponto::before,
+.dg-risco-quadrantes span:not(:nth-child(3)) .dg-risco-ponto::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    animation: dg-risco-sonar 2s linear var(--atraso, 0s) infinite;
+}
+.dg-risco-quadrantes span:not(:nth-child(3)) .dg-risco-ponto::before {
+    animation-delay: calc(var(--atraso, 0s) - 1s);
+}
+@keyframes dg-risco-sonar {
+    0%   { box-shadow: 0 0 0 0 var(--halo);    opacity: 1; }
+    100% { box-shadow: 0 0 0 16px var(--halo); opacity: 0; }
+}
+/* Sem override em ≤864, ao contrário das outras animações da página: o que a regra do
+   projeto evita ali é blur animado, e este anel tem blur 0. O que muda por frame é o
+   spread de uma sombra sólida, muito mais barato que reamostrar um desfoque. */
+@media (prefers-reduced-motion: reduce) {
+    /* os anéis somem por inteiro: parados num spread zero não apareceriam de todo
+       modo, e deixar a animação em none só manteria dois pseudo-elementos inúteis. */
+    .dg-risco-quadrantes span:not(:nth-child(3)) .dg-risco-ponto::before,
+    .dg-risco-quadrantes span:not(:nth-child(3)) .dg-risco-ponto::after { display: none; }
+}
+
+/* A legenda, em fileira: os três níveis lado a lado, e dentro de cada um o chip ao
+   lado do texto. Três níveis, um por família de cor que a matriz realmente pinta.
+   A versão anterior listava quatro e a matriz pintava três: um item apontava pra uma
+   cor que não estava no gráfico. */
+.dg-risco-legenda {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+.dg-risco-legenda li {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: var(--label-xs);
+    color: var(--bw-50);
+    white-space: nowrap;
+}
+/* O chip vai na cor CHEIA da família, e não no 10% do quadrante: em 10% sobre o
+   fundo da peça ele quase desaparece num quadrado de 10px. A família é a mesma, que
+   é o que faz a legenda apontar pra cor certa.
+   Quadrado como os riscos: redondo aqui e quadrado no gráfico, a legenda deixaria de
+   parecer a mesma coisa que ela explica. */
+.dg-risco-chip { width: 10px; height: 10px; }
+.dg-risco-chip--alto  { background: var(--er500); }
+.dg-risco-chip--medio { background: var(--wr500); }
+.dg-risco-chip--baixo { background: var(--sc500); }
 
 /* ══════════════════════════════════════════════════════════════
    ILUSTRAÇÃO 4 — Recomendações de melhoria
+   As três recomendações à esquerda, em peças da .dg-card compartilhada, e à direita
+   um campo com o núcleo e 8 quadrados. Uma marcha acende as peças em ordem e cada
+   uma dispara uma mudança no campo.
    ══════════════════════════════════════════════════════════════ */
-.dg-rec { padding: 0 24px 32px; display: flex; flex-direction: column; gap: 16px; }
-/* as duas áreas da spec, lado a lado: só couberam depois da inversão, que trouxe
-   este card pra span 6. A lista pesa mais que a comparação (3 itens de texto
-   contra 2 quadros quadrados), por isso 3fr contra 2fr em vez de meio a meio. */
-.dg-rec-cols { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; }
-.dg-rec-cols > .dg-rec-lista { flex: 3 1 0; min-width: 0; }
-.dg-rec-cols > .dg-rec-evo   { flex: 2 1 0; min-width: 0; }
-.dg-rec-lista { list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: 8px; }
-.dg-rec-item { margin: 0; display: flex; align-items: center; gap: 10px;
-    padding: 10px; border-radius: 10px;
-    background: var(--dn700); }
-.dg-rec-ico { flex: 0 0 auto; font-size: 18px; color: var(--pc200);
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bw-5); }
-.dg-rec-texto { flex: 1 1 auto; min-width: 0;
-    display: flex; flex-direction: column; gap: 6px; }
-.dg-rec-titulo { font: var(--label-xs); color: var(--bw);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* mesma medida da linha do card de causa raiz: as duas representam texto */
-.dg-rec-linha { height: 4px; width: 70%; background: var(--bw-10); }
-.dg-rec-check { flex: 0 0 auto; font-size: 18px; color: var(--sc500); }
+/* A conta das larguras fecha em 100%: 55% da lista, mais 16 de vão, mais
+   calc(45% - 16px) do campo. Os 16 saem da largura do campo justamente pra o vão não
+   empurrar nada pra fora. As duas medidas andam em par: mexer numa sem a outra faz a
+   linha pedir mais de 100% e o flex-shrink reparte o estouro entre as duas.
 
-/* antes/depois. Os dois quadros dividem a linha por igual (flex 1) e a seta fica
-   no meio, com largura própria. */
-.dg-rec-evo { display: flex; align-items: stretch; gap: 8px; }
-.dg-rec-quadro { flex: 1 1 0; min-width: 0;
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 10px; border-radius: 10px;
-    background: var(--dn700); }
-.dg-rec-quadro-label { font: var(--label-xs); color: var(--bw-50); }
-.dg-rec-seta { align-self: center; font-size: 20px; color: var(--bw-25); }
-/* malha: mesma caixa nos dois quadros, o que muda é a disposição dos nós.
-   antes = espalhado sem centro; depois = hub no meio ligado a todos. */
-.dg-rec-malha { position: relative; aspect-ratio: 1 / 1; width: 100%; }
-.dg-rec-no { position: absolute; width: 8px; height: 8px; border-radius: 2px;
-    background: var(--bw-25); }
-/* antes: nós soltos, sem centro. As ligações ponto a ponto ficam sugeridas pela
-   própria dispersão, sem linha nenhuma: é o oposto do quadro do "depois". */
-.dg-rec-malha--antes .dg-rec-no:nth-child(1) { left: 8%;  top: 12%; }
-.dg-rec-malha--antes .dg-rec-no:nth-child(2) { left: 66%; top: 22%; }
-.dg-rec-malha--antes .dg-rec-no:nth-child(3) { left: 22%; top: 58%; }
-.dg-rec-malha--antes .dg-rec-no:nth-child(4) { left: 78%; top: 68%; }
-.dg-rec-malha--antes .dg-rec-no:nth-child(5) { left: 44%; top: 86%; }
-/* depois: os 4 nós nos cantos e o hub no centro, com as diagonais saindo dele */
-.dg-rec-malha--depois .dg-rec-no { background: var(--pc300); }
-.dg-rec-malha--depois .dg-rec-no:nth-child(1) { left: 14%; top: 14%; }
-.dg-rec-malha--depois .dg-rec-no:nth-child(2) { right: 14%; top: 14%; }
-.dg-rec-malha--depois .dg-rec-no:nth-child(3) { left: 14%; bottom: 14%; }
-.dg-rec-malha--depois .dg-rec-no:nth-child(4) { right: 14%; bottom: 14%; }
-.dg-rec-hub { position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%); isolation: isolate;
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--pc200); background: var(--pc500-15);}
-.dg-rec-hub .material-symbols-outlined { font-size: 18px; }
-/* as diagonais do hub até os cantos, num elemento só. O isolation no hub prende
-   o z-index -1 nele, senão o traço escapa pra trás do quadro. */
-.dg-rec-hub::before { content: ""; position: absolute; z-index: -1;
-    width: 96px; height: 96px;
-    background:
-        linear-gradient(45deg,  transparent 48%, var(--pc300-25) 48% 52%, transparent 52%),
-        linear-gradient(-45deg, transparent 48%, var(--pc300-25) 48% 52%, transparent 52%); }
-.dg-rec-ganho { display: flex; align-items: center; gap: 8px;
-    font: var(--label-xs); color: var(--sc500); }
-.dg-rec-ganho .material-symbols-outlined { font-size: 18px; }
+   Altura de 272 com 16 de padding embaixo: como o box-sizing do root.css é
+   border-box, a caixa de conteúdo fica com 256, que é exatamente a pilha de peças. O
+   padding é a folga entre a última peça e a borda do card. Cada peça mede 80 (16 de padding, 48 do ícone, que é o item mais
+   alto da linha, e 16 do outro lado) e são três com dois vãos de 8: 240 + 16 = 256. O
+   ícone dá 48 cravados porque o .material-symbols-outlined vem com line-height 1 do
+   fonts.css.
+
+   --ciclo é o compasso da marcha, dividido em 4 tempos iguais de 2s: tudo apagado,
+   depois a 1a, depois a 2a e por fim a 3a, cada uma ficando acesa até o fim. Uma
+   variável só, pra mudar o ritmo num lugar. */
+.dg-rec {
+    --ciclo: 8s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    height: 272px;
+    padding: 0 16px 16px 16px;
+    /* meio tom: a ilustração recua e o título do card ganha a frente */
+    opacity: 0.5;
+    /* inclinação comum às cinco ilustrações. Só visual: quem mede o layout no JS
+       usa coordenadas de offset, que transform não altera (ver o pos() no
+       diagnostico-avancado.js). */
+    transform: skew(0deg, -7.5deg);
+}
+
+/* min-width: 0 porque item de flex tem min-width auto, que é o tamanho do conteúdo:
+   sem isso um rótulo longo poderia empurrar a lista além dos 55%. */
+.dg-rec-lista {
+    width: 55%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+/* a peça é a .dg-card compartilhada; aqui ela perde o teto de 192 porque preenche a
+   coluna, e o gap de coluna dela não se aplica: o conteúdo é uma linha só */
+.dg-rec-lista .dg-card { max-width: none; }
+
+/* uma linha por peça: ícone à esquerda, texto no meio, selo à direita */
+.dg-rec-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+/* o wght 200 e o opsz 24 dos ícones vêm da regra compartilhada .dg-rec
+   .material-symbols-outlined, no fim deste arquivo */
+.dg-rec-ico {
+    flex: 0 0 auto;
+    font-size: 48px;
+    color: var(--bw);
+}
+/* min-width: 0 pra o preview poder encolher e não empurrar o ícone */
+.dg-rec-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.dg-rec-label { color: var(--bw-50); font: var(--label); }
+/* Representação de texto: uma barra de 4px, sem raio, na largura toda da coluna. Em
+   bw-25, um passo abaixo do bw-50 do rótulo: a barra é a linha secundária da peça e
+   fica atrás dele na hierarquia em vez de empatar. */
+.dg-rec-preview { display: flex; flex-direction: column; gap: 8px; }
+.dg-rec-preview span { height: 4px; width: 100%; background: var(--bw-25); }
+/* selo fechando a linha: quadrado de 32, sem raio. flex: 0 0 auto pra ele não ceder
+   largura quando o rótulo for longo, que é o oposto do .dg-rec-texto */
+.dg-rec-selo {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    background: var(--bw-10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dg-rec-selo .material-symbols-outlined {
+    font-size: 24px;
+    color: var(--sc500);
+    opacity: 0;
+}
+
+/* ── a marcha ───────────────────────────────────────────────────
+   As peças acendem uma a uma e cada uma FICA acesa até a última acender; aí o ciclo
+   volta ao zero e as três apagam juntas. O rótulo vai pra sc500 e o check aparece no
+   selo, também em sc500.
+
+   O ciclo tem 4 tempos iguais de 2s: até 25% tudo apagado (é o retorno, e é o que
+   deixa o reinício visível), 25% acende a 1a, 50% a 2a, 75% a 3a. Como cada peça só
+   liga e não desliga, o acúmulo sai do próprio desenho da keyframe, sem contador nem
+   JS.
+
+   As transições são RAMPAS, não degraus: cada stop de partida fica 6% antes do de
+   chegada, o que dá cerca de meio segundo num ciclo de 8s, e o ease-in-out arredonda
+   as pontas. De 94% a 100% as três apagam juntas, também em rampa, então o loop fecha
+   sem salto.
+
+   São seis keyframes e não três com variável: variável de CSS não interpola, ela
+   troca de valor no meio do intervalo, e era isso que dava degrau. Pra a passagem ser
+   suave, o que anima tem que ser a propriedade final, e o rótulo e o check animam
+   propriedades diferentes (color e opacity) em elementos diferentes. As três de cada
+   lado dividem a forma e mudam só o ponto de virada, que é o índice vezes 25%. */
+.dg-rec-lista .dg-card:nth-child(1) .dg-rec-label { animation: dg-rec-rotulo-1 var(--ciclo) ease-in-out infinite; }
+.dg-rec-lista .dg-card:nth-child(2) .dg-rec-label { animation: dg-rec-rotulo-2 var(--ciclo) ease-in-out infinite; }
+.dg-rec-lista .dg-card:nth-child(3) .dg-rec-label { animation: dg-rec-rotulo-3 var(--ciclo) ease-in-out infinite; }
+.dg-rec-lista .dg-card:nth-child(1) .dg-rec-selo .material-symbols-outlined { animation: dg-rec-tique-1 var(--ciclo) ease-in-out infinite; }
+.dg-rec-lista .dg-card:nth-child(2) .dg-rec-selo .material-symbols-outlined { animation: dg-rec-tique-2 var(--ciclo) ease-in-out infinite; }
+.dg-rec-lista .dg-card:nth-child(3) .dg-rec-selo .material-symbols-outlined { animation: dg-rec-tique-3 var(--ciclo) ease-in-out infinite; }
+@keyframes dg-rec-rotulo-1 {
+    0%, 19%  { color: var(--bw-50); }
+    25%, 94% { color: var(--sc500); }
+    100%     { color: var(--bw-50); }
+}
+@keyframes dg-rec-rotulo-2 {
+    0%, 44%  { color: var(--bw-50); }
+    50%, 94% { color: var(--sc500); }
+    100%     { color: var(--bw-50); }
+}
+@keyframes dg-rec-rotulo-3 {
+    0%, 69%  { color: var(--bw-50); }
+    75%, 94% { color: var(--sc500); }
+    100%     { color: var(--bw-50); }
+}
+@keyframes dg-rec-tique-1 {
+    0%, 19%  { opacity: 0; }
+    25%, 94% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@keyframes dg-rec-tique-2 {
+    0%, 44%  { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@keyframes dg-rec-tique-3 {
+    0%, 69%  { opacity: 0; }
+    75%, 94% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+
+/* ── o campo ────────────────────────────────────────────────────
+   --borda é onde o anel encosta, e de onde a linha de ligação tira o inset dela. Uma
+   variável e o complemento, então mudar --borda move os oito quadrados e o traço
+   juntos, sem chance de um sair do outro.
+   O campo tem o mesmo fundo das peças, então lê como painel e não como área vazia, e
+   align-self: stretch pra ele ocupar a altura toda: as posições dos quadrados são
+   percentuais e precisam de uma caixa cheia, já que o conteúdo dele é todo absoluto. */
+.dg-rec-campo {
+    --borda: 10%;
+    --fim: calc(100% - var(--borda));
+    position: relative;
+    width: calc(45% - 16px);
+    align-self: stretch;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+
+/* A linha de ligação: um retângulo do --borda ao --fim, com o traço passando
+   exatamente pelo centro dos quadrados do anel, porque são as mesmas variáveis que
+   posicionam eles.
+   Traço por box-shadow inset, e não por border: é a convenção do DS, e o --ring-15 já
+   é inset 0 0 0 2px var(--bw-15). border somaria na caixa e mexeria no encaixe.
+   Duas animações: aparece com a 2a peça e troca de cor com a 3a. */
+.dg-rec-liga {
+    position: absolute;
+    inset: var(--borda);
+    box-shadow: var(--ring-15);
+    opacity: 0;
+    animation: dg-rec-tique-2 var(--ciclo) ease-in-out infinite,
+               dg-rec-liga-cor var(--ciclo) ease-in-out infinite;
+}
+/* O verde vai escrito por extenso, e não por token de ring: os --ring-* do DS são
+   todos da família bw e não existe um de sc. A forma é a mesma do --ring-15
+   (inset 0 0 0 2px), então os 2px e o inset continuam vindo da convenção. */
+@keyframes dg-rec-liga-cor {
+    0%, 69%  { box-shadow: var(--ring-15); }
+    75%, 94% { box-shadow: inset 0 0 0 2px var(--sc500-25); }
+    100%     { box-shadow: var(--ring-15); }
+}
+
+/* Os quadrados. Cada um tem dois lugares, os dois em % do campo: --sx/--sy espalhado
+   e --ax/--ay no anel. O anel usa --borda / 50% / --fim nos dois eixos, então ele NÃO
+   é 1/1: nasce com a proporção do campo e acompanha se ele mudar de forma. São 4
+   cantos e 4 meios de lado, e como os cantos contam pros dois lados que tocam, cada
+   lado fica com 3 quadrados, que é o que 8 dá exatamente.
+
+   Anima left/top, e não translate: porcentagem em translate resolve contra o tamanho
+   do PRÓPRIO elemento (16px), não contra o campo. Em left/top a porcentagem é do bloco
+   de contenção, e é isso que faz o anel herdar a proporção dele. O custo é animar
+   propriedades de layout, aceitável em 8 elementos de 16px e sem blur nenhum.
+   Centrados por margem negativa de 8 (metade dos 16), pra a ancoragem não depender de
+   transform.
+
+   Duas animações no mesmo quadrado, em tempos diferentes e sem se atrapalhar porque
+   mexem em propriedades diferentes: a posição entra com a 1a peça e a cor passa por
+   três estágios, um por peça. */
+.dg-rec-quadrado {
+    position: absolute;
+    left: var(--sx);
+    top: var(--sy);
+    margin: -8px;
+    width: 16px;
+    height: 16px;
+    background: var(--ln500);
+    animation: dg-rec-junta var(--ciclo) ease-in-out infinite,
+               dg-rec-tinge var(--ciclo) ease-in-out infinite;
+}
+/* a junção, no tempo da 1a peça */
+@keyframes dg-rec-junta {
+    0%, 19%  { left: var(--sx); top: var(--sy); }
+    25%, 94% { left: var(--ax); top: var(--ay); }
+    100%     { left: var(--sx); top: var(--sy); }
+}
+/* A cor: ln500 no repouso, bw quando a 2a acende e sc300 quando a 3a acende. O
+   estágio do meio fecha em 69% pra a rampa até 75% ser a mesma das outras coisas que a
+   3a dispara.
+   Agora a rampa de tom sobe de verdade: ln500 (#C3C3CD) é o cinza claro do repouso, bw
+   (#F5F5FF) é o branco do sistema e sc300 fecha em verde. Cada passo clareia, então a
+   estrutura lê como algo acendendo, e não como troca de tom sem direção. */
+@keyframes dg-rec-tinge {
+    0%, 44%  { background: var(--ln500); }
+    50%, 69% { background: var(--bw); }
+    75%, 94% { background: var(--sc300); }
+    100%     { background: var(--ln500); }
+}
+
+/* O núcleo é a .dg-card compartilhada com o que não se aplica sobrescrito: sai do
+   fluxo pra ficar no centro do campo, perde o teto de 192 e aperta o padding pra 8, o
+   que dá uma caixa de 64 (8 + 48 do ícone + 8) bem justa em volta do glifo.
+   O anel dos quadrados deixa 80% do campo livre no miolo, uns 245 por 256 no card,
+   então a caixa de 64 sobra folga de sobra pros dois lados.
+   Entra com a 1a peça. */
+.dg-rec-nucleo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: none;
+    padding: 8px;
+    opacity: 0;
+    animation: dg-rec-tique-1 var(--ciclo) ease-in-out infinite;
+}
+.dg-rec-nucleo .material-symbols-outlined {
+    font-size: 48px;
+    color: var(--pc200);
+    /* o sonar é irmão anterior do glifo e posicionado; relative traz o glifo de volta
+       pra frente dos anéis */
+    position: relative;
+}
+
+/* O sonar do núcleo. Dois anéis DUROS abrindo do contorno da caixa, na técnica dos
+   pontos da ilustração 3: box-shadow com blur 0 e só o spread crescendo, então a borda
+   é reta em vez de esfumada.
+
+   Três camadas, cada uma com um trabalho:
+     .dg-rec-sonar        é a comporta. A opacidade dela entra com a 2a peça, então o
+                          sonar só existe dali em diante. Comporta separada é o que
+                          permite o anel ter período próprio (2s) sem depender do ciclo
+                          de 8s. A rampa dela é de 12% do ciclo, mais longa que os 6%
+                          das outras coisas da 2a peça: o sonar é a única coisa aqui já
+                          em movimento quando a comporta abre, então ele pode entrar no
+                          meio de um anel, e a rampa longa transforma isso em
+                          surgimento em vez de estalo.
+     ::before e ::after   são os dois anéis, meio período de diferença um do outro,
+                          então sempre há um a caminho enquanto o outro sai.
+   A opacidade do anel fica dentro da da comporta, e opacidade multiplica: por isso o
+   sonar não aparece antes da 2a peça nem sobrevive ao fim do ciclo.
+
+   O anel vai na família primária em 10%, e ainda ganha fade-in próprio e ease-out em
+   vez de linear: o alcance é o mesmo da ilustração 3 em proporção (32 numa caixa de
+   64, contra 16 num ponto de 10), mas aqui a leitura é de onda e não de pulso duro.
+   pc300-10 e não pc200-10: quando isto foi escrito o root.css só tinha escala de alfa
+   pra pc500 e pc300. A escala do pc200 existe agora, mas o anel continua em pc300 de
+   propósito, porque é a família do resto do desenho; a troca seria de cor, não de
+   disponibilidade. */
+.dg-rec-sonar {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    animation: dg-rec-abre var(--ciclo) ease-in-out infinite;
+}
+@keyframes dg-rec-abre {
+    0%, 38%  { opacity: 0; }
+    50%, 88% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+.dg-rec-sonar::before,
+.dg-rec-sonar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    animation: dg-rec-sonar 2s ease-out infinite;
+}
+/* meio período atrás, pra sempre haver um anel a caminho enquanto o outro sai */
+.dg-rec-sonar::before { animation-delay: -1s; }
+@keyframes dg-rec-sonar {
+    0%   { box-shadow: 0 0 0 0 var(--pc300-10);    opacity: 0; }
+    25%  { opacity: 1; }
+    100% { box-shadow: 0 0 0 32px var(--pc300-10); opacity: 0; }
+}
+
+/* Selo de verificado, no canto de cima à direita da caixa do núcleo, meio dentro e
+   meio fora (os -12 são metade do glifo de 24). Entra com a 3a peça, e por isso
+   reaproveita a keyframe do check dela: mesma propriedade e mesmo instante.
+   O seletor precisa dos dois níveis pra vencer a regra do ícone do núcleo, que também
+   casa com .material-symbols-outlined e fixa 48px, pc200 e position: relative. */
+.dg-rec-nucleo .dg-rec-verificado {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    font-size: 24px;
+    color: var(--sc500);
+    opacity: 0;
+    animation: dg-rec-tique-3 var(--ciclo) ease-in-out infinite;
+}
+
+/* ── abaixo de 544 de LARGURA DA ILUSTRAÇÃO: as duas colunas empilham ──
+   Container query, e não media query, porque o gatilho é a largura do card e não a da
+   viewport, e as duas não andam juntas aqui: o card 4 é span 6 no grid Wide, cai pra
+   span 5 no de 8 e vira largura cheia em ≤864. Ele passa por baixo de 544 em duas
+   faixas separadas de viewport, uma entre 865 e 922 (span 5, ~509) e outra abaixo de
+   576. Media query precisaria descrever as duas e refazer a conta a cada mudança de
+   span; @container pergunta direto o que importa.
+
+   O container é o próprio card, porque a ilustração ocupa a largura dele. Só o card 4
+   recebe container-type, e não a .dg-pilar toda, pra a contenção não valer onde não
+   precisa. Ela não muda nada aqui: o card já é position: relative, então a .dg-pilar-orb
+   continua se ancorando nele como antes.
+
+   Sem suporte a @container o bloco é ignorado e fica o layout em linha, que é o de
+   hoje: degrada pro comportamento anterior, não pra um quebrado.
+
+   Empilhado, a lista mantém a altura natural (os mesmos 256 da pilha) e a moldura
+   solta o height fixo. O campo perde o stretch da linha e passa a ter altura própria de
+   192; o anel e as posições soltas são todos percentuais, então acompanham sozinhos. */
+.dg-pilar--4 { container-type: inline-size; }
+@container (width < 544px) {
+    .dg-rec {
+        flex-direction: column;
+        align-items: stretch;
+        height: auto;
+    }
+    .dg-rec-lista { width: 100%; }
+    .dg-rec-campo {
+        width: 100%;
+        align-self: auto;
+        height: 192px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* tudo no repouso: rótulos em bw-50, sem check, quadrados espalhados em ln500,
+       núcleo escondido e nada de sonar */
+    .dg-rec-label,
+    .dg-rec-selo .material-symbols-outlined,
+    .dg-rec-liga,
+    .dg-rec-quadrado,
+    .dg-rec-nucleo,
+    .dg-rec-sonar,
+    .dg-rec-sonar::before,
+    .dg-rec-sonar::after,
+    .dg-rec-verificado { animation: none; }
+}
 
 /* ══════════════════════════════════════════════════════════════
    ILUSTRAÇÃO 5 — Plano de ação priorizado
+   Três etapas empilhadas em peças da .dg-card compartilhada, cada uma com número,
+   rótulo e um bloco de prioridade à direita. Uma varredura acende uma peça por vez.
    ══════════════════════════════════════════════════════════════ */
-.dg-plano { padding: 0 24px 32px; }
-/* o trilho é um ::before da lista, atrás dos números: acompanha a altura da
-   lista sem px fixo. Os 15px de left o centram nos números de 30px. */
-.dg-plano-lista { position: relative; list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: 12px; }
-.dg-plano-lista::before { content: ""; position: absolute; z-index: 0;
-    left: 15px; top: 15px; bottom: 15px; width: 2px; background: var(--bw-10); }
-.dg-plano-etapa { margin: 0; position: relative;
-    display: flex; align-items: center; gap: 12px; }
-.dg-plano-num { position: relative; z-index: 1; flex: 0 0 auto;
-    width: 30px; height: 30px; border-radius: 1920px;
-    display: flex; align-items: center; justify-content: center;
-    font: var(--label-xs); color: var(--pc200);
-    background: var(--dn700); }
-.dg-plano-card { flex: 1 1 auto; min-width: 0;
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px; border-radius: 10px;
-    background: var(--dn700); }
-.dg-plano-acao { flex: 1 1 auto; min-width: 0; font: var(--label-xs); color: var(--bw); }
-.dg-plano-card .tag-status { flex: 0 0 auto; }
+/* --ciclo é o compasso da varredura, dividido em 3 tempos iguais de 2s, um por peça.
+   O padding acompanha o da ilustração 4 (0 16px 16px): a altura aqui é o conteúdo, e
+   não uma moldura fixa, porque as três peças já definem quanto o bloco mede. */
+.dg-plano {
+    --ciclo: 6s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    padding: 0 16px 16px 16px;
+    box-sizing: border-box;
+    /* meio tom: a ilustração recua e o título do card ganha a frente */
+    opacity: 0.5;
+    /* inclinação comum às cinco ilustrações. Só visual: quem mede o layout no JS
+       usa coordenadas de offset, que transform não altera (ver o pos() no
+       diagnostico-avancado.js). */
+    transform: skew(0deg, -7.5deg);
+}
+/* a peça é a .dg-card compartilhada; aqui ela perde o teto de 192 porque ocupa a
+   linha toda */
+.dg-plano .dg-card { max-width: none; }
 
-/* ── tier estreito: 865 a 1439 ──
-   Aqui os cards pequenos são span 3 de 8, o pior caso da página (~368px). Abaixo
-   de 865 todo card vira largura cheia e o aperto desaparece, por isso a faixa tem
-   piso: sem o min-width estas regras vazariam pro mobile, onde há folga sobrando. */
-@media (max-width: 1439px) and (min-width: 865px) {
-    /* --3: a legenda ao lado comeria 80px dos 320. Desce pra baixo da matriz e
-       vira linha, que é o mesmo arranjo que o ≤576 já usava. */
-    .dg-risco { flex-direction: column; }
-    .dg-risco-legenda { flex-direction: row; flex-wrap: wrap; align-self: flex-start; }
-    /* --5: ação e etiqueta lado a lado esmagariam o texto da ação. */
-    .dg-plano-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+/* ── a varredura ────────────────────────────────────────────────
+   Uma peça ativa por vez, na ordem, repetindo sem fim. A ativa fica limpa e as outras
+   duas em blur 4px e metade da opacidade.
+
+   Uma keyframe só pras três, e não uma por peça: aqui, ao contrário da ilustração 4, o
+   estado não acumula, então as três têm a MESMA forma e o que muda é só a fase. As
+   fases saem do --ciclo por nth-child, num lugar só.
+
+   As rampas se cruzam de propósito: a peça sai de ativa entre 33 e 39%, e a seguinte
+   entra entre 33,33 e 39,33% (o atraso de um terço). Sem esse cruzamento haveria um
+   instante com as três apagadas a cada troca.
+
+   Só opacidade, sem blur: a distinção entre ativa e inativa se resolve no tom, e com
+   isso a animação deixa de ter filtro nenhum, então também não há custo de desfoque em
+   nenhuma largura.
+
+   fill-mode backwards faz a 2a e a 3a assumirem o estado de 0% (inativas) durante o
+   atraso delas no primeiro ciclo; sem isso as três apareceriam ativas ao carregar.
+   E o repouso da regra é o estado LIMPO, sem opacity declarada: assim, se a animação não
+   rodar (reduced-motion), as três ficam em opacidade cheia em vez de meio apagadas. */
+.dg-plano .dg-card {
+    animation: dg-plano-ativa var(--ciclo) ease-in-out var(--fase, 0s) infinite backwards;
+}
+.dg-plano .dg-card:nth-child(2) { --fase: calc(var(--ciclo) / 3); }
+.dg-plano .dg-card:nth-child(3) { --fase: calc(var(--ciclo) / 3 * 2); }
+@keyframes dg-plano-ativa {
+    0%        { opacity: 0.5; }
+    6%, 33%   { opacity: 1; }
+    39%, 100% { opacity: 0.5; }
+}
+@media (prefers-reduced-motion: reduce) {
+    /* sem varredura: as três ficam limpas e legíveis, só não há uma em destaque */
+    .dg-plano .dg-card { animation: none; }
+}
+
+/* uma linha por peça: número, rótulo e o bloco de prioridade */
+.dg-plano-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* O número no lugar do ícone, na mesma caixa reservada de 32 que as outras
+   ilustrações dão ao selo.
+   line-height 1 não é detalhe: com 32px de fonte numa caixa de 32, qualquer
+   line-height maior estouraria a altura. Com 1, a caixa da linha tem exatamente os 32
+   e o flex centra o dígito nela.
+   O peso 400 é self-hosted (ver fonts.css), então não cai em fallback. */
+.dg-plano-num {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--bw);
+}
+
+/* min-width: 0 porque item de flex tem min-width auto, que é o tamanho do conteúdo:
+   sem isso um rótulo longo empurraria o bloco de prioridade pra fora da peça. */
+.dg-plano-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font: var(--label);
+    color: var(--bw-50);
+}
+
+/* O bloco de prioridade: largura fixa de 128, tag em cima e as duas linhas de preview
+   embaixo, tudo encostado à direita.
+   flex: 0 0 128px pra ele não ceder largura quando o rótulo crescer, que é o oposto do
+   rótulo: um estica, o outro fica.
+   O gap de 4 é o mesmo entre a tag e o preview e entre as duas linhas dele, então o
+   bloco tem um ritmo só. */
+.dg-plano-lado {
+    flex: 0 0 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+/* a tag é o .tag-status do DS; aqui ela só não pode esticar na largura do bloco */
+.dg-plano-lado .tag-status { flex: 0 0 auto; }
+
+/* ── abaixo de 544 de LARGURA DA ILUSTRAÇÃO: o bloco de prioridade encolhe ──
+   Container query, e não media query, pelo mesmo motivo da ilustração 4: o gatilho é a
+   largura do card, e as duas não andam juntas. O card 5 é span 4, o que dá 544 exatos no
+   grid Wide (na trava do container query, sem disparar) e 400 no grid de 8, onde dispara;
+   em ≤864 ele vira largura cheia e volta a depender da viewport. São faixas de viewport
+   descontínuas, e é por isso que o gatilho é a largura do container e não a da tela.
+
+   O container é o próprio card, porque a ilustração ocupa a largura dele (o padding do
+   .dg-plano é border-box, então largura do bloco = largura do card). Só o card 5 recebe
+   container-type, e não a .dg-pilar toda.
+
+   Sem suporte a @container o bloco é ignorado e ficam os 128, que é o de hoje: degrada
+   pro comportamento anterior. */
+.dg-pilar--5 { container-type: inline-size; }
+@container (width < 544px) {
+    /* 64 em vez de 128: metade da largura devolve espaço pro rótulo, que é quem sofre
+       quando o card aperta. A tag no menor tamanho cabe nos 64, e as barras de preview
+       são 100% do bloco, então acompanham sozinhas. */
+    .dg-plano-lado { flex: 0 0 64px; }
+}
+
+/* Representação de texto: duas barras de 4px, sem raio, em bw-25, um passo abaixo do
+   bw-50 do rótulo, como na ilustração 4. As duas em largura cheia, então o
+   align-items: flex-end abaixo não tem sobra pra distribuir e o alinhamento à direita
+   não se distingue do à esquerda: ele fica pelo caso de uma barra voltar a ser mais
+   curta. */
+.dg-plano-preview {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+.dg-plano-preview span { height: 4px; width: 100%; background: var(--bw-25); }
+
+
+/* ══════════════════════════════════════════════════════════════
+   SEÇÃO METODOLOGIA — stage travado na tela + cards na horizontal
+   Portada do .agenda de /ed/aichampion/, na versão dark. O efeito é o mesmo: o
+   .metodo-stage é sticky e prende no topo da tela, e enquanto a página rola o
+   .metodo-grid desliza na horizontal. A altura da seção é calculada no JS (item 6 do
+   diagnostico-avancado.js), porque ela precisa somar a viewport travada mais o percurso
+   horizontal dos cards.
+
+   Nomes trocados de agenda-* pra metodo-*: lá o componente lista as aulas de um curso,
+   aqui as etapas de um diagnóstico. Nome herdado que não descreve a página é justamente
+   o que esta página passou a sessão inteira limpando.
+
+   O sticky funciona porque o root.css usa overflow-x: clip no html, e não hidden: clip
+   não cria scroll container, então o sticky dos descendentes segue valendo contra o
+   viewport. Está comentado lá, e é o mesmo root.css que a aichampion carrega.
+
+   VERSÃO DARK: o original vive sobre a tela branca que o canvas da aichampion pinta,
+   então os traços eram --bb-5 e os textos --dn500 e --pc500. Aqui tudo isso inverte:
+     traços e divisórias   --bb-5   =>  --bw-5
+     título do card        --pc500  =>  --pc200
+     descrição             --dn500  =>  --bw-75
+   O quadrado do canto (--pc300) e o gradiente do número (--pc300-50) já funcionavam nos
+   dois fundos e ficaram como estão.
+
+   Não portei a coreografia de entrada de lá (título letra a letra, cards escalonados):
+   ela é dirigida pelo scroll do hero da aichampion e depende do #fill-canvas e do
+   .hero-title daquela página. Aqui o cabeçalho usa o reveal do DS (.sec-eyebrow +
+   .sec-title) e os cards entram junto com o stage.
+   ══════════════════════════════════════════════════════════════ */
+.sec-metodo {
+    position: relative;
+    z-index: 2;
+    /* height vem do JS: viewport travada + percurso horizontal */
+}
+.metodo-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+.metodo-header {
+    padding: 0 16px 32px;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+.metodo-header-inner {
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    align-items: end;
+}
+/* eyebrow e título juntos num wrapper: é o que o reveal do formacoes/script.js espera,
+   porque ele procura o .sec-eyebrow no parentNode do .sec-title */
+.metodo-header-txt {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* faixa full-width que NÃO translada: segura as linhas horizontais de ponta a ponta */
+.metodo-track {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-5), inset 0 -2px 0 0 var(--bw-5);
+}
+/* o padding lateral alinha o primeiro e o último card com o container de 1440 */
+.metodo-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    padding: 0 max(16px, calc(50vw - 720px));
+    flex: 0 0 auto;
+    align-items: stretch;
+    will-change: transform;
+    position: relative;
+    z-index: 1;
+}
+.metodo-card {
+    flex-shrink: 0;
+    width: 832px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    isolation: isolate;
+}
+.metodo-card + .metodo-card {
+    box-shadow: inset 2px 0 0 0 var(--bw-5);
+}
+.metodo-card-media {
+    padding: 32px 32px 32px 0;
+    flex: 0 0 calc(50% - 32px);
+    display: flex;
+}
+.metodo-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+/* order -1 põe o texto à esquerda e a imagem à direita, sem inverter o DOM */
+.metodo-card-meta {
+    padding: 128px 64px 64px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 0 0 calc(50% + 32px);
+    justify-content: flex-end;
+    order: -1;
+    position: relative;
+}
+.metodo-card:not(.metodo-card--with-img) .metodo-card-meta { flex: 0 0 100%; }
+/* número gigante de fundo: z-index -1 o joga pra trás do texto do próprio card */
+.metodo-card-num {
+    position: absolute;
+    left: 48px;
+    top: 48px;
+    width: 100%;
+    font-family: var(--font-family);
+    font-size: 8rem;
+    line-height: 1em;
+    font-weight: 200;
+    background: linear-gradient(180deg, var(--pc300-50), transparent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    pointer-events: none;
+    user-select: none;
+    z-index: -1;
+}
+.metodo-card-title {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--pc200);
+    margin: 0 0 16px;
+}
+.metodo-card-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
 }
 @media (max-width: 864px) {
-    /* card em largura cheia: a matriz ganha folga. Os trilhos das ilustrações 1 e
-       2 são todos em porcentagem, então acompanham sozinhos. */
-    .dg-risco-grade { max-width: 320px; }
+    /* abaixo de 864 o travamento sai: o stage volta a ser estático e os cards empilham
+       na vertical. O JS também zera a altura da seção e o translate nesta faixa. */
+    .metodo-stage {
+        position: relative;
+        height: auto;
+        padding: 96px 0 128px;
+    }
+    .metodo-card-meta { padding: 128px 32px 32px 32px; }
+    .metodo-card-num { left: 16px; top: 16px; }
+    .metodo-header-inner { grid-template-columns: 1fr; gap: 24px; }
+    .metodo-header-txt { grid-column: 1 / -1; }
+    .metodo-grid { flex-direction: column; padding: 0 16px; }
+    .metodo-card {
+        width: 100%;
+        max-width: 100%;
+        box-shadow: inset 2px 0 0 0 var(--bw-5), inset -2px 0 0 0 var(--bw-5);
+    }
+    .metodo-card + .metodo-card {
+        box-shadow:
+            inset 2px 0 0 0 var(--bw-5), inset -2px 0 0 0 var(--bw-5),
+            inset 0 2px 0 0 var(--bw-5);
+    }
+}
+/* ≤576: o card vira coluna, texto em cima e imagem embaixo */
+@media (max-width: 576px) {
+    .metodo-card { flex-direction: column; }
+    .metodo-card-media { padding: 0 32px 32px 32px; }
+}
+/* Wide-short (vw > 864 e vh < 864): tela larga e baixa, onde o cabeçalho em cima mais
+   os 100dvh do stage não deixam altura pro card. O padding do meta encolhe e o JS move
+   o cabeçalho pra DENTRO do grid, como primeiro card da fila. */
+@media (min-width: 865px) and (max-height: 864px) {
+    .metodo-card-meta { padding: 128px 32px 32px 32px; }
+    .metodo-card-num { left: 32px; }
+}
+.metodo-header--inline {
+    flex-shrink: 0;
+    width: 544px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: stretch;
+}
+.metodo-header--inline .metodo-header-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+}
+.metodo-header--inline .metodo-header-txt {
+    grid-column: auto;
+    width: 100%;
+}
+/* espaçador invisível que reserva a largura de um card antes do cabeçalho realocado,
+   pra a fila não começar encostada na borda */
+.metodo-spacer {
+    flex-shrink: 0;
+    width: 832px;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SOBREPOSIÇÃO METODOLOGIA → CRITÉRIOS
+   Portado do .mba-gains-offer-track de /ed/pos-graduacoes/mba-fpa.css. A mecânica é
+   curta e vale a pena entender: a seção de BAIXO fica sticky com
+   top: calc(100vh - altura dela). Quando ela cabe inteira na tela, esse top vira um
+   valor negativo que a estaciona com o RODAPÉ colado no rodapé da viewport, e ela fica
+   ali parada enquanto a seção de cima, em fluxo normal e z-index maior, sobe por cima.
+
+   A altura entra por variável (--metodo-altura) porque não dá pra escrever no CSS: a
+   .sec-metodo tem altura definida em JS (viewport travada + percurso horizontal dos
+   cards), e ela muda a cada resize e a cada relocação do cabeçalho. Um ResizeObserver
+   mantém a variável em dia (item 8 do diagnostico-avancado.js). É exatamente o motivo
+   que o mba-fpa dá pro mesmo truque, porque lá a .mba-curriculum também é uma seção de
+   scroll horizontal.
+
+   Por que a .sec-metodo precisa ser filha DIRETA do track: sticky se posiciona dentro do
+   containing block. Antes ela vivia num .metodo-holder do tamanho dela, onde o sticky
+   não teria curso nenhum pra andar. O track é mais alto (ele contém as duas seções), e é
+   isso que dá o percurso. O holder saiu; ele só existia pra passar na frente do canvas
+   branco da aichampion, que aqui não existe.
+   ══════════════════════════════════════════════════════════════ */
+.metodo-criterios-track { position: relative; }
+.metodo-criterios-track .sec-metodo {
+    position: sticky;
+    top: calc(100vh - var(--metodo-altura, 100vh));
+    z-index: 0;
+}
+/* a .sec-criterios não precisa de fundo aqui: ela já tem o dela, opaco, porque ser a
+   seção clara da página é identidade dela e não só requisito da sobreposição. */
+.metodo-criterios-track .sec-criterios {
+    position: relative;
+    z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SEÇÃO CRITÉRIOS — cabeçalho fixo + cards empilhando no scroll
+   Portada do .mba-target de /ed/pos-graduacoes/, mantendo o tema claro dela. Grid do DS em duas
+   metades: o cabeçalho em span 5 fica sticky enquanto os cards, na outra metade, sobem
+   e param um 96px abaixo do outro, cada um cobrindo o anterior e deixando só o título à
+   vista. O empilhamento é sticky puro, sem JS.
+
+   Fundo OPACO (--bb) de propósito: esta seção desliza por cima da .sec-metodo, e um
+   fundo translúcido deixaria os cards de lá aparecendo por baixo. É o mesmo motivo que o
+   mba-fpa registra na .mba-curriculum.
+
+   A seção fica LIGHT, como no original: é ela subindo clara sobre a metodologia escura
+   que dá o contraste em que o padrão se apoia (no mba-fpa é a mesma coisa, a .mba-gains
+   clara sobe sobre a .mba-curriculum escura). O fundo é o gradiente do .mba-light de lá,
+   sem a textura, que é um PNG próprio das pós-graduações.
+
+   Consequência de ser a única seção clara da página: o .sec-title do DS nasce em
+   color: var(--bw), branco pra fundo escuro, e aqui ficaria invisível. A correção é a
+   mesma que o DS já usa nas seções claras dele (ver .sec-courses .sec-title no
+   formacoes/style.css): trocar só a cor.
+
+   TIPOGRAFIA: o número gigante de lá é Cormorant Infant itálico 700 a 16rem, a fonte de
+   display das pós-graduações. Ela existe self-hosted e daria pra usar, mas seria um
+   serifado que não aparece em nenhum outro lugar desta página. O número aqui repete o
+   tratamento do .metodo-card-num logo acima, em Poppins 200 a 8rem, só com o gradiente
+   claro (--pc500-25) no lugar do escuro.
+   ══════════════════════════════════════════════════════════════ */
+.sec-criterios {
+    width: 100%;
+    padding: 128px 0 256px;
+    box-sizing: border-box;
+    /* opaco de propósito: esta seção desliza por cima da .sec-metodo, e um fundo
+       translúcido deixaria os cards de lá aparecendo por baixo. Os tons ln são hex. */
+    background: linear-gradient(180deg, var(--ln200), var(--ln100), var(--ln200));
+}
+/* única seção clara da página: o eyebrow e o título do DS vêm claros por padrão. As
+   cores são as mesmas que o DS usa nas seções claras dele (.sec-courses no
+   formacoes/style.css): pc500 no eyebrow, bb no título. */
+.sec-criterios .sec-eyebrow { color: var(--pc500); }
+.sec-criterios .sec-title { color: var(--bb); }
+.criterios-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 16px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+/* o cabeçalho para no topo e fica lá enquanto os cards passam. align-self: start é o que
+   permite o sticky: sem ele o item esticaria pela altura da linha e não teria curso. */
+.criterios-header {
+    grid-column: 1 / span 5;
+    position: sticky;
+    top: 128px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.criterios-cards {
+    grid-column: 6 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+/* padding-left generoso: é onde o número gigante mora, e é ele que o mantém fora do
+   caminho do texto */
+.criterios-card {
+    position: sticky;
+    padding: 32px 32px 64px 160px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, var(--bw), var(--ln100));
+    /* o rgba é --pc700 a 10%, escrito literal porque a escala pc700 não tem variante de
+       alpha no root.css. Valor do original. */
+    box-shadow:
+        16px 16px 32px 0 rgba(35, 0, 150, 0.10),
+        inset 0 0 4px 0 var(--bw);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    overflow: hidden;
+}
+/* Tops escalonados a partir de 128, que é o padding-top da seção: cada card para 96
+   abaixo do anterior, então de cada card coberto sobra só a faixa do título. O z-index
+   crescente é o que faz o card N+1 cobrir o N, e não o contrário. */
+.criterios-card:nth-child(1) { top: 128px; z-index: 1; }
+.criterios-card:nth-child(2) { top: 224px; z-index: 2; }
+.criterios-card:nth-child(3) { top: 320px; z-index: 3; }
+.criterios-card:nth-child(4) { top: 416px; z-index: 4; }
+/* o número sai do data-number, então a marcação não repete o valor duas vezes.
+   right: 0 junto com left: 32px é o que faz o width: 100% medir a caixa toda. */
+.criterios-card::before {
+    content: attr(data-number);
+    position: absolute;
+    left: 32px;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+    font-family: var(--font-family);
+    font-weight: 200;
+    font-size: 8rem;
+    line-height: 1;
+    background-image: linear-gradient(180deg, var(--pc500-25), transparent);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    user-select: none;
+}
+.criterios-card-title {
+    font: var(--h6);
+    font-weight: 700;
+    color: var(--pc700);
+    margin: 0;
+}
+.criterios-card-text {
+    font: var(--p);
+    color: var(--dn500);
+    margin: 0;
+}
+@media (max-width: 1439px) {
+    .criterios-inner { grid-template-columns: repeat(8, 1fr); }
+    .criterios-header { grid-column: 1 / span 4; }
+    .criterios-cards { grid-column: 5 / span 4; }
+}
+@media (max-width: 864px) {
+    /* Uma coluna: o cabeçalho deixa de ser sticky (não há mais coluna ao lado pra ele
+       acompanhar) e os cards deixam de empilhar, porque empilhar em largura cheia
+       esconderia o conteúdo em vez de revelar. Viram cards normais, um embaixo do outro.
+       Os quatro nth-child precisam ser reescritos com a mesma especificidade do override
+       de cima, senão os tops de lá continuariam valendo. */
+    .criterios-inner { grid-template-columns: repeat(6, 1fr); gap: 24px; }
+    .criterios-header {
+        grid-column: 1 / -1;
+        position: relative;
+        top: auto;
+    }
+    .criterios-cards { grid-column: 1 / -1; gap: 24px; }
+    .criterios-card,
+    .criterios-card:nth-child(1),
+    .criterios-card:nth-child(2),
+    .criterios-card:nth-child(3),
+    .criterios-card:nth-child(4) {
+        position: relative;
+        top: auto;
+    }
+    /* o sticky da sobreposição também sai: sem os cards empilhando, a seção de cima
+       simplesmente segue a de baixo no fluxo */
+    .metodo-criterios-track .sec-metodo {
+        position: relative;
+        top: auto;
+    }
 }
 @media (max-width: 576px) {
-    .dg-falha, .dg-risco, .dg-rec, .dg-plano { padding: 0 16px 24px; }
-    /* card estreito: a legenda desce pra baixo da matriz em vez de comer largura */
-    .dg-risco { flex-direction: column; }
-    .dg-risco-legenda { flex-direction: row; flex-wrap: wrap; align-self: flex-start; }
-    /* a ação e a etiqueta empilham, senão a etiqueta esmaga o texto */
-    .dg-plano-card { flex-direction: column; align-items: flex-start; gap: 8px; }
-    /* --4: no card estreito as duas áreas voltam a empilhar, senão os quadros de
-       antes/depois caem pra menos de 100px cada. */
-    .dg-rec-cols { flex-direction: column; }
+    .criterios-inner { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .criterios-cards { gap: 16px; }
+    /* o número sobe pro topo do card e o padding vira vertical: em tela estreita não há
+       largura pra reservar 160 à esquerda só pra ele */
+    .criterios-card { padding: 160px 32px 64px 32px; }
+    .criterios-card::before {
+        top: -32px;
+        transform: none;
+    }
 }
 
 /* ── peso dos ícones das ilustrações ──
@@ -974,9 +2461,338 @@
    que isso cairia no fallback do navegador e o traço engrossaria em vez de afinar.
    Traço fino é o que casa com a linguagem das ilustrações, que é linha fina,
    ícone geométrico e pouco peso.
-   Só .dg-arq, .dg-falha e .dg-rec têm ícone; a matriz de risco e o roadmap são
-   desenhados sem glifo. */
+   Vale pras ilustrações 1, 2 e 4 e pros dois orbitais da .sec-diagnostico; a matriz
+   de risco e o plano de ação são desenhados sem glifo. */
+.sec-diagnostico .material-symbols-outlined,
 .dg-arq .material-symbols-outlined,
 .dg-falha .material-symbols-outlined,
 .dg-rec .material-symbols-outlined {
     font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24; }
+
+/* ═══ SOBREPOSIÇÃO CRITÉRIOS → CASES ═══
+   Mesmo padrão da sobreposição anterior, um nível abaixo: este track mora DENTRO do
+   .metodo-criterios-track, e a .sec-criterios faz os dois papéis, a de cima de um e a
+   de baixo do outro. É assim que o mba-fpa encadeia os dele.
+   Estas regras vêm DEPOIS das do track de fora de propósito: as duas têm a mesma
+   especificidade (0,2,0), e é a ordem no arquivo que faz o `sticky` daqui vencer o
+   `relative` de lá na .sec-criterios. */
+.criterios-cases-track { position: relative; }
+/* O topo do sticky tem DOIS limites, e vale o menor dos dois.
+
+   O primeiro é o da sobreposição: 100vh menos a altura da seção põe o rodapé dela colado
+   no rodapé da tela, que é o que faz os cases subirem por cima.
+
+   O segundo é o freio do empilhamento, e é ele que faltava. Enquanto a seção está presa
+   ela não anda, e o que não anda não empilha: os cards de dentro são sticky e precisam
+   que a seção role o bastante pra o último deles alcançar o próprio topo. Em tela baixa
+   sobrava percurso e o empilhamento acontecia; em tela alta a seção prendia antes e os
+   cards congelavam quase soltos. Acima da altura da seção ela nem chegava a rolar, e o
+   empilhamento simplesmente não existia.
+
+   O freio é medido no JS (item 11): topo sticky do último card menos o deslocamento
+   natural dele dentro da seção. É o mesmo remédio que o mba-fpa usa quando um sticky
+   depende da altura de uma pilha, lá com o --mba-card-4-h: a conta fica no CSS e a
+   medida vem de fora, porque só o layout sabe o valor.
+
+   Sem os cards sticky (≤864) o JS manda um valor grande e o min() escolhe o primeiro
+   termo, ou seja, o comportamento antigo. */
+.criterios-cases-track .sec-criterios {
+    position: sticky;
+    top: min(calc(100vh - var(--criterios-altura, 100vh)), var(--criterios-freio, 99999px));
+    z-index: 0;
+}
+.criterios-cases-track .sec-cases {
+    position: relative;
+    z-index: 1;
+    /* FUNDO OPACO, e é aqui que ele tem que morar. A .sec-cases veio do
+       /cp/data-squads/ sem fundo próprio, porque lá ela só precisava deixar o fundo do
+       body aparecer. Numa sobreposição isso deixa de funcionar: o que aparece atrás
+       passa a ser a .sec-criterios estacionada, clara, e o texto fica ilegível.
+       O fundo fica na regra do TRACK, e não na da seção, seguindo o
+       .mba-light-how-track .mba-how do mba-fpa: assim ele se declara junto do motivo
+       que o exige. Quem tirar a seção do track leva o fundo embora com ela, em vez de
+       ficar com um --bb órfão numa seção que não precisa mais dele. */
+    background: var(--bb);
+}
+
+/* ── "O que falam sobre nós": os cases em 2 colunas ──
+   Grid Wide do DS (container 1440, 10 colunas base, gap 32) com cada card em
+   span 5, o que dá as 2 colunas pedidas. Cai pra span 4 no grid de 8 (≤1439) e
+   pra 1 / -1 em ≤864 e ≤576, empilhando.
+   Anatomia do card: vídeo full-bleed no topo (o padding do card é ZERO, o radius
+   16 + overflow hidden é que arredondam os cantos de cima do vídeo) e, abaixo, o
+   .case-body com o padding, levando controle, rótulo, título e texto juntos.
+   Não uso o .depos-video do formacoes aqui: lá o controle e o rótulo são overlay
+   absoluto DENTRO do vídeo, que é justamente o arranjo que não queremos. O
+   vocabulário visual é o mesmo (16:9, play de 48px em bw-15, rótulo p-s bw-75 e
+   nome p-l bw), só a posição muda. */
+/* .sec-cases funciona como a .sec-depos da home (e como o .tese-rail): a section
+   e uma coluna, o conteudo padeado mora nos *-inner e as faixas que precisam de
+   filete de ponta a ponta ficam como IRMAS desses inner, nao dentro deles.
+   E o que faz os filetes horizontais correrem a viewport inteira: dentro da
+   .cases-inner eles paravam 16px antes das bordas e capavam em 1408. */
+.sec-cases { padding: 128px 0;
+    display: flex; flex-direction: column; gap: 64px; }
+.cases-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px;
+    box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px; row-gap: 48px; }
+.cases-header { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 16px; }
+/* fundo e radius do .skill-tile do DS (gradiente 135° + backdrop-filter), na
+   versão discreta dn500-25 que os tiles de Desafios e Ganhos usam nesta página.
+   Sem padding: quem tem padding é o .case-body. */
+.case-card { grid-column: span 5;
+    display: flex; flex-direction: column;
+    border-radius: 16px; overflow: hidden;
+    background: linear-gradient(135deg, var(--dn500-25), transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+/* dn800 aparece enquanto a capa não existe e enquanto o player não montou. */
+/* a área do vídeo inteira é clicável: o handler de clique da seção já trata
+   .case-video como se fosse o botão (ele aceita .case-play OU .case-video), então
+   aqui só faltava dizer isso ao cursor.
+   Enquanto o iframe não monta, quem recebe o ponteiro é o .case-veil ou o
+   .case-player; depois de montar é o iframe, que leva pointer-events: none pra
+   justamente não engolir o clique e deixá-lo chegar no .case-video. */
+.case-video { position: relative; aspect-ratio: 16 / 9; background: var(--dn800);
+    cursor: pointer; }
+.case-cover { position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block; }
+.case-player { position: absolute; inset: 0; }
+/* A API SUBSTITUI o nó .case-player pelo iframe, ou seja, o nó deixa de existir.
+   Por isso a regra do iframe é ancorada no .case-video: um seletor
+   `.case-player iframe` não casaria com nada depois da troca, e era isso que
+   deixava o vídeo com o tamanho padrão do construtor (640x390) dentro de uma
+   caixa maior. inset: 0 sozinho também não bastava: o construtor escreve
+   width/height como ATRIBUTO no iframe, que conta como CSS e, junto com
+   left/right, sobredetermina a caixa (aí o right é ignorado e a largura trava no
+   atributo). Daí width/height 100% aqui E no config do player.
+   pointer-events: none é o que mais esconde a chrome do YouTube: barra de título,
+   botão "assistir no YouTube", logo e tooltips só são desenhados em resposta a
+   evento de mouse, e evento nenhum entra. Clicar na área do vídeo continua
+   alternando play/pause, porque o clique atravessa e cai no .case-video atrás. */
+.case-video iframe { position: absolute; inset: 0; width: 100%; height: 100%;
+    border: 0; display: block; pointer-events: none; }
+/* véu opaco por cima do player. Cobre dois momentos em que o YouTube mostraria
+   marca própria: o instante em que o iframe monta (poster + botão de play dele) e
+   o fim do vídeo (grade de vídeos sugeridos). Sai de cena quando o player reporta
+   PLAYING de verdade e volta no ENDED. A capa, quando existir, entra aqui dentro.
+   Pausar NÃO traz o véu de volta: quem controla ele é .is-started, não
+   .is-playing, então o frame pausado continua à vista. */
+.case-veil { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: var(--dn800); transition: opacity 0.3s ease; }
+.case-card.is-started .case-veil { opacity: 0; }
+/* ── botão de play sobre a capa, portado da .posicao-play da /cp/consultoria/ ──
+   UM elemento só, que existe desde o início e CRESCE: em repouso é um círculo de
+   48px com o triângulo; no hover abre pra esquerda e revela "Assistir vídeo"
+   dentro dele, virando pílula.
+   A geometria sai do CSS de referência: ancorado em top/right 16, altura 48, raio
+   512 e o padding 0 48 0 16 da pílula. Os 48 da direita são a zona do triângulo
+   (12 + 24 + 12), e é isso que fecha o círculo perfeito quando o rótulo tem
+   largura zero; os 16 da esquerda são o respiro do texto, que só existe no hover.
+   Cresce pra ESQUERDA porque está ancorado por right: o aumento de largura só tem
+   pra onde ir nessa direção.
+   Só visual: o véu é aria-hidden e pointer-events: none, então nem foco nem clique
+   passam por aqui. Quem responde é a área do .case-video (handler de clique) e o
+   <button class="case-play"> do .case-head.
+   Duas leituras do CSS de referência, que só define o repouso:
+   · o rgba(75,75,85) não tem token exato no DS (fica entre dn300 #464650 e dn200
+     #50505A); usei --dn200, o mais próximo por cima;
+   · o original tem transition: 0s, que deixaria o crescimento instantâneo e sem
+     graça; aqui ele leva 0.3s. */
+.case-veil-play { position: absolute; top: 16px; right: 16px; z-index: 2;
+    height: 48px; border-radius: 512px; box-sizing: border-box;
+    display: flex; align-items: center; justify-content: flex-end;
+    background: var(--dn200); color: var(--bw); }
+.case-veil-play-ico { flex: 0 0 auto; width: 24px; height: 24px; display: block;
+    /* 12 + 24 + 12 = 48: a zona do triângulo é o que mantém o círculo redondo */
+    margin: 0 12px; }
+/* o rótulo nasce com largura zero e recortado. max-width em vez de width porque
+   não se anima width até auto; o valor de chegada é folgado de propósito, pra
+   caber a frase em qualquer fallback de fonte (o span para de crescer no conteúdo,
+   então sobra só um resto de transição sem efeito visual). */
+.case-veil-play-label { font: var(--label); white-space: nowrap; overflow: hidden;
+    max-width: 0; opacity: 0; padding-left: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease, padding-left 0.3s ease; }
+.case-video:hover .case-veil-play-label { max-width: 10rem; opacity: 1;
+    padding-left: 16px; }
+/* depois que o vídeo começa o véu inteiro sai, e o botão com ele. */
+@media (prefers-reduced-motion: reduce) {
+    .case-veil-play-label { transition: none; }
+}
+.case-body { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+.case-head { display: flex; flex-direction: row; align-items: center; gap: 12px; }
+.case-play { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 1920px;
+    background: var(--bw-15); border: none; cursor: pointer; color: var(--bw);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease; }
+/* hover cruzado: passar o mouse na área do vídeo acende o botão de play, porque
+   os dois disparam a mesma ação e acender só um dos dois faria o outro parecer
+   inerte. Feito por combinador de irmão e não por :has(), que é mais recente: o
+   .case-video vem ANTES do .case-body no DOM, então o ~ alcança.
+   O :hover do próprio botão continua na regra, pra ele acender sozinho também. */
+.case-play:hover,
+.case-video:hover ~ .case-body .case-play { background: var(--bw-25); }
+.case-ico { font-size: 28px; font-variation-settings: 'FILL' 1; }
+/* os dois ícones ficam no HTML e alternam por CSS. Trocar o textContent no JS
+   funcionaria, mas o dl-symbols.cjs varre a marcação pra montar o subset: ícone
+   setado dinamicamente corre o risco de ficar fora dele e virar texto. */
+.case-ico--pause { display: none; }
+.case-card.is-playing .case-ico--play { display: none; }
+.case-card.is-playing .case-ico--pause { display: block; }
+.case-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+/* ── barra de reprodução própria ──
+   Existe porque a do YouTube foi desligada junto com o resto da chrome dele
+   (controls: 0 + pointer-events: none no iframe). Esta é alimentada pela IFrame
+   API: o preenchimento é currentTime/duration e o clique/arraste chama seekTo.
+   A área de toque tem 16px de altura e o traço visível 4px (o mínimo do DS é 2);
+   quem desenha o trilho é o ::before, e o .case-bar-fill escala em X via
+   --progresso (0 a 1), que é transform e não width, então o navegador só compõe,
+   não faz layout, nas 4 atualizações por segundo. */
+.case-controls { display: flex; flex-direction: row; align-items: center; gap: 12px; }
+.case-bar { flex: 1 1 auto; position: relative; height: 16px; display: flex;
+    align-items: center; cursor: pointer; touch-action: none; }
+/* sem border-radius em nenhuma das três camadas: trilho e preenchimento têm
+   ponta reta. */
+.case-bar::before { content: ''; position: absolute; left: 0; right: 0; height: 4px;
+    background: var(--bw-15); }
+.case-bar-fill { position: relative; width: 100%; height: 4px;
+    background: var(--pc300); transform: scaleX(var(--progresso, 0));
+    transform-origin: left center; }
+.case-bar:focus-visible { outline: none; box-shadow: var(--ring-25); }
+.case-time { flex: 0 0 auto; margin: 0; font: var(--label-xs); color: var(--bw-50);
+    font-variant-numeric: tabular-nums; }
+.case-label { font: var(--p-s); color: var(--bw-75); margin: 0; }
+.case-name { font: var(--p-l); color: var(--bw); margin: 0; }
+.case-text { font: var(--p); color: var(--bw-75); margin: 0; }
+@media (max-width: 1439px) {
+    .cases-inner { grid-template-columns: repeat(8, 1fr); }
+    .case-card { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .cases-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 32px; }
+    .case-card { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-cases { padding: 96px 0; }
+    .cases-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    /* mesmo padding reduzido que o .skill-tile adota neste tier */
+    .case-body { padding: 24px; }
+}
+
+.cases-sub-header { width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 0 16px; box-sizing: border-box;
+    display: flex; flex-direction: column; gap: 16px; }
+
+.depos-logos-section { overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15); }
+.depos-logos-wrap { max-width: 1440px; margin: 0 auto;
+    padding: 0 16px; box-sizing: border-box; }
+.depos-logos-grid { display: grid; grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(2, auto); grid-auto-rows: 0px; overflow: hidden;
+    box-shadow: inset -2px 0 0 0 var(--bw-15); }
+.depos-logo-card { padding: 24px 16px; min-height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15); }
+/* opacity 0.5 e o estado de repouso: o JS leva a 0, troca o src e volta pra 0.5.
+   A transicao de 0.6s casa com o timeout de 600ms do lado do script. */
+.depos-logo-card img { max-width: 100%; max-height: 64px; object-fit: contain;
+    opacity: 0.5; display: block; transition: opacity 0.6s ease; }
+.depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-15); }
+@media (max-width: 1152px) {
+    .depos-logos-grid { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, auto); }
+    .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15); }
+    .depos-logo-card:nth-child(n+9) { box-shadow: inset 2px 0 0 0 var(--bw-15); }
+}
+@media (max-width: 864px) {
+    .depos-logos-grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, auto); }
+    .depos-logo-card:nth-child(n+9) { box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15); }
+    .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-15); }
+}
+@media (max-width: 576px) {
+    .depos-logos-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, auto); }
+    .depos-logo-card:nth-child(n+7) { box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15); }
+    .depos-logo-card:nth-child(n+5) { box-shadow: inset 2px 0 0 0 var(--bw-15); }
+}
+
+.sec-cases .case-card,
+.sec-cases .depos-logos-section { opacity: 0; }
+.sec-cases .case-card.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+/* a faixa de logos entra sem a subida de 64px: ela é uma banda full-bleed
+   encostada nos filetes da seção, e deslocá-la na vertical descolaria os traços
+   dela dos da faixa de cases logo acima. Só o fade. */
+.sec-cases .depos-logos-section.is-entered { animation: enter-fade 0.6s ease-out both; }
+/* entrada sem deslocamento, pra quem não pode receber transform: o .ds-squad
+   (que já usa o seu pra centrar) e a faixa de logos (que precisa ficar colada nos
+   filetes). Fade + blur só. */
+@keyframes enter-fade {
+    from { opacity: 0; filter: blur(16px); }
+    to   { opacity: 1; filter: blur(0px); }
+}
+/* a faixa de logos entra sem blur abaixo de 864, regra do projeto pra desfoque
+   animado. Redefino só a enter-fade, que é minha; a cta-card-enter é do
+   formacoes/style.css e é usada por outras seções desta página. */
+@media (max-width: 864px) {
+    @keyframes enter-fade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sec-cases .case-card,
+    .sec-cases .depos-logos-section { opacity: 1; animation: none; }
+}
+
+/* ═══ BARRA FIXA DE CTA ═══
+   Portada do /cp/data-squads/ (que veio do .ic-bottom-cta do /ed/evento/ICIAN/).
+   Copiada como esta: ela ja e escura, com o gradiente em pc300-50, e o acento roxo
+   e o mesmo desta pagina. Os dois comentarios longos de la sobre o `bottom` em vez
+   de transform e sobre as 4 camadas de mascara vieram junto porque documentam bug
+   resolvido, nao preferencia. */
+/* ── barra fixa de CTA no rodapé ──
+   Porte do .ic-bottom-cta de /ed/evento/ICIAN/style.css: 140px de altura, botão
+   ancorado na base e o gradiente subindo até transparente em 75%. A cor do
+   gradiente é a única diferença em relação ao ICIAN, que usa bb-75: aqui é
+   pc300-50, o roxo do DS, que é o acento desta página. Recolhe descendo pra fora da tela (translateY 100% + opacity 0), com o
+   data-squads.js decidindo quando.
+   pointer-events: none na barra e auto só no botão: a faixa cobre 140px da
+   largura inteira e sem isso ela comeria o clique de tudo que passasse por
+   baixo. É o mesmo motivo de cada camada de blur também ser none.
+   z-index 50 fica abaixo do 9999 do .popup-form, então a barra não aparece por
+   cima do modal do form. */
+.bottom-cta { position: fixed; left: 0; bottom: 0; width: 100%; height: 140px;
+    box-sizing: border-box; z-index: 50;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 12px;
+    background: linear-gradient(to top, var(--pc300-50), transparent 75%);
+    pointer-events: none;
+    transition: bottom 0.4s ease, visibility 0s linear 0s; }
+/* Recolhida: desce pelo BOTTOM, não por transform/opacity.
+   Motivo: as 4 camadas de blur usam backdrop-filter + mask. Animar transform ou
+   opacity faz a barra virar raiz de composição durante a transição, e nesse
+   estado as máscaras não se aplicam: a faixa pintava cheia, sem a rampa. Quando
+   a transição terminava, o transform computava `none`, a composição era liberada
+   e a rampa aparecia de um golpe. Era esse o bug do gradiente.
+   `bottom` não cria raiz de composição, então o backdrop-filter enxerga a página
+   de verdade do primeiro frame ao último. Custa layout por frame em vez de
+   compositor, o que é irrelevante numa barra fixa de 140px que anima duas vezes.
+   O visibility entra só no fim (delay igual à duração) pra tirar o botão do
+   caminho do foco por teclado quando ele está fora da tela, e sai na hora ao
+   voltar. Mesma técnica do .popup-form no form.css. */
+.bottom-cta.is-hidden { bottom: -140px; visibility: hidden;
+    transition: bottom 0.4s ease, visibility 0s linear 0.4s; }
+/* blur progressivo: 4 camadas cobrindo a barra toda, cada uma com máscara que
+   esmaece numa altura diferente. Na base as 4 se somam (16px de blur), subindo
+   vão saindo uma a uma, o que dá uma rampa contínua em vez de um degrau. */
+.bottom-cta-blur { position: absolute; inset: 0; pointer-events: none; }
+.bottom-cta-blur-2  { -webkit-backdrop-filter: blur(2px);  backdrop-filter: blur(2px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 100%); mask: linear-gradient(to top, #000 0%, transparent 100%); }
+.bottom-cta-blur-4  { -webkit-backdrop-filter: blur(4px);  backdrop-filter: blur(4px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 66%);  mask: linear-gradient(to top, #000 0%, transparent 66%); }
+.bottom-cta-blur-8  { -webkit-backdrop-filter: blur(8px);  backdrop-filter: blur(8px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 42%);  mask: linear-gradient(to top, #000 0%, transparent 42%); }
+.bottom-cta-blur-16 { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 22%);  mask: linear-gradient(to top, #000 0%, transparent 22%); }
+.bottom-cta-btn { position: relative; z-index: 1; align-self: flex-end;
+    width: auto; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+    .bottom-cta { transition: none; }
+}

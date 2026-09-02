@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <!-- Diagnóstico Avançado de BI.
-     Base: cópia do ed/temp/marketplace.html, com CSS e JS próprios
-     (diagnostico-avancado.css / .js) pra evoluir sem tocar no marketplace.
-     Herdou o scaffolding dele: hero com cap, .mk-pilares e .mk-sec. O conteúdo
-     ainda é o do marketplace e precisa ser reescrito seção por seção. -->
+     Hero com cap + seção de pilares (.dg-pilares), um card por entrega do
+     diagnóstico, cada um com a ilustração dele. CSS e JS próprios em
+     diagnostico-avancado.css / .js. -->
 <html lang="pt-BR">
 <head>
     <!-- ─── Meta básicos ─────────────────────────────────────── -->
@@ -18,7 +17,7 @@
 
     <!-- ─── Título e SEO ─────────────────────────────────────── -->
     <title>Diagnóstico Avançado de BI, Xperiun</title>
-    <meta name="description" content="Diagnóstico Avançado de BI da Xperiun.">
+    <meta name="description" content="Diagnóstico Avançado de BI da Xperiun: da arquitetura aos relatórios, um diagnóstico do seu ambiente de dados com problemas, causas, riscos e plano de ação priorizado em até 30 dias.">
 
     <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
@@ -26,7 +25,7 @@
     <link rel="stylesheet" href="/ed/formacoes/style.css?v=11">
 
     <!-- ─── CSS específico desta página ──────────────────────── -->
-    <link rel="stylesheet" href="/ed/temp/diagnostico-avancado.css?v=41">
+    <link rel="stylesheet" href="/ed/temp/diagnostico-avancado.css?v=96">
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -49,30 +48,210 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="hero-wave wave-section">
         <div class="hero-top-tag" aria-hidden="true">
             <div class="hero-top-tag-body">
-                <h3 class="hero-top-tag-label">Marketplace</h3>
+                <h3 class="hero-top-tag-label">Diagnóstico Avançado</h3>
             </div>
         </div>
         <div class="hero-content">
             <div class="hero-title-group">
-                <h1 class="hero-h1">A união perfeita entre profissionais e oportunidades</h1>
+                <!-- lockup igual ao de /cp/data-squads/: logo, filete e linha de
+                     contexto. O SVG foi copiado de lá, sem redesenhar o path. -->
+                <div class="hero-lockup">
+                    <svg class="hero-lockup-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 24" role="img" aria-label="Xperiun Corporate"><path d="M11.53 12.83c.22.67-.26 1.81-1.22 2.77l-3.09 3.09c-2.85 2.85-6.08 4.24-7.22 3.1l8.24-8.24c.96-.96 2.1-1.44 2.77-1.22L7.2 16.64l4.31-3.81Zm-3.29-2.38c.97.97 2.11 1.44 2.78 1.22L9.27 9.42l2.25 1.75c.22-.67-.25-1.81-1.22-2.78L6.18 4.27C5.04 5.41 5.5 7.72 7.21 9.42zm8.25-3.09-3.81 4.31c.67.22 1.81-.26 2.77-1.22l8.25-8.24c-1.14-1.14-4.37.25-7.21 3.09L13.4 8.39c-.96.96-1.44 2.1-1.22 2.77l4.31-3.81Zm-1.03 6.19c-.97-.97-2.11-1.44-2.78-1.22l1.75 2.25-2.25-1.75c-.22.67.25 1.81 1.22 2.78l4.12 4.12c1.14-1.14.68-3.45-1.03-5.15zm56.07-4.51h-.85v2.54c0 1.4-1.14 2.54-2.54 2.54s-2.54-1.14-2.54-2.54V9.04h-.85v2.54c0 1.87 1.52 3.39 3.39 3.39s3.39-1.52 3.39-3.39zM40.21 11.1a2.12 2.12 0 0 1-2.12 2.17h-4.66v1.69h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16 0 2.13.91 2.16 2.07Zm-.84.05c0-.7-.57-1.27-1.27-1.27h-4.66v2.54h4.66c.7 0 1.27-.57 1.27-1.27m22.01 3.81h.85V9.03h-.85zm17.77-5.92v4.85l-4.73-4.73a.42.42 0 0 0-.3-.12h-.48c-.23 0-.42.19-.42.42v5.5h.85V10l4.83 4.83c.08.08.19.12.3.12h.37c.23 0 .42-.19.42-.42v-5.5h-.85Zm-49.49 0-2.57 2.39-2.57-2.39h-1.24L26.47 12l-3.19 2.96h1.24l2.57-2.39 2.57 2.39h1.24L27.71 12l3.19-2.96zm19.02 5.08h-4.66c-.7 0-1.27-.57-1.27-1.27v-.42h5.93v-.85h-5.93v-.42c0-.7.57-1.27 1.27-1.27h4.66v-.85h-4.66c-1.17 0-2.12.95-2.12 2.12v1.69c0 1.17.95 2.12 2.12 2.12h4.66zm8.08-.85 2.08 1.69h-1.31l-2.08-1.69h-3.39v1.69h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16 0 2.13.91 2.16 2.07.03 1.18-.91 2.15-2.08 2.17Zm-.04-.85c.7 0 1.27-.57 1.27-1.27s-.57-1.27-1.27-1.27h-4.66v2.54zm-8.15 4.79c.12 0 .22.03.31.08a.5.5 0 0 1 .21.24h.66c-.07-.27-.21-.48-.42-.64s-.46-.23-.76-.23c-.24 0-.46.05-.64.16-.19.11-.34.26-.44.45-.11.19-.16.41-.16.66s.05.46.16.65.25.34.44.45.4.16.64.16c.29 0 .55-.08.76-.23s.35-.37.42-.63h-.66q-.075.15-.21.24a.6.6 0 0 1-.31.08c-.19 0-.34-.06-.45-.19s-.17-.3-.17-.52.06-.39.17-.52.27-.19.45-.19Zm5.24.06a1.35 1.35 0 0 1 0 1.31c-.11.2-.27.35-.46.45-.19.11-.41.16-.64.16s-.45-.05-.64-.16-.35-.26-.46-.45-.17-.41-.17-.66.06-.46.17-.65a1.24 1.24 0 0 1 1.1-.61 1.24 1.24 0 0 1 1.1.61m-.45.65c0-.22-.06-.39-.18-.52s-.28-.2-.48-.2-.36.06-.48.19-.18.31-.18.53.06.39.18.52.28.2.48.2.36-.07.48-.2.18-.31.18-.52m3.74.27.57.98h-.68l-.52-.94h-.14v.94h-.6v-2.48h1.01c.2 0 .36.03.5.1a.71.71 0 0 1 .41.68c0 .16-.05.31-.14.44s-.23.22-.41.28m-.06-.69c0-.09-.03-.17-.08-.22a.37.37 0 0 0-.25-.08h-.37v.61h.37c.11 0 .19-.03.25-.08s.08-.13.08-.23m4.19-.42c.07.12.1.26.1.41 0 .14-.03.27-.1.39s-.17.21-.3.29c-.14.07-.31.11-.51.11h-.37v.89h-.6v-2.48h.98c.2 0 .36.03.5.1s.24.16.31.28Zm-.51.41c0-.1-.03-.18-.08-.23a.38.38 0 0 0-.26-.08h-.33v.62h.33c.12 0 .2-.03.26-.08s.08-.13.08-.23m4.61-.22a1.35 1.35 0 0 1 0 1.31c-.11.19-.27.35-.46.45-.19.11-.41.16-.64.16s-.45-.05-.64-.16-.35-.26-.46-.45-.17-.41-.17-.66.06-.46.17-.65a1.24 1.24 0 0 1 1.1-.61 1.24 1.24 0 0 1 1.1.61m-.44.65c0-.22-.06-.39-.18-.52s-.28-.2-.48-.2-.36.06-.48.19-.18.31-.18.53.06.39.18.52.28.2.48.2.36-.07.48-.2.18-.31.18-.52m3.73.27.57.98h-.68l-.52-.94h-.14v.94h-.6v-2.48h1.01c.2 0 .36.03.5.1a.71.71 0 0 1 .41.68c0 .16-.05.31-.14.44s-.23.22-.41.28m-.06-.69c0-.09-.03-.17-.08-.22a.37.37 0 0 0-.25-.08h-.37v.61h.37c.11 0 .19-.03.25-.08s.08-.13.08-.23m3.84-.81.9 2.48h-.64l-.15-.44h-.93l-.15.44h-.63l.9-2.48zm-.05 1.58-.31-.91-.3.91zm2.5-1.09h.66v2h.6v-2h.66v-.48h-1.92zm3.63 1.99H80v-.48h-.91v-.54h.81v-.47h-.81v-.5H80v-.48h-1.52v2.48Z" fill="currentColor"/></svg>
+                    <span class="hero-lockup-rule" aria-hidden="true"></span>
+                    <span class="hero-lockup-text">Para empresas de<br>médio e grande porte</span>
+                </div>
+                <h1 class="hero-h1">Saiba exatamente <span style="font-weight: 700">o que corrigir</span> no ambiente de <span style="font-weight: 700">dados e BI</span> da sua empresa</h1>
             </div>
             <div class="hero-bottom">
-                <p class="hero-p">Acreditamos que o verdadeiro potencial dos dados se revela quando talentos incomparáveis os manipulam.</p>
+                <p class="hero-p">Da arquitetura aos relatórios, a Xperiun entrega em até 30 dias um diagnóstico com plano de ação priorizado.</p>
                 <div class="hero-actions">
-                    <a class="btn" data-size="m" data-emphasis="high" href="#">Buscar profissionais</a>
-                    <a class="btn" data-size="m" data-emphasis="subtle" href="#">Saber mais</a>
+                    <a class="btn" data-size="m" data-emphasis="high" href="#" data-open-popup="popup-form-data-squads">Fale com um especialista</a>
+                    <a class="btn" data-size="m" data-emphasis="subtle" href="#problema">Saiba mais</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- ═══════════════ DIAGNÓSTICO: VARREDURA → DASHBOARD → PLANO DE AÇÃO ═══════════════ -->
+<!-- Portada do .sec-fluxo de /ed/areas/logistica/. Sobe 80px dentro do cap do hero
+     (margin-top negativo no CSS) e o dashboard entra inclinado, endireitando
+     conforme a página rola: o tilt está no diagnostico-avancado.js.
+     Os orbitais são decorativos, daí o aria-hidden nos dois. -->
+<section class="sec-diagnostico">
+    <div class="diagnostico-inner">
+        <div class="diagnostico-row">
+            <div class="orbital" aria-hidden="true">
+                <div class="anel-container">
+                    <div class="anel anelA"></div>
+                    <div class="anel anelB"></div>
+                    <div class="anel anelC"></div>
+                    <div class="anel anelD"></div>
+                </div>
+                <div class="center"><span class="material-symbols-outlined">search</span></div>
+            </div>
+            <!-- A placa mostra o mesmo diagrama em dois estados, e a varredura é o que
+                 leva de um ao outro:
+                 - o ambiente ANTES do diagnóstico é o fundo dela (hero-3), tudo em
+                   ordem aparente, sem um único alerta;
+                 - o ambiente DEPOIS (hero-2) entra na .diagnostico-revela, aberta pela
+                   varredura conforme ela avança, com os problemas marcados.
+                 Os dois são renders dos estudos em dg-estudos/hero-2 e hero-3.
+
+                 Em cima disso, duas camadas irmãs, separadas pelo recorte que cada uma
+                 precisa (ver o CSS):
+                 - .diagnostico-tela, recortada na placa: a vinheta, o painel escuro que
+                   viaja atrás do feixe e a revelação;
+                 - .diagnostico-feixe, recortada só na horizontal: a linha e o halo, que
+                   passam 64px acima e abaixo da placa.
+                 A ordem do DOM é a ordem de pintura, daí a vinheta antes dos painéis, a
+                 revelação depois deles, o rearme por último, e o halo antes da linha. -->
+            <figure class="diagnostico-dash">
+                <!-- o mesmo halo dos cards de pilar, aqui por baixo do dash: ele é
+                     z-index -1 e a moldura tem contexto de empilhamento próprio, então
+                     fica atrás do vidro e vaza pelas beiradas. -->
+                <div class="dg-pilar-orb" aria-hidden="true"></div>
+                <span class="diagnostico-placa"></span>
+                <span class="diagnostico-tela" aria-hidden="true">
+                    <span class="diagnostico-vinheta"></span>
+                    <span class="diagnostico-sombra">
+                        <span class="diagnostico-sombra-esq"></span>
+                    </span>
+                    <span class="diagnostico-revela">
+                        <span class="diagnostico-revela-faixa">
+                            <span class="diagnostico-revela-img"></span>
+                        </span>
+                    </span>
+                </span>
+                <span class="diagnostico-feixe" aria-hidden="true">
+                    <span class="diagnostico-feixe-carro">
+                        <span class="diagnostico-scan-faixa"></span>
+                        <span class="diagnostico-scan-linha"></span>
+                    </span>
+                </span>
+            </figure>
+            <div class="orbital-recebe" aria-hidden="true">
+                <div class="anel-container">
+                    <div class="anel anelA"></div>
+                    <div class="anel anelB"></div>
+                    <div class="anel anelC"></div>
+                    <div class="anel anelD"></div>
+                </div>
+                <div class="center"><span class="material-symbols-outlined">my_location</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ O PROBLEMA ═══════════════
+     Reaproveita a .sec-skills do formacoes (mesma estrutura e mesmos estilos, já
+     carregados pelo formacoes/style.css) no arranjo da .sec-desafios de
+     /cp/data-squads/: o .skills-header entra DENTRO do .skills-grid e ocupa a célula
+     de um tile, e cada sintoma é um .skill-tile com a tag-status do DS na semântica
+     de erro. O .skills-grid entra com reveal via formacoes/script.js. -->
+<section class="sec-skills sec-problema" id="problema">
+    <div class="skills-inner">
+        <div class="skills-grid">
+            <div class="skills-header">
+                <span class="skills-eyebrow sec-eyebrow">O problema</span>
+                <h2 class="skills-title sec-title">Seu ambiente de BI apresenta <span style="font-weight: 700">algum desses sintomas?</span></h2>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Números divergentes</span>
+                    <p class="skill-tile-meta">Comercial e financeiro apresentam números diferentes.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Relatórios pouco confiáveis</span>
+                    <p class="skill-tile-meta">Relatórios estão lentos, desatualizados ou pouco confiáveis.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Soluções provisórias</span>
+                    <p class="skill-tile-meta">Soluções provisórias viraram parte crítica da operação.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Decisões comprometidas</span>
+                    <p class="skill-tile-meta">Decisões já foram comprometidas por dados incorretos.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">TI sobrecarregada</span>
+                    <p class="skill-tile-meta">A TI não consegue acompanhar todas as demandas de BI.</p>
+                </div>
+            </div>
+            <div class="skill-tile">
+                <div>
+                    <span class="tag-status is-gradient" data-semantic="error" data-size="m">Retorno ao Excel</span>
+                    <p class="skill-tile-meta">Existem dezenas de dashboards, mas as áreas continuam recorrendo ao Excel.</p>
+                </div>
+            </div>
+            <!-- oitava célula do grid: header + 6 tiles preenchem 7 de 8, e o fecho
+                 ocupa a que sobra ao lado do último sintoma. -->
+            <div class="problema-foot">
+                <p>Problemas diferentes podem ter a mesma origem: um ambiente que cresceu sem uma visão estruturada de arquitetura, dados e governança.</p>
+                <p>E isso dificilmente é identificado olhando apenas um relatório. É preciso analisar o ambiente como um todo.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ ERRO COMUM ═══════════════ -->
+<!-- Abertura narrativa, só texto, dentro de um card de CTA do DS: título à esquerda,
+     corpo à direita. Nenhum parágrafo é .sec-lede, porque o reveal do
+     formacoes/script.js pega um lede só por cabeçalho e marcar o primeiro deixava os
+     outros três visíveis desde o início, abrindo um buraco no topo da coluna. Quem entra
+     agora é o card inteiro, pelo observer do diagnostico-avancado.js, com o título
+     fazendo o char-by-char por dentro. Fecha a deixa pros pilares, que vêm em seguida. -->
+<section class="sec-erro">
+    <div class="erro-inner">
+        <!-- .formacoes-cta-card do DS: a casca (gradiente 135° pc300-25, raio 16) está
+             portada no CSS desta página, porque o componente mora no home.css, que esta
+             página não carrega. Sem a órbita decorativa, então o padding é simétrico em
+             vez de reservar 464 à esquerda pra ela. -->
+        <div class="formacoes-cta-card erro-card">
+            <div class="erro-header">
+                <span class="sec-eyebrow">Erro comum</span>
+                <h2 class="sec-title">O BI não fica desorganizado de uma vez. <span style="font-weight: 700">Ele vai ficando.</span></h2>
+            </div>
+            <div class="erro-corpo">
+                <p class="erro-p">Um relatório resolve uma urgência. Uma nova fonte é conectada. Uma pessoa vira a única que entende determinado processo.</p>
+                <p class="erro-p">Separadamente, cada decisão pode fazer sentido. O problema aparece quando ninguém avalia o conjunto.</p>
+                <p class="erro-p">Arquitetura, fontes, cargas, modelagem, segurança, governança e experiência do usuário precisam funcionar como um sistema.</p>
+                <p class="erro-p">É isso que o Diagnóstico Avançado de BI avalia.</p>
+            </div>
+            <!-- Último no DOM de propósito: assim a ordem de leitura e de tabulação é
+                 título, texto, CTA, que é a ordem narrativa e também a que aparece
+                 empilhada abaixo de 864. Nos tiers largos o grid o reposiciona pra baixo
+                 do título, na coluna da esquerda. -->
+            <a class="btn erro-cta" data-size="m" data-emphasis="medium-core" href="#" data-open-popup="popup-form-data-squads">Fale com um especialista</a>
+        </div>
+    </div>
+</section>
+
 <!-- ═══════════════ PILARES ═══════════════ -->
-<section class="mk-pilares">
-    <div class="mk-pilares-inner">
-        <article class="mk-card mk-card--1">
-            <div class="mk-card-body">
-                <h3 class="mk-card-title">Diagnóstico técnico do ambiente</h3>
+<section class="dg-pilares" id="entregas">
+    <div class="dg-pilares-inner">
+        <!-- Cabeçalho da seção. Os parágrafos não levam .sec-lede: o reveal do
+             formacoes/script.js pega um lede só por cabeçalho, e marcar o primeiro
+             deixaria o segundo visível desde o início. Os dois entram juntos, pelo
+             observer do diagnostico-avancado.js. -->
+        <div class="pilares-header">
+            <span class="sec-eyebrow">O que você recebe</span>
+            <h2 class="sec-title">Um mapa claro do seu ambiente de BI e <span style="font-weight: 700">do que fazer a seguir.</span></h2>
+            <p class="pilares-p">Em até 30 dias, especialistas da Xperiun analisam a estrutura real do ambiente para identificar gargalos, riscos e oportunidades de melhoria.</p>
+            <p class="pilares-p">Ao final, sua empresa recebe:</p>
+        </div>
+        <article class="dg-pilar dg-pilar--1">
+            <div class="dg-pilar-orb" aria-hidden="true"></div>
+            <div class="dg-pilar-body">
+                <h3 class="dg-pilar-title">Diagnóstico técnico do ambiente</h3>
             </div>
             <!-- Ilustração 1: arquitetura em fluxo sob uma lupa.
                  O diagrama é uma esteira de etapas: Fontes de dados, Integrações e
@@ -167,9 +346,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
             </div>
         </article>
-        <article class="mk-card mk-card--2">
-            <div class="mk-card-body">
-                <h3 class="mk-card-title">Problemas e causas identificados</h3>
+        <article class="dg-pilar dg-pilar--2">
+            <div class="dg-pilar-orb" aria-hidden="true"></div>
+            <div class="dg-pilar-body">
+                <h3 class="dg-pilar-title">Problemas e causas identificados</h3>
             </div>
             <!-- Ilustração 2: escada de etapas subindo da esquerda pra direita, com a
                  do meio em falha e a peça da causa raiz encaixada por baixo dela.
@@ -243,191 +423,570 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
             </div>
         </article>
-        <article class="mk-card mk-card--3">
-            <div class="mk-card-orb" aria-hidden="true"></div>
-            <div class="mk-card-body">
-                <h3 class="mk-card-title">Riscos e impactos mapeados</h3>
+        <article class="dg-pilar dg-pilar--3">
+            <div class="dg-pilar-orb" aria-hidden="true"></div>
+            <div class="dg-pilar-body">
+                <h3 class="dg-pilar-title">Riscos e impactos mapeados</h3>
             </div>
-            <!-- Ilustração 3: matriz de risco em quadrantes. X = probabilidade,
-                 Y = impacto, os dois em 3 faixas.
-                 Os 9 quadrantes são elementos de verdade num grid 3x3, cada um com
-                 cor sólida. A ordem no DOM é linha por linha de cima pra baixo, e o
-                 CSS pinta por nth-child: quem soma probabilidade + impacto até 3 é
-                 verde, quem soma 4 (a anti-diagonal que passa pelo centro) é
-                 amarelo, quem soma 5 ou mais é vermelho.
-                 Os pontos vêm posicionados por --x/--y em porcentagem, então a
-                 matriz escala com o card sem recalcular nada. Um deles leva o halo
-                 de risco crítico. Ao lado, a legenda com os 4 níveis. -->
+            <!-- Ilustração 3: matriz de risco em 4 quadrantes, com a legenda numa
+                 peça do mesmo estilo das outras ilustrações (a .dg-card
+                 compartilhada), pendurada na base da matriz.
+                 Os quadrantes são elementos de verdade num grid 2x2, e a ordem no
+                 DOM é linha por linha de cima pra baixo: o CSS pinta por nth-child.
+                 Cada risco mora DENTRO do quadrante dele, com --x/--y em % do
+                 quadrante. É o que garante a cor: quem pinta o risco é a mesma regra
+                 que pinta o fundo, então ele não tem como discordar da legenda.
+                 --atraso desencontra a cintilação de um risco pro outro, senão os
+                 cinco piscariam em uníssono.
+                 Sem rótulo de eixo e sem faixa: só a matriz e a legenda. -->
             <div class="dg-risco" aria-hidden="true">
-                <div class="dg-risco-plot">
-                    <span class="dg-risco-eixo-y">Impacto</span>
-                    <div class="dg-risco-faixas dg-risco-faixas--y">
-                        <span>alto</span><span>médio</span><span>baixo</span>
-                    </div>
-                    <div class="dg-risco-grade">
-                        <div class="dg-risco-quadrantes">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        <span class="dg-risco-ponto" style="--x: 18%; --y: 74%"></span>
-                        <span class="dg-risco-ponto" style="--x: 34%; --y: 52%"></span>
-                        <span class="dg-risco-ponto" style="--x: 26%; --y: 22%"></span>
-                        <span class="dg-risco-ponto" style="--x: 52%; --y: 66%"></span>
-                        <span class="dg-risco-ponto" style="--x: 60%; --y: 34%"></span>
-                        <span class="dg-risco-ponto dg-risco-ponto--critico" style="--x: 74%; --y: 84%"></span>
-                        <span class="dg-risco-ponto" style="--x: 86%; --y: 58%"></span>
-                        <span class="dg-risco-ponto" style="--x: 68%; --y: 14%"></span>
-                    </div>
-                    <div class="dg-risco-faixas dg-risco-faixas--x">
-                        <span>baixa</span><span>média</span><span>alta</span>
-                    </div>
-                    <span class="dg-risco-eixo-x">Probabilidade</span>
+                <div class="dg-risco-quadrantes">
+                    <!-- cima-esquerda: médio -->
+                    <span>
+                        <i class="dg-risco-ponto" style="--x: 30%; --y: 66%; --atraso: -0.3s"></i>
+                        <i class="dg-risco-ponto" style="--x: 68%; --y: 30%; --atraso: -1.5s"></i>
+                    </span>
+                    <!-- cima-direita: alto -->
+                    <span>
+                        <i class="dg-risco-ponto" style="--x: 46%; --y: 54%; --atraso: -1.8s"></i>
+                        <i class="dg-risco-ponto" style="--x: 70%; --y: 26%; --atraso: -0.6s"></i>
+                    </span>
+                    <!-- baixo-esquerda: baixo (sem cintilação) -->
+                    <span>
+                        <i class="dg-risco-ponto" style="--x: 26%; --y: 70%"></i>
+                        <i class="dg-risco-ponto" style="--x: 60%; --y: 42%"></i>
+                        <i class="dg-risco-ponto" style="--x: 36%; --y: 24%"></i>
+                    </span>
+                    <!-- baixo-direita: médio -->
+                    <span>
+                        <i class="dg-risco-ponto" style="--x: 40%; --y: 62%; --atraso: -1.05s"></i>
+                    </span>
                 </div>
-                <ul class="dg-risco-legenda">
-                    <li><span class="dg-risco-chip dg-risco-chip--critico"></span>crítico</li>
-                    <li><span class="dg-risco-chip dg-risco-chip--alto"></span>alto</li>
-                    <li><span class="dg-risco-chip dg-risco-chip--medio"></span>médio</li>
-                    <li><span class="dg-risco-chip dg-risco-chip--baixo"></span>baixo</li>
-                </ul>
+                <div class="dg-card">
+                    <ul class="dg-risco-legenda">
+                        <li><span class="dg-risco-chip dg-risco-chip--alto"></span>alto</li>
+                        <li><span class="dg-risco-chip dg-risco-chip--medio"></span>médio</li>
+                        <li><span class="dg-risco-chip dg-risco-chip--baixo"></span>baixo</li>
+                    </ul>
+                </div>
             </div>
         </article>
-        <article class="mk-card mk-card--4">
-            <div class="mk-card-body">
-                <h3 class="mk-card-title">Recomendações de melhoria</h3>
+        <article class="dg-pilar dg-pilar--4">
+            <div class="dg-pilar-orb" aria-hidden="true"></div>
+            <div class="dg-pilar-body">
+                <h3 class="dg-pilar-title">Recomendações de melhoria</h3>
             </div>
-            <!-- Ilustração 4: recomendações mais antes/depois, em duas colunas.
-                 Com a inversão dos tamanhos este card virou span 6, e as duas áreas
-                 da spec (lista à esquerda, comparação à direita) finalmente cabem
-                 lado a lado. Enquanto era span 4 elas ficavam empilhadas, porque os
-                 dois quadros de arquitetura dariam ~110px cada.
-                 O "antes" espalha os nós sem centro; o "depois" tem o banco no meio
-                 ligado a todos, que é a mesma leitura de fragmentado -> organizado. -->
+            <!-- Ilustração 4: as três recomendações à esquerda, em peças da .dg-card
+                 compartilhada (ícone, texto, selo), e à direita um campo com o núcleo
+                 e 8 quadrados.
+
+                 Cada quadrado carrega DUAS posições: --sx/--sy, onde ele fica
+                 espalhado, e --ax/--ay, o lugar dele no anel que os oito formam. A
+                 posição solta é em % do campo; a do anel vem das variáveis --borda e
+                 --fim, que são as MESMAS que a linha de ligação usa de inset, então o
+                 traço passa pelo centro dos quadrados por construção. Cada posição
+                 solta fica perto do lugar dela no anel, pra a junção não cruzar o
+                 campo.
+
+                 O check e o selo de verificado existem desde o começo, escondidos:
+                 quem os acende é a animação, sem nada a criar em tempo de execução.
+
+                 A marcha, no ciclo de 8s: 1a peça acende, os quadrados se juntam e o
+                 núcleo aparece; 2a peça acende, a linha liga os oito, os quadrados vão
+                 de ln500 pra bw e o núcleo começa o sonar; 3a peça acende, os
+                 quadrados vão pra sc300, a linha vira sc500-25 e o núcleo recebe o
+                 selo de verificado; e tudo volta ao repouso pra recomeçar. -->
             <div class="dg-rec" aria-hidden="true">
-                <div class="dg-rec-cols">
-                <ul class="dg-rec-lista">
-                    <li class="dg-rec-item">
-                        <span class="material-symbols-outlined dg-rec-ico">schema</span>
-                        <span class="dg-rec-texto">
-                            <span class="dg-rec-titulo">Padronizar fontes de dados</span>
-                            <span class="dg-rec-linha"></span>
-                        </span>
-                        <span class="material-symbols-outlined dg-rec-check">check</span>
-                    </li>
-                    <li class="dg-rec-item">
-                        <span class="material-symbols-outlined dg-rec-ico">api</span>
-                        <span class="dg-rec-texto">
-                            <span class="dg-rec-titulo">Automatizar integrações e cargas</span>
-                            <span class="dg-rec-linha"></span>
-                        </span>
-                        <span class="material-symbols-outlined dg-rec-check">check</span>
-                    </li>
-                    <li class="dg-rec-item">
-                        <span class="material-symbols-outlined dg-rec-ico">shield</span>
-                        <span class="dg-rec-texto">
-                            <span class="dg-rec-titulo">Fortalecer governança e qualidade</span>
-                            <span class="dg-rec-linha"></span>
-                        </span>
-                        <span class="material-symbols-outlined dg-rec-check">check</span>
-                    </li>
-                </ul>
-                <div class="dg-rec-evo">
-                    <div class="dg-rec-quadro">
-                        <span class="dg-rec-quadro-label">Antes</span>
-                        <div class="dg-rec-malha dg-rec-malha--antes">
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
+                <div class="dg-rec-lista">
+                    <div class="dg-card">
+                        <div class="dg-rec-item">
+                            <span class="material-symbols-outlined dg-rec-ico">database</span>
+                            <div class="dg-rec-texto">
+                                <span class="dg-rec-label">Padronizar fontes de dados</span>
+                                <div class="dg-rec-preview">
+                                    <span></span>
+                                </div>
+                            </div>
+                            <span class="dg-rec-selo">
+                                <span class="material-symbols-outlined">check</span>
+                            </span>
                         </div>
                     </div>
-                    <span class="material-symbols-outlined dg-rec-seta">arrow_forward</span>
-                    <div class="dg-rec-quadro">
-                        <span class="dg-rec-quadro-label">Depois</span>
-                        <div class="dg-rec-malha dg-rec-malha--depois">
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-no"></span>
-                            <span class="dg-rec-hub">
-                                <span class="material-symbols-outlined">database</span>
+                    <div class="dg-card">
+                        <div class="dg-rec-item">
+                            <span class="material-symbols-outlined dg-rec-ico">account_tree</span>
+                            <div class="dg-rec-texto">
+                                <span class="dg-rec-label">Automatizar integrações e cargas</span>
+                                <div class="dg-rec-preview">
+                                    <span></span>
+                                </div>
+                            </div>
+                            <span class="dg-rec-selo">
+                                <span class="material-symbols-outlined">check</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="dg-card">
+                        <div class="dg-rec-item">
+                            <span class="material-symbols-outlined dg-rec-ico">shield</span>
+                            <div class="dg-rec-texto">
+                                <span class="dg-rec-label">Fortalecer governança e qualidade</span>
+                                <div class="dg-rec-preview">
+                                    <span></span>
+                                </div>
+                            </div>
+                            <span class="dg-rec-selo">
+                                <span class="material-symbols-outlined">check</span>
                             </span>
                         </div>
                     </div>
                 </div>
-                </div><!-- /.dg-rec-cols -->
-                <div class="dg-rec-ganho">
-                    <span class="material-symbols-outlined">trending_up</span>
-                    Mais confiabilidade, performance e escalabilidade.
+                <div class="dg-rec-campo">
+                    <!-- a linha que liga os oito, com o traço passando pelo centro de
+                         cada um; entra com a 2a recomendação -->
+                    <span class="dg-rec-liga"></span>
+                    <!-- núcleo: a caixa entra com a 1a recomendação, o sonar com a 2a e
+                         o selo de verificado com a 3a -->
+                    <div class="dg-card dg-rec-nucleo">
+                        <span class="dg-rec-sonar"></span>
+                        <span class="material-symbols-outlined">database</span>
+                        <span class="material-symbols-outlined dg-rec-verificado">verified</span>
+                    </div>
+                    <!-- canto superior esquerdo -->
+                    <span class="dg-rec-quadrado" style="--sx: 22%; --sy: 8%; --ax: var(--borda); --ay: var(--borda)"></span>
+                    <!-- meio de cima -->
+                    <span class="dg-rec-quadrado" style="--sx: 58%; --sy: 18%; --ax: 50%; --ay: var(--borda)"></span>
+                    <!-- canto superior direito -->
+                    <span class="dg-rec-quadrado" style="--sx: 84%; --sy: 5%; --ax: var(--fim); --ay: var(--borda)"></span>
+                    <!-- meio da direita -->
+                    <span class="dg-rec-quadrado" style="--sx: 76%; --sy: 44%; --ax: var(--fim); --ay: 50%"></span>
+                    <!-- canto inferior direito -->
+                    <span class="dg-rec-quadrado" style="--sx: 92%; --sy: 78%; --ax: var(--fim); --ay: var(--fim)"></span>
+                    <!-- meio de baixo -->
+                    <span class="dg-rec-quadrado" style="--sx: 44%; --sy: 94%; --ax: 50%; --ay: var(--fim)"></span>
+                    <!-- canto inferior esquerdo -->
+                    <span class="dg-rec-quadrado" style="--sx: 8%; --sy: 82%; --ax: var(--borda); --ay: var(--fim)"></span>
+                    <!-- meio da esquerda -->
+                    <span class="dg-rec-quadrado" style="--sx: 16%; --sy: 38%; --ax: var(--borda); --ay: 50%"></span>
                 </div>
             </div>
         </article>
-        <article class="mk-card mk-card--5">
-            <div class="mk-card-body">
-                <h3 class="mk-card-title">Plano de ação priorizado</h3>
+        <article class="dg-pilar dg-pilar--5">
+            <div class="dg-pilar-orb" aria-hidden="true"></div>
+            <div class="dg-pilar-body">
+                <h3 class="dg-pilar-title">Plano de ação priorizado</h3>
             </div>
-            <!-- Ilustração 5: roadmap vertical. Trilho à esquerda com 1, 2, 3,
-                 cada número alinhado a um card de ação com a etiqueta de prioridade.
-                 As etiquetas são .tag-status do DS, com o semantic carregando a
-                 hierarquia: error pra Alta, notification pra Média, neutral pra
-                 Baixa. O trilho é um ::before da lista, atrás dos números, então
-                 acompanha a altura sem medida fixa. -->
+            <!-- Ilustração 5: três etapas empilhadas, em peças da .dg-card
+                 compartilhada. Cada linha tem o número no lugar do ícone, o rótulo no
+                 meio e, à direita, uma caixa fixa de 128 com a tag de prioridade e duas
+                 linhas de preview embaixo dela.
+                 A tag é o .tag-status do DS, no menor tamanho (data-size="s"), com a
+                 semântica carregando a cor: error na alta e warning na média e na baixa.
+                 Uma peça ativa por vez, em ciclo infinito: a ativa fica limpa e as
+                 outras duas em blur e meia opacidade. As três dividem uma keyframe e se
+                 distinguem só pela fase, que sai do --ciclo no CSS. -->
             <div class="dg-plano" aria-hidden="true">
-                <ol class="dg-plano-lista">
-                <li class="dg-plano-etapa">
-                    <span class="dg-plano-num">1</span>
-                    <div class="dg-plano-card">
-                        <span class="dg-plano-acao">Corrigir problemas críticos de qualidade e integração</span>
-                        <span class="tag-status" data-semantic="error" data-size="s">Alta</span>
+                <div class="dg-card">
+                    <div class="dg-plano-item">
+                        <div class="dg-plano-num">1</div>
+                        <span class="dg-plano-label">Corrigir problemas críticos de qualidade e integração</span>
+                        <div class="dg-plano-lado">
+                            <span class="tag-status" data-size="s" data-semantic="error">alta</span>
+                            <div class="dg-plano-preview">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
                     </div>
-                </li>
-                <li class="dg-plano-etapa">
-                    <span class="dg-plano-num">2</span>
-                    <div class="dg-plano-card">
-                        <span class="dg-plano-acao">Reestruturar modelagem e padrões de dados</span>
-                        <span class="tag-status" data-semantic="notification" data-size="s">Média</span>
+                </div>
+                <div class="dg-card">
+                    <div class="dg-plano-item">
+                        <div class="dg-plano-num">2</div>
+                        <span class="dg-plano-label">Reestruturar modelagem e padrões de dados</span>
+                        <div class="dg-plano-lado">
+                            <span class="tag-status" data-size="s" data-semantic="warning">média</span>
+                            <div class="dg-plano-preview">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
                     </div>
-                </li>
-                <li class="dg-plano-etapa">
-                    <span class="dg-plano-num">3</span>
-                    <div class="dg-plano-card">
-                        <span class="dg-plano-acao">Evoluir governança e monitoramento</span>
-                        <span class="tag-status" data-semantic="neutral" data-size="s">Baixa</span>
+                </div>
+                <div class="dg-card">
+                    <div class="dg-plano-item">
+                        <div class="dg-plano-num">3</div>
+                        <span class="dg-plano-label">Evoluir governança e monitoramento</span>
+                        <div class="dg-plano-lado">
+                            <span class="tag-status" data-size="s" data-semantic="warning">baixa</span>
+                            <div class="dg-plano-preview">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
                     </div>
-                </li>
-                </ol>
+                </div>
             </div>
         </article>
     </div>
 </section>
 
-<!-- ═══════════════ OPORTUNIDADES ═══════════════ -->
-<section class="mk-sec mk-oportunidades">
-    <div class="mk-sec-inner">
-        <span class="sec-eyebrow">Oportunidades</span>
-        <h2 class="sec-title">Mais que uma plataforma de empregos, um ecossistema de oportunidades!</h2>
-        <p class="sec-lede">O Marketplace Xperiun é mais do que apenas uma plataforma de busca por empregos. É um ecossistema inovador que conecta empresas que buscam tomar decisões mais inteligentes e estratégicas com especialistas em dados altamente qualificados e engajados. Através do Marketplace Xperiun, você encontra:</p>
+<!-- ═══════════════ METODOLOGIA ═══════════════
+     Portada do .agenda de /ed/aichampion/, versão dark. O .metodo-stage é sticky e
+     prende no topo da tela; enquanto a página rola, o .metodo-grid desliza na
+     horizontal. A altura da seção é calculada no JS (item 6 do diagnostico-avancado.js).
+     Abaixo de 864 o travamento sai e os cards empilham.
+     As seis imagens vivem em /cp/data-squads/dependencias/, que é onde elas foram
+     colocadas. A terceira é metodo-card-img-3.webp, sem o zero à esquerda que as outras
+     cinco têm: mantive o nome do arquivo como está, porque renomear asset em uso é
+     conserto pior que o problema. -->
+<!-- As duas seções dividem um track: a metodologia fica sticky com o rodapé colado no
+     rodapé da tela e os critérios sobem por cima dela. Ver o CSS. -->
+<div class="metodo-criterios-track">
+<section class="sec-metodo" id="metodologia">
+    <div class="metodo-stage">
+        <div class="metodo-header">
+            <div class="metodo-header-inner">
+                <div class="metodo-header-txt">
+                    <span class="sec-eyebrow">Metodologia</span>
+                    <h2 class="sec-title">Como funciona <span style="font-weight: 700">o diagnóstico</span></h2>
+                </div>
+            </div>
+        </div>
+        <div class="metodo-track">
+        <div class="metodo-grid">
+            <article class="metodo-card metodo-card--with-img">
+                <div class="metodo-card-media">
+                    <img class="metodo-card-img" src="/cp/data-squads/dependencias/metodo-card-img-01.webp" loading="lazy" alt="">
+                </div>
+                <div class="metodo-card-meta">
+                    <div class="metodo-card-num">01</div>
+                    <h3 class="metodo-card-title">Contexto organizacional</h3>
+                    <p class="metodo-card-desc">Entendemos áreas, responsáveis, necessidades e decisões relacionadas ao BI.</p>
+                </div>
+            </article>
+            <article class="metodo-card metodo-card--with-img">
+                <div class="metodo-card-media">
+                    <img class="metodo-card-img" src="/cp/data-squads/dependencias/metodo-card-img-02.webp" loading="lazy" alt="">
+                </div>
+                <div class="metodo-card-meta">
+                    <div class="metodo-card-num">02</div>
+                    <h3 class="metodo-card-title">Fontes e sistemas</h3>
+                    <p class="metodo-card-desc">Mapeamos origens dos dados, integrações, automações e processos manuais.</p>
+                </div>
+            </article>
+            <article class="metodo-card metodo-card--with-img">
+                <div class="metodo-card-media">
+                    <img class="metodo-card-img" src="/cp/data-squads/dependencias/metodo-card-img-3.webp" loading="lazy" alt="">
+                </div>
+                <div class="metodo-card-meta">
+                    <div class="metodo-card-num">03</div>
+                    <h3 class="metodo-card-title">Ambiente Power BI</h3>
+                    <p class="metodo-card-desc">Analisamos workspaces, relatórios, modelos e principais ativos.</p>
+                </div>
+            </article>
+            <article class="metodo-card metodo-card--with-img">
+                <div class="metodo-card-media">
+                    <img class="metodo-card-img" src="/cp/data-squads/dependencias/metodo-card-img-04.webp" loading="lazy" alt="">
+                </div>
+                <div class="metodo-card-meta">
+                    <div class="metodo-card-num">04</div>
+                    <h3 class="metodo-card-title">Qualidade e governança</h3>
+                    <p class="metodo-card-desc">Identificamos falhas técnicas, riscos e problemas de confiabilidade.</p>
+                </div>
+            </article>
+            <article class="metodo-card metodo-card--with-img">
+                <div class="metodo-card-media">
+                    <img class="metodo-card-img" src="/cp/data-squads/dependencias/metodo-card-img-05.webp" loading="lazy" alt="">
+                </div>
+                <div class="metodo-card-meta">
+                    <div class="metodo-card-num">05</div>
+                    <h3 class="metodo-card-title">Matriz de riscos</h3>
+                    <p class="metodo-card-desc">Classificamos os problemas por impacto, severidade e prioridade.</p>
+                </div>
+            </article>
+            <article class="metodo-card metodo-card--with-img">
+                <div class="metodo-card-media">
+                    <img class="metodo-card-img" src="/cp/data-squads/dependencias/metodo-card-img-06.webp" loading="lazy" alt="">
+                </div>
+                <div class="metodo-card-meta">
+                    <div class="metodo-card-num">06</div>
+                    <h3 class="metodo-card-title">Roadmap de evolução</h3>
+                    <p class="metodo-card-desc">Organizamos as melhorias em uma sequência clara de execução.</p>
+                </div>
+            </article>
+        </div>
+        </div>
     </div>
 </section>
+
+<!-- ═══════════════ CRITÉRIOS ═══════════════
+     Portada do .mba-target de /ed/pos-graduacoes/, versão dark: o cabeçalho fica sticky
+     na metade esquerda enquanto os cards, na direita, sobem e param um 96px abaixo do
+     outro, cada um cobrindo o anterior. Empilhamento em sticky puro, sem JS.
+     O número gigante de cada card vem do data-number, no CSS, pra o valor não aparecer
+     duas vezes na marcação. -->
+<!-- Segundo track, aninhado no de fora: a .sec-criterios fica sticky com o rodapé
+     colado no rodapé da tela e a .sec-cases sobe por cima dela. -->
+<div class="criterios-cases-track">
+<section class="sec-criterios" id="criterios">
+    <div class="criterios-inner">
+        <div class="criterios-header">
+            <span class="sec-eyebrow">Diferencial Xperiun</span>
+            <h2 class="sec-title">Diagnóstico baseado no <span style="font-weight: 700">seu ambiente real</span></h2>
+        </div>
+        <ul class="criterios-cards">
+            <li class="criterios-card" data-number="1">
+                <h3 class="criterios-card-title">Evidência, não achismo.</h3>
+                <p class="criterios-card-text">Cada problema identificado possui causa e justificativa técnica.</p>
+            </li>
+            <li class="criterios-card" data-number="2">
+                <h3 class="criterios-card-title">Análise prática, não manual genérico.</h3>
+                <p class="criterios-card-text">Investigamos o Power BI, os dados e as integrações da empresa.</p>
+            </li>
+            <li class="criterios-card" data-number="3">
+                <h3 class="criterios-card-title">Prioridade, não apenas uma lista de problemas.</h3>
+                <p class="criterios-card-text">Indicamos o que deve ser resolvido primeiro e por quê.</p>
+            </li>
+            <li class="criterios-card" data-number="4">
+                <h3 class="criterios-card-title">Especialistas certificados.</h3>
+                <p class="criterios-card-text">O diagnóstico é conduzido por profissionais especializados em BI e dados.</p>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- Depoimentos em vídeo + faixa de logos, portados da .sec-cases de /cp/data-squads/.
+     A subseção "Cases de Sucesso" que existe lá NAO veio (todo o bloco .caso-*).
+     O player é o item 12 do diagnostico-avancado.js e a rotação dos logos o 13. -->
+<section class="sec-cases" id="sec-cases">
+    <div class="cases-inner">
+        <div class="cases-header">
+            <span class="sec-eyebrow">Depoimentos</span>
+            <h2 class="sec-title">O que falam <span style="font-weight: 700">sobre nós</span>?</h2>
+        </div>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="TwMWhtIMfFU">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-oni.webp" alt="Depoimento de Observatório Nacional da Indústria" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">Observatório Nacional da Indústria</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">No Mapa do Trabalho do Observatório Nacional da Indústria, transformamos dados em histórias visuais e acessíveis, tornando a informação clara e envolvente para todos.</p>
+            </div>
+        </article>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="79ad6vi5yCc">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-tecmaf.webp" alt="Depoimento de Tecmaf" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">TECMAF</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">A Tecmaf toma decisões estratégicas em tempo real, identifica oportunidades, maximiza receitas e desenvolve clientes com mais eficiência. Imagine isso na sua empresa!</p>
+            </div>
+        </article>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="yCp1CPIytKs">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-josecar.webp" alt="Depoimento de Josecar" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">Josecar</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">A Josecar Autopeças revolucionou o uso de dados, acessando informações precisas em qualquer dispositivo. Agora, responde com agilidade às demandas, otimiza processos e aumenta a produtividade.</p>
+            </div>
+        </article>
+
+        <article class="case-card">
+            <div class="case-video" data-vid="MZeoz5XdpvQ">
+                <div class="case-player"></div>
+                <div class="case-veil" aria-hidden="true">
+                    <img class="case-cover" src="/cp/data-squads/dependencias/corporate-cases_thumb-hidrofiltros.webp" alt="Depoimento de Hidrofiltros" loading="lazy">
+                    <span class="case-veil-play"><span class="case-veil-play-label">Assistir vídeo</span><svg class="case-veil-play-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75194 5.43872L18.2596 11.5682C18.4981 11.7073 18.5787 12.0135 18.4396 12.252C18.3961 12.3265 18.3341 12.3885 18.2596 12.432L7.75194 18.5615C7.51341 18.7006 7.20725 18.62 7.06811 18.3815C7.0235 18.305 7 18.2181 7 18.1296V5.87061C7 5.59446 7.22386 5.37061 7.5 5.37061C7.58853 5.37061 7.67547 5.39411 7.75194 5.43872Z" fill="currentColor"/></svg></span>
+                </div>
+            </div>
+            <div class="case-body">
+                <div class="case-head">
+                    <button class="case-play" type="button" aria-label="Reproduzir">
+                        <span class="material-symbols-outlined case-ico case-ico--play">play_arrow</span>
+                        <span class="material-symbols-outlined case-ico case-ico--pause">pause</span>
+                    </button>
+                    <div class="case-meta">
+                        <p class="case-label">Assista o vídeo:</p>
+                        <p class="case-name">Hidrofiltros</p>
+                    </div>
+                </div>
+                <div class="case-controls">
+                    <div class="case-bar" role="slider" tabindex="0"
+                         aria-label="Progresso do vídeo"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="case-bar-fill"></div>
+                    </div>
+                    <p class="case-time"><span class="case-time-cur">0:00</span> / <span class="case-time-dur">0:00</span></p>
+                </div>
+                <p class="case-text">O que antes levava até 3 dias para que a empresa pudesse estar preparada para apresentar uma proposta comercial personalizada e com diferenciais para seus clientes agora é feito em poucas horas.</p>
+            </div>
+        </article>
+
+    </div><!-- /.cases-inner -->
+
+    <!-- ── subseção: Empresas que confiam na Xperiun ──
+         Traz o .depos-logos-section da home (ed/index.html + home.css) sem mudar o
+         componente: mesma grade celular de 6/4/3/2 colunas, mesmos filetes inset de 2px
+         em bw-15 e mesmos 12 slots vazios que o JS popula e rotaciona.
+
+         A faixa é IRMÃ do header e não filha de um container padeado, exatamente como o
+         .depos-logos-section dentro do .depos-employers da home: é isso que deixa o
+         filete horizontal correr a viewport inteira. Por isso ela fica fora da
+         .cases-inner, e não é engano de indentação.
+
+         O .enter-card da home NÃO veio: aquela animação é do home.js, que esta página
+         não carrega, e sem o is-entered o bloco ficaria em opacity: 0 pra sempre. -->
+    <div class="cases-sub-header">
+        <h3 class="cases-sub-title sec-title">Empresas que confiam na <span style="font-weight: 700">Xperiun</span>:</h3>
+    </div>
+    <div class="depos-logos-section">
+        <div class="depos-logos-wrap">
+        <div class="depos-logos-grid" id="depos-logos-grid">
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+        </div>
+        </div><!-- /.depos-logos-wrap -->
+    </div>
+</section>
+</div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════════
      INCLUDES PADRÃO (não remover, mantêm consistência do site)
      ═══════════════════════════════════════════════════════════ -->
 
-<!-- Menu de navegação (carregado dinamicamente via JS) -->
-<div data-menu></div>
-<script src="/ed/site-dependencias/site-menu/menu-include.js"></script>
+<!-- Menu e footer controlados por URL: só carregam (e só pesam) quando ?menu=ativo,
+     mesmo esquema do /cp/data-squads/ e do /ed/pos-graduacoes/mba-fpa.html. Acesso
+     direto a esta página não monta nem baixa CSS/JS de nenhum dos dois.
+     Os src são absolutos, não relativos, porque em /ed/ caminho relativo quebra quando
+     a URL é servida com barra final.
+     O footer é anexado só depois do parse do body: sem isso ele cairia logo abaixo
+     deste script, e não no fim do conteúdo. -->
+<script>
+(function () {
+    if (new URLSearchParams(location.search).get('menu') !== 'ativo') return;
+    document.body.classList.add('menu-top');
+    var ph = document.createElement('div');
+    ph.setAttribute('data-menu', '');
+    document.body.insertBefore(ph, document.body.firstChild);
+    var s = document.createElement('script');
+    s.src = '/ed/site-dependencias/site-menu/menu-include.js';
+    document.body.appendChild(s);
 
-<!-- Footer com copyright legal (carregado dinamicamente via JS). -->
-<div data-footer></div>
-<script src="/ed/site-dependencias/site-footer/footer-include.js"></script>
+    var montaFooter = function () {
+        var fph = document.createElement('div');
+        fph.setAttribute('data-footer', '');
+        document.body.appendChild(fph);
+        var fs = document.createElement('script');
+        fs.src = '/ed/site-dependencias/site-footer/footer-include.js';
+        document.body.appendChild(fs);
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', montaFooter);
+    } else {
+        montaFooter();
+    }
+})();
+</script>
+
+<!-- Barra fixa de CTA no rodapé, portada do /cp/data-squads/. As 4 camadas de
+     .bottom-cta-blur são o "gradient blur": todas cobrem a barra inteira, cada uma com
+     máscara que esmaece numa altura diferente, então onde mais camadas se sobrepõem (a
+     base) o backdrop-filter se compõe e a rampa fica contínua em vez de degrau.
+     A barra é pointer-events: none e só o botão volta a auto, senão a faixa de 140px
+     comeria o clique de tudo que passasse por baixo dela.
+     Nasce com .is-hidden: quem a mostra é o item 10 do diagnostico-avancado.js. -->
+<div class="bottom-cta is-hidden">
+    <div class="bottom-cta-blur bottom-cta-blur-2" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-4" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-8" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-16" aria-hidden="true"></div>
+    <a class="btn bottom-cta-btn" data-size="m" data-emphasis="medium-core" href="#" data-open-popup="popup-form-data-squads">Fale com um especialista</a>
+</div>
+
+<!-- Popup do form ActiveCampaign, o MESMO do /cp/data-squads/ (form 437). O
+     placeholder é substituído pelo .popup-form de form-data-squads.html; o
+     form-include.js injeta form.css e form.js. Abre por openPopup('popup-form-data-squads'),
+     que o item 9 do diagnostico-avancado.js chama a partir do [data-open-popup]. -->
+<div data-popup-form="data-squads"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=7"></script>
 
 <!-- Reveal/animação de entrada do hero (mesmo setup das páginas de área). -->
 <script src="/ed/formacoes/script.js?v=10"></script>
@@ -435,8 +994,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Smooth scroll global (links âncora com behavior: smooth) -->
 <script src="/ed/site-dependencias/scroll-suave.js"></script>
 
-<!-- Cometa de partículas nos conectores do card Ecossistema -->
-<script src="/ed/temp/diagnostico-avancado.js?v=5" defer></script>
+<!-- Conectores das ilustrações 1 e 2 + tilt do dashboard da sec-diagnostico -->
+<script src="/ed/temp/diagnostico-avancado.js?v=20" defer></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>
