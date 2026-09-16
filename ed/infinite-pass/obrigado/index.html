@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-09-01">
+    <title>Inscrição realizada | Infinite Pass | Xperiun</title>
+    <meta name="description" content="Sua inscrição na lista VIP do Infinite Pass foi realizada com sucesso. Você está sendo redirecionado para o grupo VIP do evento no WhatsApp.">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <!-- Fonte da página inteira: Syne, a mesma da LP do Infinite Pass -->
+    <link rel="stylesheet" href="/ed/infinite-pass/obrigado/dependencias/style.css?v=6">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- Lettering do infinito ao fundo. É a .ip-imagine-fundo da LP, só que
+     ESTÁTICA: lá o script.js atravessa ela pela seção conforme o scroll,
+     aqui a página tem uma tela só e ela fica parada. O blur de 12px é o
+     mesmo da origem e também é estático, então não cai na regra de não
+     animar blur abaixo de 864. -->
+<div class="ipo-fundo" aria-hidden="true"></div>
+
+<main class="ipo">
+
+    <img src="/ed/infinite-pass/obrigado/dependencias/logo-infinite-pass.svg" alt="Infinite Pass" class="ipo-logo" width="110" height="50" fetchpriority="high" decoding="async">
+
+    <!-- Logo Xperiun no canto: absoluto, fora do fluxo da coluna, pra não
+         empurrar o conteúdo que está centrado no eixo vertical. -->
+    <img src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg" alt="Xperiun" class="ipo-brand-xp" width="107" height="32" decoding="async">
+
+    <h1 class="ipo-title">Parabéns, inscrição realizada com sucesso</h1>
+
+    <!-- Aviso do redirecionamento + spinner. role="status" pro leitor de
+         tela anunciar o aviso; o spinner é decorativo e fica fora da
+         árvore de acessibilidade. -->
+    <p class="ipo-redirect" role="status">Você está sendo redirecionado para o Grupo VIP do evento no WhatsApp</p>
+
+    <span class="ipo-spinner" aria-hidden="true"></span>
+
+    <!-- Saída manual: o redirecionamento é feito por JS, então sem JS (ou
+         se o timer falhar) este link é a única forma de chegar no grupo.
+         Fica sempre visível de propósito. -->
+    <a class="ipo-fallback" href="https://sndflw.com/i/HVjAQeVEcOsSZqc6LK2e">Não foi redirecionado? Clique aqui</a>
+
+</main>
+
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- Redirecionamento pro grupo VIP do evento, 2s depois do load. `replace`
+     e não `href`: assim a página não entra no histórico e o botão Voltar
+     do navegador não devolve o usuário pra cá, que redirecionaria de novo. -->
+<script>
+setTimeout(function () {
+    location.replace('https://sndflw.com/i/HVjAQeVEcOsSZqc6LK2e');
+}, 2000);
+</script>
+
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

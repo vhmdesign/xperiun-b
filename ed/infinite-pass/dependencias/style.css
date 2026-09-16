@@ -1,0 +1,1327 @@
+/* ══════════════════════════════════════════════════════════════════════
+   /ed/infinite-pass/dependencias/style.css
+
+   Refação da página /ed/infinite-pass/ (Elementor) sobre o design system.
+   O ponto de partida é o class="ip" de /ed/pre-vitalicio/, que já era a
+   réplica do hero desta página no DS, e daqui pra baixo as outras seções
+   seguiram o mesmo tratamento.
+
+   O que mudou em relação à origem:
+     - grid Wide do DS (max-width 1440 + padding 0 16px, colunas
+       10 / 8 / 6 / 4 nos breakpoints 1440 / 1439 / 864 / 576, com
+       column-gap 32 / 32 / 24 / 16) no lugar da largura fixa de 1120 e
+       das margens em pixel;
+     - cor só por token do root.css (--bb, --bw*, --pc200, --pc300,
+       --pc500), nenhum rgba() solto;
+     - tipografia por token, com Syne (--font-family-horizontal) como
+       display da página e Poppins (--font-family) no corpo;
+     - traço mínimo de 2px em qualquer fio visual;
+     - blur animado só acima de 864px (o script.js aplica a mesma regra
+       nas animações que ele dirige).
+
+   Ordem do arquivo: cada bloco traz as regras base primeiro e as suas
+   @media logo depois. Media antes da base sobrescreveria na marra.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* O preto fica SÓ no html, não no body.
+
+   Com fundo também no body, ele pinta como fundo de bloco em fluxo, que
+   na ordem de pintura vem ACIMA de qualquer descendente com z-index
+   negativo. O brilho do fechamento, que precisa ficar em -1 pra passar
+   atrás da .ip-trilhas, sumia embaixo desse preto. No html o fundo vira
+   o do canvas, que é pintado antes de tudo, e o -1 volta a aparecer. */
+html { background: var(--bb); }
+html, body { margin: 0; }
+body {
+    overflow-x: clip;
+    /* transparente sobrescrevendo o root.css, que dá --bb ao body.
+       O preto vem do html logo acima; aqui ele precisa sair. */
+    background-color: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FAMÍLIA DA PÁGINA
+   Esta página é Syne inteira, não Poppins: Syne é o display do lockup
+   Infinite Pass e era a família de TODO o texto na origem.
+
+   O root.css já prevê a família como token e monta os tokens de tipografia
+   em cima dela (`--h1: 700 clamp(...) var(--font-family)` e assim por
+   diante), então basta reapontar --font-family aqui: --h*, --p*, --label*
+   e --btn* passam todos a resolver em Syne, sem precisar reescrever token
+   por token nem espalhar font-family pelas regras.
+
+   Syne é self-hosted só em 400 e 700, então nenhum peso fora desses dois
+   pode aparecer nesta página. Os tokens que pedem 600 (--h3, --h6) caem no
+   700 por fallback do navegador; onde isso importa, o peso vem escrito.
+   ══════════════════════════════════════════════════════════════════════ */
+:root { --font-family: "Syne", sans-serif; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   CONVENÇÃO DE SEÇÃO
+   Portada do DS (mesma trinca de /ed/pre-vitalicio/), com a família e o
+   peso desta página: Syne em 400.
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-title {
+    font: var(--h3);
+    /* 400: o peso de título desta página, e um dos dois que Syne tem */
+    font-weight: 400;
+    color: var(--bw);
+    /* padding + margin negativa: compensação do mask-image, não mexer */
+    margin: -64px;
+    padding: 64px;
+    box-sizing: content-box;
+    -webkit-mask-image: var(--text-gradient-low);
+    mask-image: var(--text-gradient-low);
+}
+.sec-lede {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+    /* medida de leitura: nenhuma linha passa de 60 caracteres */
+    max-width: 60ch;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TARJA CORRIDA
+   Sangria total, 40px de altura, um fio de 2px em degradê no rodapé.
+   A lista é duplicada no HTML e o trilho anda -50%: no instante em que a
+   cópia chega onde o original estava, a animação reinicia e o corte é
+   invisível. Sem medida em JS.
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-tarja {
+    position: relative;
+    /* Acima do hero (z-index 2). O vídeo do hero cresce 1,5x na saída e
+       sobe além da borda de cima da seção; sem esta camada ele passava
+       POR CIMA da tarja. O hero precisa ficar em 2 pra cobrir a
+       .ip-imagine ao descer, então quem sobe aqui é a tarja. */
+    z-index: 3;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg,
+        var(--bw-5) 0%, var(--bw-10) 25%, var(--bw-10) 75%, var(--bw-5) 100%);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+.ip-tarja::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%, var(--bw-10) 25%, var(--bw-10) 75%, transparent 100%);
+}
+.ip-tarja-trilho {
+    display: flex;
+    flex-wrap: nowrap;
+    /* centra as duas metades na altura da faixa */
+    align-items: center;
+    animation: ip-tarja-anda 40s linear infinite;
+}
+.ip-tarja:hover .ip-tarja-trilho { animation-play-state: paused; }
+/* O vão entre itens é o gap de 32, o mesmo da origem, e é ele que manda
+   enquanto a largura natural da metade (12 itens, mais de 2300px) passar
+   da tela. O min-width de uma tela é só a rede de segurança pra monitor
+   ultralargo: ele garante que a metade que sai nunca seja menor que a
+   tela, senão apareceria um buraco no meio do ciclo. Nesse caso extremo o
+   space-around espalha a sobra por igual entre os itens E nas pontas, o
+   que mantém o vão da emenda (meia ponta + meia ponta) igual ao vão de
+   dentro. Com space-between a emenda ficaria colada. */
+.ip-tarja-lista {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    /* Sem isto o texto encostava no topo da faixa: medido, o item ficava
+       a 3px do topo e a 19px da base de uma faixa de 40. O eixo cruzado
+       precisa ser explicito nos DOIS niveis (trilho e lista), porque cada
+       um e um container flex proprio. */
+    align-items: center;
+    gap: 32px;
+    min-width: 100vw;
+    box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0 16px;
+}
+.ip-tarja-lista li {
+    /* A base do site dá margin-bottom aos <li>. Aqui isso somava 16px
+       invisíveis embaixo de cada item: a lista media 33,5px em vez de
+       17,5, o align-items centrava a caixa COM a margem e o texto ficava a
+       3px do topo e a 19px da base de uma faixa de 40. Zerar a margem é o
+       que centra de verdade. */
+    margin: 0;
+    white-space: nowrap;
+    /* Estilo label do DS pelo TOKEN, não por valores soltos. Antes eu tinha
+       escrito família, peso, tamanho e entrelinha na mão, e o 0.875rem que
+       saiu daí é o --label-s, não o --label. O root.css é explícito: os
+       tokens de tipografia se aplicam sempre via `font: var(--xxx)`, nunca
+       separados. A caixa alta continua aqui porque é tratamento desta
+       tarja, não do token. */
+    font: var(--label);
+    text-transform: uppercase;
+    color: var(--bw);
+}
+/* alterna cheio e apagado, como na origem */
+.ip-tarja-lista li:nth-child(even) { color: var(--bw-50); }
+
+@keyframes ip-tarja-anda {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-tarja-trilho { animation: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ESTADO INICIAL DA ENTRADA DO HERO
+
+   Fica no CSS, e não no script.js como o resto dos estados escondidos
+   desta página, por um motivo medido: o script vive no rodapé, então o
+   hero já pintou VISÍVEL quando ele roda. O resultado era um flash de
+   "aparece, some, entra" de meio segundo (medido: tudo visível até
+   t+539ms, escondido em t+577ms, e só aí a cascata).
+
+   O gatilho é a classe .ip-anima, que um <script> inline do <head>
+   adiciona antes do primeiro paint. Sem JS a classe nunca entra e o hero
+   nasce pronto, que é a mesma garantia de antes.
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-anima .ip-video { opacity: 0; }
+.ip-anima .ip-titulo { opacity: 0; }
+.ip-anima .ip-cta > * {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+}
+/* regra do projeto: sem blur animado abaixo de 864 */
+@media (max-width: 864px) {
+    .ip-anima .ip-cta > * { filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-anima .ip-video,
+    .ip-anima .ip-titulo,
+    .ip-anima .ip-cta > * {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HERO
+   Grid Wide: o lockup ocupa a linha inteira e o bloco de chamada, 4
+   colunas à esquerda. O vídeo mora dentro do bloco da marca, atrás do
+   título, e sai de cena junto com ele no scroll (script.js).
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-hero {
+    position: relative;
+    /* Acima da .ip-imagine (z-index 1). Sem isto, o vídeo era COBERTO por
+       ela ao descer na saída: a seção seguinte é opaca (--bb) e estava
+       numa camada superior. As caixas das duas não se cruzam, então subir
+       o hero não tapa nada da seção de baixo. */
+    z-index: 2;
+    /* sem min-height: a altura é a do conteúdo mais o padding */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 64px 0 48px;
+    background: var(--bb);
+    /* Clipe só no eixo X, não `overflow: hidden`.
+
+       O X precisa ser cortado: o vídeo tem 1280px fixos (200vw no
+       telefone) e transbordaria a página. Mas cortar o Y também era o que
+       decepava o vídeo na borda de baixo do hero justamente quando ele
+       DESCE 256px na saída. Com clip só no X ele desce à vista. */
+    overflow-x: clip;
+}
+/* Sem tarja de luz no topo, ao contrário das outras seções escuras do
+   projeto: o vídeo é opaco e ocupa 1280 dos 1440, então qualquer fundo
+   que não seja preto aparece só nas bordas e desenha um retângulo em
+   volta dele. Quem traz cor aqui é o próprio vídeo. */
+.ip-hero-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 48px;
+}
+
+/* Logo da Xperiun colada acima do lockup.
+
+   Ancora no .ip-marca, que é a caixa do próprio .ip-titulo (o vídeo, que
+   também mora ali, é absoluto e não conta pro fluxo). Por isso
+   `bottom: 100%`: a base da logo encosta na BORDA DE CIMA DO TÍTULO, e o
+   margin-bottom abre o respiro. Nada de `top` negativo chutado contra o
+   padding do hero, que era como eu tinha feito: aquilo amarrava a logo a
+   um espaçamento que não tem nada a ver com ela e quebraria se o padding
+   mudasse.
+
+   z-index acima do vídeo, que é o outro absoluto deste bloco e estava
+   pintando por cima dela. */
+.ip-logo {
+    position: absolute;
+    z-index: 1;
+    /* A borda de cima do TÍTULO, não a da caixa de padding. Um absoluto se
+       resolve contra a caixa de padding do ancestral, então em `bottom:
+       100%` puro a logo subia junto com o padding do .ip-marca: medido,
+       72px de folga abaixo de 864 contra os 8px de cima. O desconto da
+       variável devolve os 8px em qualquer tier. */
+    bottom: calc(100% - var(--ip-marca-pt));
+    left: 0;
+    margin-bottom: 8px;
+    width: 120px;
+    height: 36px;
+    display: block;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Bloco da marca: título e vídeo dividem a mesma caixa, o vídeo atrás.
+   isolation pra o z-index negativo do vídeo não cair atrás do fundo. */
+.ip-marca {
+    grid-column: 1 / -1;
+    position: relative;
+    isolation: isolate;
+    /* Fonte única do respiro em cima do lockup: entra como padding aqui e
+       a .ip-logo desconta o mesmo valor pra continuar colada no título.
+       Se um dia mudar, muda nos dois de uma vez. */
+    --ip-marca-pt: 0px;
+    padding-top: var(--ip-marca-pt);
+    /* referência pro cqw do título: a largura real deste bloco, sem a
+       barra de rolagem que o 100vw incluiria */
+    container-type: inline-size;
+}
+.ip-titulo {
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    text-transform: uppercase;
+    /* Tamanho CALCULADO, não chutado. Medido no navegador: "INFINITE" em
+       Syne 400 ocupa 3,9961x o font-size, e o 1.012 deixa um fio de
+       respiro. O teto de 1120px é a largura de 8 colunas do grid 1440
+       (8x112 + 7x32), que é o span do INFINITE. */
+    font-size: calc(min(1120px, 100cqw) / (3.9961 * 1.012));
+    /* proporção da origem: 204 / 272 */
+    line-height: 0.75;
+    color: var(--bw);
+    /* Mesmas trilhas do .ip-hero-inner (o .ip-marca é 1 / -1) pra cada
+       linha poder se ancorar num lado. */
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+/* Depois do split em letras cada uma vira uma caixa inline-block e o
+   navegador pode quebrar entre quaisquer duas. O nowrap devolve o
+   comportamento de antes do split. */
+.ip-titulo-linha { white-space: nowrap; }
+/* INFINITE nas 8 colunas da esquerda, PASS nas 8 da direita: as duas
+   linhas se sobrepõem no miolo e o lockup fica escalonado. */
+.ip-titulo-linha:first-child {
+    grid-column: 1 / span 8;
+    text-align: left;
+}
+.ip-titulo-linha:last-child {
+    grid-column: 3 / span 8;
+    text-align: right;
+}
+.ip-letra {
+    display: inline-block;
+    will-change: transform, opacity, filter;
+}
+.ip-video {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* 1280px fixos, como na origem, e SEM teto em porcentagem.
+
+       O teto de 115% que estava aqui era adaptacao do /ed/pre-vitalicio/,
+       onde a secao vive no meio da pagina. Nesta pagina ele encolhia o
+       video junto com a viewport: medido, dava 0,83x a tela em 390 onde a
+       origem entrega 2,00x, quase tres vezes menor. */
+    width: 1280px;
+    height: auto;
+    pointer-events: none;
+    will-change: transform, opacity, filter;
+}
+
+/* Chamada */
+.ip-cta {
+    /* 6 colunas: 832px no tier Wide. Em 4 (544px) a lede quebrava em
+       quatro linhas curtas embaixo do lockup gigante. */
+    grid-column: span 6;
+    /* O .ip-marca é posicionado e o vídeo dentro dele sobra pra baixo.
+       Elemento posicionado pinta acima de conteúdo em fluxo normal, então
+       sem isto o vídeo cobriria este texto. */
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    will-change: transform, opacity;
+}
+/* O .ip-h2 não tem regra própria de propósito: quem entrega tipo, cor e
+   máscara é o .sec-title. Redeclarar `margin: 0` aqui zeraria a margem
+   negativa que compensa o padding de 64px do halo. */
+/* O h2 do hero fica em --bw cheio, sem a máscara de degradê que o
+   .sec-title aplica por padrão e sem destaque em 700: é uma chamada curta,
+   e o esmaecimento competia com o lockup logo acima.
+   O `padding: 64px` com `margin: -64px` do .sec-title continua de pé (regra
+   do projeto: não zerar); sem máscara ele fica neutro no layout. */
+.ip-h2 {
+    -webkit-mask-image: none;
+    mask-image: none;
+    color: var(--bw);
+}
+.ip-data {
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--pc200);
+}
+.ip-btn { margin-top: 8px; }
+.ip-assinatura {
+    margin: 0;
+    font: var(--p-s);
+    color: var(--bw-50);
+}
+
+/* Assinatura com o indicador de scroll à esquerda dela. */
+.ip-assinatura-linha {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Indicador de scroll: o .ic-scroll-hint de /ed/aichampion/, com uma
+   adaptação. Lá ele é `position: absolute` centrado por
+   `left: 50%` + `translateX(-50%)`, e a keyframe carrega esse -50% em
+   todo quadro pra não perder o centramento ao animar. Aqui ele vive no
+   fluxo, ao lado da assinatura, então o -50% sai da keyframe e sobra só
+   o movimento vertical. */
+.ic-scroll-hint {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bw-5);
+    pointer-events: none;
+    animation: ip-scroll-cue 1.6s ease-in-out infinite;
+}
+/* triângulo apontando pra baixo: 12px de largura, 8px de altura */
+.ic-scroll-tri {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--bw-50);
+}
+@keyframes ip-scroll-cue {
+    0%   { transform: translateY(-8px); opacity: 0; }
+    50%  { opacity: 1; }
+    100% { transform: translateY(8px);  opacity: 0; }
+}
+
+/* Tier de 8 colunas. Span 8 de 10 remapeia pra 8 de 8: sem folga pro
+   escalonamento, mas as âncoras (INFINITE à esquerda, PASS à direita)
+   continuam. */
+@media (max-width: 1439px) {
+    .ip-hero-inner { grid-template-columns: repeat(8, 1fr); }
+    .ip-titulo {
+        grid-template-columns: repeat(8, 1fr);
+        /* O teto de 1120px só vale no grid de 10 colunas, onde 1120 é a
+           largura de 8 delas. Aqui o span 8 é a linha inteira, e o teto
+           faria o lockup parar antes do fim das trilhas. */
+        font-size: calc(100cqw / (3.9961 * 1.012));
+    }
+    .ip-titulo-linha:first-child { grid-column: 1 / -1; }
+    .ip-titulo-linha:last-child  { grid-column: 1 / -1; }
+}
+/* Abaixo do tier Desktop o lockup volta ao empilhamento simples,
+   alinhado à direita: o título já ocupa a largura toda e não sobra
+   coluna pra escalonar. */
+@media (max-width: 1152px) {
+    .ip-titulo {
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+    }
+    .ip-titulo-linha:first-child,
+    .ip-titulo-linha:last-child { display: block; text-align: right; }
+}
+@media (max-width: 864px) {
+    .ip-hero-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 48px;
+    }
+    .ip-cta { grid-column: 1 / -1; }
+    /* Respiro em volta do lockup a partir daqui: sem ele o título encosta
+       na tarja em cima e na chamada embaixo quando o grid empilha. */
+    .ip-marca { --ip-marca-pt: 64px; padding-bottom: 64px; }
+    /* O vídeo NÃO muda de tamanho aqui: os 1280px fixos seguem valendo, e
+       é o que casa com a origem neste tier (medido nela: 1,48x a viewport
+       em 864 e 1,67x em 768). */
+}
+@media (max-width: 576px) {
+    .ip-hero { padding: 72px 0 48px; }
+    .ip-hero-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+        row-gap: 32px;
+    }
+    /* Tier de telefone: aqui o vídeo passa a escalar COM a tela, em 2x a
+       viewport, que é o que a origem faz abaixo do breakpoint dela
+       (medido: 2,00x tanto em 390 quanto em 576). Acima disso um valor
+       fixo já basta; abaixo, ele precisa crescer junto pra continuar
+       preenchendo o fundo. O corte fica por conta do overflow do hero. */
+    .ip-video { width: 200vw; }
+    .ip-data { font-size: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-video { display: none; }
+    .ic-scroll-hint { animation: none; opacity: 0.5; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   IMAGINE
+   Escada de recuo por COLUNA: as falas fortes recuadas começam na
+   coluna 3, que no tier Wide fica a 288px da borda do conteúdo
+   (112 + 32 + 112 + 32), exatamente a margem em pixel da origem.
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-imagine {
+    position: relative;
+    isolation: isolate;
+    /* A seção sobe na pilha pra que o lettering desfocado, que é filho dela
+       e transborda 1620px pra baixo, passe POR CIMA das trilhas, como na
+       origem (lá o widget do lettering leva z-index 1 e o das trilhas não
+       leva nenhum). Quem sobe é a seção inteira e não só o fundo, porque o
+       isolation faz dela um contexto de empilhamento: de dentro, nenhum
+       filho consegue passar de um irmão. As caixas das duas seções não se
+       cruzam, então só o fundo transbordante muda de camada. */
+    z-index: 1;
+    padding: 192px 0;
+    background: var(--bb);
+    /* o halo de 64px do .sec-title e os fundos sangrados não podem virar
+       scroll horizontal */
+    overflow-x: clip;
+}
+.ip-imagine-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+}
+/* Escada medida na origem (viewport 1440, container dela de 1120), com os
+   deslocamentos contados a partir da borda do conteúdo:
+
+     "Imagine..."      offset   0   largura 1120  (a largura toda)
+     texto primeiro    offset 144   largura  832
+     vitalício         offset 288   largura  832
+     texto segundo     offset 144   largura  832
+     data              offset 288   largura  832
+
+   Esses números SÃO o grid do DS: no tier Wide a coluna N começa em
+   (N-1)*144, e 832 é exatamente span 6 (6x112 + 5x32). Ou seja, a origem
+   desenhou na métrica do grid e escreveu em pixel: três degraus de uma
+   coluna cada, todos com span 6.
+
+   O que muda aqui é só onde a escada se apoia. Na origem ela nascia
+   colada na margem esquerda do container de 1120; aqui ela fica CENTRADA
+   nas colunas do meio do container de 1408: o grupo vai da coluna 2 à 9
+   (o último degrau abre na 4 e o span 6 fecha na 9), sobrando uma coluna
+   livre de cada lado.
+
+   Ordem importa: as três regras têm a mesma especificidade e os elementos
+   carregam a classe base MAIS a modificadora, então a base precisa vir
+   primeiro ou ela sobrescreveria os degraus. */
+.ip-frase        { grid-column: 3 / span 6; }
+.ip-frase--abre  { grid-column: 2 / span 6; }
+.ip-frase--recuo { grid-column: 4 / span 6; }
+.ip-frase p {
+    margin: 0 0 8px;
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    line-height: 1.5;
+}
+.ip-frase p:last-child { margin-bottom: 0; }
+.ip-frase--forte p {
+    font-size: clamp(1.25rem, 1.03rem + 0.62vw, 2rem);
+    color: var(--bw);
+}
+.ip-frase--corpo p {
+    font-size: clamp(1rem, 0.86rem + 0.42vw, 1.5rem);
+    color: var(--bw-75);
+}
+
+/* Lettering desfocado que atravessa a seção da esquerda pra direita
+   conforme ela entra na tela. Decorativo, sem interação e sem peso na
+   leitura: por isso z-index 0 dentro do isolamento da seção. */
+.ip-imagine-fundo {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: -256px;
+    width: 1080px;
+    height: 1080px;
+    background-image: url('/ed/infinite-pass/dependencias/ip_infinity-lettering-b2.webp');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    /* blur ESTÁTICO, não animado: o que o script move é só o translate */
+    filter: blur(12px);
+    opacity: 0.75;
+    pointer-events: none;
+    transform: translateX(var(--ip-fundo-x, -100%)) scale(1.5);
+    transform-origin: center center;
+    will-change: transform;
+}
+@media (max-width: 1439px) {
+    .ip-imagine-inner { grid-template-columns: repeat(8, 1fr); }
+    /* No grid de 8 a escada de 3 degraus ocupa exatamente as 8 colunas
+       (abre na 1, último degrau fecha na 8), então ela desce um degrau
+       inteiro e continua centrada por construção. Sem isso o último
+       `4 / span 6` pediria até a linha 10, que não existe aqui, e o
+       navegador criaria coluna implícita. */
+    .ip-frase        { grid-column: 2 / span 6; }
+    .ip-frase--abre  { grid-column: 1 / span 6; }
+    .ip-frase--recuo { grid-column: 3 / span 6; }
+    /* o lettering entra mais pela esquerda quando a página estreita */
+    .ip-imagine-fundo { left: -512px; }
+}
+@media (max-width: 864px) {
+    .ip-imagine { padding: 128px 0; }
+    .ip-imagine-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+    }
+    .ip-frase,
+    .ip-frase--recuo { grid-column: 1 / -1; }
+    .ip-imagine-fundo {
+        width: 810px;
+        height: 810px;
+        left: -405px;
+        opacity: 0.5;
+    }
+}
+@media (max-width: 576px) {
+    .ip-imagine { padding: 96px 0; }
+    .ip-imagine-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+        row-gap: 24px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-imagine-fundo { transform: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TRILHAS
+   As faixas são sangria total (tira de mídia, não coluna de conteúdo).
+   A capa mede 3 colunas de 112 e o vão entre elas é o column-gap de 32
+   do tier Wide, então a tira continua falando a métrica do grid mesmo
+   sem se ancorar nele. O parágrafo abaixo, sim, ocupa 4 colunas (544px)
+   centradas.
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-trilhas {
+    position: relative;
+    /* explícito pra deixar claro que ela fica ABAIXO da .ip-imagine */
+    z-index: 0;
+    padding: 192px 0 128px;
+    /* Sem fundo próprio: o preto já vem do html. E, sem ele, o brilho do
+       fechamento (z-index -1) atravessa por trás das capas em vez de ser
+       tapado por um retângulo opaco. */
+    overflow: hidden;
+    /* A capa mede 3 colunas de 112 e o vão entre elas é o column-gap de 32
+       do tier Wide. A ALTURA nunca é escrita à mão: sai do ratio 3/4, então
+       existe uma medida só e a outra é consequência dela. */
+    --capa-w: 336px;
+    --capa-h: calc(var(--capa-w) * 4 / 3);
+    --capa-gap: 32px;
+}
+.ip-trilhas-faixas {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.ip-faixa {
+    position: relative;
+    height: var(--capa-h);
+}
+.ip-faixa .ip-capa {
+    position: absolute;
+    top: 0;
+    width: var(--capa-w);
+    aspect-ratio: 3 / 4;
+    max-width: none;
+    pointer-events: none;
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform, filter, opacity;
+}
+
+/* ── course-card, versão vitrine ────────────────────────────────────
+   O componente do projeto (ed/formacoes) enxugado ao que esta página
+   pede: capa e título, nada mais. Sem tags, sem descrição, sem a seta de
+   arrow_insert e sem nenhum gancho de clique, porque aqui o card não abre
+   modal nenhum, ele é vitrine.
+   Fica sem :hover pelo mesmo motivo: nada aqui responde a ponteiro. ── */
+.course-card {
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.course-card-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background: center / cover no-repeat;
+}
+/* Degradê que torna o título legível sobre a imagem. É função, não
+   enfeite: sem ele o título some nas capas claras. */
+.course-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--bb), transparent 100%);
+}
+.course-card-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+}
+.course-card-text {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ── Formação de origem, acima do título ────────────────────────────
+   Ícone dentro de uma caixa mais a tag com o nome curto, os dois na cor
+   da formação.
+
+   As cores NÃO são inventadas nem tiradas do root.css: as sete são as
+   canônicas do projeto, definidas em ed/formacoes/index.js (accentColors)
+   e repetidas em ed/formacoes/style.css. Ficam aqui como tripla r,g,b
+   numa variável por modificador, pra que a caixa (10%) e a tag (25% de
+   fundo com o texto cheio) saiam de um valor só e nas mesmas proporções
+   que o resto do projeto usa. ── */
+.ip-capa--f1 { --ip-f: 225, 150,  50; }
+.ip-capa--f2 { --ip-f: 225, 100,  50; }
+.ip-capa--f3 { --ip-f:  50, 200, 150; }
+.ip-capa--f4 { --ip-f:  50, 200, 200; }
+.ip-capa--f5 { --ip-f: 100, 200,  50; }
+.ip-capa--f6 { --ip-f:  50, 100, 255; }
+.ip-capa--f7 { --ip-f: 225,  50,  50; }
+
+.ip-capa-formacao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.ip-capa-icone {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background: rgba(var(--ip-f), 0.10);
+}
+.ip-capa-icone img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+.ip-capa-tag {
+    min-width: 0;
+    background-color: rgba(var(--ip-f), 0.25);
+    color: rgb(var(--ip-f));
+    /* o nome da formação não quebra em duas linhas dentro do card */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.course-card-title {
+    font: var(--label-l);
+    color: var(--bw);
+    margin: 0;
+}
+/* O parágrafo agora é item do .ip-timeline-wrap, ancorado nas PRIMEIRAS
+   colunas: 4 de 10 no tier Wide, que são os mesmos 544px de antes, só que
+   encostados na margem em vez de centrados. */
+.ip-trilhas-texto {
+    grid-column: 1 / span 4;
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    font-size: clamp(1rem, 0.86rem + 0.42vw, 1.5rem);
+    line-height: 1.5;
+    color: var(--bw-75);
+}
+
+@media (max-width: 1439px) {
+    /* o texto segue nas 4 primeiras colunas, agora de 8 */
+    .ip-trilhas-texto { grid-column: 1 / span 4; }
+}
+@media (max-width: 864px) {
+    .ip-trilhas {
+        padding: 128px 0 96px;
+        /* 2 colunas de 112; a altura acompanha pelo ratio */
+        --capa-w: 224px;
+    }
+    .course-card { padding: 16px; }
+    .course-card-title { font: var(--label-s); }
+    .course-card-text { gap: 8px; }
+    /* a caixa do ícone encolhe junto com a capa (224px em vez de 336) */
+    .ip-capa-icone { width: 32px; height: 32px; border-radius: 8px; }
+    .ip-capa-icone img { width: 20px; height: 20px; }
+    .ip-trilhas-faixas { gap: 24px; }
+    .ip-trilhas-texto { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .ip-trilhas { padding: 96px 0 72px; }
+    .ip-trilhas-faixas { gap: 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FECHAMENTO
+
+   Duas coisas que a origem faz aqui e que é fácil ler errado:
+
+   1. O BRILHO do rodapé (.bg-imagine na origem) não pertence à seção do
+      "Imagine", apesar do nome: ele é o último widget do container que
+      embrulha a página inteira, com bottom: 0. Ou seja, é a luz do FIM
+      da página, e é ela que fica atrás deste card.
+
+   2. Por causa dessa luz, o card é CLARO, não escuro: um degradê de
+      branco translúcido com backdrop-filter, texto escuro por cima, a
+      placa inclinada em perspectiva e o símbolo do infinito atravessando
+      a borda de baixo.
+
+   Tradução pro DS: o degradê da origem é #F5F5FF a 75% -> 55%, e 55% não
+   existe na escala de opacidade do projeto (5/10/15/25/50/75); virou
+   --bw-75 -> --bw-50. O título da origem tinha um degradê de texto de
+   #00000a (que é o --bb) até #4b4bff (que não é token nenhum); aqui vale
+   o padrão do DS pra cabeçalho em fundo claro, o mesmo de .sec-courses
+   em /ed/formacoes/: eyebrow --pc500, título --bb, lede --bb-75, com a
+   máscara de degradê do .sec-title fazendo o esmaecimento.
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-final {
+    position: relative;
+    overflow: hidden;
+    /* SEM `isolation: isolate` de propósito. O isolamento faria desta
+       seção um contexto de empilhamento próprio, e aí o brilho não
+       conseguiria descer atrás da .ip-trilhas: nenhum filho escapa de um
+       contexto isolado. Sem ele, o z-index -1 do brilho vale na pilha da
+       página e o põe abaixo da seção das trilhas (que está em 0). */
+    /* sem fundo próprio: o preto vem do body e um fundo opaco aqui
+       taparia o brilho, que é filho desta seção */
+    padding: 96px 0 224px;
+}
+/* Luz do rodapé da página, atrás do card. */
+.ip-final-brilho {
+    position: absolute;
+    /* atrás da .ip-trilhas (z-index 0): onde a caixa das trilhas cobre,
+       o fundo opaco delas esconde o brilho; abaixo dela, ele aparece */
+    z-index: -1;
+    /* Preenche a seção inteira, em qualquer viewport: 100% de largura e
+       de altura da .ip-final, com a arte em `cover`. Antes era medida em
+       vw (100vw x 56.25vw, dobrando pra 200vw abaixo de 864), o que
+       amarrava a altura do brilho à LARGURA da tela e não ao bloco que
+       ele acende. Com 100%/100% ele acompanha a seção, e o `cover` cuida
+       de cobrir sem distorcer. Por isso o override de 864 saiu. */
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/ed/infinite-pass/dependencias/ip_imagine-bg.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+    pointer-events: none;
+    /* Estado inicial da subida: o script.js leva daqui até 0.5 conforme a
+       seção entra. Sem esta linha o brilho nasceria opaco e piscaria em
+       cheio antes do primeiro frame da animação. */
+    opacity: 0;
+}
+.ip-final-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+/* 4 colunas centradas no grid de 10: 4x112 + 3x32 = 544px. */
+.ip-final-card {
+    grid-column: 4 / span 4;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 96px 96px 128px;
+    border-radius: 32px;
+    background-image: linear-gradient(180deg, var(--bw-75) 0%, var(--bw-50) 100%);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 96px 0 var(--bb-50);
+}
+/* Nem `filter: blur(8px)` nem `transform: perspective(256px) rotateX(30deg)`,
+   que a origem declara neste mesmo elemento: as duas são declarações mortas
+   lá. Medido na página viva, em 1440x900: a placa tem 832px de largura em
+   TODA linha (sem foreshortening nenhum) e a borda esquerda é um degrau de
+   um pixel (luminância 4 -> 161), não uma rampa de 8px. O que a origem
+   entrega é um retângulo claro e nítido, e é isso que vale. */
+/* A chegada do card (desfoque + placa deitada endireitando) é DIRIGIDA
+   PELO SCROLL e vive inteira no script.js, que reescreve transform e
+   filter a cada frame. Aqui não entra `transition`: ela só atrasaria um
+   valor que já acompanha o scroll. E o estado inicial também não fica no
+   CSS, pra que a página sem JS mostre o card pronto em vez de um borrão
+   permanente. */
+.ip-final-card::before,
+.ip-final-card::after {
+    content: "";
+    position: absolute;
+    left: 32px;
+    width: calc(100% - 64px);
+    height: 4px;
+}
+.ip-final-card::before {
+    top: 0;
+    background-image: linear-gradient(90deg,
+        transparent, var(--bw), var(--bw), transparent);
+}
+.ip-final-card::after {
+    bottom: 0;
+    background-image: linear-gradient(90deg,
+        transparent, var(--bw-25), var(--bw-25), transparent);
+}
+/* Cabeçalho em fundo claro: mesma inversão de cor que /ed/formacoes/ usa
+   nas seções claras. A máscara do .sec-title continua valendo, porque ela
+   esmaece por opacidade e não depende da cor do texto. */
+.ip-final-card .sec-title { color: var(--bb); }
+.ip-final-card .sec-lede  { color: var(--bb-75); }
+/* O título do fechamento não usa a máscara do .sec-title: ele é pintado
+   por um degradê de texto que vai do --bb ao --pc500, o mesmo gesto da
+   origem (que ia de #00000a, exatamente o --bb, até um azul). Corpo h4 e
+   peso 700 no título inteiro, sem trecho destacado.
+
+   O `padding: 64px` com `margin: -64px` herdado do .sec-title fica (regra
+   do projeto: não zerar). Ele espalha o degradê 64px pra cada lado do
+   texto, o que só suaviza a chegada no --pc500. */
+.ip-final-titulo {
+    max-width: 24ch;
+    font: var(--h4);
+    font-weight: 700;
+    -webkit-mask-image: none;
+    mask-image: none;
+    background-image: linear-gradient(90deg, var(--bb), var(--pc500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.ip-final-infinito {
+    position: absolute;
+    left: 50%;
+    bottom: -72px;
+    width: 144px;
+    height: auto;
+    transform: translateX(-50%);
+    opacity: 0.8;
+    pointer-events: none;
+    animation: ip-infinito-gira 10.4s ease-in-out infinite;
+}
+/* Gira 90 graus, para 2s, gira mais 90, para 2s, sem fim.
+
+   O ciclo é uma volta inteira: 4 quartos de 2,6s cada, e dentro de cada
+   quarto o giro leva 0,6s (5,77% do ciclo) e a pausa leva 2s (19,23%).
+   Por isso os pares de porcentagem: o segundo de cada par repete o valor
+   do primeiro, e é essa repetição que segura a peça parada.
+
+   O translateX(-50%) tem que aparecer em TODO quadro: ele é o que centra
+   o símbolo, e uma keyframe que só declarasse o rotate jogaria a peça
+   meia largura pra direita durante a animação. */
+@keyframes ip-infinito-gira {
+    0%,      19.23% { transform: translateX(-50%) rotate(0deg); }
+    25%,     44.23% { transform: translateX(-50%) rotate(90deg); }
+    50%,     69.23% { transform: translateX(-50%) rotate(180deg); }
+    75%,     94.23% { transform: translateX(-50%) rotate(270deg); }
+    100%            { transform: translateX(-50%) rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-final-infinito { animation: none; }
+}
+
+@media (max-width: 1439px) {
+    .ip-final-inner { grid-template-columns: repeat(8, 1fr); }
+    /* 4 centradas no grid de 8 */
+    .ip-final-card { grid-column: 3 / span 4; }
+}
+@media (max-width: 864px) {
+    .ip-final { padding: 64px 0 176px; }
+    .ip-final-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+    }
+    .ip-final-card {
+        grid-column: 1 / -1;
+        padding: 96px 64px 128px;
+    }
+}
+@media (max-width: 576px) {
+    .ip-final { padding-bottom: 144px; }
+    .ip-final-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+    .ip-final-card { padding: 96px 32px 128px; }
+    .ip-final-infinito { width: 96px; bottom: -48px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BARRA DE CTA FIXA
+   Portada do .bottom-cta de /ed/pre-vitalicio/. A regra de quando ela
+   aparece é própria desta página e vive no script.js.
+   ══════════════════════════════════════════════════════════════════════ */
+.bottom-cta {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 12px;
+    box-sizing: border-box;
+    /* sem fundo: quem dá corpo à barra são as quatro camadas de
+       backdrop-filter escalonado (.bottom-cta-blur-*) */
+    z-index: 500;
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.bottom-cta.is-hidden { transform: translateY(100%); opacity: 0; }
+.bottom-cta .bottom-cta-blur { position: absolute; inset: 0; pointer-events: none; }
+.bottom-cta-blur-2  { -webkit-backdrop-filter: blur(2px);  backdrop-filter: blur(2px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 100%); mask: linear-gradient(to top, #000 0%, transparent 100%); }
+.bottom-cta-blur-4  { -webkit-backdrop-filter: blur(4px);  backdrop-filter: blur(4px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 66%);  mask: linear-gradient(to top, #000 0%, transparent 66%); }
+.bottom-cta-blur-8  { -webkit-backdrop-filter: blur(8px);  backdrop-filter: blur(8px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 42%);  mask: linear-gradient(to top, #000 0%, transparent 42%); }
+.bottom-cta-blur-16 { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); -webkit-mask: linear-gradient(to top, #000 0%, transparent 22%);  mask: linear-gradient(to top, #000 0%, transparent 22%); }
+.bottom-cta .bottom-cta-btn {
+    position: relative;
+    z-index: 1;
+    width: auto;
+    align-self: flex-end;
+    pointer-events: auto;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BRILHO GIRANDO DOS BOTÕES DE CTA
+
+   Da origem: dois discos com a mesma arte (ip_shiny.webp) sobre o canto
+   superior esquerdo do botão, girando em sentidos opostos, um nítido e um
+   que pulsa de desfoque. Parados giram em 10s; no hover aceleram pra 2s.
+
+   Aqui o gesto é o mesmo, mas pendurado numa classe própria em vez de
+   reescrever o .btn do DS: o botão continua sendo o componente do sistema
+   e só ganha a decoração por cima.
+
+   Eu tinha APAGADO o ip_shiny.webp na primeira entrega, no passe de
+   "remover asset órfão", sem notar que ele era o único uso dessa animação.
+   ══════════════════════════════════════════════════════════════════════ */
+.ip-btn-brilho { position: relative; }
+.ip-btn-brilho::before,
+.ip-btn-brilho::after {
+    content: "";
+    position: absolute;
+    top: -60px;
+    left: -60px;
+    width: 128px;
+    height: 128px;
+    background-image: url('/ed/infinite-pass/dependencias/ip_shiny.webp');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+.ip-btn-brilho::after  { animation: ip-giroleta 10s linear infinite; }
+.ip-btn-brilho::before { animation: ip-giroleta-borrada 10s linear infinite; }
+.ip-btn-brilho:hover::after,
+.ip-btn-brilho:hover::before { animation-duration: 2s; }
+
+@keyframes ip-giroleta {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes ip-giroleta-borrada {
+    0%   { transform: rotate(360deg); filter: blur(16px); }
+    50%  { transform: rotate(180deg); filter: blur(0px); }
+    100% { transform: rotate(0deg);   filter: blur(16px); }
+}
+
+/* Regra do projeto: nada de blur ANIMADO abaixo de 864. Some o disco que
+   pulsa desfoque e fica só a giroleta nítida, que já entrega o gesto. */
+@media (max-width: 864px) {
+    .ip-btn-brilho::before { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-btn-brilho::before { display: none; }
+    .ip-btn-brilho::after  { animation: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TIMELINE DAS 7 FORMAÇÕES
+   Portada do .formacoes-timeline de /ed/ (home) e de ed/site-dependencias/
+   home.css. Duas adaptações:
+
+   1. Na home as linhas são montadas por JS (home.js quebra os itens em
+      .formacoes-row e injeta uma .formacoes-line de 100vw por linha). Aqui
+      é grid puro, e o fio vem de um ::before em cada item, esticado 16px
+      pra cada lado, que é metade do gap de 32: os pedaços se encontram no
+      vão e o fio fica contínuo ao longo da linha, sem elemento nenhum a
+      mais e sem depender de JS.
+
+   2. As colunas caem nos NOSSOS tiers (1440/864/576) em vez dos 1152/864/
+      576 da home, mantendo a mesma progressão 4 -> 3 -> 2 -> 1.
+   ══════════════════════════════════════════════════════════════════════ */
+/* Um container só pro parágrafo de fechamento das trilhas E pra timeline:
+   é o grid Wide do DS, com o texto nas primeiras colunas e a timeline
+   ocupando a linha inteira logo abaixo. */
+.ip-timeline-wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 96px 16px 0;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 96px;
+}
+.formacoes-timeline {
+    grid-column: 1 / -1;
+    /* âncora das linhas e dos sweeps, que são absolutos: sem isto eles
+       cairiam na .ip-trilhas e o offsetTop dos itens deixaria de bater
+       com o top que o script escreve neles */
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 64px 32px;
+}
+.formacoes-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.formacoes-dot {
+    width: 16px;
+    height: 4px;
+    background: var(--dot-color, var(--bw-50));
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+}
+.formacoes-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+.formacoes-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+.formacoes-info {
+    display: flex;
+    flex-direction: column;
+}
+.formacoes-num {
+    font: var(--label-s);
+    color: var(--bw-75);
+    margin: 0;
+}
+.formacoes-name {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+.formacoes-outcome {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+@media (max-width: 1439px) {
+    .ip-timeline-wrap { grid-template-columns: repeat(8, 1fr); }
+    .formacoes-timeline { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 864px) {
+    .ip-timeline-wrap {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 64px;
+        padding-top: 72px;
+    }
+    .formacoes-timeline { grid-template-columns: repeat(2, 1fr); gap: 48px 24px; }
+}
+@media (max-width: 576px) {
+    .ip-timeline-wrap {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+        row-gap: 48px;
+        padding-top: 56px;
+    }
+    /* Uma coluna: o fio deixa de ser horizontal por linha e vira o trilho
+       vertical à esquerda, com o traço do ponto girado, igual à home. */
+    .formacoes-timeline { grid-template-columns: 1fr; gap: 32px; }
+    .formacoes-item {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    /* Trilho vertical do mobile, no lugar das linhas horizontais.
+
+       É UM trilho na timeline inteira, não um pedaço por item: assim ele
+       é contínuo entre os itens e, principalmente, pode ESMAECER no fim,
+       que é o que a home faz (sólido até 70% da altura e transparente no
+       resto). Portado por item, como eu tinha feito, o degradê teria que
+       recomeçar em cada card e o fio terminava seco no último. */
+    .formacoes-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 1px;
+        width: 2px;
+        background: linear-gradient(to bottom,
+            var(--bw-10) 0%, var(--bw-10) 70%, transparent 100%);
+        pointer-events: none;
+        z-index: 0;
+    }
+    .formacoes-dot {
+        width: 4px;
+        height: 16px;
+        margin-bottom: 0;
+        z-index: 2;
+    }
+    .formacoes-body {
+        flex: 1;
+        min-width: 0;
+        padding-left: 16px;
+    }
+}
+
+/* ── Linha e sweep da timeline ──────────────────────────────────────
+   Portados do .formacoes-line / .formacoes-sweep da home. A linha é
+   `width: 100vw` de propósito: ela SANGRA a viewport inteira, não para
+   nas bordas do container de 1440. É por isso que o preenchedor que eu
+   tinha inventado pra fechar a última fileira deixou de existir: com
+   100vw a linha cobre a fileira toda mesmo quando ela tem menos itens
+   que colunas.
+
+   Os dois elementos são criados pelo script.js, um par por fileira, que
+   é onde ele descobre as fileiras agrupando os itens por offsetTop. ── */
+.formacoes-linha {
+    position: absolute;
+    left: 50%;
+    width: 100vw;
+    height: 2px;
+    background: var(--bw-10);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+}
+.formacoes-sweep {
+    position: absolute;
+    left: 50%;
+    margin-left: -50vw;
+    width: 128px;
+    height: 2px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+}
+/* o trilho vertical do mobile, que segue o scroll */
+.formacoes-sweep--v {
+    /* top explícito: o sweep horizontal recebe um `top` inline do script,
+       o vertical não recebia nenhum e caía em `auto`, o que o jogava pra
+       depois do último item do grid em vez do topo da timeline. */
+    top: 0;
+    left: 0;
+    margin-left: 0;
+    width: 4px;
+    height: 128px;
+    z-index: 1;
+    transition: opacity 0.4s ease;
+}
+
+/* Ping do ponto quando o sweep passa por ele. */
+.formacoes-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background-color: var(--dot-color, var(--bw-50));
+    transform: scale(1);
+    pointer-events: none;
+}
+@keyframes ip-sonar {
+    0%   { opacity: 1; transform: scale(1); filter: blur(0); }
+    100% { opacity: 0; transform: scale(4); filter: blur(8px); }
+}
+.formacoes-dot.is-pinging::after { animation: ip-sonar 0.8s ease-out forwards; }
+
+/* Regra do projeto: sem blur ANIMADO abaixo de 864. A keyframe é
+   redefinida sem o blur, e o ping continua acontecendo por escala e
+   opacidade. */
+@media (max-width: 864px) {
+    @keyframes ip-sonar {
+        0%   { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(4); }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .formacoes-sweep { display: none; }
+    .formacoes-dot.is-pinging::after { animation: none; }
+}

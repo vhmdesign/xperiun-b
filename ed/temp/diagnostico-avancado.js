@@ -380,6 +380,7 @@
    Estes blocos nascem em opacity 0 e só acendem com .is-entered, pelo CSS:
    - .erro-card, que entra inteiro pela keyframe dg-erro-entra;
    - .pilares-header, cujos parágrafos entram escalonados;
+   - o .auto-cta da .sec-auto, o bloco inteiro do fecho;
    - os .case-card e a .depos-logos-section da .sec-cases, que vieram do
      /cp/data-squads/ com esse estado inicial. Lá quem os acendia era um par de
      helpers (stagger/bloco) daquele arquivo; aqui entram neste observer, que já faz
@@ -400,7 +401,7 @@
    unobserve depois de acender porque a entrada é uma vez só, não um vai e volta. */
 (function () {
     var alvos = Array.prototype.slice.call(
-        document.querySelectorAll('.erro-card, .pilares-header, .sec-cases .case-card, .sec-cases .depos-logos-section')
+        document.querySelectorAll('.erro-card, .pilares-header, .sec-cases .case-card, .sec-cases .depos-logos-section, .sec-auto .auto-cta')
     );
     if (!alvos.length) return;
     if (!window.IntersectionObserver) {
@@ -1085,3 +1086,32 @@
     setInterval(tick, 700);
 })();
 
+/* ── 14) player flutuante ───────────────────────────────
+   Só o liga-desliga de uma classe nos dois elementos; quem anima é o CSS. O iframe não
+   é tocado em momento nenhum, e é isso que mantém o vídeo tocando de um estado pro
+   outro: qualquer mexida no src ou na posição dele na árvore remontaria o player.
+
+   O véu nasce com [hidden] no HTML pra não existir pra ninguém antes de o JS rodar, e é
+   o próprio JS que o libera. Se o script falhar, a página fica sem véu em vez de ficar
+   com uma camada escura travada por cima de tudo. */
+(function () {
+    var pip = document.querySelector('.dg-pip');
+    var fundo = document.querySelector('.dg-pip-fundo');
+    if (!pip || !fundo) return;
+
+    var abrir = pip.querySelector('.dg-pip-abrir');
+    var fechar = pip.querySelector('.dg-pip-fechar');
+    fundo.hidden = false;
+
+    function troca(aberto) {
+        pip.classList.toggle('is-aberto', aberto);
+        fundo.classList.toggle('is-aberto', aberto);
+    }
+
+    if (abrir) abrir.addEventListener('click', function () { troca(true); });
+    if (fechar) fechar.addEventListener('click', function () { troca(false); });
+    fundo.addEventListener('click', function () { troca(false); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && pip.classList.contains('is-aberto')) troca(false);
+    });
+})();

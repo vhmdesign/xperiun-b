@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!-- Estudo da ilustração do hero: Diagnóstico de Dados e BI
+     Ambiente vazio. Marcação aqui no body, estilo no style.css desta pasta.
+
+     As coordenadas vêm do .md de especificação, sem arredondamento: canvas de
+     1600 por 900, origem no canto superior esquerdo, cada bloco com --x/--y/--w/--h
+     no style inline. O canvas inteiro escala pela fórmula da spec
+     (escala = largura / 1600), então o desenho acompanha a largura sem que nenhum
+     número precise ser recalculado. -->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo do hero, Diagnóstico de Dados e BI</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/hero/style.css?v=2">
+</head>
+<body>
+    <div class="hi-palco">
+        <div class="hi-canvas" aria-hidden="true">
+            <div class="hi-container" style="--x: 40; --y: 40; --w: 1520; --h: 820"></div>
+            <div class="hi-mapa" style="--x: 72; --y: 72; --w: 1090; --h: 730"></div>
+        <svg class="hi-conn" viewBox="0 0 1600 900" aria-hidden="true">
+            <!-- 11 ligações, com as coordenadas exatas das seções 9 a 13.
+                 Bézier com as duas alças no meio-x do vão: sai e chega
+                 perpendicular à borda, como nas outras ilustrações. O disco de
+                 3 marca a chegada, no lugar da seta. -->
+            <path d="M255 174 C292.5 174, 292.5 187, 330 187" />
+            <path d="M255 249 C292.5 249, 292.5 302, 330 302" />
+            <path d="M255 324 C292.5 324, 292.5 437, 330 437" />
+            <path d="M255 406 C292.5 406, 292.5 302, 330 302" />
+            <path d="M255 489 C292.5 489, 292.5 537, 330 537" />
+            <path d="M394 187 C432 187, 432 250, 470 250" />
+            <path d="M394 302 C432 302, 432 320, 470 320" />
+            <path d="M394 437 C432 437, 432 390, 470 390" />
+            <path d="M394 537 C432 537, 432 440, 470 440" />
+            <path d="M705 330 C720 330, 720 330, 735 330" />
+            <path d="M915 330 C930 330, 930 330, 945 330" />
+            <path d="M1095 330 C1107.5 330, 1107.5 330, 1120 330" />
+            <circle cx="330" cy="187" r="3" />
+            <circle cx="330" cy="302" r="3" />
+            <circle cx="330" cy="437" r="3" />
+            <circle cx="330" cy="302" r="3" />
+            <circle cx="330" cy="537" r="3" />
+            <circle cx="470" cy="250" r="3" />
+            <circle cx="470" cy="320" r="3" />
+            <circle cx="470" cy="390" r="3" />
+            <circle cx="470" cy="440" r="3" />
+            <circle cx="735" cy="330" r="3" />
+            <circle cx="945" cy="330" r="3" />
+            <circle cx="1120" cy="330" r="3" />
+        </svg>
+        <!-- ═══ 3. FONTES DE DADOS ═══ -->
+        <div class="hi-titulo" style="--x: 90; --y: 95; --w: 170; --h: 24">Fontes de dados</div>
+        <div class="hi-card hi-fonte" style="--x: 90; --y: 145; --w: 165; --h: 58"><span class="material-symbols-outlined" style="--tam: 24">storage</span><span class="hi-card-nome">ERP</span></div>
+        <div class="hi-card hi-fonte" style="--x: 90; --y: 220; --w: 165; --h: 58"><span class="material-symbols-outlined" style="--tam: 24">group</span><span class="hi-card-nome">CRM</span></div>
+        <div class="hi-card hi-fonte" style="--x: 90; --y: 295; --w: 165; --h: 58"><span class="material-symbols-outlined" style="--tam: 24">api</span><span class="hi-card-nome">APIs</span></div>
+        <div class="hi-card hi-fonte" style="--x: 90; --y: 370; --w: 165; --h: 72"><span class="material-symbols-outlined" style="--tam: 24">table_view</span><span class="hi-card-nome">Planilhas</span></div>
+        <div class="hi-card hi-fonte" style="--x: 90; --y: 460; --w: 165; --h: 58"><span class="material-symbols-outlined" style="--tam: 24">database</span><span class="hi-card-nome">Banco Operacional</span></div>
+        <div class="hi-badge hi-badge--wr" style="--x: 225; --y: 380; --w: 18; --h: 18"><span class="material-symbols-outlined" style="--tam: 12">warning</span></div>
+        <div class="hi-legenda" style="--x: 124; --y: 416; --w: 110; --h: 16">Sem dono definido</div>
+
+        <!-- ═══ 4. INTEGRAÇÕES ═══ -->
+        <div class="hi-titulo" style="--x: 300; --y: 95; --w: 145; --h: 24">Integrações</div>
+        <div class="hi-no" style="--x: 330; --y: 155; --w: 64; --h: 64"><span class="material-symbols-outlined" style="--tam: 28">hub</span></div>
+        <div class="hi-no hi-no--wr" style="--x: 330; --y: 270; --w: 64; --h: 64"><span class="material-symbols-outlined" style="--tam: 28">cable</span></div>
+        <div class="hi-no" style="--x: 330; --y: 405; --w: 64; --h: 64"><span class="material-symbols-outlined" style="--tam: 28">code</span></div>
+        <div class="hi-no hi-no--er" style="--x: 330; --y: 505; --w: 64; --h: 64"><span class="material-symbols-outlined" style="--tam: 28">link</span></div>
+        <div class="hi-badge hi-badge--ok" style="--x: 384; --y: 166; --w: 18; --h: 18"><span class="material-symbols-outlined" style="--tam: 12">check</span></div>
+        <div class="hi-badge hi-badge--wr" style="--x: 380; --y: 286; --w: 20; --h: 20"><span class="material-symbols-outlined" style="--tam: 13">warning</span></div>
+        <div class="hi-legenda" style="--x: 305; --y: 345; --w: 115; --h: 34">Gargalo na carga noturna</div>
+        <div class="hi-badge hi-badge--er" style="--x: 382; --y: 514; --w: 18; --h: 18"><span class="material-symbols-outlined" style="--tam: 12">error</span></div>
+        <div class="hi-legenda" style="--x: 307; --y: 578; --w: 120; --h: 20">Conexão instável</div>
+
+        <!-- ═══ 5. PLATAFORMA DE DADOS ═══ -->
+        <div class="hi-titulo" style="--x: 470; --y: 95; --w: 235; --h: 24">Plataforma de dados</div>
+        <div class="hi-sub" style="--x: 470; --y: 120; --w: 235; --h: 18">Camada central do ambiente</div>
+        <div class="hi-card" style="--x: 470; --y: 175; --w: 235; --h: 310"></div>
+        <div class="hi-ico-grande" style="--x: 545; --y: 225; --w: 85; --h: 85"><span class="material-symbols-outlined" style="--tam: 72">database</span></div>
+        <div class="hi-label" style="--x: 505; --y: 330; --w: 165; --h: 28">Data Warehouse</div>
+        <div class="hi-sub hi-sub--centro" style="--x: 505; --y: 365; --w: 165; --h: 20">Modelagem em estrela</div>
+        <div class="hi-metrica" style="--x: 505; --y: 410; --w: 165; --h: 18"><span>Tabelas</span><span class="hi-barra"></span></div>
+        <div class="hi-metrica" style="--x: 505; --y: 438; --w: 165; --h: 18"><span>Cargas</span><span class="hi-barra hi-barra--curta"></span></div>
+        <div class="hi-status hi-status--ok" style="--x: 640; --y: 458; --w: 42; --h: 20">OK</div>
+
+        <!-- ═══ 6. GOVERNANÇA ═══ -->
+        <div class="hi-titulo" style="--x: 735; --y: 95; --w: 180; --h: 24">Governança</div>
+        <div class="hi-sub" style="--x: 735; --y: 120; --w: 180; --h: 18">Regras e responsáveis</div>
+        <div class="hi-card" style="--x: 735; --y: 175; --w: 180; --h: 310"></div>
+        <div class="hi-linha" style="--x: 755; --y: 205; --w: 140; --h: 56"><span class="material-symbols-outlined" style="--tam: 24">verified</span><span>Qualidade</span></div>
+        <div class="hi-linha" style="--x: 755; --y: 275; --w: 140; --h: 56"><span class="material-symbols-outlined" style="--tam: 24">lock</span><span>Segurança</span></div>
+        <div class="hi-linha" style="--x: 755; --y: 345; --w: 140; --h: 84"><span class="material-symbols-outlined" style="--tam: 24">schema</span><span>Metadados</span></div>
+        <div class="hi-badge hi-badge--wr" style="--x: 870; --y: 356; --w: 18; --h: 18"><span class="material-symbols-outlined" style="--tam: 12">warning</span></div>
+        <div class="hi-legenda" style="--x: 778; --y: 402; --w: 110; --h: 32">Documentação incompleta</div>
+
+        <!-- ═══ 7. BI & RELATÓRIOS ═══ -->
+        <div class="hi-titulo" style="--x: 945; --y: 95; --w: 150; --h: 24">BI e relatórios</div>
+        <div class="hi-sub" style="--x: 945; --y: 120; --w: 150; --h: 18">Consumo do negócio</div>
+        <div class="hi-card hi-grafico" style="--x: 945; --y: 175; --w: 150; --h: 82"><div class="hi-graf hi-graf--barras"><span style="--alt: 40"></span><span style="--alt: 66"></span><span style="--alt: 52"></span><span style="--alt: 88"></span><span style="--alt: 70"></span><span style="--alt: 100"></span></div></div>
+        <div class="hi-card hi-grafico" style="--x: 945; --y: 270; --w: 150; --h: 82"><svg class="hi-graf hi-graf--linha" viewBox="0 0 118 46" preserveAspectRatio="none"><polyline points="2,38 25,30 48,34 71,18 94,22 116,8" /><circle cx="116" cy="8" r="4" /></svg></div>
+        <div class="hi-card hi-grafico hi-grafico--er" style="--x: 945; --y: 365; --w: 150; --h: 105"><svg class="hi-graf hi-graf--diverge" viewBox="0 0 118 46" preserveAspectRatio="none"><polyline class="hi-graf-esperado" points="2,30 25,26 48,28 71,22 94,20 116,16" /><polyline class="hi-graf-real" points="2,30 25,28 48,22 71,32 94,12 116,40" /><circle class="hi-graf-fim" cx="116" cy="40" r="4" /></svg></div>
+        <div class="hi-badge hi-badge--er" style="--x: 1065; --y: 378; --w: 18; --h: 18"><span class="material-symbols-outlined" style="--tam: 12">error</span></div>
+        <div class="hi-legenda" style="--x: 967; --y: 438; --w: 105; --h: 28">Números divergentes</div>
+
+        <!-- ═══ 8. IA ═══ -->
+        <div class="hi-titulo" style="--x: 1120; --y: 95; --w: 150; --h: 24">IA</div>
+        <div class="hi-sub" style="--x: 1120; --y: 120; --w: 150; --h: 18">Depende da base</div>
+        <div class="hi-card" style="--x: 1120; --y: 175; --w: 150; --h: 295"></div>
+        <div class="hi-rede" style="--x: 1155; --y: 235; --w: 80; --h: 100"><span class="material-symbols-outlined" style="--tam: 64">psychology</span></div>
+        <div class="hi-label hi-label--ia" style="--x: 1160; --y: 380; --w: 70; --h: 24">IA</div>
+        <div class="hi-sub hi-sub--centro" style="--x: 1142; --y: 418; --w: 105; --h: 18">Dados confiáveis</div>
+
+        <!-- ═══ 15. TIMELINE ═══ -->
+        <div class="hi-trilho" style="--x: 100; --y: 610; --w: 1150; --h: 2"></div>
+        <div class="hi-ponto" style="--x: 120; --y: 605; --w: 12; --h: 12"></div>
+        <div class="hi-etapa" style="--x: 90; --y: 635; --w: 90; --h: 18">Mapear</div>
+        <div class="hi-ponto" style="--x: 335; --y: 605; --w: 12; --h: 12"></div>
+        <div class="hi-etapa" style="--x: 300; --y: 635; --w: 100; --h: 18">Analisar</div>
+        <div class="hi-ponto" style="--x: 555; --y: 605; --w: 12; --h: 12"></div>
+        <div class="hi-etapa" style="--x: 520; --y: 635; --w: 90; --h: 18">Avaliar</div>
+        <div class="hi-ponto" style="--x: 790; --y: 605; --w: 12; --h: 12"></div>
+        <div class="hi-etapa" style="--x: 755; --y: 635; --w: 90; --h: 18">Validar</div>
+        <div class="hi-ponto" style="--x: 1000; --y: 605; --w: 12; --h: 12"></div>
+        <div class="hi-etapa" style="--x: 950; --y: 635; --w: 110; --h: 18">Priorizar</div>
+        <div class="hi-ponto" style="--x: 1210; --y: 605; --w: 12; --h: 12"></div>
+        <div class="hi-etapa" style="--x: 1170; --y: 635; --w: 95; --h: 18">Evoluir</div>
+
+        <!-- ═══ 16. STATUS DO DIAGNÓSTICO ═══ -->
+        <div class="hi-card hi-status-card" style="--x: 470; --y: 690; --w: 320; --h: 72"></div>
+        <div class="hi-status-ico" style="--x: 490; --y: 709; --w: 34; --h: 34"><span class="material-symbols-outlined" style="--tam: 28">search</span></div>
+        <div class="hi-label hi-label--status" style="--x: 540; --y: 700; --w: 210; --h: 22">Analisando ambiente</div>
+        <div class="hi-sub" style="--x: 540; --y: 727; --w: 220; --h: 18">Varredura de ponta a ponta</div>
+
+        <!-- ═══ 17 a 22. PLANO DE AÇÃO ═══ -->
+        <div class="hi-painel" style="--x: 1290; --y: 72; --w: 238; --h: 730"></div>
+        <div class="hi-label hi-label--painel" style="--x: 1310; --y: 98; --w: 198; --h: 28">Plano de ação</div>
+        <div class="hi-card" style="--x: 1310; --y: 150; --w: 198; --h: 120"></div>
+        <div class="hi-num" style="--x: 1325; --y: 168; --w: 32; --h: 32">01</div>
+        <div class="hi-tag hi-tag--er" style="--x: 1370; --y: 168; --w: 70; --h: 22">Crítico</div>
+        <div class="hi-label hi-label--item" style="--x: 1370; --y: 202; --w: 120; --h: 22">Crítico</div>
+        <div class="hi-sub" style="--x: 1370; --y: 230; --w: 120; --h: 18">Qualidade e integração</div>
+        <div class="hi-card" style="--x: 1310; --y: 285; --w: 198; --h: 120"></div>
+        <div class="hi-num" style="--x: 1325; --y: 303; --w: 32; --h: 32">02</div>
+        <div class="hi-tag hi-tag--wr" style="--x: 1370; --y: 303; --w: 70; --h: 22">Alto impacto</div>
+        <div class="hi-label hi-label--item" style="--x: 1370; --y: 337; --w: 120; --h: 22">Alto impacto</div>
+        <div class="hi-sub" style="--x: 1370; --y: 365; --w: 120; --h: 18">Modelagem e padrões</div>
+        <div class="hi-card" style="--x: 1310; --y: 420; --w: 198; --h: 120"></div>
+        <div class="hi-num" style="--x: 1325; --y: 438; --w: 32; --h: 32">03</div>
+        <div class="hi-tag hi-tag--wr" style="--x: 1370; --y: 438; --w: 70; --h: 22">Estrutural</div>
+        <div class="hi-label hi-label--item" style="--x: 1370; --y: 472; --w: 120; --h: 22">Estrutural</div>
+        <div class="hi-sub" style="--x: 1370; --y: 500; --w: 120; --h: 18">Governança e metadados</div>
+        <div class="hi-card" style="--x: 1310; --y: 555; --w: 198; --h: 120"></div>
+        <div class="hi-num" style="--x: 1325; --y: 573; --w: 32; --h: 32">04</div>
+        <div class="hi-tag hi-tag--ok" style="--x: 1370; --y: 573; --w: 70; --h: 22">Evolução</div>
+        <div class="hi-label hi-label--item" style="--x: 1370; --y: 607; --w: 120; --h: 22">Evolução</div>
+        <div class="hi-sub" style="--x: 1370; --y: 635; --w: 120; --h: 18">Monitoramento contínuo</div>
+        <div class="hi-card hi-outcome" style="--x: 1310; --y: 690; --w: 198; --h: 82"><span class="hi-outcome-rot">Outcome</span><span class="hi-outcome-txt">Base de dados confiável para BI e IA</span></div>
+
+        <!-- ═══ 14. SCANNER ═══ -->
+        <div class="hi-scanner" aria-hidden="true">
+            <span class="hi-scanner-faixa"></span>
+            <span class="hi-scanner-linha"></span>
+        </div>
+        </div>
+    </div>
+</body>
+</html>

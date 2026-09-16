@@ -1,14 +1,197 @@
 /* Ilustração 3: Riscos e impactos mapeados
-   Card --3, span 4 de 10, 544px no tier base.
 
-   Vazio de propósito. Regras do desenho vão aqui.
+   Matriz de risco em 4 quadrantes, com a legenda ao lado dentro de uma peça do
+   mesmo estilo das outras ilustrações. A matriz fica solta: só a legenda mora na
+   peça. Sem rótulo de eixo e sem faixa.
 
-   Lembretes do projeto, pra não precisar refazer depois:
-   · traço mínimo 2px, nunca 1px, e borda por box-shadow inset e não por border;
-   · cor sempre por token do root.css, nunca hex solto;
-   · transition e animation só com keyword (ease, ease-out), sem cubic-bezier;
-   · nenhuma animação com filter blur abaixo de 864px;
-   · ícone só do subset do Material Symbols (conferir o BASE do dl-symbols.cjs) e
-     com font-variation-settings "wght" 200;
-   · posição que precisa acompanhar largura vai em porcentagem, não em px medido.
+   A linha carrega as medidas (largura do container por 384 de altura) e a matriz
+   preenche as duas. A peça da legenda fica fora do fluxo, pendurada na base da matriz (bottom -32,
+   encostada à direita), e mede o conteúdo mais os 16 de padding de cada lado.
+*/
+
+/* Mesma peça das outras ilustrações: raio 16, padding 16, gradiente 132deg de bw-15
+   a bw-5. Sem largura declarada, ao contrário do teto de 192 que a peça tem nas
+   outras: aqui ela envolve só a legenda e mede o conteúdo.
+
+   Pendurada na base da matriz, com o fundo 32 abaixo dela e 32 da borda direita. Fora
+   do fluxo de propósito: assim a matriz recebe a largura toda da linha, e a peça
+   passa a se posicionar pela borda da matriz em vez de dividir espaço com ela.
+   O bottom negativo faz a peça atravessar a base: parte dela fica sobre o quadrante
+   de baixo à direita e parte escapa pra fora, que é o que dá o encaixe. */
+.il-card {
+    position: absolute;
+    right: 32px;
+    bottom: 0;
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    /* O fundo da peça é translúcido (bw-15 a bw-5), então o quadrante por baixo
+       aparecia através dela e competia com o texto da legenda. O blur do backdrop
+       resolve sem precisar de fundo opaco, que quebraria a família das outras peças.
+       Estático de verdade: nada se move por baixo dele nesta ilustração, então não é
+       recalculado por frame e não cai na regra de blur animado. Com o prefixo
+       -webkit-, como os outros backdrop-filter do projeto. */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Matriz e peça da legenda lado a lado, centradas na altura e na página.
+   A largura de 544 é a que a ilustração vai ter no card: o .mk-card--3 ocupa span 4
+   do grid Wide (4 x 112 + 3 x 32). Sem esse teto, o 100% da matriz cresceria até a
+   viewport, porque nada mais aqui limita a linha. */
+.il-risco {
+    /* Carrega as duas medidas da ilustração e serve de referência pra peça da
+       legenda, que se ancora aqui com right/bottom. A matriz preenche esta caixa,
+       então o bottom: -32px da peça mede a partir da base dela.
+       384 é a altura de moldura das ilustrações 1 e 2, pras três terem o mesmo peso
+       na fileira de cards. A largura acompanha o container: no card ela será a do
+       .mk-card--3, e aqui no estudo, a da página. Sem margin auto, que num bloco de
+       100% não teria sobra pra dividir.
+       O box-sizing do root.css é border-box, então os 32 de padding saem de dentro
+       dos 384: a matriz, que é 100% da caixa de conteúdo, fica com 352. */
+    position: relative;
+    width: 100%;
+    height: 384px;
+    padding-bottom: 32px;
+}
+
+/* A matriz ocupa a largura toda da linha, agora sem disputar espaço com nada: a peça
+   da legenda saiu do fluxo.
+   Altura de 100%, herdada da linha. A altura tem que vir declarada de algum lugar:
+   os quadrantes não têm conteúdo próprio (os pontos são absolutos), então sem ela a
+   matriz mediria zero. Era a proporção 1/1 que a dava; tirada, quem passa a
+   carregá-la é a linha, num lugar só, e a matriz preenche nos dois eixos.
+   O gap de 2px não tem cor: como a matriz está solta, quem aparece entre os
+   quadrantes é o fundo da página, e é isso que separa um do outro, sem borda nem
+   1px (proibido no DS). */
+.il-risco-quadrantes {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2px;
+}
+
+/* Ordem pedida, com o grid preenchido linha por linha de cima pra baixo:
+     1 (cima, esquerda) wr500-10      2 (cima, direita) er500-10
+     3 (baixo, esquerda) sc500-10     4 (baixo, direita) wr500-10
+   Isso é a leitura clássica da matriz: o eixo que cresce pra direita e o que cresce
+   pra cima se multiplicam. O canto de baixo à esquerda é o único em que nada pesa
+   nos dois eixos, e fica verde; o de cima à direita é o pior nos dois, e fica
+   vermelho; os dois cantos cruzados pesam um em cada eixo, então empatam em
+   amarelo. A matriz fica simétrica em torno da diagonal, que é como ela se lê. */
+.il-risco-quadrantes span:nth-child(1) { background: var(--wr500-10); }
+.il-risco-quadrantes span:nth-child(2) { background: var(--er500-10); }
+.il-risco-quadrantes span:nth-child(3) { background: var(--sc500-10); }
+.il-risco-quadrantes span:nth-child(4) { background: var(--wr500-10); }
+
+/* ── os riscos ──────────────────────────────────────────────────
+   Cada ponto mora DENTRO do quadrante dele, e não numa camada absoluta sobre a
+   matriz inteira. É de propósito: assim a posição decide a cor, porque quem pinta o
+   ponto é a MESMA lista de nth-child que pinta o fundo. Numa camada única, a cor
+   viria de uma classe escrita à mão e poderia discordar do quadrante onde o ponto
+   caiu, que é justo o desencontro entre gráfico e legenda que já apareceu aqui.
+
+   --x e --y vêm do style inline, em % do quadrante, então a matriz escala com o
+   card sem recalcular nada. bottom e não top porque o eixo Y cresce pra cima, como
+   no gráfico.
+
+   Quadrado, sem raio, como os quadradinhos de estado das outras ilustrações.
+
+   O risco vai na cor CHEIA da família, a mesma do chip da legenda, sobre o fundo em
+   10% do quadrante: é o contraste que o faz aparecer. */
+.il-risco-quadrantes span { position: relative; }
+.il-risco-ponto {
+    position: absolute;
+    left: var(--x);
+    bottom: var(--y);
+    transform: translate(-50%, 50%);
+    width: 10px;
+    height: 10px;
+}
+/* O --halo acompanha a cor: mesma família em 25%, e é ele que a cintilação sopra e
+   recolhe. Declarado junto do background pra os dois nunca saírem de par. */
+.il-risco-quadrantes span:nth-child(1) .il-risco-ponto,
+.il-risco-quadrantes span:nth-child(4) .il-risco-ponto {
+    background: var(--wr500);
+    --halo: var(--wr500-25);
+}
+.il-risco-quadrantes span:nth-child(2) .il-risco-ponto {
+    background: var(--er500);
+    --halo: var(--er500-25);
+}
+.il-risco-quadrantes span:nth-child(3) .il-risco-ponto { background: var(--sc500); }
+
+/* Cintilação nos riscos que não são baixos, ou seja os amarelos e os vermelhos.
+   O seletor é :not(:nth-child(3)), e não a lista dos outros três: assim ele não pode
+   sair de sincronia com as regras de cor acima. Quem fica de fora é o quadrante
+   baixo, que é justamente o que não deve chamar atenção.
+   O brilho é box-shadow, e não filter: filter desfocaria o próprio quadradinho,
+   enquanto o shadow sopra só o halo em volta. O atraso vem negativo do style inline,
+   então cada risco já entra no meio do ciclo em vez de esperar a vez. */
+.il-risco-quadrantes span:not(:nth-child(3)) .il-risco-ponto {
+    animation: il-risco-cintila 2.4s ease-in-out var(--atraso, 0s) infinite;
+}
+@keyframes il-risco-cintila {
+    0%, 100% { box-shadow: 0 0 0 0 var(--halo);     opacity: 0.6; }
+    50%      { box-shadow: 0 0 8px 3px var(--halo); opacity: 1; }
+}
+/* ≤864: a cintilação continua, mas só na opacidade. O box-shadow soprando é
+   repintado a cada frame, que é o custo que a regra do projeto evita em tela menor.
+   Redefinir a keyframe com o MESMO nome substitui a de fora e vale pra todos os
+   riscos, sem precisar mexer no seletor da animação. */
+@media (max-width: 864px) {
+    @keyframes il-risco-cintila {
+        0%, 100% { opacity: 0.6; }
+        50%      { opacity: 1; }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .il-risco-quadrantes span:not(:nth-child(3)) .il-risco-ponto { animation: none; }
+}
+
+/* A legenda, em fileira: os três níveis lado a lado, e dentro de cada um o chip ao
+   lado do texto. Três níveis, um por família de cor que a matriz realmente pinta,
+   porque um quarto item apontaria pra uma cor que não está no gráfico. */
+.il-risco-legenda {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+.il-risco-legenda li {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: var(--label-xs);
+    color: var(--bw-50);
+    white-space: nowrap;
+}
+/* O chip vai na cor CHEIA da família, e não no 10% do quadrante: em 10% sobre o
+   fundo da peça ele quase desaparece num quadrado de 10px. A família é a mesma, que
+   é o que faz a legenda apontar pra cor certa.
+   Quadrado como os riscos: redondo aqui e quadrado no gráfico, a legenda deixaria de
+   parecer a mesma coisa que ela explica. */
+.il-risco-chip { width: 10px; height: 10px; }
+.il-risco-chip--alto  { background: var(--er500); }
+.il-risco-chip--medio { background: var(--wr500); }
+.il-risco-chip--baixo { background: var(--sc500); }
+
+/* ── notas ───────────────────────────────────────────────────────
+   1. Oito riscos: 3 no quadrante baixo, 2 no médio de cima, 1 no médio de baixo e 2
+      no alto. Mais risco na base da matriz do que no topo, que é como ela se lê.
+      As coordenadas ficam entre 20 e 80% do quadrante pra o quadradinho de 10px não
+      invadir o vão de 2px entre eles.
+
+   2. Cintilam os 5 riscos amarelos e vermelhos; os 3 verdes ficam parados.
+
+   2. A legenda ficou com 3 itens, e não com os 4 da página (crítico, alto, médio,
+      baixo). Com 4 quadrantes em três famílias de cor, um quarto item prometeria um
+      nível que a matriz não pinta, que é o desencontro que a versão da página já
+      teve. Se os 4 níveis tiverem que voltar, a matriz precisa de um quarto tom.
 */

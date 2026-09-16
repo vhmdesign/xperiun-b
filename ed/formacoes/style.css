@@ -676,17 +676,51 @@
             font-weight: 400;
         }
         .course-card-desc { display: none; }
+        /* Bento dos cursos no grid Wide. Ciclo fixo de 3 linhas, em que o
+           card largo gira de posição pra linha nenhuma repetir a anterior:
+
+               1 1 2   (span 3, 3, 4)
+               2 1 1   (span 4, 3, 3)
+               1 2 1   (span 3, 4, 3)
+
+           Toda linha soma as 10 colunas, e a altura do card sai do
+           padding-top de 35% da própria largura: span fora de 3 e 4 muda a
+           proporção do card, então o ciclo não abre exceção nem pra sobra.
+           Com 19 cursos o ciclo roda duas vezes inteiras (18 cards) e o
+           último cai sozinho na sétima linha, que é uma linha 1 1 2 com os
+           dois primeiros slots vazios: o card fica com a largura do 2
+           (span 4), ancorado na coluna 1. Só a F6 passa de 10 cursos; as
+           outras formações param antes e nunca alcançam as regras de
+           baixo. */
         @media (min-width: 1153px) {
+            /* ciclo 1 */
             .course-card:nth-child(1) { grid-column: span 3; }
             .course-card:nth-child(2) { grid-column: span 3; }
             .course-card:nth-child(3) { grid-column: span 4; }
+
             .course-card:nth-child(4) { grid-column: span 4; }
             .course-card:nth-child(5) { grid-column: span 3; }
             .course-card:nth-child(6) { grid-column: span 3; }
+
             .course-card:nth-child(7) { grid-column: span 3; }
             .course-card:nth-child(8) { grid-column: span 4; }
             .course-card:nth-child(9) { grid-column: span 3; }
-            .course-card:nth-child(10) { grid-column: span 4; }
+
+            /* ciclo 2 */
+            .course-card:nth-child(10) { grid-column: span 3; }
+            .course-card:nth-child(11) { grid-column: span 3; }
+            .course-card:nth-child(12) { grid-column: span 4; }
+
+            .course-card:nth-child(13) { grid-column: span 4; }
+            .course-card:nth-child(14) { grid-column: span 3; }
+            .course-card:nth-child(15) { grid-column: span 3; }
+
+            .course-card:nth-child(16) { grid-column: span 3; }
+            .course-card:nth-child(17) { grid-column: span 4; }
+            .course-card:nth-child(18) { grid-column: span 3; }
+
+            /* sobra: linha 1 1 2 com os dois primeiros slots vazios */
+            .course-card:nth-child(19) { grid-column: 1 / span 4; }
         }
         @media (max-width: 1439px) {
             .courses-inner { grid-template-columns: repeat(8, 1fr); }

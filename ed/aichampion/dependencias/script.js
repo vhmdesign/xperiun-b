@@ -377,6 +377,10 @@
       el.style.opacity = inA * (1 - outA);
       el.style.transform = 'translateY(' + (24 * (1 - inA) - 128 * outA) + 'px)';
     }
+    // título 1 já saiu de cena: tira do paint. Só opacity 0 deixaria fantasma de
+    // compositing (as .ltr têm will-change); display:none quebraria a medição de
+    // layout que o positionLede() faz com getBoundingClientRect().
+    if (titleEl) titleEl.style.visibility = tp >= 1 ? 'hidden' : 'visible';
 
     // (2) lede e botão saem juntos, lados opostos: do MEIO da anim do título até 100vh
     const lc = smooth((scrollPx - MID) / (VH - MID));
@@ -392,6 +396,8 @@
       el.style.opacity = a;
       el.style.transform = 'translateY(' + (24 * (1 - a)) + 'px)';
     }
+    // título 2 só entra no paint quando começa a aparecer (mesmo motivo acima)
+    if (newTitle) newTitle.style.visibility = ntp > 0 ? 'visible' : 'hidden';
 
     // (4) texto de detalhe entra de baixo pra cima, logo após o título 2
     if (heroDetail) {

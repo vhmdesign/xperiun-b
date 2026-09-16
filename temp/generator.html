@@ -10,6 +10,15 @@
        declarado depois do root.css, então cobre o subset limitado do site. -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   <style>
+    /* A scrollbar vertical entrava e saía em loop: o float do badge (transform
+       de +-8px) e o reflexo, posicionado abaixo do stage, fazem a altura do
+       scroll oscilar em volta da borda do viewport. `overflow-y: scroll` fixa o
+       eixo num estado só (nada pisca) e `scrollbar-gutter: stable` reserva a
+       calha, então a largura do layout também não salta. */
+    html {
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
+    }
     body {
       min-height: 100vh;
       box-sizing: border-box;
@@ -140,6 +149,10 @@
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }
+    /* Badge claro (Corporate): texto em bb pra contrastar com o fundo #ebebf5 */
+    .badge-text.on-light {
+      color: var(--bb);
+    }
     #badge-preview {
       display: none;
     }
@@ -147,6 +160,10 @@
       display: none;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
+    }
+    /* Corporate usa 2 cores (o brilho segue a cor final) */
+    .cor-fields.is-duo {
+      grid-template-columns: repeat(2, 1fr);
     }
     /* Color picker: amostra (swatch) que abre o popover */
     .color-swatch {
@@ -250,7 +267,8 @@
       text-transform: uppercase;
     }
     #badge-svg,
-    #badge-svg-pago {
+    #badge-svg-pago,
+    #badge-svg-corp {
       display: none;
       width: 100%;
       height: auto;
@@ -437,7 +455,20 @@
       </div>
     </div>
 
-    <!-- Cores do SVG (só quando Estilo = Evento Gratuito) -->
+    <!-- Predefinição de cores + nome (só quando Estilo = Corporate) -->
+    <div class="input-group" id="preset-field">
+      <span class="input-label">Predefinição</span>
+      <div class="dropdown-group" data-field="preset">
+        <div class="dropdown">
+          <span class="dropdown-placeholder">Selecione</span>
+          <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+        </div>
+        <ul class="dropdown-options dropdown-options-detached" id="preset-options"></ul>
+      </div>
+      <input type="hidden" name="preset" value="">
+    </div>
+
+    <!-- Cores do SVG (Evento Gratuito, Evento Pago e Corporate) -->
     <div class="cor-fields" id="cor-fields">
       <div class="input-group">
         <span class="input-label">Cor inicial</span>
@@ -451,7 +482,7 @@
         </button>
         <input type="hidden" id="cor-final" value="#4b4bff">
       </div>
-      <div class="input-group">
+      <div class="input-group" id="cor-brilho-field">
         <span class="input-label">Brilho</span>
         <button type="button" class="color-swatch" data-target="cor-brilho">          <span class="color-swatch-hex"></span>
         </button>
@@ -535,6 +566,45 @@
         <path d="M50 177.35v-84.7c0-10.54 5.53-20.3 14.56-25.72L140 21.67l75.44 45.26A29.99 29.99 0 0 1 230 92.65v84.7c0 10.54-5.53 20.3-14.56 25.72L140 248.33l-75.44-45.26A29.99 29.99 0 0 1 50 177.35" style="fill:url(#xpbdg-ep-6)"/>
         <path d="M50 167.35v-74.7c0-10.54 5.53-20.3 14.56-25.72L140 21.67l75.44 45.26A29.99 29.99 0 0 1 230 92.65v74.7c0 10.54-5.53 20.3-14.56 25.72L140 238.33l-75.44-45.26A29.99 29.99 0 0 1 50 167.35" style="fill:url(#xpbdg-ep-7)"/>
       </svg>
+      <!-- Corporate: escudo claro (miolo #ebebf5), 2 tons recoloriveis + logo Xperiun Certified -->
+      <svg id="badge-svg-corp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 280 280">
+        <defs>
+          <linearGradient id="xpbdg-cp-borda" x1="140" y1="10" x2="140" y2="270" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffc800"/>
+            <stop offset="1" stop-color="#e19632"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-cp-borda-esq" x1="90" y1="270" x2="90" y2="10" xlink:href="#xpbdg-cp-borda"/>
+          <linearGradient id="xpbdg-cp-aro" x1="140" y1="261.46" x2="140" y2="18.16" xlink:href="#xpbdg-cp-borda"/>
+          <linearGradient id="xpbdg-cp-aro-esq" x1="94" y1="18.16" x2="94" y2="261.46" xlink:href="#xpbdg-cp-borda"/>
+          <linearGradient id="xpbdg-cp-brilho" x1="140" y1="257.17" x2="140" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#e19632" stop-opacity=".5"/>
+            <stop offset="1" stop-color="#e19632" stop-opacity=".25"/>
+          </linearGradient>
+          <linearGradient id="xpbdg-cp-brilho-esq" x1="96" x2="96" y2="22.24" xlink:href="#xpbdg-cp-brilho"/>
+          <linearGradient id="xpbdg-cp-logo" x1="100" y1="50" x2="180" y2="50" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#9600ff"/>
+            <stop offset="1" stop-color="#4b00ff"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#xpbdg-cp-borda)" d="M223.92,26.78l-83.92-16.78L56.08,26.78c-9.35,1.87-16.08,10.08-16.08,19.61v143.6c0,44.18,100,80,100,80,0,0,100-35.82,100-80V46.4c0-9.53-6.73-17.74-16.08-19.61Z"/>
+        <path fill="url(#xpbdg-cp-borda-esq)" d="M140,10L56.08,26.78c-9.35,1.87-16.08,10.08-16.08,19.61v143.6c0,44.18,100,80,100,80V10Z"/>
+        <path fill="url(#xpbdg-cp-aro)" d="M140,261.46c-7.04-2.7-26.75-10.65-46.17-21.92-29.55-17.15-45.83-34.74-45.83-49.54V46.4c0-5.7,4.06-10.65,9.65-11.77l82.35-16.47,82.35,16.47c5.59,1.12,9.65,6.07,9.65,11.77v143.6c0,14.8-16.28,32.39-45.83,49.54-19.42,11.27-39.13,19.21-46.17,21.92Z"/>
+        <path fill="url(#xpbdg-cp-aro-esq)" d="M140,261.46c-7.04-2.7-26.75-10.65-46.17-21.92-29.55-17.15-45.83-34.74-45.83-49.54V46.4c0-5.7,4.06-10.65,9.65-11.77l82.35-16.47v243.3Z"/>
+        <path fill="#ebebf5" d="M140,257.17c-8.22-3.21-26.28-10.71-44.16-21.09-27.86-16.16-43.84-32.96-43.84-46.08V46.4c0-3.8,2.71-7.1,6.43-7.84l81.57-16.31,81.57,16.31c3.73.75,6.43,4.04,6.43,7.84v143.6c0,13.12-15.98,29.92-43.84,46.08-17.89,10.38-35.94,17.88-44.16,21.09Z"/>
+        <path fill="url(#xpbdg-cp-brilho)" d="M184.16,206.08c-17.89,10.38-35.94,17.88-44.16,21.09-8.22-3.21-26.28-10.71-44.16-21.09-27.86-16.16-43.84-32.96-43.84-46.08v30c0,13.12,15.98,29.92,43.84,46.08,17.89,10.38,35.94,17.88,44.16,21.09,8.22-3.21,26.28-10.71,44.16-21.09,27.86-16.16,43.84-32.96,43.84-46.08v-30c0,13.12-15.98,29.92-43.84,46.08Z"/>
+        <path fill="url(#xpbdg-cp-brilho-esq)" opacity=".25" d="M140,22.24l-81.57,16.31c-3.73.75-6.43,4.04-6.43,7.84v143.6c0,13.12,15.98,29.92,43.84,46.08,17.89,10.38,35.94,17.88,44.16,21.09V22.24Z"/>
+        <path fill="url(#xpbdg-cp-logo)" d="M106.18,42.27c-1.14,1.14-.68,3.45,1.03,5.15l1.03,1.03h0c.97.97,2.11,1.44,2.78,1.22l-1.75-2.25,2.25,1.75c.22-.67-.25-1.81-1.22-2.78h0s-4.12-4.12-4.12-4.12ZM111.53,50.83c.22.67-.26,1.81-1.22,2.77l-3.09,3.09h0c-2.85,2.85-6.08,4.23-7.21,3.09h0s8.24-8.24,8.24-8.24c.96-.96,2.1-1.44,2.77-1.22l-3.81,4.31,4.31-3.81ZM113.4,53.61h0c-.97-.97-1.44-2.11-1.22-2.78l2.25,1.75-1.75-2.25c.67-.22,1.81.25,2.78,1.22h0s1.03,1.03,1.03,1.03c1.71,1.71,2.17,4.01,1.03,5.15l-4.12-4.12ZM112.18,49.17c-.22-.67.26-1.81,1.22-2.77l3.09-3.09h0c2.85-2.85,6.08-4.23,7.21-3.09h0s-8.24,8.24-8.24,8.24c-.96.96-2.1,1.44-2.77,1.22l3.81-4.31-4.31,3.81ZM168.15,52.96c-1.87,0-3.39-1.52-3.39-3.39v-2.54h.85v2.54c0,1.4,1.14,2.54,2.54,2.54s2.54-1.14,2.54-2.54v-2.54h.85v2.54c0,1.87-1.52,3.39-3.39,3.39ZM133.44,52.96h-.85v-5.5c0-.23.19-.42.42-.42h5.04c1.16,0,2.13.91,2.16,2.07s-.93,2.17-2.12,2.17h-4.66v1.69ZM133.44,50.42h4.66c.7,0,1.27-.57,1.27-1.27s-.57-1.27-1.27-1.27h-4.66v2.54ZM162.22,52.96h-.85v-5.93h.85v5.93ZM174.07,52.96h-.85v-5.5c0-.23.19-.42.42-.42h.48c.11,0,.22.04.3.12l4.73,4.73v-4.85h.85v5.5c0,.23-.19.42-.42.42h-.37c-.11,0-.22-.04-.3-.12l-4.83-4.83v4.96ZM127.71,50l3.19,2.96h-1.24l-2.57-2.39-2.57,2.39h-1.24l3.19-2.96-3.19-2.96h1.24l2.57,2.39,2.57-2.39h1.24l-3.19,2.96ZM142.75,49.15v.42h5.93v.85h-5.93v.42c0,.7.57,1.27,1.27,1.27h4.66v.85h-4.66c-1.17,0-2.12-.95-2.12-2.12v-1.69c0-1.17.95-2.12,2.12-2.12h4.66v.85h-4.66c-.7,0-1.27.57-1.27,1.27ZM157.53,52.96h1.31l-2.08-1.69c1.17-.02,2.11-.99,2.08-2.17-.03-1.16-1-2.07-2.16-2.07h-5.04c-.23,0-.42.19-.42.42v5.5h.85v-1.69h3.39l2.08,1.69ZM152.06,47.88h4.66c.7,0,1.27.57,1.27,1.27s-.57,1.27-1.27,1.27h-4.66v-2.54Z"/>
+        <g fill="#4b4bff">
+          <path d="M113.8,86.1c-.05.42-.19.77-.44,1.06-.25.29-.58.52-1,.67s-.92.23-1.5.23c-.49,0-.93-.06-1.33-.17-.4-.11-.75-.28-1.04-.5-.29-.22-.52-.5-.68-.84-.16-.33-.24-.72-.24-1.17s.08-.84.24-1.18.39-.62.68-.84c.29-.23.64-.4,1.04-.51.4-.11.85-.17,1.33-.17.58,0,1.08.08,1.51.24.42.16.76.39,1,.68.25.3.39.66.43,1.08h-1.06c-.07-.22-.19-.42-.35-.58-.16-.16-.37-.29-.63-.37-.26-.08-.56-.13-.91-.13-.44,0-.82.07-1.15.2-.33.14-.59.34-.77.6-.18.26-.27.59-.27.98s.09.71.27.97c.18.26.44.46.77.6.33.14.71.2,1.15.2.35,0,.65-.04.91-.13.25-.09.46-.21.62-.37.16-.16.28-.35.36-.56h1.06Z"/>
+          <path d="M119.11,85.81v1.27h3.99v.89h-5.06v-5.18h5.05v.89h-3.98v1.29h3.26v.84h-3.26Z"/>
+          <path d="M126.94,82.79h5.46v.89h-5.46v-.89ZM129.14,83.57h1.06v4.4h-1.06v-4.4Z"/>
+          <path d="M136.52,82.79h1.06v5.18h-1.06v-5.18Z"/>
+          <path d="M147.21,82.79v.89h-3.98v1.39h3.26v.83h-3.26v2.06h-1.06v-5.18h5.05Z"/>
+          <path d="M151.44,82.79h1.06v5.18h-1.06v-5.18Z"/>
+          <path d="M158.15,85.81v1.27h3.99v.89h-5.06v-5.18h5.05v.89h-3.98v1.29h3.26v.84h-3.26Z"/>
+          <path d="M169.4,82.79c.58,0,1.07.07,1.46.21.39.14.7.33.93.56s.4.51.5.82.15.63.15.98-.05.67-.16.98-.28.59-.52.84c-.24.24-.55.43-.94.58s-.86.21-1.41.21h-2.96v-5.18h2.96ZM167.5,87.06h1.87c.38,0,.7-.05.96-.14.25-.09.45-.22.6-.38.15-.16.26-.34.32-.54.06-.2.1-.41.1-.63s-.03-.43-.1-.62c-.06-.2-.17-.37-.32-.53-.15-.16-.35-.28-.6-.37s-.57-.14-.96-.14h-1.87v3.35Z"/>
+        </g>
+      </svg>
       <img id="badge-info" class="badge-info" src="badges/badge-info.png" alt="">
       <div class="badge-slot" id="badge-slot"></div>
       <span class="badge-icon material-symbols-outlined" id="badge-icon"></span>
@@ -586,7 +656,7 @@
         'Formação 5', 'Formação 6', 'Formação 7'
       ],
       curso: [
-        'Minicurso', 'Evento Gratuito', 'Evento Pago',
+        'Minicurso', 'Evento Gratuito', 'Evento Pago', 'Corporate',
         'Formação 1', 'Formação 2', 'Formação 3', 'Formação 4',
         'Formação 5', 'Formação 6', 'Formação 7'
       ]
@@ -684,6 +754,8 @@
     const badgeOca = document.getElementById('badge-oca');
     const badgeSvg = document.getElementById('badge-svg');
     const badgeSvgPago = document.getElementById('badge-svg-pago');
+    const badgeSvgCorp = document.getElementById('badge-svg-corp');
+    const SVG_BADGES = [badgeSvg, badgeSvgPago, badgeSvgCorp];
     const badgeInfo = document.getElementById('badge-info');
     const corFields = document.getElementById('cor-fields');
     const corInicial = document.getElementById('cor-inicial');
@@ -697,6 +769,47 @@
     const badgeIcon = document.getElementById('badge-icon');
     const btnVisualizar = document.getElementById('btn-visualizar');
     const btnBaixar = document.getElementById('btn-baixar');
+    const corBrilhoField = document.getElementById('cor-brilho-field');
+    const presetField = document.getElementById('preset-field');
+    const presetHidden = document.querySelector('input[name="preset"]');
+    const presetOptions = document.getElementById('preset-options');
+
+    /* Caixa do texto (Nome) por badge, no grid 14x14. */
+    const TEXT_BOX = {
+      formacao:  { left: '21.4286%', top: '32.1429%', width: '57.1429%', height: '35.7143%' }, // x3 y4.5 w8 h5
+      minicurso: { left: '21.4286%', top: '39.2857%', width: '57.1429%', height: '32.1429%' }, // x3 y5.5 w8 h4.5
+      corporate: { left: '21.4286%', top: '39.2857%', width: '57.1429%', height: '32.1429%' }  // x3 y5.5 w8 h4.5
+    };
+
+    /* Config dos badges em SVG: quais gradientes tem stops proprios (os demais
+       herdam via xlink:href), de onde vem o brilho e o que entra por cima.
+       - info/slot: overlay de info + SVG do usuario (Evento)
+       - text: caixa de Nome (Corporate)
+       - light: miolo claro, texto em --bb */
+    const SVGS = {
+      'Evento Gratuito': {
+        el: badgeSvg, base: ['xpbdg-eg-1', 'xpbdg-eg-2'], glow: ['xpbdg-eg-5'],
+        info: true, slot: true
+      },
+      'Evento Pago': {
+        el: badgeSvgPago, base: ['xpbdg-ep-1'], glow: ['xpbdg-ep-5'],
+        info: true, slot: true
+      },
+      'Corporate': {
+        el: badgeSvgCorp, base: ['xpbdg-cp-borda'], glow: ['xpbdg-cp-brilho'],
+        glowFrom: 'final', text: true, box: TEXT_BOX.corporate, light: true
+      }
+    };
+
+    /* Predefinicoes do Corporate: par de cores + nome do curso. */
+    const PRESETS = [
+      { nome: 'Power BI Fundamentals',          inicial: '#ffc800', final: '#e19632' },
+      { nome: 'Data Storytelling Specialist',   inicial: '#64c8ff', final: '#3264ff' },
+      { nome: 'Power BI Service Architect',     inicial: '#ff6496', final: '#961932' },
+      { nome: 'Power BI Specialist',            inicial: '#9664ff', final: '#6400c8' },
+      { nome: 'Power BI Business User Analyst', inicial: '#ff6464', final: '#af0019' },
+      { nome: 'Power Query Specialist',         inicial: '#64ff96', final: '#00644b' }
+    ];
 
     /* Mostra os campos conforme Tipo + Estilo:
        - Nome/Tamanho: Curso + "Formação N"
@@ -707,12 +820,17 @@
       const isCursoFormacao = tipo === 'curso' && /Formação\s+\d+/i.test(estilo);
       const isMinicurso = tipo === 'curso' && estilo === 'Minicurso';
       const isEvento = tipo === 'curso' && (estilo === 'Evento Gratuito' || estilo === 'Evento Pago');
-      const hasNome = isCursoFormacao || isMinicurso;
+      const isCorporate = tipo === 'curso' && estilo === 'Corporate';
+      const hasNome = isCursoFormacao || isMinicurso || isCorporate;
 
       nomeField.style.display = hasNome ? 'flex' : 'none';
       tamanhoField.style.display = hasNome ? 'flex' : 'none';
       iconeField.style.display = isMinicurso ? 'flex' : 'none';
-      corFields.style.display = isEvento ? 'grid' : 'none';
+      presetField.style.display = isCorporate ? 'flex' : 'none';
+      // Corporate: 2 cores (o brilho segue a cor final); Evento: 3
+      corFields.style.display = (isEvento || isCorporate) ? 'grid' : 'none';
+      corFields.classList.toggle('is-duo', isCorporate);
+      corBrilhoField.style.display = isCorporate ? 'none' : 'flex';
       svgField.style.display = isEvento ? 'flex' : 'none';
 
       // Estilo trava (blur + opacidade) enquanto o Tipo não foi escolhido
@@ -736,8 +854,20 @@
 
     tipoHidden.addEventListener('change', onTipoChange);
 
+    /* Corporate entra com as cores do proprio badge (predefinição 1) em vez das
+       cores de Evento, uma unica vez, pra não sobrescrever escolha do usuário. */
+    let corpSeeded = false;
+    function seedCorporateColors() {
+      if (corpSeeded) return;
+      if (!(tipoHidden.value === 'curso' && estiloHidden.value === 'Corporate')) return;
+      corpSeeded = true;
+      setColorValue('cor-inicial', PRESETS[0].inicial);
+      setColorValue('cor-final', PRESETS[0].final);
+    }
+
     // trocar o Estilo reavalia os campos visíveis e limpa o preview antigo
     estiloHidden.addEventListener('change', () => {
+      seedCorporateColors();
       updateFields();
       renderPreview();
     });
@@ -817,6 +947,23 @@
       return lum > 140 ? 'var(--bb)' : 'var(--bw)';
     }
 
+    /* Pinta a amostra (fundo + hex legivel). Usado na carga, no picker e nas predefinicoes. */
+    function paintSwatch(sw, hex) {
+      sw.style.backgroundColor = hex;
+      const hexEl = sw.querySelector('.color-swatch-hex');
+      hexEl.textContent = hex.toUpperCase();
+      hexEl.style.color = cpContrastOn(hex);
+    }
+
+    /* Seta uma cor por fora do picker (predefinicoes) e avisa quem escuta. */
+    function setColorValue(id, hex) {
+      const inp = document.getElementById(id);
+      inp.value = hex;
+      const sw = document.querySelector('.color-swatch[data-target="' + id + '"]');
+      if (sw) paintSwatch(sw, hex);
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
     function cpHex() { const { r, g, b } = cpHsvToRgb(cpH, cpS, cpV); return cpToHex(r, g, b); }
     function cpDisplayValue() {
       const { r, g, b } = cpHsvToRgb(cpH, cpS, cpV);
@@ -839,12 +986,7 @@
       if (push && cpTarget) {
         const hex = cpHex();
         cpTarget.value = hex;
-        if (cpSwatch) {
-          cpSwatch.style.backgroundColor = hex;
-          const hexEl = cpSwatch.querySelector('.color-swatch-hex');
-          hexEl.textContent = hex.toUpperCase();
-          hexEl.style.color = cpContrastOn(hex);
-        }
+        if (cpSwatch) paintSwatch(cpSwatch, hex);
         cpTarget.dispatchEvent(new Event('input', { bubbles: true }));
       }
     }
@@ -906,11 +1048,7 @@
     function closeColorPicker() { cpPopover.hidden = true; cpTarget = null; cpSwatch = null; }
 
     document.querySelectorAll('.color-swatch').forEach((sw) => {
-      const t = document.getElementById(sw.dataset.target);
-      sw.style.backgroundColor = t.value;
-      const hx = sw.querySelector('.color-swatch-hex');
-      hx.textContent = t.value.toUpperCase();
-      hx.style.color = cpContrastOn(t.value);
+      paintSwatch(sw, document.getElementById(sw.dataset.target).value);
       sw.addEventListener('click', (e) => { e.stopPropagation(); openColorPicker(sw.dataset.target, sw); });
     });
     document.addEventListener('click', (e) => {
@@ -918,15 +1056,24 @@
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeColorPicker(); });
 
+    /* ---- Predefinicoes (Corporate): preenchem as 2 cores + o Nome ---- */
+    presetOptions.innerHTML = PRESETS
+      .map((p) => '<li class="dropdown-option" data-value="' + p.nome + '">' + p.nome + '</li>')
+      .join('');
+
+    presetHidden.addEventListener('change', () => {
+      const p = PRESETS.find((x) => x.nome === presetHidden.value);
+      if (!p) return;
+      setColorValue('cor-inicial', p.inicial);
+      setColorValue('cor-final', p.final);
+      nomeTextarea.value = p.nome;
+      renderPreview();
+      updateActions();
+    });
+
     // estado inicial: nada selecionado, campos condicionais escondidos, botões travados
     updateFields();
     showPlaceholder();
-
-    /* Caixa do texto (Nome) por badge, no grid 14x14. */
-    const TEXT_BOX = {
-      formacao:  { left: '21.4286%', top: '32.1429%', width: '57.1429%', height: '35.7143%' }, // x3 y4.5 w8 h5
-      minicurso: { left: '21.4286%', top: '39.2857%', width: '57.1429%', height: '32.1429%' }  // x3 y5.5 w8 h4.5
-    };
 
     /* ---- Resolve o que mostrar a partir de Tipo + Estilo ---- */
     function resolveBadge() {
@@ -934,9 +1081,10 @@
       const estilo = estiloHidden.value;
       if (!tipo || !estilo) return { mode: 'none' };
 
-      // Evento Gratuito / Evento Pago (Curso) usam SVG com cores escolhidas
-      if (tipo === 'curso' && (estilo === 'Evento Gratuito' || estilo === 'Evento Pago')) {
-        return { mode: 'svg', svg: estilo };
+      // Evento Gratuito / Evento Pago / Corporate (Curso) usam SVG com cores escolhidas
+      if (tipo === 'curso' && SVGS[estilo]) {
+        const cfg = SVGS[estilo];
+        return { mode: 'svg', svg: estilo, text: !!cfg.text, box: cfg.box };
       }
 
       // Minicurso (Curso) usa PNG próprio, com Nome + ícone Google
@@ -974,8 +1122,7 @@
     /* Placeholder: gen-preview nunca fica vazio, mostra o badge-oca */
     function showPlaceholder() {
       previewImg.style.display = 'none';
-      badgeSvg.style.display = 'none';
-      badgeSvgPago.style.display = 'none';
+      SVG_BADGES.forEach((el) => { el.style.display = 'none'; });
       badgeInfo.style.display = 'none';
       badgeSlot.style.display = 'none';
       badgeIcon.style.display = 'none';
@@ -994,27 +1141,23 @@
     }
 
     /* ---- Aplica as cores dos gradientes do SVG ---- */
-    // Config por estilo: quais gradientes têm stops próprios (os demais herdam via xlink:href).
-    const SVGS = {
-      'Evento Gratuito': { el: badgeSvg,     base: ['xpbdg-eg-1', 'xpbdg-eg-2'], glow: ['xpbdg-eg-5'] },
-      'Evento Pago':     { el: badgeSvgPago, base: ['xpbdg-ep-1'], glow: ['xpbdg-ep-5'] }
-    };
-
     function setStops(svgEl, gradId, colorA, colorB) {
       const stops = svgEl.querySelectorAll('#' + gradId + ' stop');
       if (stops[0]) stops[0].setAttribute('stop-color', colorA);
       if (stops[1]) stops[1].setAttribute('stop-color', colorB);
     }
     function applySvgColors(cfg) {
-      const c1 = corInicial.value, c2 = corFinal.value, cg = corBrilho.value;
-      cfg.base.forEach((id) => setStops(cfg.el, id, c1, c2));
-      // brilho: 2o stop segue transparente (mesma cor, só muda o tom)
-      cfg.glow.forEach((id) => setStops(cfg.el, id, cg, cg));
+      const c1 = corInicial.value, c2 = corFinal.value;
+      // Corporate nao tem campo de brilho: o brilho sai da cor final
+      const cg = cfg.glowFrom === 'final' ? c2 : corBrilho.value;
+      (cfg.base || []).forEach((id) => setStops(cfg.el, id, c1, c2));
+      // brilho: os stops mantem a opacidade propria, só muda o tom
+      (cfg.glow || []).forEach((id) => setStops(cfg.el, id, cg, cg));
     }
     function activeSvgCfg() {
-      if (badgeSvg.style.display === 'block') return SVGS['Evento Gratuito'];
-      if (badgeSvgPago.style.display === 'block') return SVGS['Evento Pago'];
-      return null;
+      return Object.keys(SVGS)
+        .map((k) => SVGS[k])
+        .find((cfg) => cfg.el.style.display === 'block') || null;
     }
     // cores atualizam ao vivo no SVG visível
     [corInicial, corFinal, corBrilho].forEach((inp) =>
@@ -1124,6 +1267,19 @@
       reader.readAsText(file);
     });
 
+    /* Posiciona/preenche a caixa de Nome. box=null esconde; light usa texto em --bb. */
+    function applyBadgeText(box, light) {
+      badgeText.classList.toggle('on-light', !!light);
+      if (!box) { badgeText.style.display = 'none'; return; }
+      badgeText.style.left = box.left;
+      badgeText.style.top = box.top;
+      badgeText.style.width = box.width;
+      badgeText.style.height = box.height;
+      badgeText.textContent = nomeTextarea.value;
+      badgeText.style.fontSize = TAMANHOS[tamanhoHidden.value] || '4rem';
+      badgeText.style.display = 'flex';
+    }
+
     /* ---- Render do preview (usado pelo Visualizar e ao vivo) ---- */
     function renderPreview() {
       const r = resolveBadge();
@@ -1132,8 +1288,7 @@
       if (r.mode === 'img') {
         previewImg.src = encodeURI(r.src);
         previewImg.style.display = 'block';
-        badgeSvg.style.display = 'none';
-        badgeSvgPago.style.display = 'none';
+        SVG_BADGES.forEach((el) => { el.style.display = 'none'; });
         badgeInfo.style.display = 'none';
         badgeSlot.style.display = 'none';
         stage.style.display = 'block';
@@ -1146,30 +1301,18 @@
           badgeIcon.style.display = 'none';
         }
 
-        if (r.text) {
-          const b = r.box;
-          badgeText.style.left = b.left;
-          badgeText.style.top = b.top;
-          badgeText.style.width = b.width;
-          badgeText.style.height = b.height;
-          badgeText.textContent = nomeTextarea.value;
-          badgeText.style.fontSize = TAMANHOS[tamanhoHidden.value] || '4rem';
-          badgeText.style.display = 'flex';
-        } else {
-          badgeText.style.display = 'none';
-        }
+        applyBadgeText(r.text ? r.box : null, false);
       } else if (r.mode === 'svg') {
         const cfg = SVGS[r.svg];
-        badgeSvg.style.display = 'none';
-        badgeSvgPago.style.display = 'none';
+        SVG_BADGES.forEach((el) => { el.style.display = 'none'; });
         cfg.el.style.display = 'block';
         applySvgColors(cfg);
-        renderCustomSvg();
         previewImg.style.display = 'none';
-        badgeInfo.style.display = 'block';
-        badgeSlot.style.display = 'block';
+        badgeInfo.style.display = cfg.info ? 'block' : 'none';
+        badgeSlot.style.display = cfg.slot ? 'block' : 'none';
+        if (cfg.slot) renderCustomSvg();
         badgeIcon.style.display = 'none';
-        badgeText.style.display = 'none';
+        applyBadgeText(cfg.text ? cfg.box : null, !!cfg.light);
         stage.style.display = 'block';
         badgeOca.style.display = 'none';
       } else {
@@ -1295,13 +1438,16 @@
           const cfg = SVGS[r.svg];
           const clone = cfg.el.cloneNode(true);
           ctx.drawImage(await svgToImg(clone.outerHTML, EXPORT_SIZE, EXPORT_SIZE), 0, 0, EXPORT_SIZE, EXPORT_SIZE);
-          ctx.drawImage(await loadImg('badges/badge-info.png'), 0, 0, EXPORT_SIZE, EXPORT_SIZE);
-          const code = svgInput.value.trim();
+          if (cfg.info) {
+            ctx.drawImage(await loadImg('badges/badge-info.png'), 0, 0, EXPORT_SIZE, EXPORT_SIZE);
+          }
+          const code = cfg.slot ? svgInput.value.trim() : '';
           if (code) {
             const w = 0.5 * EXPORT_SIZE, h = (4 / 14) * EXPORT_SIZE;      // slot: 7 largura, 4 altura
             const x = 0.25 * EXPORT_SIZE, y = (6 / 14) * EXPORT_SIZE;      // x=3.5, y=6
             ctx.drawImage(await svgToImg(code, w, h), x, y, w, h);
           }
+          if (cfg.text) drawBadgeText(ctx, cfg.box);
         }
 
         const link = document.createElement('a');

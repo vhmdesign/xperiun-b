@@ -1,0 +1,144 @@
+/* style.css — "Parabéns, inscrição realizada com sucesso" (Infinite Pass).
+   Página de uma tela só que confirma a inscrição e segura o usuário
+   enquanto o redirecionamento pro grupo VIP acontece.
+
+   A estrutura (coluna central de 864px com o conteúdo centrado no eixo
+   vertical) vem de /ed/evento/ician/obrigado.css. As diferenças:
+
+     - a página inteira é Syne (--font-family-horizontal), a fonte da LP
+       do Infinite Pass, no lugar do Poppins do corpo e do EB Garamond dos
+       títulos do ICIAN. Syne self-hosted só tem 400 e 700, então todo
+       peso aqui é um desses dois;
+     - título em tamanho h3 e no gradiente de success;
+     - o glow radial roxo do ICIAN saiu; no lugar entra o lettering do
+       infinito da LP (.ip-imagine-fundo), estático;
+     - sem barra de progresso, sem corpo de texto, sem CTA e sem popup de
+       pesquisa: ficam só o aviso de redirecionamento e o spinner.
+
+   Tokens vêm do root.css. Fundo --bb (do body). */
+
+.ipo {
+    position: relative;
+    isolation: isolate;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;       /* mobile: dvh evita o bug do 100vh atrás da UI */
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;  /* centraliza o conteúdo verticalmente */
+    text-align: center;
+    /* Syne na página toda. As regras abaixo que usam os atalhos `font:`
+       do root.css (--h3, --p-l...) trazem Poppins junto, e por isso cada
+       uma redeclara o font-family depois do atalho. */
+    font-family: var(--font-family-horizontal);
+}
+
+/* Lettering do infinito ao fundo: a .ip-imagine-fundo da LP, parada.
+   `fixed` porque a página tem uma tela só e ele é cenário, não conteúdo:
+   fica ancorado no viewport e nunca gera scroll. O blur é estático. */
+.ipo-fundo {
+    position: fixed;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: 1080px;
+    height: 1080px;
+    margin: -540px 0 0 -540px;
+    background-image: url('/ed/infinite-pass/obrigado/dependencias/ip_infinity-lettering-b2.webp');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    filter: blur(12px);
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* Logo Xperiun no canto superior esquerdo da coluna. Absoluto pra ficar
+   fora do fluxo: o resto do conteúdo está centrado no eixo vertical e não
+   pode ser empurrado por ele. */
+.ipo-brand-xp {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    height: 32px;
+    width: auto;
+    display: block;
+    opacity: 0.5;
+}
+
+.ipo-logo {
+    width: 110px;
+    height: auto;
+}
+
+.ipo-title {
+    margin: 64px 0 0;
+    font: var(--h3);
+    /* 400: o peso de título da LP do Infinite Pass, e um dos dois que
+       Syne tem (o --h3 pede 600, que não existe self-hosted) */
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    background-image: var(--text-gradient-special-success);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ── Aviso do redirecionamento ──────────────────────────── */
+.ipo-redirect {
+    margin: 32px 0 0;
+    max-width: 40ch;
+    font: var(--p-l);
+    font-family: var(--font-family-horizontal);
+    color: var(--sc300);
+}
+
+/* ── Spinner: o mesmo anel de conic-gradient que as páginas de obrigado
+   do ICIAN e do Bê-a-Bá usam pra "carregando", aqui na cor de success da
+   página. Indeterminado de propósito: não dá pra prometer porcentagem de
+   um redirect cuja duração a gente não controla. */
+.ipo-spinner {
+    width: 44px;
+    height: 44px;
+    margin-top: 32px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, var(--sc500));
+    -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+            mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+    animation: ipo-spin 0.8s linear infinite;
+}
+@keyframes ipo-spin { to { transform: rotate(360deg); } }
+
+/* ── Saída manual, caso o redirect por JS não aconteça ────
+   Cor e hover vêm do `a:not(.btn)` do root.css (pc300, e pc100 com
+   sublinhado no hover), que é o tratamento de link do DS. Aqui só entram
+   o espaçamento e a fonte da página. */
+.ipo-fallback {
+    margin-top: 32px;
+    font: var(--p-s);
+    font-family: var(--font-family-horizontal);
+}
+
+/* ── Responsivo ─────────────────────────────────────────── */
+@media (max-width: 864px) {
+    .ipo-fundo {
+        width: 810px;
+        height: 810px;
+        margin: -405px 0 0 -405px;
+    }
+}
+
+@media (max-width: 576px) {
+    .ipo-brand-xp { height: 26px; }
+    .ipo-title { margin-top: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* o spinner continua girando, porque é ele que diz "ainda está
+       acontecendo", mas devagar o bastante pra não incomodar */
+    .ipo-spinner { animation-duration: 2.4s; }
+}

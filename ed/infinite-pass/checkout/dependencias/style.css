@@ -1,0 +1,148 @@
+/* style.css — página de passagem do checkout do Ultra Vitalício.
+
+   Gêmea da /ed/infinite-pass/obrigado/ (mesma coluna de 864px centrada no
+   eixo vertical, mesmo lettering de fundo, mesmo spinner): as duas são a
+   mesma tela de espera do mesmo funil, só que esta segura o usuário
+   enquanto a /api/checkout-vitalicio decide pra qual link de pagamento ele
+   vai. A diferença é a cor: lá o momento é de sucesso (--sc500), aqui o
+   título é warning (--wr500), e o spinner fica no core (--pc300), que é o
+   accent do popup do form 518 (--popup-accent-rgb: 100, 100, 255). O link
+   de saída não tem cor própria: usa o componente `.link` do DS.
+
+   Fonte: Syne (--font-family-horizontal), a da LP do Infinite Pass. Ela só
+   existe self-hosted em 400 e 700, e os atalhos `font:` do root.css trazem
+   Poppins junto — daí cada regra redeclarar o font-family DEPOIS do atalho.
+
+   Tokens vêm do root.css. Fundo --bb (do body). */
+
+.ipc {
+    position: relative;
+    isolation: isolate;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;       /* mobile: dvh evita o bug do 100vh atrás da UI */
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;  /* centraliza o conteúdo verticalmente */
+    text-align: center;
+    font-family: var(--font-family-horizontal);
+}
+
+/* Lettering do infinito ao fundo, parado. `fixed` porque a página tem uma
+   tela só e ele é cenário, não conteúdo: fica ancorado no viewport e nunca
+   gera scroll. O blur é estático, então não cai na regra de não animar blur
+   abaixo de 864. O arquivo é o da página de obrigado, de propósito: mesmo
+   cenário, mesmo funil, um asset só pra baixar (e já cacheado pra quem
+   passou por lá). */
+.ipc-fundo {
+    position: fixed;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: 1080px;
+    height: 1080px;
+    margin: -540px 0 0 -540px;
+    background-image: url('/ed/infinite-pass/obrigado/dependencias/ip_infinity-lettering-b2.webp');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    filter: blur(12px);
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* Logo Xperiun no canto superior esquerdo da coluna. Absoluto pra ficar
+   fora do fluxo: o resto do conteúdo está centrado no eixo vertical e não
+   pode ser empurrado por ele. */
+.ipc-brand-xp {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    height: 32px;
+    width: auto;
+    display: block;
+    opacity: 0.5;
+}
+
+.ipc-logo {
+    width: 110px;
+    height: auto;
+}
+
+.ipc-title {
+    margin: 64px 0 0;
+    font: var(--h3);
+    /* 400: o peso de título da LP do Infinite Pass, e um dos dois que a
+       Syne tem self-hosted (o --h3 pede 600, que não existe). */
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    color: var(--wr500);
+}
+
+/* ── Aviso do redirecionamento ──────────────────────────── */
+.ipc-redirect {
+    margin: 32px 0 0;
+    max-width: 44ch;
+    font: var(--p-l);
+    font-family: var(--font-family-horizontal);
+    color: var(--bw-75);
+}
+
+/* ── Spinner: o mesmo anel de conic-gradient das páginas de obrigado do
+   ICIAN, do Bê-a-Bá e do Infinite Pass, aqui no core da página.
+   Indeterminado de propósito: a consulta na AC não tem porcentagem. */
+.ipc-spinner {
+    width: 44px;
+    height: 44px;
+    margin-top: 32px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, var(--pc300));
+    -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+            mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+    animation: ipc-spin 0.8s linear infinite;
+}
+@keyframes ipc-spin { to { transform: rotate(360deg); } }
+
+/* ── Saída manual, caso o redirect por JS não aconteça ────
+   É o componente `.link` do DS (`class="link" data-color="blue"` no HTML), o
+   mesmo link da home. Tamanho, cor, hover e transição vêm de lá; daqui sai
+   só o espaçamento, a Syne da página (redeclarada porque o atalho `font:`
+   do componente traz Poppins junto) e o sublinhado.
+
+   O sublinhado precisa voltar aqui porque o `.link` (0,1,0) perde pro
+   `a:not(.btn) { text-decoration: none }` do root.css (0,1,1) por
+   especificidade, em qualquer página. A home resolve do mesmo jeito, no
+   `.formacoes-body > .link` do home.css.
+
+   O seletor é composto (`.link.ipc-fallback`, 0,2,0) de propósito: com uma
+   classe só o sublinhado empataria com o `.link` e continuaria perdendo pro
+   `a:not(.btn)`. Com duas, as três declarações ganham por especificidade e
+   não dependem da ordem dos arquivos no <head>. */
+.link.ipc-fallback {
+    margin-top: 32px;
+    font-family: var(--font-family-horizontal);
+    text-decoration: underline;
+}
+
+/* ── Responsivo ─────────────────────────────────────────── */
+@media (max-width: 864px) {
+    .ipc-fundo {
+        width: 810px;
+        height: 810px;
+        margin: -405px 0 0 -405px;
+    }
+}
+
+@media (max-width: 576px) {
+    .ipc-brand-xp { height: 26px; }
+    .ipc-title { margin-top: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* o spinner continua girando, porque é ele que diz "ainda está
+       acontecendo", mas devagar o bastante pra não incomodar */
+    .ipc-spinner { animation-duration: 2.4s; }
+}

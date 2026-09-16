@@ -1,14 +1,142 @@
 /* Ilustração 5: Plano de ação priorizado
-   Card --5, span 4 de 10, 544px no tier base.
 
-   Vazio de propósito. Regras do desenho vão aqui.
+   Três etapas empilhadas em peças do mesmo estilo das outras ilustrações, cada uma
+   com número, rótulo e um bloco de prioridade à direita.
 
-   Lembretes do projeto, pra não precisar refazer depois:
-   · traço mínimo 2px, nunca 1px, e borda por box-shadow inset e não por border;
-   · cor sempre por token do root.css, nunca hex solto;
-   · transition e animation só com keyword (ease, ease-out), sem cubic-bezier;
-   · nenhuma animação com filter blur abaixo de 864px;
-   · ícone só do subset do Material Symbols (conferir o BASE do dl-symbols.cjs) e
-     com font-variation-settings "wght" 200;
-   · posição que precisa acompanhar largura vai em porcentagem, não em px medido.
+   A ordem dos blocos na linha é número, rótulo e prioridade. Você descreveu o rótulo
+   como "à esquerda" e a tag como "mais à esquerda", mas o número entra "no lugar do
+   ícone", que nas outras ilustrações é a ponta esquerda, e o bloco da tag é o de
+   largura fixa com conteúdo alinhado à direita. Li os dois como posição na ordem de
+   leitura, não como borda: cada um vem depois do anterior.
+*/
+
+.il-plano {
+    /* ciclo da varredura, dividido em 3 tempos iguais de 2s, um por peça */
+    --ciclo: 6s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+/* mesma peça das outras ilustrações: raio 16, padding 16, gradiente 132deg de bw-15
+   a bw-5. Sem teto de largura: aqui ela ocupa a linha toda. */
+.il-card {
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+
+/* ── a varredura ────────────────────────────────────────────────
+   Uma peça ativa por vez, na ordem, repetindo sem fim. A ativa fica limpa e as outras
+   duas em blur 4px e metade da opacidade.
+
+   Uma keyframe só pras três, e não uma por peça: aqui, ao contrário da ilustração 4, o
+   estado não acumula, então as três têm exatamente a MESMA forma e o que muda é só a
+   fase. Isso permite resolver com atraso, e as fases saem do --ciclo por nth-child, num
+   lugar só.
+
+   As rampas se cruzam de propósito: a peça sai de ativa entre 33 e 39%, e a seguinte
+   entra entre 33,33 e 39,33% (o atraso de um terço). Sem esse cruzamento haveria um
+   instante com as três apagadas a cada troca.
+
+   Só opacidade, sem blur: a distinção entre ativa e inativa se resolve no tom, e com
+   isso a animação deixa de ter filtro nenhum, então também não há custo de desfoque em
+   nenhuma largura.
+
+   fill-mode backwards faz a 2a e a 3a assumirem o estado de 0% (inativas) durante o
+   atraso delas no primeiro ciclo; sem isso as três apareceriam ativas ao carregar.
+   E o repouso da regra é o estado LIMPO, sem opacity declarada: assim, se a animação não
+   rodar (reduced-motion), as três ficam em opacidade cheia em vez de meio apagadas. */
+.il-card {
+    animation: il-plano-ativa var(--ciclo) ease-in-out var(--fase, 0s) infinite backwards;
+}
+.il-plano .il-card:nth-child(2) { --fase: calc(var(--ciclo) / 3); }
+.il-plano .il-card:nth-child(3) { --fase: calc(var(--ciclo) / 3 * 2); }
+@keyframes il-plano-ativa {
+    0%        { opacity: 0.5; }
+    6%, 33%   { opacity: 1; }
+    39%, 100% { opacity: 0.5; }
+}
+@media (prefers-reduced-motion: reduce) {
+    /* sem varredura: as três ficam limpas e legíveis, só não há uma em destaque */
+    .il-card { animation: none; }
+}
+
+/* uma linha por peça: número, rótulo e o bloco de prioridade */
+.il-plano-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* O número no lugar do ícone, na mesma caixa reservada de 32 que as outras
+   ilustrações dão ao selo.
+   line-height 1 não é detalhe: com 32px de fonte numa caixa de 32, qualquer
+   line-height maior estouraria a altura. Com 1, a caixa da linha tem exatamente os 32
+   e o flex centra o dígito nela.
+   O peso 400 é self-hosted (ver fonts.css), então não cai em fallback. */
+.il-plano-num {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--bw);
+}
+
+/* min-width: 0 porque item de flex tem min-width auto, que é o tamanho do conteúdo:
+   sem isso um rótulo longo empurraria o bloco de prioridade pra fora da peça. */
+.il-plano-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font: var(--label);
+    color: var(--bw-50);
+}
+
+/* O bloco de prioridade: largura fixa de 128, tag em cima e as duas linhas de preview
+   embaixo, tudo encostado à direita.
+   flex: 0 0 128px pra ele não ceder largura quando o rótulo crescer, que é o oposto do
+   rótulo: um estica, o outro fica.
+   O gap de 4 é o mesmo entre a tag e o preview e entre as duas linhas dele, então o
+   bloco tem um ritmo só. */
+.il-plano-lado {
+    flex: 0 0 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+/* a tag é o .tag-status do DS; aqui ela só não pode esticar na largura do bloco */
+.il-plano-lado .tag-status { flex: 0 0 auto; }
+
+/* Representação de texto: duas barras de 4px, sem raio. A de baixo é mais curta, o que
+   é o que torna o alinhamento à direita visível: com as duas em 100% não haveria
+   diferença entre encostar à direita ou à esquerda. */
+.il-plano-preview {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+.il-plano-preview span { height: 4px; width: 100%; background: var(--bw-25); }
+.il-plano-preview span:last-child { width: 60%; }
+
+/* ── notas ───────────────────────────────────────────────────────
+   1. As tags usam data-size="s", o menor dos três tamanhos do .tag-status (o DS tem
+      l, m e s), e a semântica carrega a cor: error na alta, warning na média e na
+      baixa. Nada de cor escrita aqui.
+
+   2. A barra de preview ficou em bw-25, um passo abaixo do bw-50 do rótulo, como na
+      ilustração 4: ela é a linha secundária da peça e fica atrás dele na hierarquia.
+
+   3. A segunda barra tem 60% da largura. Você não deu a medida; sem alguma diferença
+      entre as duas, o "alinhadas à direita" não apareceria.
 */

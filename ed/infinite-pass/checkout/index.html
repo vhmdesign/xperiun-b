@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-09-16">
+    <title>Redirecionando | Infinite Pass | Xperiun</title>
+    <meta name="description" content="Estamos verificando seu cadastro para liberar a condição certa de acesso ao Infinite Pass.">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <!-- Mesma fonte e mesmo enquadramento da irmã /ed/infinite-pass/obrigado/ -->
+    <link rel="stylesheet" href="/ed/infinite-pass/checkout/dependencias/style.css?v=1">
+    <!-- Sem JS não dá pra saber quem é a pessoa (o email vive no
+         sessionStorage gravado pelo popup), então o navegador vai direto pro
+         link público. Mesmo fail-open do resto da página. -->
+    <noscript><meta http-equiv="refresh" content="0;url=https://go.xperiun.com/pay/ultra-vitalicio-novos"></noscript>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!--
+     PÁGINA DE PASSAGEM DO CHECKOUT DO ULTRA VITALÍCIO
+
+     A AC redireciona o form 518 (popup da /ed/infinite-pass/oferta/) pra cá.
+     Aqui o script pega o email de quem acabou de enviar, pergunta pra
+     /api/checkout-vitalicio se ele está na lista "TODOS ALUNOS" da
+     ActiveCampaign, e manda pro link de pagamento certo: aluno ou novo.
+
+     A decisão é da Function, não daqui: a chave da AC é server-side e os
+     dois links vêm dela. Esta página só obedece o `destino` que recebe.
+-->
+
+<!-- Lettering do infinito ao fundo: o mesmo arquivo da página de obrigado,
+     referenciado lá (não duplicado) porque é o mesmo cenário do mesmo funil. -->
+<div class="ipc-fundo" aria-hidden="true"></div>
+
+<main class="ipc">
+
+    <img src="/ed/infinite-pass/obrigado/dependencias/logo-infinite-pass.svg" alt="Infinite Pass" class="ipc-logo" width="110" height="50" fetchpriority="high" decoding="async">
+
+    <img src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg" alt="Xperiun" class="ipc-brand-xp" width="107" height="32" decoding="async">
+
+    <h1 class="ipc-title">Dados recebidos, estamos liberando seu acesso</h1>
+
+    <!-- role="status" pro leitor de tela anunciar a espera; o spinner é
+         decorativo e fica fora da árvore de acessibilidade. -->
+    <p class="ipc-redirect" role="status">Verificando seu cadastro para aplicar a condição certa. Em instantes você vai para o pagamento.</p>
+
+    <span class="ipc-spinner" aria-hidden="true"></span>
+
+    <!-- Saída manual. Nasce apontando pro link público (o fail-open de toda
+         a página) e o script troca pro destino real assim que a verificação
+         responde, pra quem clicar antes do redirect não perder o desconto. -->
+    <a class="link ipc-fallback" data-color="blue" data-fallback href="https://go.xperiun.com/pay/ultra-vitalicio-novos">Não foi redirecionado? Aperte aqui!</a>
+
+</main>
+
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+<script src="/ed/infinite-pass/checkout/dependencias/script.js?v=1"></script>
+
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

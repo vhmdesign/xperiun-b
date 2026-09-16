@@ -1,0 +1,569 @@
+/* ══════════════════════════════════════════════════════════════════════
+   /ed/ia-automacao/style.css
+
+   Só o que NÃO existe em formacoes/style.css. Hero, meta-card,
+   course-card, course-modal, sec-depos, oferta-card, faq-row e sec-cta
+   vêm de lá; aqui ficam as 5 seções novas (dor, virada, catálogo, cases,
+   risco) e os pequenos ajustes de oferta/modal.
+
+   Grid: container max-width 1440 + padding 0 16px, colunas 10/8/6/4 nos
+   breakpoints 1440/1439/864/576 com gaps 32/32/24/16. As @media do grid
+   vêm SEMPRE depois das regras base de grid-column.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════
+   01, HERO: bloco de preço com as duas portas
+   ══════════════════════════════════════════════════════════════════════ */
+.hero-precos {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.hero-preco {
+    flex: 1 1 180px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    text-decoration: none;
+    background: var(--bw-5);
+    box-shadow: var(--ring-10);
+    transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+.hero-preco:hover { background: var(--bw-10); box-shadow: var(--ring-25); }
+.hero-preco-valor {
+    font: var(--h5);
+    font-weight: 700;
+    color: var(--bw);
+}
+.hero-preco-label {
+    font: var(--label-xs);
+    color: var(--bw-50);
+}
+/* A porta da Completa é a que o olho pega primeiro */
+.hero-preco--full {
+    background: var(--pc300-10);
+    box-shadow: inset 0 0 0 2px var(--pc300-25);
+}
+.hero-preco--full:hover {
+    background: var(--pc300-15);
+    box-shadow: inset 0 0 0 2px var(--pc300-50);
+}
+.hero-preco--full .hero-preco-valor { color: var(--pc200); }
+
+@media (max-width: 576px) {
+    .hero-precos { flex-direction: column; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   02, SEC-DOR: dor e números na mesma seção
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-dor {
+    position: relative;
+    padding: 128px 0;
+    background: var(--bb);
+}
+.dor-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.dor-header {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* O .meta-card nasce com margin-top: -80px pra encavalar no hero das
+   páginas de formação. Aqui ele vive dentro de uma seção normal, então o
+   encavalamento sai, senão ele sobe e cobre o lede. */
+.sec-dor .meta-card {
+    grid-column: 1 / -1;
+    margin-top: 0;
+}
+/* Único acento vermelho da página inteira: o número da dor */
+.dor-num { color: var(--er500); }
+
+@media (max-width: 1439px) {
+    .dor-inner { grid-template-columns: repeat(8, 1fr); }
+    .dor-header { grid-column: span 5; }
+}
+@media (max-width: 864px) {
+    .dor-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+    .dor-header { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-dor { padding: 96px 0; }
+    .dor-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   03, SEC-VIRADA: coração da página. O contraste entre os dois cards
+   É a mensagem: o leitor vê a lacuna antes de ler sobre ela.
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-virada {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 128px 0;
+    background: var(--bb);
+}
+/* Única seção com roxo dominante, marcando a troca de assunto */
+.virada-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 85% 0%, var(--pp500-15) 0%, transparent 60%),
+        radial-gradient(ellipse at 10% 100%, var(--pc300-10) 0%, transparent 60%);
+}
+.virada-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.virada-header {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.virada-card {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 32px;
+    border-radius: 16px;
+    box-sizing: border-box;
+}
+.virada-card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+.virada-card-icon img { width: 40px; height: 40px; display: block; }
+.virada-card-title { font: var(--h4); font-weight: 600; margin: 0; }
+.virada-card-desc { font: var(--p); margin: 0; }
+
+/* Card 1: aceso */
+.virada-card--on {
+    background: var(--bw-5);
+    box-shadow: inset 0 0 0 2px var(--pc300-25);
+}
+.virada-card--on .virada-card-icon { background: var(--pc300-15); }
+.virada-card--on .virada-card-title { color: var(--bw); }
+.virada-card--on .virada-card-desc { color: var(--bw-75); }
+
+/* Card 2: apagado. A lacuna precisa ser visível, não só descrita. */
+.virada-card--off {
+    background: transparent;
+    box-shadow: var(--ring-10);
+}
+.virada-card--off .virada-card-icon { background: var(--bw-5); }
+.virada-card--off .virada-card-icon img { opacity: 0.35; }
+.virada-card--off .virada-card-title { color: var(--bw-50); }
+.virada-card--off .virada-card-desc { color: var(--bw-50); }
+
+.virada-fecho {
+    grid-column: 3 / span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+}
+.virada-fecho p { font: var(--p); color: var(--bw-75); margin: 0; }
+.virada-fecho-strong {
+    font: var(--label-l) !important;
+    font-weight: 700 !important;
+    color: var(--bw) !important;
+}
+
+@media (max-width: 1439px) {
+    .virada-inner { grid-template-columns: repeat(8, 1fr); }
+    .virada-header { grid-column: span 5; }
+    .virada-card { grid-column: span 4; }
+    .virada-fecho { grid-column: 2 / span 6; }
+}
+@media (max-width: 864px) {
+    .virada-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+    .virada-header,
+    .virada-card,
+    .virada-fecho { grid-column: 1 / -1; }
+    .virada-fecho { text-align: left; }
+}
+@media (max-width: 576px) {
+    .sec-virada { padding: 96px 0; }
+    .virada-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+    .virada-card { padding: 24px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   04, SEC-CATALOGO: carrossel dos 47 cursos, filtrado por formação.
+   O .course-card e o .course-modal vêm de formacoes/style.css.
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-catalogo {
+    position: relative;
+    padding: 128px 0;
+    background: var(--bb);
+}
+.catalogo-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+    align-items: end;
+}
+.catalogo-header {
+    grid-column: span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.catalogo-nav {
+    grid-column: span 3;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+.catalogo-chips,
+.cases-chips {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+/* Sem componente de chip no DS: o filtro reusa o .btn (subtle = inativo,
+   neutral = ativo), em vez de inventar um controle novo. */
+.catalogo-chips .btn,
+.cases-chips .btn { flex: 0 0 auto; }
+
+/* Faixa que aparece ao sair da F6: explorar o catálogo vira o argumento
+   de upgrade, sem precisar de mais um bloco de texto. */
+.catalogo-aviso {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--pc300-10);
+    box-shadow: inset 0 0 0 2px var(--pc300-25);
+    font: var(--p-s);
+    color: var(--bw);
+}
+.catalogo-aviso[hidden] { display: none; }
+.catalogo-aviso .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--pc200);
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+.catalogo-aviso a {
+    color: var(--pc200);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: inset 0 -2px 0 0 var(--pc300-50);
+}
+.catalogo-aviso a:hover { box-shadow: inset 0 -2px 0 0 var(--pc200); }
+
+/* ── Tracks dos dois carrosséis (padrão do .depos-carousel-wrap) ────── */
+.catalogo-track-wrap,
+.cases-track-wrap {
+    max-width: 1440px;
+    margin: 48px auto 0;
+    padding: 0 0 0 16px;
+    overflow: hidden;
+    position: relative;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 128px), transparent 100%);
+            mask-image: linear-gradient(to right, #000 calc(100% - 128px), transparent 100%);
+}
+.catalogo-track,
+.cases-track {
+    display: flex;
+    gap: 32px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.catalogo-track::-webkit-scrollbar,
+.cases-track::-webkit-scrollbar { display: none; }
+
+/* 3 cards por viewport, mesma conta do .depos-card */
+.catalogo-track .course-card,
+.cases-track .course-card {
+    flex: 0 0 calc((100% - 3 * 32px - 64px) / 3);
+    scroll-snap-align: start;
+    padding: 35% 24px 24px 24px;
+}
+
+/* Etiqueta de inclusão: é ela que carrega o funil dentro do carrossel */
+.course-card-inclusao { margin-left: auto; }
+
+/* O XpFolder marca o card de origem com .is-hidden durante o FLIP do
+   lightbox. A regra original é escopada em .folder3d-card, então o card
+   de case precisa da sua. */
+.cases-track .course-card.is-hidden { opacity: 0; }
+
+/* Contagem de cursos dentro do chip */
+.chip-count { opacity: 0.6; }
+
+@media (max-width: 1439px) {
+    .catalogo-inner { grid-template-columns: repeat(8, 1fr); }
+    .catalogo-header { grid-column: span 6; }
+    .catalogo-nav { grid-column: span 2; }
+}
+@media (max-width: 1152px) {
+    .catalogo-track .course-card,
+    .cases-track .course-card { flex: 0 0 calc((100% - 2 * 32px - 64px) / 2); }
+}
+@media (max-width: 864px) {
+    .catalogo-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 24px; }
+    .catalogo-header { grid-column: 1 / -1; }
+    .catalogo-nav { grid-column: 1 / -1; justify-content: flex-start; }
+    .catalogo-track,
+    .cases-track { gap: 24px; }
+    .catalogo-track .course-card,
+    .cases-track .course-card { flex: 0 0 calc(100% - 24px - 48px); }
+}
+@media (max-width: 576px) {
+    .sec-catalogo { padding: 96px 0; }
+    .catalogo-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 16px; }
+    .catalogo-track,
+    .cases-track { gap: 16px; }
+    /* 1,15 card por viewport: sinaliza que tem mais ao lado */
+    .catalogo-track .course-card,
+    .cases-track .course-card { flex: 0 0 87%; }
+    .catalogo-track-wrap,
+    .cases-track-wrap { margin-top: 32px; }
+    /* Empilhados, os 8 chips comiam ~250px de altura. Viram uma faixa que
+       rola na horizontal, sangrando até a borda pra sinalizar o resto. */
+    .catalogo-chips,
+    .cases-chips {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        margin: 0 -16px;
+        padding: 0 16px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .catalogo-chips::-webkit-scrollbar,
+    .cases-chips::-webkit-scrollbar { display: none; }
+    .catalogo-chips .btn,
+    .cases-chips .btn { white-space: nowrap; }
+    /* Sem empurrar a etiqueta pra ponta: no card estreito ela quebra linha */
+    .course-card-inclusao { margin-left: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   05, SEC-CASES: os 41 Business Cases. Seção clara, quebrando a
+   sequência escura antes da oferta. Popup = XpFolder (areas/pasta.js).
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-cases {
+    position: relative;
+    padding: 128px 0;
+    background: var(--ln100);
+}
+.cases-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+    align-items: end;
+}
+/* Fundo claro: header em cores escuras, igual .sec-courses */
+.sec-cases .sec-eyebrow { color: var(--pc500); }
+.sec-cases .sec-title { color: var(--bb); }
+.sec-cases .sec-lede { color: var(--bb-75); }
+
+.cases-header {
+    grid-column: span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.cases-nav {
+    grid-column: span 3;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+.cases-corpo {
+    grid-column: span 6;
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+}
+.cases-selo {
+    grid-column: span 7;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 48px 0 0;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--bb-5);
+    box-shadow: inset 0 0 0 2px var(--bb-10);
+    font: var(--p-s);
+    color: var(--bb);
+    box-sizing: border-box;
+}
+.cases-selo .material-symbols-outlined {
+    font-size: 20px;
+    flex-shrink: 0;
+    color: var(--pc500);
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+.cases-actions {
+    grid-column: span 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 48px;
+}
+
+@media (max-width: 1439px) {
+    .cases-inner { grid-template-columns: repeat(8, 1fr); }
+    .cases-header { grid-column: span 6; }
+    .cases-nav { grid-column: span 2; }
+    .cases-corpo { grid-column: span 5; }
+    .cases-selo { grid-column: span 5; }
+    .cases-actions { grid-column: span 3; }
+}
+@media (max-width: 864px) {
+    .cases-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 24px; }
+    .cases-header,
+    .cases-nav,
+    .cases-corpo,
+    .cases-selo,
+    .cases-actions { grid-column: 1 / -1; }
+    .cases-nav,
+    .cases-actions { justify-content: flex-start; }
+    .cases-actions { margin-top: 0; }
+}
+@media (max-width: 576px) {
+    .sec-cases { padding: 96px 0; }
+    .cases-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 16px; }
+    .cases-selo { margin-top: 32px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   07, AJUSTES NA OFERTA (o resto vem de formacoes/style.css)
+   ══════════════════════════════════════════════════════════════════════ */
+/* Valor avulso riscado acima do preço, no espírito do .completa-price-old */
+.oferta-price-old {
+    font: var(--p-s);
+    color: var(--bw-50);
+    text-decoration: line-through;
+}
+/* Exclusão é informação, não ameaça: cinza, não vermelho */
+.oferta-check--no { color: var(--bw-50); }
+.oferta-check--no::before { background: var(--bw-25); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   08, SEC-RISCO
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-risco {
+    position: relative;
+    padding: 128px 0 0;
+    background: var(--bb);
+}
+.risco-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+}
+.risco-header {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.risco-selos {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.risco-selo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--bw-5);
+    box-shadow: var(--ring-10);
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+.risco-selo .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--sc500);
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+@media (max-width: 1439px) {
+    .risco-inner { grid-template-columns: repeat(8, 1fr); }
+    .risco-header { grid-column: span 5; }
+}
+@media (max-width: 864px) {
+    .risco-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 24px; }
+    .risco-header { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-risco { padding: 96px 0 0; }
+    .risco-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 16px; }
+    .risco-selos { flex-direction: column; align-items: stretch; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MODAL DE CURSO: o CTA no rodapé do modal não existe no original
+   ══════════════════════════════════════════════════════════════════════ */
+.course-modal-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 8px;
+}
+.course-modal-cta .btn { flex: 0 0 auto; }
+.course-modal-cta-nota {
+    font: var(--label-xs);
+    color: var(--bw-50);
+    margin: 0;
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Fora dos buscadores ──────────────────────────────── -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="referrer" content="same-origin">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-09-01">
+
+    <!-- ─── Título ───────────────────────────────────────────── -->
+    <title>Certificado | Xperiun</title>
+
+    <!-- ─── Favicon + CSS global (DS, não mexer) ─────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/ed/aichampion/certificado/dependencias/style.css?v=2">
+
+    <!-- Guard: bloqueia file:// e iframe de terceiro -->
+    <script src="/ed/aichampion/certificado/dependencias/guard.js?v=1"></script>
+</head>
+<body>
+    <img src="/ed/site-dependencias/site-imagens/Base White Logo.svg" alt="Xperiun" class="hero-logo">
+
+    <!-- A página inteira é o form: primeiro o acesso, depois a emissão. -->
+    <main class="cert-page">
+        <div class="cert-badge-media" data-cert-badge hidden></div>
+
+        <section class="cert-conteudo">
+            <div class="cert-head">
+                <h1 class="cert-title" data-cert-titulo>Acesso restrito</h1>
+                <p class="cert-desc" data-cert-desc>Entre com o usuário e a senha da turma para emitir seu certificado.</p>
+            </div>
+
+            <!-- ── Acesso ── -->
+            <form class="cert-form" data-login-form novalidate>
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="login-usuario">Usuário</label>
+                    <input class="input" type="text" id="login-usuario" data-login-usuario autocomplete="username" autocapitalize="none" spellcheck="false">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="login-senha">Senha</label>
+                    <input class="input" type="password" id="login-senha" data-login-senha autocomplete="current-password">
+                </div>
+
+                <p class="cert-msg cert-msg-erro" data-login-erro></p>
+
+                <div class="cert-actions">
+                    <button class="btn" data-size="m" data-emphasis="high" type="submit" data-login-entrar>Entrar</button>
+                </div>
+            </form>
+
+            <!-- ── Emissão (liberada depois do acesso) ── -->
+            <form class="cert-form" data-cert-form novalidate hidden>
+                <div class="input-group">
+                    <label class="input-label input-label-s" for="cert-nome">Nome Completo</label>
+                    <input class="input" type="text" id="cert-nome" data-cert-nome placeholder="Seu nome como sairá no certificado" autocomplete="name">
+                </div>
+
+                <p class="cert-msg cert-msg-erro" data-cert-erro></p>
+                <p class="cert-msg cert-msg-ok" data-cert-ok></p>
+
+                <div class="cert-actions">
+                    <a class="btn" data-size="m" data-emphasis="medium" download href="/ed/aichampion/certificado/dependencias/Badge-AI-Champion.png" data-cert-baixar-badge>Baixar Badge</a>
+                    <button class="btn" data-size="m" data-emphasis="high" type="submit" data-cert-baixar-certificado>Baixar Certificado</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="/ed/aichampion/certificado/dependencias/acesso.js?v=1"></script>
+    <script src="/ed/aichampion/certificado/dependencias/cert-form.js?v=1"></script>
+
+    <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+    <script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+    <!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+    <!-- © 2026 Xperiun, conteúdo protegido por direitos autorais, reprodução não autorizada será objeto de medidas legais. -->
+</body>
+</html>

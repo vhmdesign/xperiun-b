@@ -568,6 +568,19 @@
         function submit() {
             const errBox = form.querySelector('.popup-form-error');
             if (errBox) errBox.hidden = true;            // limpa erro anterior
+            // Guarda o email pra página seguinte. O redirect que a AC dispara
+            // depois do envio (configurado no painel do form) não carrega campo
+            // nenhum, então quem chega do outro lado só sabe quem enviou por
+            // aqui. Usado hoje pelo /ed/infinite-pass/checkout/, que pergunta
+            // pra /api/checkout-vitalicio se o email é de aluno. Vale pra todos
+            // os popups, é barato e morre junto com a aba. Safari em aba privada
+            // pode negar o storage: se negar, o envio segue igual.
+            try {
+                const emailEl = form.querySelector('input[name="email"]');
+                if (emailEl && emailEl.value) {
+                    sessionStorage.setItem('xp_lead_email', emailEl.value.trim().toLowerCase());
+                }
+            } catch (e) { /* storage bloqueado: segue sem */ }
             const url = form.action + '?' + serialize(form) + '&jsonp=true';
             const s = document.createElement('script');
             s.src = url;

@@ -1,0 +1,318 @@
+/* Ilustração do hero: Diagnóstico de Dados e BI
+
+   As coordenadas vêm todas do .md de especificação, sem arredondar nenhuma. Cada
+   bloco carrega --x/--y/--w/--h no style inline e uma regra só (.hi-canvas > *) as
+   converte em posição absoluta. Assim o CSS não repete número nenhum e conferir o
+   desenho contra a spec é ler o HTML lado a lado com ela.
+
+   Por que coordenada absoluta e não grid: a spec fecha 60 blocos com x, y, largura e
+   altura exatos, e traduzir isso pra grid exigiria inventar gaps, paddings e spans
+   que ela não define. O texto dela sugere grid pros blocos grandes, e essa é a
+   refatoração natural DEPOIS que o desenho estiver aprovado: enquanto ele está sendo
+   ajustado, a coordenada é o que mantém o resultado igual à especificação.
+
+   A responsividade vem da própria fórmula da spec (escala = largura / 1600), aplicada
+   uma vez no canvas inteiro. Nenhum número interno é recalculado.
+*/
+
+/* ── palco e canvas ─────────────────────────────────────────────
+   O palco mede a largura disponível e o canvas se encaixa nela por transform: scale.
+   A altura do palco vem de aspect-ratio 16/9, então ele reserva o espaço certo mesmo
+   com o canvas escalado (transform não altera layout, e sem isso o palco mediria a
+   altura cheia de 900).
+   transform-origin no canto de cima à esquerda porque a origem do sistema de
+   coordenadas da spec é o (0,0) daquele canto. */
+.hi-palco {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    container-type: inline-size;
+    overflow: hidden;
+}
+.hi-canvas {
+    position: relative;
+    width: 1600px;
+    height: 900px;
+    transform-origin: 0 0;
+    /* escala = largura do palco / 1600, a fórmula da spec. cqw é 1% da largura do
+       container, então 100cqw/1600px é exatamente essa razão. */
+    transform: scale(calc(100cqw / 1600));
+}
+
+/* A regra que transforma as variáveis em geometria. Vale pra todo filho direto do
+   canvas, então nenhum bloco precisa declarar posição. */
+.hi-canvas > * {
+    position: absolute;
+    left: calc(var(--x) * 1px);
+    top: calc(var(--y) * 1px);
+    width: calc(var(--w) * 1px);
+    height: calc(var(--h) * 1px);
+    box-sizing: border-box;
+}
+
+/* ── molduras ───────────────────────────────────────────────────
+   O raio de 28 do container é o valor que a spec pede; os cards internos usam o 16 do
+   DS, que a spec não especifica. */
+.hi-container {
+    border-radius: 28px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+/* a área do mapa não é desenhada, só reserva o espaço: fica aqui pra a coordenada da
+   seção 2 existir no HTML e poder ser conferida contra a spec */
+.hi-mapa { border-radius: 16px; }
+
+/* ── conectores ─────────────────────────────────────────────────
+   SVG no mesmo viewBox do canvas, então os pontos das seções 9 a 13 entram crus, sem
+   conversão. Traço de 2px: a spec pede 1 a 2, e 1px é proibido no DS. */
+.hi-conn {
+    left: 0;
+    top: 0;
+    width: 1600px;
+    height: 900px;
+    pointer-events: none;
+}
+.hi-conn path { fill: none; stroke: var(--bw-15); stroke-width: 2; }
+.hi-conn circle { fill: var(--bw-25); }
+
+/* ── títulos de coluna ──────────────────────────────────────────*/
+.hi-titulo { font: var(--label); color: var(--bw); display: flex; align-items: center; }
+.hi-sub { font: var(--label-xs); color: var(--bw-25); display: flex; align-items: center; }
+.hi-sub--centro { justify-content: center; text-align: center; }
+.hi-label { font: var(--label); color: var(--bw); display: flex; align-items: center; }
+.hi-label--ia,
+.hi-label--item { justify-content: flex-start; }
+.hi-label--painel { font: var(--label-l); }
+.hi-legenda { font: var(--label-xs); color: var(--bw-50); }
+
+/* ── cards ──────────────────────────────────────────────────────*/
+.hi-card {
+    border-radius: 16px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+.hi-fonte {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+}
+.hi-card-nome { font: var(--label-s); color: var(--bw); }
+
+/* nós de integração: quadrados de 64 com o ícone centrado */
+.hi-no {
+    border-radius: 16px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* o estado entra no fundo, mudando a família de cor e mantendo o mesmo desenho de
+   gradiente: o que muda é a cor, não a densidade */
+.hi-no--wr { background: linear-gradient(132deg, var(--wr500-15), var(--wr500-5)); }
+.hi-no--er { background: linear-gradient(132deg, var(--er500-15), var(--er500-5)); }
+.hi-grafico--er { background: linear-gradient(132deg, var(--er500-15), var(--er500-5)); }
+
+.hi-ico-grande,
+.hi-rede,
+.hi-status-ico { display: flex; align-items: center; justify-content: center; }
+
+/* ── os três gráficos de BI ─────────────────────────────────────
+   Três leituras diferentes, desenhadas e não em ícone: colunas (volume por
+   categoria), linha (série no tempo) e divergência (duas séries que deviam bater).
+   A terceira é a do card em erro, e é ela que dá sentido ao badge: o problema não é
+   "um gráfico qualquer com alerta", é o número que não fecha.
+
+   O gráfico é o conteúdo do card, então o card vira caixa com padding em vez de
+   centralizador de ícone. O de baixo tem padding-bottom maior porque a legenda dele
+   (967, 438 na spec) fica logo abaixo, dentro da área do card. */
+.hi-grafico { padding: 16px; display: flex; align-items: flex-end; }
+.hi-grafico--er { padding-bottom: 42px; }
+.hi-graf { width: 100%; height: 100%; display: block; }
+
+/* colunas: alturas em % via --alt, então elas acompanham a caixa sem número fixo.
+   A mais alta em pc300 é o ponto de leitura; as outras em bw-25 são contexto. */
+.hi-graf--barras { display: flex; align-items: flex-end; gap: 6px; }
+.hi-graf--barras span {
+    flex: 1 1 0;
+    height: calc(var(--alt) * 1%);
+    background: var(--bw-25);
+}
+.hi-graf--barras span:last-child { background: var(--pc300); }
+
+/* linha e divergência: SVG com preserveAspectRatio none, porque a caixa não é
+   quadrada e o desenho tem que preencher os dois eixos. Como o traço distorceria
+   junto, o vector-effect trava a espessura em 2px reais, seja qual for a escala. */
+.hi-graf--linha polyline,
+.hi-graf--diverge polyline {
+    fill: none;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.hi-graf--linha polyline { stroke: var(--pc300); }
+.hi-graf--linha circle { fill: var(--pc300); }
+
+/* a série esperada fica discreta e a real, que se afasta dela, em erro: é o contraste
+   entre as duas que mostra a inconsistência, não a cor de uma só */
+.hi-graf-esperado { stroke: var(--bw-25); }
+.hi-graf-real { stroke: var(--er500); }
+.hi-graf-fim { fill: var(--er500); }
+
+/* ── métricas da plataforma ─────────────────────────────────────
+   rótulo à esquerda e barra à direita, a barra ocupando a sobra da linha */
+.hi-metrica {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: var(--label-xs);
+    color: var(--bw-50);
+}
+.hi-barra { flex: 1 1 auto; height: 4px; background: var(--bw-25); }
+.hi-barra--curta { flex: 0 0 40%; }
+
+/* ── linhas de governança ───────────────────────────────────────*/
+.hi-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font: var(--label-s);
+    color: var(--bw-50);
+}
+.hi-linha .material-symbols-outlined { color: var(--bw); }
+
+/* ── badges e status ────────────────────────────────────────────
+   Discos de estado. A cor cheia da família em cima do 15% de fundo é o que os faz
+   aparecer sobre o card. */
+.hi-badge {
+    border-radius: 1920px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hi-badge--ok { background: var(--sc500-15); color: var(--sc500); }
+.hi-badge--wr { background: var(--wr500-15); color: var(--wr500); }
+.hi-badge--er { background: var(--er500-15); color: var(--er500); }
+
+.hi-status {
+    border-radius: 1920px;
+    font: var(--label-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hi-status--ok { background: var(--sc500-15); color: var(--sc500); }
+
+/* ── timeline ───────────────────────────────────────────────────*/
+.hi-trilho { background: var(--bw-15); }
+.hi-ponto {
+    border-radius: 1920px;
+    background: var(--pc300);
+    /* a spec dá o ponto em y 605 com a linha em 610: o translate centra o disco de 12
+       na linha sem mexer na coordenada dela */
+    transform: translate(-50%, 0);
+}
+.hi-etapa { font: var(--label-xs); color: var(--bw-50); display: flex; align-items: center; }
+
+/* ── status do diagnóstico ──────────────────────────────────────*/
+.hi-status-card { background: linear-gradient(132deg, var(--bw-15), var(--bw-5)); }
+.hi-status-ico { color: var(--pc200); }
+.hi-label--status { font: var(--label); }
+
+/* ── painel do plano de ação ────────────────────────────────────*/
+.hi-painel {
+    border-radius: 28px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+.hi-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--bw);
+}
+.hi-tag {
+    border-radius: 1920px;
+    font: var(--label-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hi-tag--er { background: var(--er500-15); color: var(--er500); }
+.hi-tag--wr { background: var(--wr500-15); color: var(--wr500); }
+.hi-tag--ok { background: var(--sc500-15); color: var(--sc500); }
+
+.hi-outcome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 16px;
+}
+.hi-outcome-rot { font: var(--label-xs); color: var(--sc500); }
+.hi-outcome-txt { font: var(--label-xs); color: var(--bw); }
+
+/* ── scanner ────────────────────────────────────────────────────
+   Os limites vêm da seção 14: varre de x 90 a 1260, com a linha de 2 por 390 a partir
+   de y 145 e a faixa de influência de 70 de largura centrada nela.
+   A faixa é gradiente, não filtro: desfoque animado é o que a regra do projeto evita,
+   e aqui o degradê dá o mesmo efeito de halo sem custo por frame.
+   O que anima é translateX no wrapper, não left: transform é composto, e mover left
+   num elemento de 390 de altura por cima de 60 blocos custa layout a cada frame. */
+.hi-scanner {
+    left: 90px;
+    top: 145px;
+    width: 2px;
+    height: 390px;
+    pointer-events: none;
+    animation: hi-varre 8s linear infinite;
+}
+.hi-scanner-linha {
+    position: absolute;
+    inset: 0;
+    background: var(--pc300);
+}
+.hi-scanner-faixa {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    /* 70 de largura centrados na linha de 2: sobra 34 de cada lado */
+    left: -34px;
+    width: 70px;
+    background: linear-gradient(90deg, transparent, var(--pc300-10), transparent);
+}
+@keyframes hi-varre {
+    /* 90 a 1260 é o intervalo da spec, ou seja 1170 de percurso */
+    from { transform: translateX(0); }
+    to   { transform: translateX(1170px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hi-scanner { animation: none; }
+}
+
+/* ── ícones ─────────────────────────────────────────────────────
+   O tamanho vem do --tam do style inline, um por ícone. wght 200 e opsz 24 são a
+   convenção do projeto: o subset é gerado com opsz@24, então é o único valor desse
+   eixo disponível. */
+.hi-canvas .material-symbols-outlined {
+    font-size: calc(var(--tam) * 1px);
+    line-height: 1;
+    color: var(--pc200);
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+}
+.hi-badge .material-symbols-outlined,
+.hi-status .material-symbols-outlined { color: currentColor; }
+
+/* ── notas ───────────────────────────────────────────────────────
+   1. Textos de conteúdo (nomes de card, legendas, descrições do plano) não estavam na
+      spec, que dá só as caixas. Escrevi rótulos plausíveis pro desenho poder ser
+      avaliado; são copy provisória.
+
+   2. Ícones escolhidos por mim, todos dentro do subset do dl-symbols.cjs: fora do
+      BASE o glifo viraria texto. Os três gráficos de BI não usam ícone: são desenho
+      (barras em div, linhas em SVG).
+
+   3. O container geral usa o raio de 28 que a spec pede. Os cards internos usam 16,
+      que é o do DS, porque a spec não dá raio pra eles.
+*/

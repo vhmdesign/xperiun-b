@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="/ed/formacoes/style.css?v=11">
 
     <!-- ─── CSS específico desta página ──────────────────────── -->
-    <link rel="stylesheet" href="/ed/temp/diagnostico-avancado.css?v=96">
+    <link rel="stylesheet" href="/ed/temp/diagnostico-avancado.css?v=104">
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -928,6 +928,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 </div>
 
+<!-- ═══════════════ FECHO DA PÁGINA ═══════════════
+     Nasceu como a .mk-sec.sec-auto do /cp/data-squads/, que era uma autoqualificação:
+     header à esquerda e uma checklist de cenários à direita. Com a copy desta página a
+     checklist deixou de existir, e sem ela as duas colunas não têm o que separar. Virou
+     um bloco único centrado, que é o que a seção .auto-cta de lá já fazia no rodapé
+     dela.
+
+     As classes seguem com o nome de origem pra a linhagem continuar legível; o que elas
+     descrevem hoje é o fecho, não a autoqualificação. Renomear é barato se você preferir.
+
+     A linha final é um <p> à parte e não uma continuação do texto: ela não argumenta, ela
+     tira um risco de cima do leitor logo depois do botão, e é por isso que aparece
+     menor e mais apagada. -->
+<section class="mk-sec sec-auto" id="sec-auto">
+    <div class="auto-inner">
+        <div class="auto-cta">
+            <h2 class="sec-title">Descubra o que precisa evoluir no <span style="font-weight: 700">ambiente de BI da sua empresa</span>.</h2>
+            <p class="auto-cta-text">Converse com um especialista da Xperiun para entendermos o cenário atual e avaliarmos se o Diagnóstico Avançado de BI faz sentido para a sua empresa.</p>
+            <a class="btn" data-size="m" data-emphasis="high" href="#" data-open-popup="popup-form-data-squads">Falar com especialista</a>
+            <p class="auto-nota">Sem compromisso de contratação.</p>
+        </div>
+    </div>
+</section>
+
 <!-- ═══════════════════════════════════════════════════════════
      INCLUDES PADRÃO (não remover, mantêm consistência do site)
      ═══════════════════════════════════════════════════════════ -->
@@ -978,7 +1002,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="bottom-cta-blur bottom-cta-blur-4" aria-hidden="true"></div>
     <div class="bottom-cta-blur bottom-cta-blur-8" aria-hidden="true"></div>
     <div class="bottom-cta-blur bottom-cta-blur-16" aria-hidden="true"></div>
-    <a class="btn bottom-cta-btn" data-size="m" data-emphasis="medium-core" href="#" data-open-popup="popup-form-data-squads">Fale com um especialista</a>
+    <a class="btn bottom-cta-btn" data-size="s" data-emphasis="medium-core" href="#" data-open-popup="popup-form-data-squads">Fale com especialista</a>
+</div>
+
+<!-- Player flutuante do Panda: miniatura no canto de baixo à direita que cresce
+     ao ser clicada. O iframe é UM SÓ e nunca sai do lugar no DOM: o que muda entre
+     os dois estados é a caixa em volta dele. Mover o iframe, ou trocar o src,
+     recarregaria o player e o vídeo voltaria ao começo a cada clique.
+
+     O véu vem ANTES no HTML e com z-index menor: ele escurece a página quando o
+     player abre e é clicável pra fechar. O botão que ocupa a miniatura inteira só
+     existe enquanto ela está pequena; aberto, ele sai da frente pra os controles do
+     player receberem o clique. -->
+<div class="dg-pip-fundo" hidden></div>
+<div class="dg-pip">
+    <div class="dg-pip-quadro">
+        <iframe
+            src="https://player-vz-3f4bfda1-c03.tv.pandavideo.com.br/embed/?v=dde10b68-1bdc-4f90-84ab-ddb6e4312592"
+            title="Diagnóstico Avançado de BI, apresentação em vídeo"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen loading="lazy"></iframe>
+    </div>
+    <button class="dg-pip-abrir" type="button" aria-label="Ampliar o vídeo"></button>
+    <button class="dg-pip-fechar" type="button" aria-label="Reduzir o vídeo">
+        <span class="material-symbols-outlined">close</span>
+    </button>
 </div>
 
 <!-- Popup do form ActiveCampaign, o MESMO do /cp/data-squads/ (form 437). O
@@ -995,7 +1043,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script src="/ed/site-dependencias/scroll-suave.js"></script>
 
 <!-- Conectores das ilustrações 1 e 2 + tilt do dashboard da sec-diagnostico -->
-<script src="/ed/temp/diagnostico-avancado.js?v=20" defer></script>
+<script src="/ed/temp/diagnostico-avancado.js?v=23" defer></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

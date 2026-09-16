@@ -13,9 +13,50 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
     <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
     <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
-    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-3/style.css?v=2">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-3/style.css?v=15">
 </head>
 <body>
-
+    <!-- Matriz de risco em 4 quadrantes, com a legenda numa peça do mesmo estilo das
+         outras ilustrações (.il-card), pendurada na base da matriz. A matriz fica
+         solta: só a legenda mora na peça.
+         Os quadrantes são elementos de verdade num grid 2x2, e a ordem no DOM é
+         linha por linha de cima pra baixo: o CSS pinta por nth-child.
+         Cada risco mora DENTRO do quadrante dele, com --x/--y em % do quadrante.
+         É o que garante a cor: quem pinta o risco é a mesma regra que pinta o fundo,
+         então ele não tem como discordar da legenda.
+         --atraso desencontra a cintilação de um risco pro outro, senão os cinco
+         piscariam em uníssono.
+         Sem rótulo de eixo e sem faixa: só a matriz e a legenda. -->
+    <div class="il-risco">
+        <div class="il-risco-quadrantes">
+            <!-- cima-esquerda: médio -->
+            <span>
+                <i class="il-risco-ponto" style="--x: 30%; --y: 66%; --atraso: -0.3s"></i>
+                <i class="il-risco-ponto" style="--x: 68%; --y: 30%; --atraso: -1.5s"></i>
+            </span>
+            <!-- cima-direita: alto -->
+            <span>
+                <i class="il-risco-ponto" style="--x: 46%; --y: 54%; --atraso: -1.8s"></i>
+                <i class="il-risco-ponto" style="--x: 70%; --y: 26%; --atraso: -0.6s"></i>
+            </span>
+            <!-- baixo-esquerda: baixo (sem cintilação) -->
+            <span>
+                <i class="il-risco-ponto" style="--x: 26%; --y: 70%"></i>
+                <i class="il-risco-ponto" style="--x: 60%; --y: 42%"></i>
+                <i class="il-risco-ponto" style="--x: 36%; --y: 24%"></i>
+            </span>
+            <!-- baixo-direita: médio -->
+            <span>
+                <i class="il-risco-ponto" style="--x: 40%; --y: 62%; --atraso: -1.05s"></i>
+            </span>
+        </div>
+        <div class="il-card">
+            <ul class="il-risco-legenda">
+                <li><span class="il-risco-chip il-risco-chip--alto"></span>alto</li>
+                <li><span class="il-risco-chip il-risco-chip--medio"></span>médio</li>
+                <li><span class="il-risco-chip il-risco-chip--baixo"></span>baixo</li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>

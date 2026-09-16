@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Pass, oferta - Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Popup da página de OFERTA (/ed/infinite-pass/oferta/), form 518 na
+     ActiveCampaign. Ele é irmão do form-infinite-pass.html, que atende a LP
+     e é o form 512: mesma marca, outro momento. Lá a pessoa entra numa
+     lista de espera; aqui ela já está decidindo a compra, e por isso a copy
+     e o rótulo do botão mudam.
+
+     O `name="or"` (UUID de origem do form na AC) está vazio, como em todos
+     os outros formulários desta pasta: ele vem do painel e ainda não foi
+     passado. Sem ele o envio funciona; o que se perde é a atribuição de
+     origem do lado da AC.
+
+     Os `field[2..5]`, `field[60]` e `field[103]` são os campos de
+     rastreamento que a AC preenche sozinha e que todos os forms daqui
+     carregam. Não são específicos deste. -->
+<div class="popup-form" id="popup-form-infinite-pass-oferta" style="--popup-accent-rgb: 100, 100, 255;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <img class="popup-form-logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDcwMCAzMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI2Y1ZjVmZiI+PHBhdGggZD0iTTk0LjczIDM5LjM0YzE0Ljc5IDAgMjguNyA1Ljc2IDM5LjE2IDE2LjIyIDEwLjQ0IDEwLjQ0IDE2LjIgMjQuMzEgMTYuMjIgMzkuMDdsLS4xOCAyNS45OXYuMjJjMCAxMy4xNSA1LjEyIDI1LjUxIDE0LjQyIDM0LjgxczIxLjY2IDE0LjQyIDM0LjgxIDE0LjQyaC4yMWwyNS45OS0uMThjMTQuNzYuMDIgMjguNjMgNS43OCAzOS4wNyAxNi4yMiAyMS41OSAyMS41OSAyMS41OSA1Ni43MyAwIDc4LjMzLTEwLjQ2IDEwLjQ2LTI0LjM3IDE2LjIyLTM5LjE2IDE2LjIycy0yOC43LTUuNzYtMzkuMTYtMTYuMjJjLTEwLjQ0LTEwLjQ0LTE2LjItMjQuMzEtMTYuMjItMzkuMDdsLjE4LTI1Ljk5di0uMjJjMC0xMy4xNS01LjEyLTI1LjUxLTE0LjQyLTM0Ljgxcy0yMS42Ni0xNC40Mi0zNC44MS0xNC40MmgtLjIxbC0yNS45OS4xOGMtMTQuNzYtLjAyLTI4LjYzLTUuNzgtMzkuMDctMTYuMjItMjEuNTktMjEuNTktMjEuNTktNTYuNzMgMC03OC4zM0M2Ni4wMyA0NS4xIDc5Ljk0IDM5LjM0IDk0LjczIDM5LjM0bTAtMzAuNzdjLTIyLjA1IDAtNDQuMSA4LjQxLTYwLjkyIDI1LjIzQy4xNiA2Ny40NS4xNiAxMjIgMzMuODEgMTU1LjY1YzE2LjgyIDE2LjgyIDM4Ljg3IDI1LjIzIDYwLjkyIDI1LjIzbDI2LjExLS4xOGM0LjcyIDAgOS40NSAxLjggMTMuMDUgNS40MSAzLjYgMy42IDUuNDEgOC4zMyA1LjQxIDEzLjA1bC0uMTggMjYuMTFjMCAyMi4wNSA4LjQxIDQ0LjEgMjUuMjMgNjAuOTJzMzguODcgMjUuMjMgNjAuOTIgMjUuMjMgNDQuMS04LjQxIDYwLjkyLTI1LjIzYzMzLjY1LTMzLjY1IDMzLjY1LTg4LjE5IDAtMTIxLjg0LTE2LjgyLTE2LjgyLTM4Ljg3LTI1LjIzLTYwLjkyLTI1LjIzbC0yNi4xMS4xOGMtNC43MiAwLTkuNDUtMS44LTEzLjA1LTUuNDEtMy42LTMuNi01LjQxLTguMzMtNS40MS0xMy4wNWwuMTgtMjYuMTFjMC0yMi4wNS04LjQxLTQ0LjEtMjUuMjMtNjAuOTJTMTE2Ljc4IDguNTggOTQuNzMgOC41OHptMzkzLjYzIDE2Mi40NGMtMS40MS0zLjMzLTMuMzctNi4xNC01Ljg5LTguNDUtMi41Mi0yLjMtNS40NC00LjA1LTguNzctNS4yNS0zLjMzLTEuMTktNi45MS0xLjc5LTEwLjc1LTEuNzloLTM0LjN2ODMuMmgxMC4yNHYtMjkuNDRoMjQuMDZjMy44NCAwIDcuNDItLjYgMTAuNzUtMS43OXM2LjI1LTIuOTQgOC43Ny01LjI1YzIuNTItMi4zIDQuNDgtNS4xMiA1Ljg5LTguNDVzMi4xMS03LjEyIDIuMTEtMTEuMzktLjctOC4wNi0yLjExLTExLjM5bS0xMi45MyAyMy44N3EtNC44IDQuOC0xMi40OCA0LjhoLTI0LjA2di0zNC41NmgyNC4wNmM1LjEyIDAgOS4yOCAxLjU2IDEyLjQ4IDQuNjcgMy4yIDMuMTIgNC44IDcuMzIgNC44IDEyLjYxcy0xLjYgOS4yOC00LjggMTIuNDhtNDYuMDEtMzkuMzYtMzEuNjIgODMuMmgxMC43NWw4LjAzLTIxLjc2aDM2LjQybDguMDMgMjEuNzZoMTEuMDFsLTMxLjg3LTgzLjJ6bS05LjI5IDUxLjg0IDE0LjY3LTM5Ljc0IDE0LjY3IDM5Ljc0em0xMTAuNDgtNy40MmEzOC4zIDM4LjMgMCAwIDAtNy45NC00LjQ4Yy0yLjg2LTEuMTktNS42NS0yLjIyLTguMzgtMy4wN3EtNi4yNy0yLjA0LTEwLjU2LTMuNzhjLTIuODYtMS4xNS01LjEyLTIuMzItNi43OC0zLjUyLTEuNjYtMS4xOS0yLjg2LTIuNS0zLjU4LTMuOS0uNzMtMS40MS0xLjA5LTMuMDUtMS4wOS00LjkzIDAtNC4yNyAxLjYyLTcuNCA0Ljg2LTkuNDEgMy4yNC0yIDcuMDQtMy4wMSAxMS4zOS0zLjAxIDUuMiAwIDkuNDMgMS4zMiAxMi42NyAzLjk3czQuOTUgNyA1LjEyIDEzLjA2aDkuMjJjLjE3LTguMDItMS45Ni0xNC40Ni02LjQtMTkuMzMtNC40NC00Ljg2LTExLjE0LTcuMy0yMC4xLTcuMy01LjcyIDAtMTAuNiAxLjA1LTE0LjY2IDMuMTQtNC4wNSAyLjA5LTcuMTMgNC44Mi05LjIyIDguMTlzLTMuMTQgNi45OC0zLjE0IDEwLjgyLjkgNy4yOCAyLjY5IDEwLjA1IDQuMTYgNS4xNCA3LjEgNy4xYTUxLjQgNTEuNCAwIDAgMCA5LjU0IDQuOTljMy40MSAxLjM3IDYuNzggMi41NiAxMC4xMSAzLjU4IDMuNSAxLjExIDYuNTMgMi4yNiA5LjA5IDMuNDZzNC41MiAyLjY1IDUuODkgNC4zNWMxLjM2IDEuNzEgMi4wNSAzLjk3IDIuMDUgNi43OHMtLjY2IDUuMTItMS45OCA3LjE3LTMuMjkgMy42NS01Ljg5IDQuOC01LjgyIDEuNzMtOS42NiAxLjczcS02LjY2IDAtMTEuNTgtMi40My00LjkzNS0yLjQzLTcuNzQtNi42NmMtMS44OC0yLjgyLTIuOTQtNi4wMi0zLjItOS42aC05LjIyYy0uMzQgMS4yOC0uMyAzLjA3LjEzIDUuMzguNDMgMi4zIDEuMyA0Ljc2IDIuNjIgNy4zNnMzLjIyIDUuMSA1LjcgNy40OXEzLjcwNSAzLjU4NSA5LjU0IDUuODJjMy44OCAxLjQ5IDguNTUgMi4yNCAxNC4wMiAyLjI0IDYuNCAwIDExLjYzLTEuMDcgMTUuNjgtMy4yczcuMDQtNC45MyA4Ljk2LTguMzhjMS45Mi0zLjQ2IDIuODgtNy4xOSAyLjg4LTExLjJzLS43NS03LjY2LTIuMjQtMTAuNDMtMy40Ni01LjA2LTUuODktNi44NXptNjkuMjQgMGEzOC4zIDM4LjMgMCAwIDAtNy45NC00LjQ4Yy0yLjg2LTEuMTktNS42NS0yLjIyLTguMzgtMy4wN3EtNi4yNy0yLjA0LTEwLjU2LTMuNzhjLTIuODYtMS4xNS01LjEyLTIuMzItNi43OC0zLjUyLTEuNjYtMS4xOS0yLjg2LTIuNS0zLjU4LTMuOS0uNzMtMS40MS0xLjA5LTMuMDUtMS4wOS00LjkzIDAtNC4yNyAxLjYyLTcuNCA0Ljg2LTkuNDEgMy4yNC0yIDcuMDQtMy4wMSAxMS4zOS0zLjAxIDUuMiAwIDkuNDMgMS4zMiAxMi42NyAzLjk3czQuOTUgNyA1LjEyIDEzLjA2aDkuMjJjLjE3LTguMDItMS45Ni0xNC40Ni02LjQtMTkuMzMtNC40NC00Ljg2LTExLjE0LTcuMy0yMC4xLTcuMy01LjcyIDAtMTAuNiAxLjA1LTE0LjY2IDMuMTQtNC4wNSAyLjA5LTcuMTMgNC44Mi05LjIyIDguMTlzLTMuMTQgNi45OC0zLjE0IDEwLjgyLjkgNy4yOCAyLjY5IDEwLjA1IDQuMTYgNS4xNCA3LjEgNy4xYTUxLjQgNTEuNCAwIDAgMCA5LjU0IDQuOTljMy40MSAxLjM3IDYuNzggMi41NiAxMC4xMSAzLjU4IDMuNSAxLjExIDYuNTMgMi4yNiA5LjA5IDMuNDZzNC41MiAyLjY1IDUuODkgNC4zNWMxLjM2IDEuNzEgMi4wNSAzLjk3IDIuMDUgNi43OHMtLjY2IDUuMTItMS45OCA3LjE3LTMuMjkgMy42NS01Ljg5IDQuOC01LjgyIDEuNzMtOS42NiAxLjczcS02LjY2IDAtMTEuNTgtMi40My00LjkzNS0yLjQzLTcuNzQtNi42NmMtMS44OC0yLjgyLTIuOTQtNi4wMi0zLjItOS42aC05LjIyYy0uMzQgMS4yOC0uMyAzLjA3LjEzIDUuMzguNDMgMi4zIDEuMyA0Ljc2IDIuNjIgNy4zNnMzLjIyIDUuMSA1LjcgNy40OXEzLjcwNSAzLjU4NSA5LjU0IDUuODJjMy44OCAxLjQ5IDguNTUgMi4yNCAxNC4wMiAyLjI0IDYuNCAwIDExLjYzLTEuMDcgMTUuNjgtMy4yczcuMDQtNC45MyA4Ljk2LTguMzhjMS45Mi0zLjQ2IDIuODgtNy4xOSAyLjg4LTExLjJzLS43NS03LjY2LTIuMjQtMTAuNDMtMy40Ni01LjA2LTUuODktNi44NXoiLz48cGF0aCBkPSJNMjE5LjI0IDQwSDIwOXY4My4yaDEwLjI0em04NC40OCA2Ny4zNEwyNTIuNTIgNDBoLTEwLjI0djgzLjJoMTAuMjRWNTUuOTlsNTEuMiA2Ny4yMWgxMC4yNFY0MGgtMTAuMjR6bTMwLjcyIDE1Ljg2aDEwLjI0Vjg2LjU5aDM5Ljh2LTkuNmgtMzkuOFY0OS42aDQ4LjY0VjQwaC01OC44OHpNNDE5LjU1IDQwaC0xMC4yNHY4My4yaDEwLjI0em0zMy4yOSAxNS45OSA1MS4yIDY3LjIxaDEwLjI0VjQwaC0xMC4yNHY2Ny4zNEw0NTIuODQgNDBINDQyLjZ2ODMuMmgxMC4yNHpNNTQ3LjU1IDQwaC0xMC4yNHY4My4yaDEwLjI0em00Mi44OCA4My4yaDEwLjI0VjQ5LjZoMjguMTZWNDBoLTY2LjU2djkuNmgyOC4xNnptNjAuOC05LjZWODYuNTloMzkuODF2LTkuNmgtMzkuODFWNDkuNmg0OC42NFY0MGgtNTguODh2ODMuMkg3MDB2LTkuNnoiLz48L2c+PC9zdmc+"
+                     alt="Infinite Pass" width="70" height="32">
+                <div class="popup-form-eyebrow">
+                    <span class="tag-status" data-semantic="neutral" data-size="m">Acesso vitalício</span>
+                </div>
+            </div>
+            <p class="popup-form-label">Preencha seus dados para garantir seu acesso:</p>
+            <form
+                class="popup-form-form _form _form_518 _inline-form _dark"
+                id="_form_518_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <input type="hidden" name="u" value="518">
+                <input type="hidden" name="f" value="518">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <!-- TODO: substituir 'or' pelo UUID real do form 518 na AC -->
+                <input type="hidden" name="or" value="">
+
+                <input type="hidden" name="field[4]"   value="">
+                <input type="hidden" name="field[5]"   value="">
+                <input type="hidden" name="field[2]"   value="">
+                <input type="hidden" name="field[3]"   value="">
+                <input type="hidden" name="field[60]"  value="">
+                <input type="hidden" name="field[103]" value="">
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="you@domain.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                    <!-- Dica do campo, e não aviso de erro: por isso ela é uma
+                         `.input-hint` e vive fora do `.input-error-text`, que
+                         nasce oculto e só aparece quando a validação reclama.
+                         As duas podem conviver na tela ao mesmo tempo. -->
+                    <span class="input-hint">Já é aluno Xperiun? Insira seu email cadastrado na Plataforma Xperiun para ter acesso ao desconto!</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_518_submit">Continuar</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Pronto, recebemos seus dados. Em instantes você recebe as orientações por email.</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>

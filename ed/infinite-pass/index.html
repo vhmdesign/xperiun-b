@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-09-01">
+    <title>Infinite Pass, Xperiun</title>
+    <meta name="description" content="Acesso vitalício à Plataforma Xperiun. Os detalhes do Infinite Pass são revelados na live de aniversário de 9 anos, dia 16/09 às 19h30. Cadastre-se gratuitamente na lista VIP.">
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/infinite-pass/dependencias/style.css?v=32">
+    <!-- Liga o estado inicial da entrada do hero ANTES do primeiro paint.
+         Sem JS a classe nunca entra e o hero aparece pronto; com JS, o
+         script.js faz a cascata a partir daqui. Este <script> precisa
+         ficar no <head> e ser inline: no rodapé, o hero já teria pintado
+         visível e a entrada começaria com um flash. -->
+    <script>document.documentElement.classList.add('ip-anima');</script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ===================================================================
+     TARJA CORRIDA. Na origem a duplicação era feita em JS, que media a
+     lista e escrevia uma @keyframes própria a cada carregamento; o
+     resultado medido lá são 16 itens, ul de 2960px, vão de 32px entre
+     eles. Aqui a mesma densidade vem do HTML: 12 itens por metade, a
+     metade duplicada (a cópia sai da árvore de acessibilidade) e a
+     animação anda -50%, que é sempre o ponto exato onde a cópia cobre o
+     original. Sem JS e sem medida.
+
+     São 12 e não 4 porque a metade precisa ser mais larga que a tela: com
+     4 itens ela media 782px e o CSS tinha que esticar os vãos até 197px
+     pra cobrir 1440, o que deixava a tarja rala. Com 12 a largura natural
+     passa de 2300px e o vão fica nos 32px da origem em qualquer monitor
+     normal.
+     =================================================================== -->
+<div class="ip-tarja">
+    <div class="ip-tarja-trilho">
+        <ul class="ip-tarja-lista">
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+        </ul>
+        <ul class="ip-tarja-lista" aria-hidden="true">
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+            <li>Acesso vitalício</li>
+            <li>Plataforma Xperiun</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ===================================================================
+     HERO. Estrutura do class="ip" de /ed/pre-vitalicio/, que já é a
+     réplica desta página no design system. As diferenças aqui:
+
+       - lá o lockup é <h2> porque o <h1> pertencia ao hero da página;
+         aqui a página É o Infinite Pass, então ele volta a ser <h1> e a
+         chamada de aniversário desce pra <h2>, como na origem;
+       - grid Wide do DS (max 1440, colunas 10/8/6/4 nos breakpoints
+         1440/1439/864/576) no lugar da largura fixa de 1120;
+       - título com tamanho calculado em cqw em vez dos 272px fixos da
+         origem, que estouravam no mobile;
+       - botão do DS (.btn) no lugar do .btn-oferta custom.
+
+     O lockup é quebrado em letras pelo script.js, não no HTML: assim a
+     página sem JS continua com o texto inteiro e o leitor de tela nunca
+     soletra "I-N-F-I-N-I-T-E".
+     =================================================================== -->
+<header class="ip-hero" id="topo">
+    <div class="ip-hero-inner">
+        <div class="ip-marca">
+            <img class="ip-logo" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
+                 alt="Xperiun" width="120" height="36">
+            <h1 class="ip-titulo">
+                <span class="ip-titulo-linha">Infinite</span>
+                <span class="ip-titulo-linha">Pass</span>
+            </h1>
+            <video class="ip-video" autoplay muted loop playsinline aria-hidden="true"
+                   poster="/ed/infinite-pass/dependencias/ip-hero-poster.webp">
+                <source src="/ed/infinite-pass/dependencias/ip-hero-video.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="ip-cta">
+            <h2 class="ip-h2 sec-title">Comemore os 9 anos com a Xperiun</h2>
+            <p class="sec-lede">Participe da LIVE oficial de aniversário, cadastre-se gratuitamente na lista VIP e garanta acesso à maior oportunidade da história da Xperiun.</p>
+            <p class="ip-data">16/09 às 19h30</p>
+            <a class="btn ip-btn ip-btn-brilho" data-size="m" data-emphasis="medium" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-infinite-pass')">Quero ter acesso ao Infinite Pass</a>
+            <div class="ip-assinatura-linha">
+                <div class="ic-scroll-hint" aria-hidden="true"><span class="ic-scroll-tri"></span></div>
+                <p class="ip-assinatura">Uma única oferta. Acesso vitalício.<br>Toda plataforma. Para sempre.</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ===================================================================
+     IMAGINE. As cinco falas entram uma a uma conforme cruzam 75% da
+     tela (mesma âncora da origem), e a escada de recuo delas agora é
+     recuo de COLUNA, não margem em pixel: os 288px da origem são
+     exatamente onde a coluna 3 do grid começa (112 + 32 + 112 + 32).
+
+     Os dois fundos são decorativos e ficam fora da árvore de
+     acessibilidade: o lettering desfocado que atravessa a seção da
+     esquerda pra direita, e o brilho que sobe no rodapé.
+     =================================================================== -->
+<section class="ip-imagine">
+    <div class="ip-imagine-fundo" aria-hidden="true"></div>
+
+    <div class="ip-imagine-inner">
+        <div class="ip-frase ip-frase--forte ip-frase--abre"><p>Imagine...</p></div>
+
+        <div class="ip-frase ip-frase--corpo">
+            <p>Ter acesso ilimitado às trilhas de formação e recursos da plataforma que é referência no ensino das profissões mais valorizadas do mercado.</p>
+            <p>Estar pronto para assumir os cargos mais disputados dos próximos anos.</p>
+        </div>
+
+        <div class="ip-frase ip-frase--forte ip-frase--recuo">
+            <p>E garantir esse benefício para sempre, com <span style="font-weight: 700">acesso vitalício!</span></p>
+        </div>
+
+        <div class="ip-frase ip-frase--corpo">
+            <p>Uma condição exclusiva em celebração aos 9 anos de história da Xperiun.</p>
+        </div>
+
+        <div class="ip-frase ip-frase--forte ip-frase--recuo">
+            <p>Dia 16 de setembro às 19h30</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     TRILHAS. Sete faixas de course-cards que andam na horizontal conforme a
+     seção atravessa a tela, alternando o sentido, com blur e opacidade
+     caindo conforme a capa se afasta do centro da viewport.
+
+     A faixa é sangria total de propósito: é uma tira de mídia, não uma
+     coluna de conteúdo, e por isso não se ancora no grid. Quem se
+     ancora é o parágrafo abaixo, em 4 colunas (544px, a mesma medida
+     que a origem usava como max-width).
+
+     O tamanho da capa vem do grid mesmo assim: 336px são 3 colunas de
+     112, e o vão entre capas é o column-gap de 32 do tier Wide.
+     =================================================================== -->
+<section class="ip-trilhas">
+    <div class="ip-trilhas-faixas">
+        <div class="ip-faixa" data-sentido="rtl">
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-power-automate-essencial.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Power Automate Essencial</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-claude-para-analistas-ia-na-analise-e-na-decisao.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Claude para Analistas: IA na Análise e na Decisão</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f2">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f2-trabalhando-com-grandes-bases-corporativas.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20Intermedi%C3%A1rio.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Avançado</span>
+                        </div>
+                        <h3 class="course-card-title">Trabalhando com Grandes Bases Corporativas</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f7">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f7-fundamentos-de-fp-a-e-gestao-financeira.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Carreira%20%26%20Neg%C3%B3cios.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Carreira e Negócios</span>
+                        </div>
+                        <h3 class="course-card-title">Fundamentos de FP&amp;A e Gestão Financeira</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f5">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f5-databricks-com-spark.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Python%20%26%20Data%20Science.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Python e Data Science</span>
+                        </div>
+                        <h3 class="course-card-title">Databricks com Spark</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="ip-faixa" data-sentido="ltr">
+            <article class="course-card ip-capa ip-capa--f1">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f1-modelagem-de-dados-essencial-2-0.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20B%C3%A1sico.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Básico</span>
+                        </div>
+                        <h3 class="course-card-title">Modelagem de Dados Essencial 2.0</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f2">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f2-modelagem-de-dados-avancado.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20Intermedi%C3%A1rio.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Avançado</span>
+                        </div>
+                        <h3 class="course-card-title">Modelagem de Dados Avançado</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f5">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f5-apis-com-python.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Python%20%26%20Data%20Science.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Python e Data Science</span>
+                        </div>
+                        <h3 class="course-card-title">APIs com Python</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f4">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f4-data-warehouse-com-apache-hop.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Banco%20de%20Dados%20%26%20SQL.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Banco de Dados e SQL</span>
+                        </div>
+                        <h3 class="course-card-title">Data Warehouse com Apache HOP</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-power-apps-essencial.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Power Apps Essencial</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="ip-faixa" data-sentido="rtl">
+            <article class="course-card ip-capa ip-capa--f7">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f7-linkedin-champion-2-0.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Carreira%20%26%20Neg%C3%B3cios.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Carreira e Negócios</span>
+                        </div>
+                        <h3 class="course-card-title">LinkedIn Champion 2.0</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f1">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f1-power-query-essencial-2-0.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20B%C3%A1sico.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Básico</span>
+                        </div>
+                        <h3 class="course-card-title">Power Query Essencial 2.0</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-n8n-automacao-inteligente-de-tarefas-e-processos.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">N8N, Automação Inteligente de Tarefas e Processos</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f5">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f5-estatistica-para-analise-de-dados.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Python%20%26%20Data%20Science.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Python e Data Science</span>
+                        </div>
+                        <h3 class="course-card-title">Estatística para Análise de Dados</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-python-llms-e-agentes-de-ia.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Python, LLMs e Agentes de IA</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="ip-faixa" data-sentido="ltr">
+            <article class="course-card ip-capa ip-capa--f3">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f3-fundamentos-do-microsoft-fabric.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft%20Fabric.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Microsoft Fabric</span>
+                        </div>
+                        <h3 class="course-card-title">Fundamentos do Microsoft Fabric</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f3">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f3-transformacoes-com-microsoft-fabric.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft%20Fabric.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Microsoft Fabric</span>
+                        </div>
+                        <h3 class="course-card-title">Transformações com Microsoft Fabric</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f5">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f5-pandas-para-analise-avancadas-com-python.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Python%20%26%20Data%20Science.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Python e Data Science</span>
+                        </div>
+                        <h3 class="course-card-title">Pandas para Análise Avançadas com Python</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f1">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f1-fundamentos-de-analise-de-dados.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20B%C3%A1sico.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Básico</span>
+                        </div>
+                        <h3 class="course-card-title">Fundamentos de Análise de Dados</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f2">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f2-business-analytics-indicadores-e-kpis.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20Intermedi%C3%A1rio.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Avançado</span>
+                        </div>
+                        <h3 class="course-card-title">Business Analytics, Indicadores e KPIs</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="ip-faixa" data-sentido="rtl">
+            <article class="course-card ip-capa ip-capa--f5">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f5-introducao-a-machine-learning.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Python%20%26%20Data%20Science.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Python e Data Science</span>
+                        </div>
+                        <h3 class="course-card-title">Introdução à Machine Learning</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f2">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f2-analises-avancadas-com-dax.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20Intermedi%C3%A1rio.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Avançado</span>
+                        </div>
+                        <h3 class="course-card-title">Análises Avançadas com DAX</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-design-e-video-com-ia-criacao-visual-dirigida-por-claude.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Design e Vídeo com IA: Criação Visual Dirigida por Claude</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-ai-champion.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">AI Champion</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f4">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f4-banco-de-dados-e-linguagem-sql.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Banco%20de%20Dados%20%26%20SQL.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Banco de Dados e SQL</span>
+                        </div>
+                        <h3 class="course-card-title">Banco de Dados e Linguagem SQL</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="ip-faixa" data-sentido="ltr">
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-github-e-vercel-coloque-no-ar-o-que-voce-criou-com-ia.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Github e Vercel: Coloque no Ar o que Você Criou com IA</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f2">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f2-apis-e-linguagem-m-avancado.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20Intermedi%C3%A1rio.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Avançado</span>
+                        </div>
+                        <h3 class="course-card-title">APIs e Linguagem M Avançado</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-supabase-sem-codigo-banco-de-dados-para-suas-solucoes-de-ia.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Supabase sem Código: Banco de Dados para suas Soluções de IA</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f7">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f7-sales-ops.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Carreira%20%26%20Neg%C3%B3cios.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Carreira e Negócios</span>
+                        </div>
+                        <h3 class="course-card-title">Sales OPS</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-claude-code-aplicado-construa-solucoes-com-ia.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Claude Code Aplicado: Construa Soluções com IA</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="ip-faixa" data-sentido="rtl">
+            <article class="course-card ip-capa ip-capa--f1">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f1-linguagem-dax-essencial-2-0.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20B%C3%A1sico.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Básico</span>
+                        </div>
+                        <h3 class="course-card-title">Linguagem DAX Essencial 2.0</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-lives-dos-incomparaveis.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Lives dos Incomparáveis</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-git-github-para-colaboracao.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Git &amp; GitHub para Colaboração</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f1">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f1-power-bi-servico-essencial-2-0.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20B%C3%A1sico.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">Power BI Básico</span>
+                        </div>
+                        <h3 class="course-card-title">Power BI Serviço Essencial 2.0</h3>
+                    </div>
+                </div>
+            </article>
+            <article class="course-card ip-capa ip-capa--f6">
+                <span class="course-card-bg" style="background-image: url('/ed/infinite-pass/dependencias/capa-f6-desvendando-o-claude-ia-como-copiloto-de-trabalho.webp');"></span>
+                <div class="course-card-container">
+                    <div class="course-card-text">
+                        <div class="ip-capa-formacao">
+                            <span class="ip-capa-icone"><img src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="" width="24" height="24" loading="lazy"></span>
+                            <span class="tag-status ip-capa-tag" data-size="s">IA e Automação</span>
+                        </div>
+                        <h3 class="course-card-title">Desvendando o Claude: IA como Copiloto de Trabalho</h3>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- ===============================================================
+         FECHAMENTO DAS TRILHAS + TIMELINE DAS 7 FORMAÇÕES.
+
+         O parágrafo e a timeline dividem UM container só: ele é o grid
+         Wide do DS, com o texto ancorado nas primeiras colunas e a
+         timeline ocupando a linha inteira logo abaixo.
+
+         A timeline vem do .formacoes-timeline de /ed/ (a home), com duas
+         mudanças:
+           - saiu o link "Ver formação NN" dos SETE itens. Esta página é
+             captação de lista e não tem saída pro resto do site (mesmo
+             motivo de ela não ter menu nem footer), então um link por
+             card seria sete vazamentos;
+           - o texto da Formação 06 ficou mais abrangente, falando de
+             produtividade e de dominar as ferramentas, em vez de só
+             delegar tarefa repetitiva.
+         =============================================================== -->
+    <div class="ip-timeline-wrap">
+    <p class="ip-trilhas-texto">Percorra sem limites as 6 trilhas que te tornarão Especialista em Análise de Dados e um Expert em Inteligência Artificial e Automação.</p>
+
+    <div class="formacoes-timeline">
+        <div class="formacoes-item enter-card" style="--dot-color:#BE9696">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yNjAgMTgwTDIxMCAyMzBWNDBIMjIwTDI2MCA4MFYxODBaTTE2MCA1MEwxMTAgMC4yMUwxMDAgMFYyNjBIMTEwTDE2MCAyMTBWNTBaTTUwIDEyMEwxMCA4MEgwTDAuMiAxODBMNTAgMjMwVjEyMFoiIGZpbGw9InVybCgjZ3JhZC1wYmktYmFzaWNvKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXBiaS1iYXNpY28iIHgxPSIzNy41IiB5MT0iMjE3LjUiIHgyPSIyMjIuNSIgeTI9IjMyLjUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0JFOTY5NiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDM0FBNzMiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 01</span>
+                    <p class="formacoes-name">Power BI Básico ao Intermediário</p>
+                </div>
+                <p class="formacoes-outcome">Você sai do Excel e entrega seu primeiro dashboard que o time pede emprestado.</p>
+            </div>
+        </div>
+        <div class="formacoes-item enter-card" style="--dot-color:#AF6E96">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xODAgMjIwTDQwIDgwVjQwSDgwTDIwMCAxNjBWMjQwTDE4MCAyNjBWMjIwWk0xNDAgMjYwVjIyMEw0MCAxMjBIMFYxNjBMMTAwIDI2ME0yNDAgMjAwTDI2MCAxODBWMTAwTDE2MCAwSDEyMFY0MEwyNDAgMTYwVjIwMFoiIGZpbGw9InVybCgjZ3JhZC1wYmktaW50ZXJtZWRpYXJpbykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZC1wYmktaW50ZXJtZWRpYXJpbyIgeDE9IjUwIiB5MT0iMjEwIiB4Mj0iMjEwIiB5Mj0iNTAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0FGNkU5NiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNCRTZFODIiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 02</span>
+                    <p class="formacoes-name">Power BI Intermediário ao Avançado</p>
+                </div>
+                <p class="formacoes-outcome">DAX, modelagem e performance pra você virar a referência de Power BI da área.</p>
+            </div>
+        </div>
+        <div class="formacoes-item enter-card" style="--dot-color:#5AAAC8">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xOTAgMEwyMjAgMzBWNTBINjBWMTYwSDEyMEwxNzAgMTExLjUzSDI2MEwyMTAgMTYwSDEyMEwyMCAyNjBMMCAyNDBWMTEwTDExMCAwSDE5MFoiIGZpbGw9InVybCgjZ3JhZC1mYWJyaWMpIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQtZmFicmljIiB4MT0iMC4zNzk5OTQiIHkxPSIyNDAuMzgiIHgyPSIyMTUuMzgiIHkyPSIyNS4zOCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNUFBQUM4Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzUwQzhDOCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 03</span>
+                    <p class="formacoes-name">Microsoft Fabric</p>
+                </div>
+                <p class="formacoes-outcome">Lakehouse, OneLake e arquitetura moderna pra quem quer estar onde o mercado está indo.</p>
+            </div>
+        </div>
+        <div class="formacoes-item enter-card" style="--dot-color:#6EB4E6">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yMDAgMTMwTDIxMCAxMjBWODBMMTMwIDBWNjBMMjAwIDEzMFpNMTMwIDIwMEwxNDAgMjEwSDE4MEwyNjAgMTMwSDIwMEwxMzAgMjAwWk02MCAxMzBMNTAgMTQwVjE4MEwxMzAgMjYwVjIwMEw2MCAxMzBaTTEzMCA2MEwxMjAgNTBIODBMMCAxMzBINjBMMTMwIDYwWiIgZmlsbD0idXJsKCNncmFkLWJhbmNvLXNxbCkiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZC1iYW5jby1zcWwiIHgxPSIwIiB5MT0iMTMwIiB4Mj0iMjYwIiB5Mj0iMTMwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM2RUI0RTYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzhCRUVCIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 04</span>
+                    <p class="formacoes-name">Banco de Dados &amp; SQL</p>
+                </div>
+                <p class="formacoes-outcome">Você para de depender da TI pra extrair dado e passa a puxar a informação direto da fonte.</p>
+            </div>
+        </div>
+        <div class="formacoes-item enter-card" style="--dot-color:#78AA9B">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xODAgMTAwTDEwMCAyMFYwSDE2MEwyNjAgMTAwSDE4MFpNOTAgNzBWNDBINjBMMCAxMDBWMTYwTDkwIDcwWk0wIDE2MEwxMDAgMjYwSDE2MFYyNDBMODAgMTYwSDBaTTE3MCAxOTBWMjIwSDIwMEwyNjAgMTYwVjEwMEwxNzAgMTkwWiIgZmlsbD0idXJsKCNncmFkLXB5dGhvbi1kcykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZC1weXRob24tZHMiIHgxPSI1MCIgeTE9IjIxMCIgeDI9IjIxMCIgeTI9IjUwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM3OEFBOUIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjQUZFNkI0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 05</span>
+                    <p class="formacoes-name">Python &amp; Data Science</p>
+                </div>
+                <p class="formacoes-outcome">Análises avançadas, automações e modelos preditivos sem precisar virar engenheiro de software.</p>
+            </div>
+        </div>
+        <div class="formacoes-item enter-card" style="--dot-color:#3264FF">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNDUgMjIwQzE0NSAyNDIuMDkgMTM4LjI4IDI2MCAxMzAgMjYwQzEyMS43MiAyNjAgMTE1IDI0Mi4wOSAxMTUgMjIwQzExNSAxOTcuOTEgMTIxLjcyIDE4MCAxMzAgMTgwQzEzOC4yOCAxODAgMTQ1IDE5Ny45MSAxNDUgMjIwWk0xNTUuMjEgMTczLjJDMTQ3LjI3IDE3Ny44NSAxNDkuODggMTk3LjA4IDE2MS4wNSAyMTYuMTRDMTcyLjIyIDIzNS4yIDE4Ny43MSAyNDYuODggMTk1LjY1IDI0Mi4yM0MyMDMuNTkgMjM3LjU4IDIwMC45OCAyMTguMzUgMTg5LjgxIDE5OS4yOUMxNzguNjQgMTgwLjIzIDE2My4xNSAxNjguNTUgMTU1LjIxIDE3My4yWk0xNzMuMiAxNTUuMjFDMTY4LjA4IDE2My45NSAxNzkuMzkgMTgwLjA4IDE5OC40NSAxOTEuMjVDMjE3LjUxIDIwMi40MiAyMzcuMTEgMjA0LjM5IDI0Mi4yMyAxOTUuNjVDMjQ3LjM1IDE4Ni45MSAyMzYuMDQgMTcwLjc4IDIxNi45OCAxNTkuNjFDMTk3LjkyIDE0OC40NCAxNzguMzIgMTQ2LjQ3IDE3My4yIDE1NS4yMVpNMTgwIDEzMEMxODAgMTQxLjA1IDE5Ny45MSAxNTAgMjIwIDE1MEMyNDIuMDkgMTUwIDI2MCAxNDEuMDUgMjYwIDEzMEMyNjAgMTE4Ljk1IDI0Mi4wOSAxMTAgMjIwIDExMEMxOTcuOTEgMTEwIDE4MCAxMTguOTUgMTgwIDEzMFpNMCAxMzBDMCAxMzUuNTIgMTcuOTEgMTQwIDQwIDE0MEM2Mi4wOSAxNDAgODAgMTM1LjUyIDgwIDEzMEM4MCAxMjQuNDggNjIuMDkgMTIwIDQwIDEyMEMxNy45MSAxMjAgMCAxMjQuNDggMCAxMzBaTTE3Ljc4IDE5NS42NEMyMS4wNCAyMDEuMiAzOS4xMyAxOTYuNjUgNTguMTkgMTg1LjQ5Qzc3LjI1IDE3NC4zMiA5MC4wNTk5IDE2MC43NyA4Ni44MDk5IDE1NS4yMUM4My41NDk5IDE0OS42NSA2NS40NiAxNTQuMiA0Ni40IDE2NS4zNkMyNy4zNCAxNzYuNTMgMTQuNTMgMTkwLjA4IDE3Ljc4IDE5NS42NFpNNjQuMzYgMjQyLjIzQzcwLjcxIDI0NS45NSA4NC45MiAyMzMuNTIgOTYuMDggMjE0LjQ2QzEwNy4yNSAxOTUuNCAxMTEuMTUgMTc2LjkzIDEwNC43OSAxNzMuMjFDOTguNDQgMTY5LjQ5IDg0LjIyOTkgMTgxLjkyIDczLjA2OTkgMjAwLjk4QzYxLjg5OTkgMjIwLjA0IDU4IDIzOC41MSA2NC4zNiAyNDIuMjNaTTEzMCAwQzEyNy4yNCAwIDEyNSAxNy45MSAxMjUgNDBDMTI1IDYyLjA5IDEyNy4yNCA4MCAxMzAgODBDMTMyLjc2IDgwIDEzNSA2Mi4wOSAxMzUgNDBDMTM1IDE3LjkxIDEzMi43NiAwIDEzMCAwWk0xOTUuNjQgMTcuNzdDMTkwLjg3IDE0Ljk4IDE3Ny45NiAyOC4xNyAxNjYuNzkgNDcuMjNDMTU1LjYyIDY2LjI5IDE1MC40NCA4NC4wMSAxNTUuMiA4Ni44QzE1OS45NyA4OS41OSAxNzIuODggNzYuNCAxODQuMDUgNTcuMzRDMTk1LjIyIDM4LjI4IDIwMC40IDIwLjU2IDE5NS42NCAxNy43N1pNMjQyLjIzIDY0LjM2QzIzOC4wNCA1Ny4yMSAyMTkuMiA2MC40NyAyMDAuMTMgNzEuNjRDMTgxLjA3IDgyLjgxIDE2OS4wMSA5Ny42NSAxNzMuMiAxMDQuOEMxNzcuMzkgMTExLjk1IDE5Ni4yMyAxMDguNjkgMjE1LjMgOTcuNTJDMjM0LjM3IDg2LjM1IDI0Ni40MiA3MS41MSAyNDIuMjMgNjQuMzZaTTg2Ljc5OTkgMTA0Ljc5Qzg5LjEyOTkgMTAwLjgyIDc1LjU2IDg4LjU1IDU2LjUgNzcuMzhDMzcuNDQgNjYuMjEgMjAuMSA2MC4zOCAxNy43NyA2NC4zNUMxNS40NCA2OC4zMiAyOS4wMSA4MC41OSA0OC4wNyA5MS43NkM2Ny4xMyAxMDIuOTMgODQuNDY5OSAxMDguNzYgODYuNzk5OSAxMDQuNzlaTTEwNC44IDg2LjhDMTA3Ljk4IDg0Ljk0IDEwMS41IDY3Ljk4IDkwLjMzIDQ4LjkyQzc5LjE2IDI5Ljg2IDY3LjU0IDE1LjkxIDY0LjM2IDE3Ljc4QzYxLjE4IDE5LjY0IDY3LjY2IDM2LjYgNzguODMgNTUuNjZDOTAgNzQuNzIgMTAxLjYyIDg4LjY3IDEwNC44IDg2LjhaIiBmaWxsPSJ1cmwoI2dyYWQtYXV0b21hY2FvLWlhKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLWF1dG9tYWNhby1pYSIgeDE9IjQxLjA0IiB5MT0iMjE5LjEyIiB4Mj0iMjE5LjE1IiB5Mj0iNDEuMDEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzMyNjRGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM2NDk2QzgiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 06</span>
+                    <p class="formacoes-name">Inteligência Artificial e Automação</p>
+                </div>
+                <p class="formacoes-outcome">Você domina as ferramentas, cria agentes e automações e usa IA pra multiplicar a sua produtividade em qualquer área, sem depender de ninguém pra executar.</p>
+            </div>
+        </div>
+        <div class="formacoes-item enter-card" style="--dot-color:#9B469B">
+            <div class="formacoes-dot"></div>
+            <div class="formacoes-body">
+                <img class="formacoes-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNjAgMTMwQzE2MCAyMDEuOCAxNDYuNTcgMjYwIDEzMCAyNjBDMTEzLjQzIDI2MCAxMDAgMjAxLjggMTAwIDEzMEMxMDAgNTguMiAxMTMuNDMgMCAxMzAgMEMxNDYuNTcgMCAxNjAgNTguMiAxNjAgMTMwWk0xODUuMzIgMTBDMTczLjgxIDEwIDE2NC40OSA2My43MyAxNjQuNDkgMTMwQzE2NC40OSAxOTYuMjcgMTczLjgyIDI1MCAxODUuMzIgMjUwQzE5Ni44MyAyNTAgMjA2LjE1IDE5Ni4yNyAyMDYuMTUgMTMwQzIwNi4xNSA2My43MyAxOTYuODIgMTAgMTg1LjMyIDEwWk0yMjUuMzIgNDBDMjE3LjUgNDAgMjExLjE1IDgwLjI5IDIxMS4xNSAxMzBDMjExLjE1IDE3OS43MSAyMTcuNDkgMjIwIDIyNS4zMiAyMjBDMjMzLjE0IDIyMCAyMzkuNDkgMTc5LjcxIDIzOS40OSAxMzBDMjM5LjQ5IDgwLjI5IDIzMy4xNSA0MCAyMjUuMzIgNDBaTTI1Mi41IDgwQzI0OC4zNiA4MCAyNDUgMTAyLjM5IDI0NSAxMzBDMjQ1IDE1Ny42MSAyNDguMzYgMTgwIDI1Mi41IDE4MEMyNTYuNjQgMTgwIDI2MCAxNTcuNjEgMjYwIDEzMEMyNjAgMTAyLjM5IDI1Ni42NCA4MCAyNTIuNSA4MFpNNzQuNjggMjUwQzg2LjE5IDI1MCA5NS41MSAxOTYuMjcgOTUuNTEgMTMwQzk1LjUxIDYzLjczIDg2LjE4IDEwIDc0LjY4IDEwQzYzLjE3IDEwIDUzLjg1IDYzLjczIDUzLjg1IDEzMEM1My44NSAxOTYuMjcgNjMuMTggMjUwIDc0LjY4IDI1MFpNMzQuNjggMjIwQzQyLjUgMjIwIDQ4Ljg1IDE3OS43MSA0OC44NSAxMzBDNDguODUgODAuMjkgNDIuNTEgNDAgMzQuNjggNDBDMjYuODYgNDAgMjAuNTEgODAuMjkgMjAuNTEgMTMwQzIwLjUxIDE3OS43MSAyNi44NSAyMjAgMzQuNjggMjIwWk03LjUgMTgwQzExLjY0IDE4MCAxNSAxNTcuNjEgMTUgMTMwQzE1IDEwMi4zOSAxMS42NCA4MCA3LjUgODBDMy4zNiA4MCAwIDEwMi4zOSAwIDEzMEMwIDE1Ny42MSAzLjM2IDE4MCA3LjUgMTgwWiIgZmlsbD0idXJsKCNncmFkLWNhcnJlaXJhKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLWNhcnJlaXJhIiB4MT0iMzYuNzgiIHkxPSIyMjMuMjIiIHgyPSIyMjMuMjIiIHkyPSIzNi43NyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjOUI0NjlCIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0FGNkVBRiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" width="32" height="32" alt="">
+                <div class="formacoes-info">
+                    <span class="formacoes-num">Formação 07</span>
+                    <p class="formacoes-name">Carreira &amp; Negócios</p>
+                </div>
+                <p class="formacoes-outcome">Portfólio, LinkedIn, processo seletivo e plano de transição pra quem quer migrar de área ou começar a consultar.</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     FECHAMENTO. É aqui que mora o brilho do rodapé: na origem o
+     .bg-imagine é o ÚLTIMO widget do container que embrulha a página
+     inteira, com bottom: 0, ou seja, ele acende o fim da página por trás
+     deste bloco. Não pertence à seção do "Imagine", apesar do nome.
+
+     E é essa luz que sustenta o card: a placa é CLARA (degradê de branco
+     translúcido) com texto escuro por cima, não um card escuro. Sem o
+     brilho atrás, o card claro não teria de onde nascer.
+     =================================================================== -->
+<section class="ip-final" id="lista-vip">
+    <div class="ip-final-brilho" aria-hidden="true"></div>
+
+    <div class="ip-final-inner">
+        <div class="ip-final-card">
+            <h2 class="sec-title ip-final-titulo">Só existe uma forma de garantir seu acesso vitalício na Plataforma Xperiun</h2>
+            <p class="sec-lede">Os detalhes do Plano Vitalício e acesso exclusivo serão revelados na Live do dia 16/09 às 19h30 (de Brasília).</p>
+            <p class="sec-lede">Cadastre-se gratuitamente na lista VIP e garanta seu lugar nesta oferta única de aniversário.</p>
+            <img class="ip-final-infinito" src="/ed/infinite-pass/dependencias/ip_infinity-cta.webp" alt="" aria-hidden="true" loading="lazy" width="144" height="144">
+        </div>
+    </div>
+</section>
+
+<!-- Barra de CTA fixa. Portada de /ed/pre-vitalicio/. Entra quando o
+     hero sai de cena e sai quando o fechamento chega, que é onde o botão
+     de verdade aparece. -->
+<div class="bottom-cta is-hidden">
+    <div class="bottom-cta-blur bottom-cta-blur-2" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-4" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-8" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-16" aria-hidden="true"></div>
+    <a class="btn bottom-cta-btn ip-btn-brilho" data-size="s" data-emphasis="medium" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-infinite-pass')">Inscrever-se gratuitamente</a>
+</div>
+
+<div data-popup-form="infinite-pass"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js"></script>
+
+<!-- Sem menu e sem footer, mesma decisão de /ed/pre-vitalicio/: a página é
+     captação de lista e qualquer saída pro resto do site é vazamento. O
+     aviso legal de copyright continua nas meta tags do <head> e no
+     fingerprint aqui embaixo. -->
+
+<!-- Scroll suave da página inteira. É o equivalente self-hosted do Lenis
+     que a origem puxava de CDN (unpkg), e é o mesmo que /ed/pre-vitalicio/
+     usa: lerp em rAF cobrindo wheel, teclado e âncoras, desligado sozinho
+     em prefers-reduced-motion e em aparelho só de toque. -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<script src="/ed/infinite-pass/dependencias/script.js?v=32"></script>
+
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

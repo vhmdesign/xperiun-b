@@ -1,0 +1,2489 @@
+/* ═══════════════════════════════════════════════════════════════
+   PRÉ-MBA FP&A, /ed/pre-mba-fpa/
+
+   ─── GRID: tier WIDE do DS Xperiun ─────────────────────────────
+     container max-width 1440 + padding 0 16px
+     content = 1408 = 10 × 112 + 9 × 32
+     base (≥1440): repeat(10, 1fr) / column-gap 32
+     ≤1439:        repeat(8, 1fr)  / column-gap 32
+     ≤864:         repeat(6, 1fr)  / column-gap 24
+     ≤576:         repeat(4, 1fr)  / column-gap 16
+   O max-width NUNCA muda, só a contagem de colunas. Posicionamento
+   sempre por span, remapeado a cada breakpoint, e 1 / -1 em ≤864 e
+   ≤576. As @media vivem no FIM do arquivo, depois das regras base.
+
+   Separação de 2 colunas entre os blocos do header:
+     base:  lead 1..4  |  5 e 6 vazias  |  aside 7..10
+     ≤1439: lead 1..3  |  4 e 5 vazias  |  aside 6..8
+
+   ─── PALETA DA PÁGINA ───────────────────────────────────────────
+   Todas as cores saem dos tokens oficiais do root.css. Esta página
+   acrescenta DOIS verdes que não existem no design system:
+
+     --pre-gr500: #00FF64   verde puro. Destaque do título, destaques
+                            do lede e o CTA.
+     --pre-gr100: #C8FFC8   verde claro. Linha de horário e datas do
+                            header.
+
+   Fora esses dois, nada de cor nova: nem hex solto, nem variação
+   inventada. Traços visuais sempre 2px via box-shadow inset.
+   ═══════════════════════════════════════════════════════════════ */
+
+html, body { margin: 0; padding: 0; }
+html { scrollbar-gutter: stable; }
+body { background: var(--bb); }
+
+:root {
+    /* Adições desta página (ver bloco PALETA acima). */
+    --pre-gr500: #00FF64;
+    --pre-gr100: #C8FFC8;
+
+    /* Display da família Pós-Graduação, igual ao mba-fpa.css. Fica em
+       :root pra descer pra todas as seções, não só pro header. */
+    --font-display: 'Cormorant Infant', serif;
+
+    /* Altura do filler do logo e distância dele até o título. Ficam em
+       token porque o offset do aside é calculado a partir dos dois:
+       o topo do aside precisa cair no topo do título. Trocar o filler
+       por um logo de outra altura mantém o alinhamento sozinho. */
+    --pre-logo-h: 36px;
+    --pre-title-gap: 64px;
+
+    /* Intervalo dos dois lados da linha que separa o logo do selo
+       Xperiun. Os dois ficam na MESMA linha, então o selo não soma
+       altura nenhuma e o alinhamento do aside com o título continua
+       saindo só do logo mais o --pre-title-gap. */
+    --pre-selo-gap: 16px;
+
+    /* Cateto do corte de 45° na ponta do box da seção 1. */
+    --pre-cut: 64px;
+}
+
+/* Container do grid, comum a todas as seções. */
+.pre-header-inner,
+.pre-linha-inner,
+.pre-vira-inner,
+.pre-cta-inner,
+.pre-prova-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+/* ═══════════════════════════════════════════════════════════════
+   TARJA DO TOPO
+
+   Port do .ip-tarja de /ed/infinite-pass/. O laço infinito é feito no
+   CSS, sem medir nada em JS: a lista é DUPLICADA no HTML e o trilho
+   anda -50%. No instante em que a cópia chega onde o original estava, a
+   animação reinicia e o corte é invisível.
+
+   Cada lista repete as quatro frases três vezes. Isso é o que garante
+   que uma metade seja mais larga que a tela: se ela fosse menor,
+   apareceria um buraco no meio do ciclo. O min-width de 100vw é a rede
+   de segurança pra monitor ultralargo, e nesse caso o space-around
+   espalha a sobra por igual, mantendo o vão da emenda igual ao de
+   dentro.
+
+   Diferenças em relação à origem: fundo chapado no verde claro desta
+   página em vez do vidro com backdrop-filter, e o texto na caixa que
+   você escreveu, sem o uppercase de lá, porque aqui as frases são nomes
+   próprios ("Pré-MBA", "FP&A").
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-tarja {
+    position: relative;
+    z-index: 1;
+    height: 48px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background-color: var(--pre-gr100);
+}
+.pre-tarja-trilho {
+    display: flex;
+    flex-wrap: nowrap;
+    /* O eixo cruzado precisa ser explícito nos DOIS níveis, trilho e
+       lista, porque cada um é um container flex próprio. */
+    align-items: center;
+    animation: pre-tarja-anda 45s linear infinite;
+}
+.pre-tarja:hover .pre-tarja-trilho { animation-play-state: paused; }
+
+.pre-tarja-lista {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 32px;
+    min-width: 100vw;
+    box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0 16px;
+}
+/* margin 0 zera o margin-bottom que o root.css dá em <li>: sem isso a
+   lista mede o dobro da altura do texto e o align-items centra a caixa
+   COM a margem, jogando o texto pra cima. */
+.pre-tarja-lista li {
+    margin: 0;
+    white-space: nowrap;
+    font: var(--label);
+    color: var(--bb);
+}
+/* Separador de layout, e não de caractere: um quadrado de 4px no fim de
+   cada item, com 32px de cada lado (os 32 do margin-left mais os 32 do
+   gap da lista). Mesma barrinha dos bullets das listas da página. */
+.pre-tarja-lista li::after {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    margin-left: 32px;
+    vertical-align: middle;
+    background-color: var(--bb-50);
+}
+
+@keyframes pre-tarja-anda {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .pre-tarja-trilho { animation: none; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   WRAPPER DO TOPO
+
+   Engloba o header e a primeira seção. É ele quem apara o que vaza,
+   no lugar do header: a figura (1384px de altura) e os orbs (2048px)
+   passam a atravessar o limite do header e são cortados só no fim da
+   primeira seção.
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-top {
+    position: relative;
+    width: 100%;
+    /* clip, NÃO hidden: overflow hidden transformaria o .pre-top em
+       scroll container, e aí o position: sticky do header passaria a
+       resolver contra a caixa dele em vez da viewport, ou seja, não
+       colaria mais. O clip apara igual sem criar scroll container. */
+    overflow: clip;
+    background-color: var(--bb);
+}
+
+/* ── Reveal: .pre-linha sobe por cima do .pre-header, que esmaece ──
+   Mesmo padrão do .projetos-pilares-track (formacoes) e do
+   .mba-light-how-track (MBA): o header fica sticky com o rodapé
+   grudado no fim da viewport, e a seção seguinte, opaca e em z-index
+   maior, escala por cima dele.
+
+   --pre-header-h é atualizada em tempo real pelo script.js
+   (ResizeObserver), porque a altura do header muda com breakpoint e
+   com a quebra do título.
+
+   --pre-header-fade vem do mesmo script: 1 quando a seção ainda não
+   encostou, 0 quando ela já cobriu a altura toda do header. Como o
+   fundo do header e o do .pre-top são os dois --bb, a opacidade cai
+   sem revelar emenda de cor. */
+/* O top é min(0, 100vh - altura), não o `calc(100vh - altura)` puro da
+   formacoes/MBA. Lá o sticky é uma seção do meio da página, que entra
+   por baixo da viewport, então o valor positivo funciona. Aqui o
+   header é o PRIMEIRO elemento: com top positivo o sticky empurra ele
+   pra baixo já no scroll 0 (medido: nascia em top=218 com fade 0.59).
+
+   min() resolve os dois casos:
+     header mais baixo que a viewport  → 0, cola no topo e a seção
+                                          sobe por cima dele
+     header mais alto que a viewport   → negativo, ele rola até o
+                                          rodapé encostar na base da
+                                          viewport e só então cola,
+                                          para nada do conteúdo ficar
+                                          inalcançável no mobile */
+/* Além da opacidade, o header desfoca até 16px conforme é coberto (o
+   mesmo valor de blur que o DS usa nos reveals, ver .sec-lede da
+   formacoes). Só acima de 864: a media query de tablet devolve
+   filter: none, seguindo a regra do projeto de não animar blur em
+   telas pequenas. */
+.pre-top .pre-header {
+    position: sticky;
+    top: min(0px, calc(100vh - var(--pre-header-h, 100vh)));
+    z-index: 0;
+    opacity: var(--pre-header-fade, 1);
+    filter: blur(var(--pre-header-blur, 0px));
+}
+/* Sem background: a seção sobe transparente e quem apaga o header é o
+   fade, não a cobertura. Os blocos opacos dela (box bw e faixa verde)
+   ainda passam por cima, e o fundo escuro nas faixas de respiro vem do
+   .pre-top. Efeito colateral desejado: a figura volta a aparecer
+   abaixo do box branco. */
+.pre-top .pre-linha {
+    position: relative;
+    z-index: 1;
+}
+
+/* Sem sticky nem fade quando o usuário pede menos movimento: o header
+   volta a rolar junto e em opacidade cheia. */
+@media (prefers-reduced-motion: reduce) {
+    .pre-top .pre-header {
+        position: relative;
+        top: auto;
+        opacity: 1;
+        filter: none;
+    }
+    .pre-hd-figure { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER
+
+   Lead nas colunas 1..4, aside nas 7..10, com 5 e 6 vazias.
+
+   O aside é um sub-grid de 2 colunas. Como ele mede 4 tracks + 3 gaps
+   do grid pai, dividir em 2 com o mesmo gap de 32 dá exatamente
+   2 tracks + 1 gap por célula, ou seja, as células caem em cima das
+   colunas 7-8 e 9-10 do pai:
+
+     colunas      7 e 8                  9 e 10
+     linha 1     (vazia)         card bw (6 horas de conteúdo)
+     linha 2   card pc200        card C8FFC8 (Sempre às 19h30)
+
+   O aside estica na altura do lead (align-self stretch, default), e as
+   duas linhas 1fr dão altura real aos cards sem min-height chutado.
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-header {
+    position: relative;
+    width: 100%;
+    /* 32px do topo até o filler do logo, conforme spec. */
+    padding: 32px 0 128px;
+    box-sizing: border-box;
+    background-color: var(--bb);
+    /* isolation cria o contexto de empilhamento onde a figura e os orbs
+       se empilham entre o aside e o lead.
+
+       overflow VISIBLE: quem apara a figura e os orbs agora é o
+       .pre-top, que engloba o header e a primeira seção. Assim a
+       figura atravessa o limite do header em vez de ser cortada nele. */
+    isolation: isolate;
+    overflow: visible;
+}
+/* Empilhamento dentro do header (o contexto é criado pelo isolation
+   em .pre-header):
+
+     camada 1   aside, os três cards
+     camada 2   figura
+     camada 3   lead: título, lede e CTA
+
+   .pre-header-inner fica SEM position/z-index de propósito: se ele
+   criasse contexto de empilhamento, o aside e o lead ficariam presos
+   na mesma camada dele e a figura não conseguiria passar entre os
+   dois. Sem contexto, o z-index vai direto nos grid items, o que é
+   válido em item de grid mesmo com position static. */
+.pre-header-inner { row-gap: 48px; }
+
+/* Orbs do topo direito: container retangular ancorado no canto, com
+   dois orbs em radial-gradient (mesmo padrão do .mba-hero-orbs).
+
+   Tamanho FIXO, o dobro do que era quando o container era fluido
+   (50% × 100% do header). Medido antes de fixar: 713 × 682 a 1440 de
+   viewport, 793 × 682 a 1600, 953 × 682 a 1920. A altura era sempre
+   682, e a largura era 50% do header, então a referência de "metade"
+   é o tier Wide: 720 × 2 = 1440 (que dá na própria largura do grid) e
+   682 × 2 = 1364.
+
+   A altura não muda o desenho hoje: os orbs se ancoram na aresta
+   superior e nas laterais, então quem posiciona é top/left/right e a
+   largura. Ela está declarada porque o container agora tem tamanho
+   fixo de verdade.
+
+   Os orbs são maiores que o container e vazam de propósito, quem apara
+   é o overflow do header. */
+.pre-hd-orbs {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1440px;
+    height: 1364px;
+    z-index: 0;
+    pointer-events: none;
+}
+/* Centro de cada orb na aresta superior do container, então só a
+   metade de baixo do glow entra no header, descendo do canto. Mesmo
+   princípio do .mba-orb--3, que fica em top -70%. */
+.pre-hd-orb {
+    position: absolute;
+    top: 0;
+    transform: translateY(-50%);
+}
+/* Esquerda do container, pc200. 2048 = dobro dos 1024 originais. */
+.pre-hd-orb--1 {
+    left: 0;
+    width: 2048px;
+    height: 2048px;
+    background: radial-gradient(circle, var(--pc200) 0%, transparent 50%);
+}
+/* Direita do container, pc400. 1536 = dobro dos 768 originais. */
+.pre-hd-orb--2 {
+    right: 0;
+    width: 1536px;
+    height: 1536px;
+    background: radial-gradient(circle, var(--pc400) 0%, transparent 50%);
+}
+
+/* O <picture> não gera caixa: quem posiciona (e quem vira grid item
+   abaixo de 864) é o próprio <img>.
+
+   O display: contents promove TODOS os filhos do picture a grid item,
+   inclusive o <source>, que entrava como uma linha fantasma de 0px e
+   somava dois row-gaps (64px) ao offset da figura. O display: none
+   abaixo remove esse item; a escolha do arquivo pelo media não depende
+   de CSS, então nada se perde. */
+.pre-hd-figure-pic { display: contents; }
+.pre-hd-figure-pic > source { display: none; }
+
+/* Figura do header: tamanho natural (832 × 1384), centrada na largura
+   do header, ancorada em top 0. Fica na frente do aside e atrás do
+   lead. pointer-events none pra não capturar clique dos cards.
+
+   Está dentro do .pre-header-inner, mas como esse container é static o
+   bloco contêiner do absolute continua sendo o .pre-header, então o
+   top/left seguem valendo em relação ao header. */
+.pre-hd-figure {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    /* translateX(-50%) centra; translateY consome o --pre-figure-y do
+       script.js, que é o paralaxe vertical (1.5px por px de scroll). O
+       translateY vem DEPOIS do X pra não ser afetado por ele. */
+    transform: translateX(-50%) translateY(var(--pre-figure-y, 0px));
+    width: 832px;
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+    will-change: transform;
+}
+
+/* ─── Lead ─────────────────────────────────────────────────── */
+
+/* No scroll o lead deriva pra esquerda até 128px (o aside vai pro
+   outro lado). O módulo vem do --pre-lead-x, escrito pelo script.js, e
+   a media query de ≤864 anula os dois, porque lá quem se move são os
+   cards do aside, individualmente. */
+.pre-hd-lead {
+    grid-column: 1 / span 4;
+    min-width: 0;
+    /* camada 3: na frente da figura */
+    z-index: 3;
+    transform: translateX(calc(var(--pre-lead-x, 0px) * -1));
+    will-change: transform;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Logo, 180 × 36. O height sai de --pre-logo-h, que casa com a altura
+   real do arquivo: pedir 40 esticaria a arte em 11%. O token existe
+   porque o topo do aside se alinha com o topo do título somando altura
+   do logo mais o intervalo (ver .pre-hd-aside). */
+.pre-hd-logo {
+    display: block;
+    width: 180px;
+    height: var(--pre-logo-h);
+    flex: 0 0 auto;
+}
+
+/* Marca: logo e selo na MESMA linha, o selo à direita. A linha de 2px
+   em bw-10 é o border-left do selo, e o align-self stretch faz ela
+   subir e descer até as bordas da linha, ou seja, a altura do logo.
+
+   A linha é border e não box-shadow porque é um divisor, e não o
+   contorno de uma caixa: os tokens --ring-* existem pro segundo caso.
+
+   O rótulo da edição é texto de verdade no HTML, e não content de um
+   pseudo: nomeia a edição, ou seja, é conteúdo, e em content ele não
+   seria selecionável nem confiável em leitor de tela. */
+/* align-self stretch dá à linha da marca a largura do lead, e não a do
+   conteúdo: é isso que dá um limite pro rótulo quebrar. Sem ele, o
+   .pre-hd-lead (align-items flex-start) encolheria a linha até o
+   conteúdo e o texto nunca quebraria. */
+.pre-hd-marca {
+    align-self: stretch;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--pre-selo-gap);
+    min-height: var(--pre-logo-h);
+}
+/* O selo ENCOLHE (flex 0 1 auto mais min-width 0) e o logo não: assim a
+   sobra de largura sai do rótulo, que quebra em duas linhas quando a
+   coluna aperta, em vez de estourar a caixa. */
+.pre-hd-selo {
+    align-self: stretch;
+    padding-left: var(--pre-selo-gap);
+    border-left: 2px solid var(--bw-10);
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+}
+.pre-hd-selo-texto {
+    font: var(--label-s);
+    color: var(--pre-gr100);
+}
+
+/* Ritmo vertical do lead: 64px do filler pro título, 32px do título
+   pro lede, 32px do lede pro botão. Margens explícitas em vez de gap
+   porque os três intervalos são diferentes. */
+
+/* Título no display da página (Cormorant Infant), não no Poppins do
+   DS. Duas razões: é a fonte de título desta família de páginas (mesmo
+   tratamento do .mba-lead-h1) e é a única família self-hosted com
+   itálico REAL (400i/700i). O Poppins só tem faces normais, então o
+   itálico que a spec pede sairia sintetizado pelo navegador.
+   Escala espelhada do --h2 do DS, com line-height 1 porque a serifa
+   pede menos entrelinha. */
+.pre-hd-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 1.5rem + 1.39vw, 2.75rem);
+    line-height: 1;
+    color: var(--bw);
+    margin: var(--pre-title-gap) 0 0;
+}
+.pre-hd-title-hl { color: var(--pre-gr500); }
+.pre-hd-title-it { font-style: italic; }
+
+.pre-hd-p {
+    font: var(--p);
+    color: var(--bw);
+    margin: 32px 0 0;
+}
+.pre-hd-p-hl { color: var(--pre-gr500); }
+
+/* ── Play shadow dos CTAs ───────────────────────────────────────
+   A sombra é ESTÁTICA em 8px 8px: o looping infinito mexe só na COR,
+   indo e voltando entre dois pontos da escala. É sombra DURA, raio de
+   desfoque 0, então nenhum dos tokens --shadow-* serve aqui (todos
+   trazem 16, 32 ou 64 de blur) e o valor vai escrito.
+
+   Uma keyframe só pros dois botões da página: as duas cores entram por
+   --pre-play-cor e --pre-play-cor-alt, que cada botão define. Var dentro
+   de keyframe resolve no elemento, então a mesma animação percorre
+   pc500 → pc200 no header e gr500 → gr100 no ticket sem duplicar nada.
+
+   Por ser box-shadow, a animação repinta em vez de compor, mas são dois
+   elementos pequenos. O transition do hover continua valendo pro
+   background: animação e transition mexem em propriedades diferentes e
+   não disputam. */
+@keyframes pre-play-sombra {
+    0%, 100% { box-shadow: 8px 8px 0 0 var(--pre-play-cor); }
+    50%      { box-shadow: 8px 8px 0 0 var(--pre-play-cor-alt); }
+}
+
+/* CTA: verde puro, sem o ring inset que o .btn traz do DS.
+   `.btn.pre-hd-cta` pra vencer a especificidade de .btn[data-size]. */
+.btn.pre-hd-cta {
+    --pre-play-cor: var(--pc500);
+    --pre-play-cor-alt: var(--pc200);
+
+    margin-top: 32px;
+    background-color: var(--pre-gr500);
+    color: var(--bb);
+    box-shadow: none;
+    transition: 0.5s ease;
+    animation: pre-play-sombra 2s ease infinite;
+}
+.btn.pre-hd-cta.is-hover,
+.btn.pre-hd-cta:hover {
+    background-color: var(--pre-gr100);
+    color: var(--bb);
+}
+
+/* ─── Aside ────────────────────────────────────────────────── */
+
+.pre-hd-aside {
+    grid-column: 7 / span 4;
+    min-width: 0;
+    /* camada 1: atrás da figura */
+    z-index: 1;
+    /* espelho do lead: deriva pra direita no scroll */
+    transform: translateX(var(--pre-lead-x, 0px));
+    will-change: transform;
+    /* Topo do aside alinhado com o topo do título: desce a altura da
+       linha da marca, que é a do logo, mais o intervalo até o título. */
+    margin-top: calc(var(--pre-logo-h) + var(--pre-title-gap));
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr 1fr;
+    column-gap: 32px;
+    row-gap: 32px;
+}
+
+/* Card do aside: sem radius, padding 32, label no topo à esquerda e
+   label L embaixo à direita, texto sempre em bb (os três backgrounds
+   são claros). Esta é a base compartilhada; os modificadores abaixo só
+   trocam o background e a posição no sub-grid. */
+.pre-hd-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 64px;
+    padding: 32px;
+    box-sizing: border-box;
+    border-radius: 0;
+}
+.pre-hd-card--bw {
+    grid-column: 2;
+    grid-row: 1;
+    background-color: var(--bw);
+}
+.pre-hd-card--gr100 {
+    grid-column: 2;
+    grid-row: 2;
+    background-color: var(--pre-gr100);
+}
+.pre-hd-card--pc200 {
+    grid-column: 1;
+    grid-row: 2;
+    background-color: var(--pc200);
+}
+.pre-hd-card-label {
+    font: var(--label);
+    color: var(--bb);
+    margin: 0;
+}
+/* Lockup da Xperiun no card pc200, no lugar do rótulo de texto. O fill
+   do path está escrito no próprio SVG como %2300000A, que é o --bb: data
+   URI não resolve var(), e a alternativa (máscara com background-color)
+   não foi usada de propósito.
+
+   O URI vai entre ASPAS DUPLAS: sem elas, o espaço e o apóstrofo que o
+   SVG traz invalidam o token de url() e o parser derruba regras em
+   cascata. Já aconteceu nesta página.
+
+   Alinha à direita como o pre-hd-card-note logo abaixo. São duas
+   declarações porque são dois eixos diferentes: align-self encolhe a
+   caixa e a joga pro fim do eixo cruzado do flex, e o right center põe
+   o desenho no fim da caixa (necessário se a caixa esticar de novo). */
+.pre-hd-card-marca {
+    width: 120px;
+    height: 36px;
+    flex: 0 0 auto;
+    align-self: flex-end;
+    opacity: 0.5;
+    background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 96'><path fill='%2300000A' d='M24.73 17.08c-4.55 4.55-2.71 13.78 4.12 20.61l4.12 4.12c3.86 3.86 8.43 5.78 11.12 4.88l-7-9 9 7c.9-2.69-1.01-7.26-4.88-11.12L24.72 17.08zm21.38 34.25c.88 2.69-1.03 7.25-4.88 11.1L28.86 74.8C17.47 86.18 4.55 91.71 0 87.16l32.98-32.98c3.85-3.85 8.41-5.77 11.1-4.88L28.86 66.55zm7.48 11.1c-3.86-3.86-5.78-8.43-4.88-11.12l9 7-7-9c2.69-.9 7.26 1.01 11.12 4.88l4.12 4.12c6.83 6.83 8.68 16.06 4.12 20.61L53.58 62.43zm-4.88-17.76c-.88-2.69 1.03-7.25 4.88-11.1L65.96 21.2C77.34 9.82 90.26 4.28 94.82 8.83L61.84 41.81c-3.85 3.85-8.41 5.77-11.1 4.88l15.22-17.25-17.25 15.22zm223.88 15.18c-7.47 0-13.54-6.08-13.54-13.54V36.15h3.39v10.16c0 5.6 4.56 10.16 10.16 10.16s10.16-4.56 10.16-10.16V36.15h3.39v10.16c0 7.47-6.08 13.54-13.54 13.54zm-138.83 0h-3.39V37.84c0-.94.76-1.69 1.69-1.69h20.16c4.62 0 8.51 3.64 8.62 8.26s-3.73 8.67-8.46 8.67h-18.62zm0-10.16h18.62c2.8 0 5.08-2.28 5.08-5.08s-2.28-5.08-5.08-5.08h-18.62zm115.13 10.16h-3.39v-23.7h3.39zm47.41 0h-3.39V37.84c0-.94.76-1.69 1.69-1.69h1.91c.45 0 .88.18 1.2.5l18.9 18.9v-19.4H320v22.01c0 .94-.76 1.69-1.69 1.69h-1.47c-.45 0-.88-.18-1.2-.5L296.3 40.01zM110.84 48l12.76 11.85h-4.96l-10.28-9.55-10.28 9.55h-4.96L105.88 48 93.12 36.15h4.96l10.28 9.55 10.28-9.55h4.96zm60.17-3.39v1.69h23.7v3.39h-23.7v1.69c0 2.8 2.28 5.08 5.08 5.08h18.62v3.39h-18.62c-4.67 0-8.47-3.8-8.47-8.47v-6.77c0-4.67 3.8-8.47 8.47-8.47h18.62v3.39h-18.62c-2.8 0-5.08 2.28-5.08 5.08m59.1 15.24h5.23l-8.32-6.78c4.67-.08 8.43-3.95 8.32-8.67-.11-4.62-4-8.26-8.62-8.26h-20.16c-.94 0-1.69.76-1.69 1.69v22.01h3.39v-6.77h13.54l8.31 6.77zm-21.86-20.32h18.62c2.8 0 5.08 2.28 5.08 5.08s-2.28 5.08-5.08 5.08h-18.62z'/></svg>") no-repeat right center / contain;
+}
+.pre-hd-card-note {
+    font: var(--label-l);
+    color: var(--bb);
+    margin: 0;
+    text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO 1: A LINHA INVISÍVEL
+
+   Container bw ocupando as 10 colunas. Por dentro ele é um grid de
+   2 colunas: título na coluna 1 da linha 1, e os dois cards na linha 2
+   (ln300 na coluna 1, pc200 na coluna 2). Os 64px entre o título e os
+   cards são o row-gap.
+
+   Por dentro, o box repete a régua do DS (10 colunas, gap 32), mas
+   inset pelo padding de 64px: são 10 colunas DO BOX, não as da página
+   (com padding no meio, nenhum grid interno cairia em cima da régua do
+   pai). Quem segue o grid da página é o box, que ocupa 1 / -1.
+
+   Posições no grid do box:
+     título       1 / span 5   (metade esquerda)
+     card ln300   1 / span 5   linha 2
+     card pc200   6 / span 5   linha 2
+     texto        5 / span 6   linha 3 (as últimas 6 colunas)
+
+   span 5 + span 5 com gap 32 dá exatamente as mesmas larguras que um
+   repeat(2, 1fr) com o mesmo gap (10 tracks + 9 gaps de cada lado),
+   então trocar as duas metades pela régua de 10 não moveu os cards.
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-linha {
+    position: relative;
+    width: 100%;
+    padding: 128px 0;
+    box-sizing: border-box;
+}
+
+/* Corte de 45° na ponta superior esquerda, cateto em --pre-cut (64px):
+   a diagonal vai do ponto 64px à direita do canto até o ponto 64px
+   abaixo dele. Cateto igual em px é o que garante os 45° exatos. */
+.pre-linha-box {
+    grid-column: 1 / -1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+    padding: 64px;
+    box-sizing: border-box;
+    border-radius: 0;
+    background-color: var(--bw);
+    clip-path: polygon(
+        var(--pre-cut) 0,
+        100% 0,
+        100% 100%,
+        0 100%,
+        0 var(--pre-cut)
+    );
+}
+
+/* Título e lede juntos na linha 1. O gap de 24 é interno do bloco, e
+   não o row-gap de 64 do box, que segue valendo daqui pros cards. */
+.pre-linha-head {
+    grid-column: 1 / span 5;
+    grid-row: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.pre-linha-lede {
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+}
+
+.pre-linha-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem);
+    line-height: 1;
+    color: var(--bb);
+    margin: 0;
+}
+.pre-linha-title-hl {
+    color: var(--pc300);
+    font-style: italic;
+}
+
+/* Cards no padrão da página: padding 32, sem radius, texto em bb. */
+.pre-linha-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 32px;
+    box-sizing: border-box;
+    border-radius: 0;
+}
+/* Crédito da fonte no topo do card, em 50% de opacidade: é crédito, não
+   marca da página, e por isso não compete com o dado.
+
+   Os logos ficam no RODAPÉ do card e alinhados à direita: o margin-top
+   auto empurra a linha deles pro fim da coluna, e como os dois cards
+   esticam na mesma altura, os créditos ficam alinhados entre si.
+
+   Cada um sai na METADE do tamanho do arquivo, e isso vem dos atributos
+   width e height do <img>, não do CSS: com o arquivo medindo o dobro do
+   que se mostra, ele é na prática um asset 2× e fica nítido em tela
+   retina. Como as alturas diferem entre eles, o align-items center
+   alinha os dois do segundo card pelo meio. */
+.pre-linha-card-fontes {
+    margin-top: auto;
+    align-self: flex-end;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+/* SEM width/height aqui de propósito: com auto o navegador usa o
+   tamanho INTRÍNSECO do arquivo e ignora os atributos do <img>. Deixando
+   os dois fora, quem manda são os atributos, que estão na metade do
+   arquivo. Foi assim que a redução pela metade não pegava. */
+.pre-linha-card-logo {
+    display: block;
+    flex: 0 0 auto;
+    opacity: 0.5;
+}
+/* Divisor entre dois logos da mesma linha. É um elemento próprio, e não
+   border-left no segundo <img>: o root.css põe box-sizing border-box em
+   tudo, então uma borda no img entraria PARA DENTRO da largura e
+   esmagaria a arte. O align-self stretch dá ao traço a altura da linha,
+   que é a do logo mais alto. */
+.pre-linha-card-sep {
+    align-self: stretch;
+    flex: 0 0 auto;
+    width: 2px;
+    background-color: var(--bb-10);
+}
+
+/* Estatística: número à esquerda e a frase à direita, na mesma linha. O
+   margin-top auto empurra o bloco pro rodapé do card; como os dois
+   cards esticam na mesma altura, os números ficam alinhados entre si
+   mesmo com o logo existindo só num deles.
+
+   align-items center centra o número na altura da frase inteira, e não
+   na primeira linha dela. */
+.pre-linha-dado {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+.pre-linha-dado-num {
+    flex: 0 0 auto;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2.5rem;
+    line-height: 1em;
+    color: var(--bb);
+}
+.pre-linha-dado-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    font: var(--p-s);
+    color: var(--bb-75);
+    margin: 0;
+}
+
+/* Fundos entram de transparente até a cor final conforme o scroll. */
+.pre-linha-card--ln300 {
+    grid-column: 1 / span 5;
+    grid-row: 2;
+    background-color: var(--ln300);
+}
+.pre-linha-card--pc200 {
+    grid-column: 6 / span 5;
+    grid-row: 2;
+    background-color: var(--pc200);
+}
+
+/* Duas linhas: "De um lado" em itálico e menor, quebra, e "quem opera"
+   no tamanho cheio de 1.5rem (o mesmo do lead do bloco de texto).
+   line-height 1em é o padrão da fonte display. Em 1em (e não no número
+   1) o valor computa uma vez contra o 1.5rem do h3 e é herdado como
+   comprimento fixo pelas duas linhas, então o itálico menor recebe a
+   mesma entrelinha e as duas linhas ficam com espaçamento igual. */
+/* Título parte do pc500 e caminha até o bb conforme o scroll. */
+.pre-linha-card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1em;
+    color: var(--bb);
+    margin: 0;
+}
+.pre-linha-card-title-it {
+    font-style: italic;
+    font-size: 1.25rem;
+}
+/* Texto entra de transparente até o bb-75. */
+.pre-linha-card-text {
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+}
+
+/* Bloco de texto: últimas 6 colunas do box, linha 3. Lead no display
+   da página, parágrafos no Poppins do DS. */
+.pre-linha-text {
+    grid-column: 5 / span 6;
+    grid-row: 3;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.pre-linha-text-p {
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+}
+
+/* Faixa de garantia: colada embaixo do box bw, mesma largura (1 / -1),
+   mesmo padding do box, conteúdo centrado e corte de 45° na ponta
+   inferior direita (contraponto do corte superior esquerdo do box).
+
+   margin-top -2px NÃO é folga de layout: a medição mostrou
+   box.bottom = garantia.top = 1455, diferença exatamente 0. A linha
+   fina que aparecia é a borda antisserrilhada do clip-path deixando o
+   fundo escuro passar, e só se manifesta em escala fracionária (a DPR
+   1.5 aparecia uma fileira rgb(61,61,71) entre as duas cores). Os 2px
+   de sobreposição fazem a fileira antisserrilhada de cada lado cair
+   sobre o interior sólido do outro. */
+.pre-linha-garantia {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin-top: -2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 64px;
+    box-sizing: border-box;
+    border-radius: 0;
+    background-color: var(--pre-gr100);
+    text-align: center;
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - var(--pre-cut)),
+        calc(100% - var(--pre-cut)) 100%,
+        0 100%
+    );
+}
+/* Frase da faixa: um degrau acima do que era (1.25rem) e em pc400, que
+   é o mesmo roxo do lead do bloco de texto logo acima. */
+.pre-linha-garantia-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem);
+    line-height: 1.25;
+    color: var(--pc400);
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO 2: SAI DO OPERACIONAL, ENTRA NO ESTRATÉGICO
+
+   Estado PADRÃO (sem JS, com prefers-reduced-motion, ou abaixo de
+   864): a seção é um bloco normal, o painel empilha os dois cards e
+   nada fica escondido. É o estado seguro.
+
+   Estado .is-live (o script.js adiciona acima de 864): o track ganha
+   300vh de curso, a seção cola na viewport e os dois cards passam a
+   ocupar a MESMA célula do grid, trocando de lugar no scroll com o
+   painel clipando.
+
+   Par de cores dos cards: o lado operacional em bw (neutro) e o lado
+   estratégico no verde claro da página, --pre-gr100.
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-vira-track {
+    position: relative;
+}
+/* A metade de baixo da seção sai do bb e vira um gradiente horizontal
+   pc700 → pc500. É uma camada de background com 100% de largura e 50%
+   de altura ancorada embaixo, então a divisa cai sempre no meio da
+   seção, seja ela alta (modo empilhado) ou de 100vh (modo pin). O bb
+   segue como background-color, cuidando da metade de cima. */
+.pre-vira {
+    position: relative;
+    width: 100%;
+    padding: 128px 0;
+    box-sizing: border-box;
+    background-color: var(--bb);
+    background-image: linear-gradient(90deg, var(--pc700), var(--pc500));
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 50%;
+}
+.pre-vira-inner { row-gap: 48px; align-items: start; }
+
+.pre-vira-title {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem);
+    line-height: 1em;
+    color: var(--bw);
+    text-align: left;
+    margin: 0;
+}
+.pre-vira-title-hl {
+    color: var(--pre-gr500);
+    font-style: italic;
+}
+
+/* Vídeo do scrub. O arquivo é quadrado (832×832) e o 16/9 aqui é
+   recorte de layout, resolvido pelo object-fit: cover do <video>.
+   Abaixo de 1152 essa proporção sai de cena (ver a media query) e
+   abaixo de 864 ela vira 21:9, que é o formato do arquivo mobile. */
+.pre-vira-video {
+    grid-column: 1 / span 6;
+    grid-row: 2;
+    min-width: 0;
+    /* width 100% é OBRIGATÓRIO junto com o aspect-ratio: sem largura
+       definida, e com a altura vindo de fora (stretch ou min-height), o
+       aspect-ratio inverte a conta e passa a derivar a LARGURA da
+       altura, estourando a coluna. Medido antes de corrigir: a 870px o
+       vídeo saía com 654px de largura numa coluna de 395px. */
+    /* Come o gap de 32px que existiria até o painel: a caixa avança
+       sobre ele e os dois se encostam, como se o vão não existisse.
+
+       Tem que ser na LARGURA, não em margin-right negativo: com width
+       definida a margem negativa não alarga o elemento, só desloca o
+       que vem depois, e a emenda continuava em 32px (medido). Volta pra
+       100% em ≤864, onde os dois empilham. */
+    width: calc(100% + 32px);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: var(--dn900);
+}
+/* Fallback: os dois frames ficam empilhados no fundo da caixa e o
+   vídeo por cima. Quando o vídeo pinta, ele cobre os dois; quando não
+   (codec, política do navegador, rede, ou só enquanto carrega), sobra
+   o crossfade entre o primeiro e o último frame, comandado pelo mesmo
+   progresso do scroll. */
+.pre-vira-video { position: relative; }
+.pre-vira-video-fb {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.pre-vira-video-fb--fim {
+    opacity: var(--pre-vira-p, 0);
+}
+.pre-vira-video-el {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pre-vira-panel {
+    /* Intervalo entre os dois cards. Vale nos dois modos: empilhado é
+       o gap do flex; na troca o valor entra no deslocamento de cada
+       card (ver as regras do .is-live), pra sobrar essa mesma distância
+       entre eles durante a passagem. Este é o único lugar a mexer. */
+    --pre-vira-gap: 32px;
+
+
+    grid-column: 7 / span 4;
+    grid-row: 2;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pre-vira-gap);
+}
+
+/* justify-content center centra o conteúdo na VERTICAL, que é o que
+   passou a fazer diferença desde que o card ganhou a altura do vídeo
+   (o conteúdo mede menos que isso e ficava encostado no topo). O texto
+   segue alinhado à esquerda. */
+.pre-vira-card {
+    /* Padding em token porque os bullets da lista se deslocam por ele:
+       eles precisam recuar exatamente essa distância pra encostar na
+       borda esquerda do card. */
+    --pre-vira-pad: 32px;
+
+    /* Medidas da barrinha do bullet e o recuo dela em relação à borda
+       do card. Ficam em token porque as contas do posicionamento
+       consomem os três: o left sai do padding menos o inset, e o top
+       centra usando a altura.
+
+       Os números fecham a faixa do padding: 16 de inset + 4 de barra +
+       12 de folga = os 32 do padding, então o texto começa exatamente
+       onde o padding termina. Com largura igual à altura, o bullet é um
+       quadrado de 4px. */
+    --pre-bullet-w: 4px;
+    --pre-bullet-h: 4px;
+    --pre-bullet-inset: 16px;
+
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    padding: var(--pre-vira-pad);
+    box-sizing: border-box;
+    border-radius: 0;
+
+    /* Mesmo corte de 45° do box da seção 1, no mesmo canto e no mesmo
+       token: --pre-cut já cai pra 32px abaixo de 864, então o corte
+       acompanha a régua sem regra extra. Como o clip viaja com o
+       elemento, ele continua no lugar durante a troca dos cards. */
+    clip-path: polygon(
+        var(--pre-cut) 0,
+        100% 0,
+        100% 100%,
+        0 100%,
+        0 var(--pre-cut)
+    );
+}
+.pre-vira-card--hoje   { background-color: var(--bw); }
+.pre-vira-card--futuro { background-color: var(--pre-gr100); }
+
+.pre-vira-card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1em;
+    color: var(--bb);
+    margin: 0;
+}
+.pre-vira-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+/* margin 0 zera o margin-bottom de 16px que o root.css dá em <li>;
+   quem controla o intervalo aqui é o gap. */
+.pre-vira-list > li {
+    position: relative;
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+}
+
+/* Bullet: barra de 16 × 4 recuada 8px da borda esquerda DO CARD. O
+   left sai do padding do card menos esse inset, então a barra vive
+   dentro da faixa do padding e nunca invade a coluna de texto.
+
+   O top centra a barra na primeira linha: a linha mede 1.5em (o
+   line-height do --p), então sobra metade da diferença de cada lado, e
+   a conta acompanha tanto o tamanho da fonte quanto a altura da barra.
+
+   No card operacional o bullet usa currentColor, ou seja, a mesma cor
+   do texto do item; no card do futuro ele vira pc500. */
+.pre-vira-list > li::before {
+    content: '';
+    position: absolute;
+    left: calc((var(--pre-vira-pad) - var(--pre-bullet-inset)) * -1);
+    top: calc((1.5em - var(--pre-bullet-h)) / 2);
+    width: var(--pre-bullet-w);
+    height: var(--pre-bullet-h);
+    background-color: currentColor;
+}
+.pre-vira-card--futuro .pre-vira-list > li::before {
+    background-color: var(--pc500);
+}
+
+/* ─── Estado ligado: pin + troca dos cards ─────────────────── */
+
+.pre-vira-track.is-live {
+    height: 300vh;
+}
+.pre-vira-track.is-live .pre-vira {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 64px 0;
+    overflow: clip;
+}
+/* Vídeo e painel sempre com a MESMA altura, nos dois sentidos:
+
+   a linha do grid é dimensionada pelo MAIOR dos dois. O vídeo
+   contribui com a altura do aspect-ratio 16/9 sobre a largura dele; o
+   painel contribui com a altura do card mais alto. Como os dois têm
+   align-self: stretch, ambos assumem a altura da linha, seja ela
+   ditada por um ou pelo outro.
+
+   Por isso NÃO existe min-height: 0 aqui. Ele fazia o painel
+   contribuir zero, e aí só o vídeo mandava na altura. Sem ele, se o
+   conteúdo do painel passar da altura do vídeo, a linha cresce e o
+   vídeo estica junto (o aspect-ratio é ignorado quando a altura vem
+   definida pelo stretch, e o object-fit: cover do <video> preenche sem
+   distorcer).
+
+   Os dois cards ocupam a MESMA célula do painel, então cada um estica
+   pra essa altura e a troca fica sem folga entre eles. */
+/* O painel estica na altura da linha. O vídeo NÃO usa align-self:
+   stretch (isso derivava a largura dele da altura, ver o comentário do
+   width: 100% lá em cima): ele cresce por min-height, que não mexe na
+   largura nem na contribuição dele pro dimensionamento da linha. */
+.pre-vira-track.is-live .pre-vira-panel {
+    align-self: stretch;
+}
+.pre-vira-track.is-live .pre-vira-video {
+    min-height: 100%;
+}
+
+/* Teto de altura no modo pin. A seção é 100vh com overflow: clip, então
+   o que não couber é cortado SEM chance de scroll. Medido: a composição
+   pedia ~730px de viewport, e quem pedia isso era o vídeo (481px vindos
+   do 16/9), não o texto, cujo conteúdo natural é 296px.
+
+   Com o teto, em viewport curta o vídeo encolhe (o object-fit: cover
+   recorta mais, sem distorcer) e o painel acompanha, então a
+   composição passa a caber a partir de ~560px de altura em vez de 730.
+   Em viewport alta o teto não morde e nada muda.
+
+   --pre-vira-ttl-h é a altura real do título, atualizada pelo
+   script.js: ela muda com o breakpoint e com a quebra de linha. */
+.pre-vira-track.is-live .pre-vira-video,
+.pre-vira-track.is-live .pre-vira-panel {
+    max-height: calc(100vh - 128px - var(--pre-vira-ttl-h, 72px) - 48px);
+}
+/* Sem overflow hidden: o painel não apara mais os cards. Quem passou a
+   aparar é a própria seção, que tem overflow: clip no modo pin, então
+   os cards atravessam a área do painel e só são cortados na borda da
+   seção. O fade do card que sai é o que segura essa passagem. */
+.pre-vira-track.is-live .pre-vira-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    gap: 0;
+}
+.pre-vira-track.is-live .pre-vira-card {
+    grid-area: 1 / 1;
+    will-change: transform;
+}
+/* O curso de cada card é a própria altura MAIS o gap, então no meio da
+   passagem sobra exatamente --pre-vira-gap entre a base do que sai e o
+   topo do que entra. O 100% resolve contra a altura do card. */
+/* O card que sai esmaece no mesmo passo em que sobe: opacidade de 1 a
+   0 no mesmo progresso do deslocamento. */
+.pre-vira-track.is-live .pre-vira-card--hoje {
+    transform: translateY(calc((-100% - var(--pre-vira-gap)) * var(--pre-vira-p, 0)));
+    opacity: calc(1 - var(--pre-vira-p, 0));
+}
+/* O card que entra faz o inverso: aparece de 0 a 1 no mesmo progresso
+   em que sobe. */
+.pre-vira-track.is-live .pre-vira-card--futuro {
+    transform: translateY(calc((100% + var(--pre-vira-gap)) * (1 - var(--pre-vira-p, 0))));
+    opacity: var(--pre-vira-p, 0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO 3: FECHAMENTO E OFERTA
+
+   Lead nas 4 primeiras colunas, ticket nas 5 últimas, com a coluna 5
+   fazendo a separação. O fundo é o MESMO gradiente da metade de baixo
+   da seção 2 (pc700 → pc500 na horizontal), agora ocupando a seção
+   toda: as duas se encostam e o gradiente atravessa a emenda sem
+   quebra.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* margin-top -2px pela mesma razão do .pre-linha-garantia: em DPR
+   fracionário a borda entre duas caixas encostadas ganha uma linha de
+   antialiasing, e o jeito de matar isso é sobrepor 2px em vez de
+   encostar. Aqui é de graça, porque os dois gradientes são iguais e
+   cobrem a mesma largura: no trecho sobreposto a cor é a mesma dos
+   dois lados. */
+.pre-cta {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    margin-top: -2px;
+    padding: 128px 0;
+    box-sizing: border-box;
+    background-image: linear-gradient(90deg, var(--pc700), var(--pc500));
+}
+.pre-cta-inner { row-gap: 48px; align-items: start; }
+
+.pre-cta-lead {
+    grid-column: 1 / span 4;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.pre-cta-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem);
+    line-height: 1em;
+    color: var(--bw);
+    margin: 0;
+}
+.pre-cta-title-hl {
+    color: var(--pre-gr100);
+    font-style: italic;
+}
+
+.pre-cta-nota {
+    font: var(--p-s);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* ── Ticket ─────────────────────────────────────────────────────
+   Duas partes empilhadas com a emenda no meio. A parte de cima leva a
+   imagem, os dois dados e o preço; a de baixo, o botão e o código de
+   barras.
+
+   O recorte da emenda é RETO: cada metade leva um chanfro de 45° e
+   --pre-ticket-cut nos dois cantos do lado da emenda, e os quatro
+   juntos abrem um V de 32px em cada ponta, com o gradiente da seção
+   aparecendo por dentro, sem meia-lua e sem radius em canto nenhum.
+
+   Por isso o fundo bw mora nas DUAS METADES e não no .pre-cta-ticket:
+   é cada metade que carrega o próprio clip, e um fundo no pai ficaria
+   por baixo, tampando os recortes. */
+.pre-cta-ticket {
+    --pre-ticket-cut: 16px;
+
+    grid-column: 6 / span 5;
+    min-width: 0;
+}
+
+/* Arte do ticket: largura toda por 160px de altura. Fica fora do clip
+   porque está no topo do ticket, longe da emenda.
+
+   O arquivo é QUADRADO, como a origem, e quem recorta é o cover. Isso
+   deixa o enquadramento na mão do CSS: em 832 de largura a tira mostra
+   19% da altura da imagem, e no mobile estreito mostra bem mais, sem
+   precisar de arquivo novo. O object-position é onde se mexe pra mudar
+   a faixa visível. */
+.pre-cta-ticket-fig {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.pre-cta-ticket-topo,
+.pre-cta-ticket-base {
+    padding: 32px;
+    box-sizing: border-box;
+    background-color: var(--bw);
+}
+/* Chanfros nos cantos de BAIXO: é esse o lado da emenda aqui. */
+.pre-cta-ticket-topo {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - var(--pre-ticket-cut)),
+        calc(100% - var(--pre-ticket-cut)) 100%,
+        var(--pre-ticket-cut) 100%,
+        0 calc(100% - var(--pre-ticket-cut))
+    );
+}
+
+/* Os dois dados lado a lado, sem radius, em ln200. Cada um é um
+   kicker em label-xs mais o valor em label. */
+.pre-cta-dados {
+    display: flex;
+    gap: 16px;
+}
+.pre-cta-dado {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 0;
+    background-color: var(--ln200);
+}
+.pre-cta-dado-label {
+    font: var(--label-xs);
+    color: var(--bb-50);
+    margin: 0 0 4px;
+}
+.pre-cta-dado-valor {
+    font: var(--label);
+    color: var(--bb);
+    margin: 0;
+}
+
+/* Os quatro dados do lead, no verde claro da página. Mesmo bloco dos
+   dois do ticket, só trocando o fundo, então herdam padding, ausência
+   de radius e o par label-xs + label. Vão em 2 × 2 porque o lead tem
+   4 colunas e uma fileira de quatro deixaria cada um com pouco mais de
+   100px. */
+.pre-cta-extras {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+.pre-cta-dado--gr100 { background-color: var(--pre-gr100); }
+
+/* Preço centrado, os dois no display em 700 e em 2rem. O line-height
+   0.75em do número é o que aperta a caixa em volta dele; align-items
+   baseline mantém o "R$" assentado na mesma linha do 37 mesmo com as
+   duas entrelinhas diferentes. */
+/* Ancoragem de preço: o valor cheio riscado, acima do que se paga. O
+   <del> é quem risca, semanticamente; o CSS só cuida de cor e tamanho. */
+.pre-cta-preco-de {
+    font: var(--p-s);
+    color: var(--bb-50);
+    margin: 0;
+}
+
+.pre-cta-preco {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--bb);
+    margin: 0;
+}
+.pre-cta-preco-moeda { line-height: 1em; }
+.pre-cta-preco-valor {
+    font-size: 12rem;
+    line-height: 0.75em;
+}
+
+/* Segunda parte: espelho dos chanfros, nos cantos de CIMA. */
+.pre-cta-ticket-base {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    clip-path: polygon(
+        var(--pre-ticket-cut) 0,
+        calc(100% - var(--pre-ticket-cut)) 0,
+        100% var(--pre-ticket-cut),
+        100% 100%,
+        0 100%,
+        0 var(--pre-ticket-cut)
+    );
+}
+
+/* Linha pontilhada da emenda: item de ALTURA zero entre as metades,
+   com o traço de 4px centrado (top -2px). Fica no .pre-cta-ticket, que
+   não tem clip, senão as próprias metades o recortariam. Recuo de
+   --pre-ticket-cut nas duas pontas: é onde os chanfros terminam, então
+   o traço corre de um vértice do V ao outro. z-index porque o
+   clip-path da metade de baixo cria contexto de empilhamento e, sem
+   ele, comeria os 2px de baixo do traço. */
+/* O margin-top -2px vai NO CORTE, não na metade de baixo: sendo ele um
+   item de altura zero, subir 2px leva a metade de baixo junto (sobrepondo
+   os 2px que matam a linha de antialiasing do clip-path) e leva também o
+   traço, que é posicionado em relação a ele. Se o -2px estivesse na
+   metade de baixo, a emenda subiria e o pontilhado ficaria 2px abaixo
+   dela. */
+.pre-cta-ticket-corte {
+    position: relative;
+    z-index: 1;
+    height: 0;
+    margin-top: -2px;
+}
+.pre-cta-ticket-corte::before {
+    content: '';
+    position: absolute;
+    left: var(--pre-ticket-cut);
+    right: var(--pre-ticket-cut);
+    top: -2px;
+    height: 4px;
+    background-image: repeating-linear-gradient(90deg, var(--ln300) 0 8px, transparent 8px 16px);
+}
+
+/* CTA em pc500, sem o ring inset que o .btn traz do DS, largura cheia
+   dentro do ticket. O hover escurece pra bb. O play shadow é o mesmo do
+   botão do header (ver @keyframes pre-play-sombra), aqui no verde da
+   página. */
+.btn.pre-cta-btn {
+    --pre-play-cor: var(--pre-gr500);
+    --pre-play-cor-alt: var(--pre-gr100);
+
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--pc500);
+    color: var(--bw);
+    box-shadow: none;
+    transition: 0.5s ease;
+    animation: pre-play-sombra 2s ease infinite;
+}
+.btn.pre-cta-btn.is-hover,
+.btn.pre-cta-btn:hover {
+    background-color: var(--bb);
+    color: var(--bw);
+}
+
+/* Quem pediu menos movimento fica com a sombra parada na cor de partida,
+   em vez de sem sombra nenhuma. Vale pros dois CTAs e vem DEPOIS das
+   duas regras base: media query não soma especificidade, então se
+   viesse antes o `animation` das bases venceria o `animation: none`. */
+@media (prefers-reduced-motion: reduce) {
+    .btn.pre-hd-cta,
+    .btn.pre-cta-btn {
+        animation: none;
+        box-shadow: 8px 8px 0 0 var(--pre-play-cor);
+    }
+}
+
+/* Código de barras: um repeating-linear-gradient de período 24px que
+   desenha barra 8, vão 8, barra 4, vão 4, repetindo até fechar a
+   largura. É decorativo, então mora num gradiente e não em elementos,
+   e a altura da faixa vem do container. */
+.pre-cta-barras {
+    height: 32px;
+    background-image: repeating-linear-gradient(90deg,
+        var(--ln300) 0 8px,
+        transparent 8px 16px,
+        var(--ln300) 16px 20px,
+        transparent 20px 24px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO 4: PROVA
+
+   Port do .champ-grid de /ed/aichampion/, valor por valor: foto em 16/9
+   esmaecendo pro topo, aspa de 6rem em pc300 com line-height 0 subindo
+   32px sobre a foto, citação em itálico, e embaixo o nome e a linha de
+   apoio.
+
+   O grid dos cards ocupa a régua inteira (1 / -1) dentro do container
+   Wide de 1440, e os quatro cards se dividem em repeat(4, 1fr) com gap
+   32, como na origem: 328px cada sobre os 1408 de conteúdo. Assim a
+   borda esquerda do primeiro card cai na mesma vertical do título e da
+   borda do container.
+
+   Consequência assumida: com 4 cards sobre 10 colunas não existe
+   divisão inteira, então os cards NÃO caem nas linhas de coluna do pai
+   (seria span 2,5). Quem manda aqui é o container e o alinhamento com o
+   título, não a linha de coluna.
+
+   Atenção ao token de fonte: os dois lados escrevem var(--font-display),
+   mas ele NÃO vale a mesma coisa nas duas páginas. Em /ed/aichampion/ é
+   'Poppins' (linha 3 do style.css de lá); aqui é 'Cormorant Infant'.
+   Onde a referência quer Poppins, esta seção escreve --font-family.
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-prova {
+    position: relative;
+    width: 100%;
+    padding: 128px 0;
+    box-sizing: border-box;
+    background-color: var(--bb);
+}
+.pre-prova-inner { row-gap: 64px; }
+
+/* Cabeçalho no papel do .depos-header-left de /ed/aichampion/: prova
+   social, título e estrelas numa coluna de gap 16.
+
+   Os dois blocos portados chegam lá com opacity 0, blur 16 e translate,
+   esperando a classe que o observador de scroll de lá adiciona. Aqui
+   eles entram ESTÁTICOS e visíveis: esta página tem outro sistema de
+   animação (variáveis alimentadas pelo scroll) e um opacity 0 à espera
+   de JS que não existe deixaria os dois invisíveis. */
+.pre-prova-head {
+    grid-column: 1 / span 4;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Mesmo padrão do .pre-vira-title e do .pre-aulas-title: display font
+   em 700, entrelinha 1em, destaque em verde e itálico, no degrau maior
+   da escala de títulos da página (o do h1 do header). */
+.pre-prova-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 1.5rem + 1.39vw, 2.75rem);
+    line-height: 1em;
+    color: var(--bw);
+    text-align: left;
+    margin: 0;
+}
+.pre-prova-title-hl {
+    color: var(--pre-gr500);
+    font-style: italic;
+}
+
+/* ── Prova social: pilha de avatares mais a linha de apoio ─────── */
+.pre-prova-social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.pre-prova-avatar-stack {
+    display: flex;
+    flex-direction: row;
+}
+.pre-prova-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    overflow: hidden;
+    background: var(--dn700);
+    box-shadow: -4px 0 0 0 var(--bb-25), inset 0 0 4px 0 var(--bw-25);
+}
+.pre-prova-avatar + .pre-prova-avatar { margin-left: -20px; }
+.pre-prova-eyebrow {
+    font: var(--label);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* ── Estrelas ──────────────────────────────────────────────────── */
+.pre-prova-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.pre-prova-star-stack {
+    display: flex;
+    flex-direction: row;
+}
+.pre-prova-star-stack .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--sg500);
+    font-variation-settings: 'FILL' 1;
+}
+.pre-prova-star-stack .material-symbols-outlined + .material-symbols-outlined {
+    margin-left: -4px;
+}
+.pre-prova-rating {
+    font: var(--p-s);
+    color: var(--sg300);
+    margin: 0 0 0 4px;
+}
+
+.pre-prova-grid {
+    grid-column: 1 / -1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+}
+
+.pre-prova-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.pre-prova-media { position: relative; }
+.pre-prova-fig {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 100%);
+            mask-image: linear-gradient(to top, transparent 0%, #000 100%);
+}
+.pre-prova-content {
+    position: relative;
+    z-index: 1;
+    margin-top: -32px;
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* Poppins 700, como na referência (ver a nota sobre o token acima). */
+.pre-prova-quote {
+    display: block;
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 6rem;
+    line-height: 0;
+    color: var(--pc300);
+}
+.pre-prova-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+/* --p em itálico, igual à referência. Poppins não tem face itálica
+   self-hosted, então aqui o itálico é o oblíquo sintético do navegador,
+   exatamente como a página de origem renderiza hoje. */
+.pre-prova-quote-text {
+    font: var(--p);
+    font-style: italic;
+    color: var(--bw-75);
+    margin: 0;
+}
+/* Nome e linha de apoio: os dois papéis do .champ-name e do
+   .champ-summary, com os valores da referência. A ordem é a da copy,
+   nome primeiro e apoio depois, ao contrário da origem, onde o summary
+   era uma frase de resultado e vinha antes da assinatura. */
+.pre-prova-name {
+    font: var(--label);
+    color: var(--bw);
+}
+.pre-prova-summary {
+    font: var(--p-s);
+    color: var(--bw-50);
+    margin: 0;
+}
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO 5: AS TRÊS AULAS
+
+   Port do .fases-stage de /cp/data-squads/ (que por sua vez veio do
+   .mba-curriculum do MBA FP&A). Mecânica: a seção fica alta (100dvh
+   mais o curso horizontal, escrito inline pelo script.js), o palco gruda
+   com position: sticky e o scroll vertical vira translateX no trilho.
+   Abaixo de 865 o JS desliga e o CSS empilha.
+
+   Medidas da referência, verbatim: card de 832px (é ela que faz o
+   trilho ser mais largo que a viewport e existir curso pra percorrer),
+   número de 16rem sangrando pelo canto e recortado pelo overflow,
+   divisão 50%+32 / 50%-32 entre meta e imagem.
+
+   Sem overflow no .pre-aulas, como na referência: qualquer overflow na
+   mãe direta do palco faz o sticky parar de grudar. Quem contém o
+   trilho é o overflow: hidden do próprio palco.
+
+   Diferenças em relação à referência, além da mecânica: aqui a seção
+   não tem fundo (herda o bb do body, e só os cards são claros) e os
+   cards não têm radius nem a sombra colorida, seguindo o resto da
+   página, que é toda de canto reto.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Sem background: o palco fica transparente e a seção herda o bb que o
+   root.css põe no body. Só os cards, em bw, são claros aqui. Pode ficar
+   transparente porque nada mora atrás dessa faixa: o sticky vive dentro
+   da caixa da própria seção e as vizinhas não a sobrepõem. */
+.pre-aulas {
+    position: relative;
+    z-index: 2;
+}
+.pre-aulas-stage {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Trilho com o padding assimétrico da referência: o da esquerda alinha
+   o primeiro card na borda do container de 1440 (50vw - 704), e o da
+   direita para o último card na mesma margem (50vw - 688).
+   align-items: stretch iguala a altura dos três pelo maior conteúdo. */
+.pre-aulas-track {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    flex: 0 0 auto;
+    align-items: stretch;
+    position: relative;
+    z-index: 1;
+    padding: 0 max(16px, calc(50vw - 688px)) 24px max(16px, calc(50vw - 704px));
+    will-change: transform;
+    opacity: 0;
+}
+@keyframes pre-aulas-track-enter {
+    from { opacity: 0; filter: blur(32px); }
+    to   { opacity: 1; filter: blur(0); }
+}
+.pre-aulas-track.is-entered {
+    animation: pre-aulas-track-enter 0.9s ease-out both;
+}
+
+/* Cabeçalho: primeiro item do trilho, 544px, no desenho do estado
+   inline (.fases-header--inline) da referência. Diferença de duas
+   ordens: lá o header traz eyebrow, título e lede e é ancorado no topo
+   da coluna; aqui é só o título, então ele fica centrado na vertical,
+   que equilibra melhor uma peça única ao lado dos cards.
+
+   As cores também invertem: a referência escurece o texto porque o
+   palco dela é claro; aqui o palco é transparente sobre o bb, então o
+   título volta pro --bw das outras seções. */
+/* Coluna, e não linha, desde que o logo entrou junto: o logo por cima
+   do título. justify-content flex-start ancora o par no topo da coluna,
+   como faz o .fases-header--inline da referência, e o align-items segue
+   no stretch padrão pro título ocupar os 544 e quebrar onde quebrava (o
+   logo tem largura definida, então stretch não o afeta). */
+.pre-aulas-header {
+    flex: 0 0 544px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 32px;
+}
+/* Mesmo desenho do .pre-vira-title, com o destaque em verde e itálico,
+   mas um degrau acima na escala: esta página tem dois tamanhos de
+   título, o das seções (1.75 a 2.25rem) e o do h1 do header (2 a
+   2.75rem). "Maior" aqui é subir pro segundo, que já existe, em vez de
+   inventar um terceiro. */
+.pre-aulas-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 1.5rem + 1.39vw, 2.75rem);
+    line-height: 1em;
+    color: var(--bw);
+    text-align: left;
+    margin: 0;
+}
+.pre-aulas-title-hl {
+    color: var(--pre-gr500);
+    font-style: italic;
+}
+
+.pre-aulas-card {
+    /* Mesmas medidas de bullet da lista da seção 2, declaradas aqui
+       porque lá elas vivem no .pre-vira-card e não chegam por herança. */
+    --pre-bullet-w: 4px;
+    --pre-bullet-h: 4px;
+
+    flex: 0 0 auto;
+    width: 832px;
+    position: relative;
+    isolation: isolate;
+    border-radius: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--bw);
+}
+.pre-aulas-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--bb-5), transparent);
+}
+
+/* Cabeça do card: a foto abre a linha e o bloco de identificação
+   (data, professor, aula) vem ao lado dela.
+
+   São três elementos, e não dois: os dois nomeados carregam o conteúdo,
+   e o .pre-aulas-card-head existe só pra pôr um do lado do outro, já que
+   o meta é uma coluna.
+
+   A foto é quadrada e de largura fixa; a identificação absorve o resto
+   com min-width 0, pra encolher em vez de estourar o card. */
+.pre-aulas-card-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+}
+.pre-aulas-card-foto { flex: 0 0 auto; }
+.pre-aulas-card-ident {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+/* Sem radius também na foto: com o card em canto reto, os 12px que a
+   referência dava a ela ficariam sozinhos numa página que não tem
+   arredondamento em lugar nenhum. */
+.pre-aulas-card-fig {
+    display: block;
+    width: 128px;
+    aspect-ratio: 1 / 1;
+    border-radius: 0;
+    object-fit: cover;
+}
+
+/* Bloco de tópicos: a linha de abertura e, abaixo dela, a lista. */
+.pre-aulas-card-topicos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+/* Linha que abre o bloco. Não é item da lista, então não leva bullet, e
+   fica um passo acima deles na escala de cor. */
+.pre-aulas-card-lead {
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+}
+
+/* Lista no mesmo desenho da .pre-vira-list: sem marcador nativo, gap no
+   lugar do margin, e a barrinha de 4 × 4 num ::before.
+
+   Diferença de ancoragem: lá o bullet mora na faixa do padding do card,
+   com left negativo, porque a lista encosta na borda desse padding.
+   Aqui a lista é um bloco no meio da coluna, então o bullet ganha pista
+   própria dentro dela (padding-left no item, left 0 na barra). O top é
+   a mesma conta, que centra a barra na primeira linha de 1.5em. */
+.pre-aulas-card-list {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.pre-aulas-card-list > li {
+    position: relative;
+    padding-left: 16px;
+    font: var(--p);
+    color: var(--bb-50);
+    margin: 0;
+}
+.pre-aulas-card-list > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: calc((1.5em - var(--pre-bullet-h)) / 2);
+    width: var(--pre-bullet-w);
+    height: var(--pre-bullet-h);
+    background-color: currentColor;
+}
+
+/* Com a foto dentro do bloco de tópicos, o meta deixou de ser metade do
+   card e passou a ser o card inteiro. Topo em 64: o número agora sangra
+   pelo canto direito, longe da coluna de conteúdo, então não precisa
+   mais dos 128 que a referência reservava pra ele.
+
+   Sem justify-content: o conteúdo ancora no topo (flex-start padrão),
+   ao contrário da referência, que assentava tudo na base sob o número
+   gigante. Quem desce até o rodapé é só o bônus, pelo margin-top auto
+   dele. */
+.pre-aulas-card-meta {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 64px 64px 64px 64px;
+}
+/* O número da referência não declara família e herda Poppins, que não
+   tem itálico self-hosted. Aqui vai no display da página (Cormorant
+   Infant), que tem itálico real, e que é também o que o MBA, ancestral
+   desse card, usava. */
+/* Ancorado no canto SUPERIOR DIREITO, ao contrário da referência: o
+   right ancora a caixa nesse lado e o text-align empurra o glifo pra
+   borda, senão ele ficaria no começo de uma caixa de 100% de largura.
+   No topo ele segue sangrando 32px, aparado pelo overflow do card. */
+.pre-aulas-card-num {
+    position: absolute;
+    right: 0;
+    top: -32px;
+    width: 100%;
+    text-align: right;
+    z-index: -1;
+    font-family: var(--font-display);
+    font-size: 16rem;
+    line-height: 1em;
+    font-weight: 400;
+    font-style: italic;
+    background: linear-gradient(180deg, var(--pc500-25), transparent);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    pointer-events: none;
+    -webkit-user-select: none;
+            user-select: none;
+}
+/* Data no lugar do rótulo de fase da referência. */
+.pre-aulas-card-data {
+    font: var(--label-l);
+    color: var(--pc500);
+    margin: 0;
+}
+/* Linha de assinatura do professor, entre a data e o título da aula. A
+   referência tinha só dois níveis (fase e título); este terceiro entra
+   em --label sobre bb-50, abaixo dos dois na hierarquia. */
+.pre-aulas-card-nome {
+    font: var(--label);
+    color: var(--bb-50);
+    margin: 0;
+}
+.pre-aulas-card-title {
+    font: var(--label-l);
+    color: var(--bb);
+    margin: 0 0 16px;
+}
+/* O bônus fecha o card, empurrado pro rodapé pelo margin-top auto: como
+   os cards esticam na mesma altura, o bônus dos três fica alinhado entre
+   si. É esse auto que também absorve o espaço livre da coluna e, com
+   isso, mantém o resto do conteúdo ancorado no topo. Zerado nos outros
+   lados. O rótulo é bloco, e não inline como o "Entregável:" da
+   referência, porque a copy traz "Bônus" em linha própria. */
+.pre-aulas-card-bonus {
+    font: var(--p);
+    color: var(--bb-75);
+    margin: 0;
+    padding-top: 16px;
+}
+.pre-aulas-card-meta .pre-aulas-card-bonus { margin-top: auto; }
+.pre-aulas-card-bonus-label {
+    display: block;
+    color: var(--pc500);
+}
+
+/* Com o palco inteiro pros cards, laterais e base em 32 pra sobrar
+   espaço nas beiradas, mantendo os 128 de topo do número. */
+@media (min-width: 865px) {
+    .pre-aulas-card-meta { padding: 64px 32px 64px 32px; }
+}
+
+/* ≤864: o height auto anula a altura inline que o JS escreve e o
+   transform none zera o deslocamento, garantindo que nada fique preso
+   se a viewport mudar de estado. */
+@media (max-width: 864px) {
+    .pre-aulas {
+        height: auto !important;
+        overflow-x: clip;
+    }
+    .pre-aulas-stage {
+        position: relative;
+        height: auto;
+        overflow: visible;
+        justify-content: flex-start;
+        padding: 96px 0;
+    }
+    .pre-aulas-track {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px 24px;
+        gap: 24px;
+        transform: none !important;
+    }
+    /* Com o trilho em coluna, o cabeçalho vira o bloco de cima sozinho:
+       largura toda e o intervalo pros cards vindo do gap do trilho. */
+    .pre-aulas-header {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+    .pre-aulas-card { width: 100%; }
+    .pre-aulas-card-meta {
+        flex: 0 0 auto;
+        padding: 64px 32px 32px 32px;
+    }
+
+    /* Regra da casa: nada de blur ANIMADO abaixo de 864. A keyframe é
+       redefinida com o mesmo nome sem o filter, então o fade continua e
+       o blur sai. */
+    @keyframes pre-aulas-track-enter {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+}
+@media (max-width: 576px) {
+    .pre-aulas-track { gap: 16px; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   REVEAL DO FIM: a oferta sobe por cima das aulas
+
+   Port do .fases-oport-track de /cp/data-squads/, que é o mesmo padrão
+   do reveal do topo desta página (.pre-top).
+
+   As aulas ficam sticky com offset NEGATIVO:
+
+     top = 100dvh - altura da seção   (ou seja, -(altura - 100dvh))
+
+   Quando o sticky engata, o RODAPÉ da seção cola no rodapé da viewport
+   e a oferta rola por cima dela. Aqui o offset cai exatamente no fim do
+   curso horizontal: a altura da seção é 100dvh mais o curso (o script.js
+   escreve isso inline), logo top = -curso, e o próprio driver já capa o
+   progresso nesse mesmo valor. A seção trava no quadro em que o último
+   card chega na margem, não antes.
+
+   A altura real em px vem de --pre-aulas-h, atualizada em tempo real por
+   ResizeObserver no script.js: o calc precisa dela em pixels, e ela é
+   duplamente dinâmica (o efeito horizontal a reescreve a cada resize e
+   a cada carregamento de fonte).
+
+   O track NÃO pode ter overflow: qualquer clipping num ancestral mata o
+   sticky. z-index 3 na oferta porque as aulas usam 2, e o gradiente
+   dela já é opaco, que é o que impede o conteúdo de baixo de aparecer
+   através durante a passagem.
+   ══════════════════════════════════════════════════════════════ */
+
+.pre-fim-track { position: relative; }
+.pre-fim-track .pre-aulas {
+    position: sticky;
+    top: calc(100dvh - var(--pre-aulas-h, 100dvh));
+}
+.pre-fim-track .pre-cta { z-index: 3; }
+
+@media (prefers-reduced-motion: reduce) {
+    .pre-fim-track .pre-aulas {
+        position: relative;
+        top: auto;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BARRA DE CTA FIXA
+
+   Port do .bottom-cta de /ed/aichampion/. As quatro camadas de
+   backdrop-filter têm máscaras que terminam em alturas diferentes
+   (100%, 66%, 42%, 22%), então o desfoque do que passa atrás cresce de
+   cima pra baixo em vez de ligar de uma vez. É blur ESTÁTICO,
+   decorativo, não animado.
+
+   A barra é pointer-events none pra não roubar o clique do conteúdo;
+   só o botão volta a capturar.
+   ═══════════════════════════════════════════════════════════════ */
+
+.pre-bottom-cta {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 12px;
+    box-sizing: border-box;
+    background: linear-gradient(to top, var(--bb-75), transparent 75%);
+    z-index: 500;
+    pointer-events: none;
+
+    /* A revelação é SÓ transform, sem fade, e isso é obrigatório aqui:
+       um ancestral com opacity < 1 vira raiz de fundo, e backdrop-filter
+       em descendente para de amostrar a página. Com fade, a barra passa
+       os 0.4s inteiros sem desfoque, mostrando o gradiente escuro cheio,
+       e liga o blur de uma vez no quadro em que a opacidade fecha em 1.
+       Era esse o pulo.
+
+       Pela mesma razão não há will-change: promover a caixa cria a mesma
+       raiz de fundo, só que de forma permanente, e mata o desfoque.
+
+       Escondida, a barra sai inteira da viewport pelo translateY(100%),
+       então não precisa de opacity pra desaparecer.
+
+       Transição explícita, e não o atalho `0.4s ease` (que vale `all`),
+       pra o gradiente e as máscaras ficarem fora da animação. */
+    transition: transform 0.4s ease;
+}
+.pre-bottom-cta.is-hidden {
+    transform: translateY(100%);
+}
+.pre-bottom-cta .pre-bottom-cta-blur {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.pre-bottom-cta-blur-2 {
+    -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 100%);
+            mask: linear-gradient(to top, #000 0%, transparent 100%);
+}
+.pre-bottom-cta-blur-4 {
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 66%);
+            mask: linear-gradient(to top, #000 0%, transparent 66%);
+}
+.pre-bottom-cta-blur-8 {
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 42%);
+            mask: linear-gradient(to top, #000 0%, transparent 42%);
+}
+.pre-bottom-cta-blur-16 {
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 22%);
+            mask: linear-gradient(to top, #000 0%, transparent 22%);
+}
+
+/* Botão no estilo desta página, não no do original: verde puro com
+   texto bb e sem o ring inset do DS. Sem sombra: aqui ela ficaria
+   competindo com o desfoque progressivo da barra, que já é o recurso de
+   profundidade deste bloco. */
+.btn.pre-bottom-cta-btn {
+    position: relative;
+    z-index: 1;
+    width: auto;
+    align-self: flex-end;
+    pointer-events: auto;
+    background-color: var(--pre-gr500);
+    color: var(--bb);
+    box-shadow: none;
+    transition: 0.5s ease;
+}
+.btn.pre-bottom-cta-btn.is-hover,
+.btn.pre-bottom-cta-btn:hover {
+    background-color: var(--pre-gr100);
+    color: var(--bb);
+}
+@media (prefers-reduced-motion: reduce) {
+    .pre-bottom-cta { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVO (grid do DS). Vem depois de todas as regras base.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ≤1439: 10 → 8 colunas, gap 32. Spans remapeados mantendo a
+   separação de 2 colunas no header (lead 1..3, vazias 4 e 5,
+   aside 6..8). */
+@media (max-width: 1439px) {
+    .pre-header-inner,
+    .pre-linha-inner,
+    .pre-vira-inner,
+    .pre-cta-inner,
+    .pre-prova-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    /* Lead em 1..4 e aside em 5..8: os dois com 4 colunas, sem
+       separação. Cada card do aside fica com 256px. */
+    .pre-hd-lead { grid-column: 1 / span 4; }
+
+    /* Aqui o aside não acompanha mais o topo do título: offset fixo de
+       32px. E vai pra frente da figura, junto com o lead. */
+    .pre-hd-aside {
+        grid-column: 5 / span 4;
+        margin-top: 32px;
+        z-index: 3;
+    }
+
+    /* Figura menor (544px = 4 colunas + 3 gaps) e ancorada 32px acima
+       do topo do header. O overflow hidden do header corta a faixa que
+       sobe além do topo. */
+    .pre-hd-figure {
+        width: 544px;
+        top: -32px;
+    }
+
+    /* O interior do box acompanha a queda da régua: 10 → 8 colunas,
+       com os spans remapeados na proporção. O bloco de texto mantém o
+       caráter de "últimas 6 de 10" (60% da largura, começando antes do
+       meio) virando as últimas 5 de 8. */
+    .pre-linha-box { grid-template-columns: repeat(8, 1fr); }
+    .pre-linha-head { grid-column: 1 / span 4; }
+    .pre-linha-card--ln300 { grid-column: 1 / span 4; }
+    .pre-linha-card--pc200 { grid-column: 5 / span 4; }
+    .pre-linha-text { grid-column: 4 / span 5; }
+
+    /* Seção 2: o 6 + 4 da base vira meio a meio, 4 + 4 das 8 colunas. */
+    .pre-vira-title { grid-column: 1 / span 4; }
+    .pre-vira-video { grid-column: 1 / span 4; }
+    .pre-vira-panel { grid-column: 5 / span 4; }
+
+    /* Seção 3: o 4 + 5 da base remapeia em 3 + 4, mantendo uma coluna
+       de separação entre o lead e o ticket. */
+    .pre-cta-lead { grid-column: 1 / span 3; }
+    .pre-cta-ticket { grid-column: 5 / span 4; }
+
+    /* Seção 4: o grid dos cards já é 1 / -1 na base, só o cabeçalho
+       remapeia (o título mora dentro dele, não é item do grid). O 4 de
+       10 vira 3 de 8, o inteiro mais próximo na proporção. */
+    .pre-prova-head { grid-column: 1 / span 3; }
+
+
+}
+
+/* ≤1152: o vídeo abre mão do 16/9 e passa a simplesmente acompanhar a
+   altura da linha, que nessa faixa é ditada pelo painel (o texto dos
+   cards fica mais alto que um 16/9 sobre metade das colunas).
+
+   Só no modo pin: empilhado, abaixo de 864, o vídeo está sozinho na
+   linha dele e precisa do aspect-ratio pra ter altura, senão colapsa
+   na altura intrínseca do <video>. Como .is-live nunca entra abaixo de
+   864, a regra abaixo já fica restrita à faixa 865..1152. */
+@media (max-width: 1152px) {
+    /* Orbs saem meio container pra fora da direita, então só a metade
+       esquerda deles entra no header. O -50% é do próprio container,
+       porque a porcentagem de right em absoluto conta a largura do
+       bloco de contenção, que aqui é o .pre-header. */
+    .pre-hd-orbs {
+        top: 0;
+        right: -50%;
+    }
+
+    .pre-vira-track.is-live .pre-vira-video {
+        aspect-ratio: auto;
+        height: 100%;
+        min-height: 0;
+    }
+}
+
+/* Tablet ≤864: 6 colunas, gap 24. Todos os blocos viram largura
+   cheia (1 / -1) e empilham. */
+@media (max-width: 864px) {
+    .pre-header-inner,
+    .pre-linha-inner,
+    .pre-vira-inner,
+    .pre-cta-inner,
+    .pre-prova-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+    }
+    .pre-header-inner,
+    .pre-linha-inner,
+    .pre-vira-inner,
+    .pre-cta-inner,
+    .pre-prova-inner { row-gap: 32px; }
+
+    .pre-header { padding: 32px 0 96px; }
+
+    /* Orbs descem pro rodapé do header e avançam meio header pra fora
+       da direita: com o top em 100% e o translateY(-50%) que cada orb
+       já tem, só a metade de cima do glow volta pra dentro, subindo do
+       canto de baixo em vez de descer do de cima.
+
+       Daqui pra baixo tudo cai pela METADE, container e orbs na mesma
+       razão: 1440 × 1364 vira 720 × 682, o orb pc200 vai de 2048 pra
+       1024 e o pc400 de 1536 pra 768. Acima de 864 seguem cheios. */
+    .pre-hd-orbs {
+        top: 100%;
+        right: -50%;
+        width: 720px;
+        height: 682px;
+    }
+    .pre-hd-orb--1 {
+        width: 1024px;
+        height: 1024px;
+    }
+    .pre-hd-orb--2 {
+        width: 768px;
+        height: 768px;
+    }
+
+    /* A deriva lateral sai do lead e do aside inteiros: daqui pra
+       baixo quem se move são os três cards, cada um pro seu lado. */
+    .pre-hd-lead,
+    .pre-hd-aside { transform: none; }
+
+    .pre-hd-lead { grid-column: 1 / -1; }
+    /* rows auto: em largura cheia o aside não estica mais na altura do
+       lead, então 1fr 1fr passaria a igualar as duas linhas e abriria
+       um vazio embaixo da primeira. */
+    /* margin-top zerado: empilhado abaixo do lead, não há mais título
+       ao lado pra alinhar.
+
+       z-index 3 devolve o aside pra frente da figura. A sobreposição
+       "figura na frente dos cards" só faz sentido na composição lado a
+       lado do desktop; empilhado, a silhueta cobria o primeiro card e
+       escondia o label dele. */
+    .pre-hd-aside {
+        grid-column: 1 / -1;
+        z-index: 3;
+        margin-top: 0;
+        grid-template-rows: auto auto;
+        column-gap: 24px;
+        row-gap: 24px;
+    }
+
+    /* CTA alinhado à direita. O lead é flex column com align-items
+       flex-start, então quem muda é o align-self do próprio botão. */
+    .btn.pre-hd-cta { align-self: flex-end; }
+
+    /* Card bw passa pra coluna da esquerda. */
+    .pre-hd-card--bw { grid-column: 1; }
+
+    /* Deriva lateral no scroll, só neste tier: bw e pc200 saem pra
+       esquerda, gr100 pra direita, até 64px. O módulo vem do
+       --pre-cards-x (script.js) e o sinal fica aqui, por card. */
+    .pre-hd-card--bw,
+    .pre-hd-card--pc200 {
+        transform: translateX(calc(var(--pre-cards-x, 0px) * -1));
+        will-change: transform;
+    }
+    .pre-hd-card--gr100 {
+        transform: translateX(var(--pre-cards-x, 0px));
+        will-change: transform;
+    }
+
+    /* Tipo e padding descem um passo daqui pra baixo: os cards ficam
+       estreitos porque o sub-grid de 2 colunas é mantido, e o label em
+       L com padding 32 não cabia mais. */
+    .pre-hd-card { padding: 16px; }
+    .pre-hd-card-label { font: var(--label-xs); }
+    .pre-hd-card-note  { font: var(--label); }
+
+    /* A figura CONTINUA absoluta (fora do fluxo, então não infla a
+       altura do header) e atrás dos cards, mas passa a ancorar no
+       lead em vez de no header.
+
+       O truque é o grid: um absoluto filho de grid container QUE TEM
+       posição de grid definida usa a área do grid como bloco
+       contêiner. Com grid-row 1 / grid-column 1 / -1, o bloco
+       contêiner do .pre-hd-figure é a área da linha 1, que é a linha
+       do lead. Daí:
+
+         top: calc(100% - 64px)  →  100% = altura da linha do lead,
+                                    então o topo da imagem cai 64px
+                                    acima do bottom do lead, sem
+                                    número fixo e acompanhando a
+                                    quebra do título.
+         left: 0 + width: 100%   →  largura cheia da coluna de
+                                    conteúdo, ou seja, centrada.
+
+       z-index 2 contra 3 do aside mantém a figura atrás dos cards, e
+       atrás do lead também.
+
+       O transform perde o translateX(-50%) do desktop, que aqui
+       jogaria a imagem meia largura pra esquerda, e fica só com o
+       translateY do paralaxe.
+
+       filter: none no header: acima de 864 ele desfoca junto com o
+       fade, mas blur animado não entra em tela pequena.
+
+       grid-template-rows: auto auto é OBRIGATÓRIO aqui. Sem trilhas de
+       linha explícitas, a linha 2 do grid só existe como implícita, o
+       grid-row: 1 do absoluto é tratado como auto e o bloco contêiner
+       cai pro padding box do container inteiro (medido: o offset ia
+       pra +266px em vez de -64px). Com as duas trilhas declaradas,
+       linha 1 = lead e linha 2 = cards. */
+    .pre-header-inner {
+        position: relative;
+        grid-template-rows: auto auto;
+    }
+
+    .pre-top .pre-header { filter: none; }
+
+    .pre-hd-figure {
+        grid-column: 1 / -1;
+        /* 1 / 2, nunca "1" sozinho: em absoluto filho de grid, a linha
+           `auto` NÃO significa span 1, ela resolve pra borda do padding
+           do container. Com grid-row: 1 o contêiner ia da linha 1 até o
+           fim do grid e o top computado dava 584.78px em vez de
+           266.78px. Fechar a linha final amarra a área na linha do
+           lead. */
+        grid-row: 1 / 2;
+        top: calc(100% - 64px);
+        left: 0;
+        width: 100%;
+        height: auto;
+        transform: translateY(var(--pre-figure-y, 0px));
+        z-index: 2;
+    }
+
+    /* Corte cai pra 32px daqui pra baixo. Como o clip-path consome o
+       token, redefinir --pre-cut é a única mudança necessária. */
+    :root { --pre-cut: 32px; }
+
+    /* Box da linha invisível vira coluna única: título, card ln300,
+       card pc200. row-gap 32 mais margin-bottom 32 no título mantém os
+       64px pedidos entre o título e o primeiro card, sem abrir 64
+       também entre os dois cards. */
+    .pre-linha { padding: 96px 0; }
+    .pre-linha-box,
+    .pre-linha-garantia {
+        padding: 64px 32px 64px 32px;
+    }
+    .pre-linha-box {
+        grid-template-columns: 1fr;
+        row-gap: 32px;
+    }
+    /* 1 / -1 em todos, e não grid-column: 1: com uma coluna só, um
+       span 5 ou span 4 herdado dos tiers de cima criaria colunas
+       implícitas e estouraria o box. */
+    .pre-linha-head {
+        grid-column: 1 / -1;
+        margin-bottom: 32px;
+    }
+    .pre-linha-card--ln300,
+    .pre-linha-card--pc200,
+    .pre-linha-text {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    /* Seção 2 aqui: o pin CONTINUA valendo (o script liga .is-live em
+       qualquer largura), o conteúdo passa a ser vertical em três linhas
+       e a troca dos cards vira horizontal.
+
+         1  título
+         2  vídeo, em 21:9 (formato baixo, que é o que deixa a pilha
+            inteira caber na viewport do pin)
+         3  painel, com os dois cards na mesma célula trocando de lado
+
+       row-gap 0 mantém vídeo e painel colados; o respiro do título vem
+       do margin-bottom dele, porque o gap é único pro grid todo. */
+    .pre-vira { padding: 96px 0; }
+    .pre-vira-inner { row-gap: 0; }
+    .pre-vira-title { margin-bottom: 32px; }
+
+    .pre-vira-title,
+    .pre-vira-video,
+    .pre-vira-panel {
+        grid-column: 1 / -1;
+    }
+    .pre-vira-title { grid-row: 1; }
+    .pre-vira-video { grid-row: 2; }
+    .pre-vira-panel { grid-row: 3; }
+
+    /* 21:9 fixo, sobrescrevendo tanto o 16/9 da base quanto o
+       aspect-ratio: auto + height: 100% do bloco de ≤1152 (mesma
+       especificidade, e este vem depois). Aqui o vídeo e o painel estão
+       em linhas diferentes, então não há mais casamento de altura entre
+       os dois: cada um responde pelo próprio conteúdo. */
+    /* Sem teto de altura aqui: empilhado, o vídeo e o painel estão em
+       linhas diferentes, então o teto de um não tem relação com o do
+       outro. Quem cuida de viewport curta neste tier é o gate de
+       altura do script.js, que simplesmente não liga o pin. */
+    .pre-vira-track.is-live .pre-vira-video,
+    .pre-vira-track.is-live .pre-vira-panel {
+        max-height: none;
+    }
+    .pre-vira-track.is-live .pre-vira-video {
+        aspect-ratio: 21 / 9;
+        height: auto;
+        min-height: 0;
+    }
+    /* Empilhado não existe gap lateral pra comer. */
+    .pre-vira-video { width: 100%; }
+
+    /* Troca na HORIZONTAL: o card que sai vaza pela esquerda e o que
+       entra vem da direita. O curso de cada um é a própria largura mais
+       o gap, mesma lógica do eixo vertical. O fade dos dois continua
+       valendo, ele não depende de eixo. */
+    .pre-vira-track.is-live .pre-vira-card--hoje {
+        transform: translateX(calc((-100% - var(--pre-vira-gap)) * var(--pre-vira-p, 0)));
+    }
+    .pre-vira-track.is-live .pre-vira-card--futuro {
+        transform: translateX(calc((100% + var(--pre-vira-gap)) * (1 - var(--pre-vira-p, 0))));
+    }
+
+    .pre-cta { padding: 96px 0; }
+    .pre-cta-lead,
+    .pre-cta-ticket { grid-column: 1 / -1; }
+
+    /* Seção 4: os quatro cards viram 2 × 2, como no .champ-grid de
+       origem. Cada card continua caindo sobre 3 das 6 colunas. */
+    .pre-prova { padding: 96px 0; }
+    .pre-prova-inner { row-gap: 48px; }
+    .pre-prova-head,
+    .pre-prova-grid { grid-column: 1 / -1; }
+    .pre-prova-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+
+}
+
+/* Mobile ≤576: 4 colunas, gap 16. O aside também empilha, na ordem do
+   DOM (fatos em bw, fatos em verde claro, card). */
+@media (max-width: 576px) {
+    .pre-header-inner,
+    .pre-linha-inner,
+    .pre-vira-inner,
+    .pre-cta-inner,
+    .pre-prova-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+
+    .pre-header { padding: 32px 0 64px; }
+
+    /* O aside NÃO empilha aqui: mantém o sub-grid de 2 colunas × 2
+       linhas até o mobile, só apertando o gap. Por isso as colunas
+       ficam em repeat(2, 1fr) (herdado da base) e os cards seguem nas
+       células que já ocupavam. */
+    .pre-hd-aside {
+        column-gap: 16px;
+        row-gap: 16px;
+    }
+
+    .pre-linha { padding: 64px 0; }
+    .pre-linha-box,
+    .pre-linha-garantia {
+        padding: 64px 16px 64px 16px;
+    }
+    .pre-linha-card { padding: 24px; }
+
+    /* Ticket no mobile estreito: só o respiro lateral aperta. */
+    .pre-cta-ticket-topo,
+    .pre-cta-ticket-base { padding: 32px 16px; }
+
+    /* Coluna única, como o .champ-grid faz nesta faixa. */
+    .pre-prova { padding: 64px 0; }
+    .pre-prova-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+}

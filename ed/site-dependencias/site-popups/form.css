@@ -140,6 +140,16 @@
     align-items: center;
     gap: 16px;
 }
+/* Lockup de marca no lugar da caixa de ícone, pra quando o popup pertence
+   a uma oferta com identidade própria (o Infinite Pass usa isto). Altura
+   de 32px, a mesma que /ed/pre-vitalicio/ dá ao logo, e largura livre
+   porque é um lettering e não um ícone quadrado. */
+.popup-form .popup-form-logo {
+    height: 32px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+}
 .popup-form .popup-form-eyebrow {
     display: flex;
     flex-wrap: wrap;
@@ -351,4 +361,17 @@
     .popup-form { padding: 0; }
     .popup-form .popup-form-content { max-width: none; }
     .popup-form .popup-form-card { padding: 16px; border-radius: 0; min-height: 100%; }
+}
+
+/* Dica de campo: texto auxiliar embaixo do input, no mesmo lugar do
+   `.input-error-text` do design system, em `--label-s` e no amarelo de
+   aviso. Vive aqui, e não no root.css, porque o DS ainda não tem esse
+   componente: se ele ganhar um, esta regra sai.
+
+   As duas convivem: a de erro nasce oculta e aparece quando a validação
+   reclama, e a dica fica o tempo todo. */
+.popup-form .input-hint {
+    font: var(--label-s);
+    color: var(--wr500);
+    margin-top: 4px;
 }

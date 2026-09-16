@@ -1,0 +1,3497 @@
+/* ══════════════════════════════════════════════════════════════════════
+   /ed/pre-vitalicio/dependencias/style.css
+
+   HEADER portado de /ed/aichampion/dependencias/style.css, com duas
+   remoções pedidas:
+     1. o canvas animado (#hero-canvas / #fill-canvas) saiu inteiro
+     2. a camada .noise saiu inteira
+
+   Consequência estrutural: no aichampion os blocos do hero são
+   position: fixed porque o hero tem 400vh de scroll dirigindo a
+   animação. Sem animação, eles voltam pro fluxo normal dentro de um
+   hero de uma tela. Isso também dispensa o JS que revelava os blocos
+   (lá eles nascem visibility: hidden), então aqui não há JS de hero.
+
+   O que foi mantido do original: o lockup fixo da marca no topo, a
+   canoa de luz pc300 no rodapé (gradiente estático), a tipografia do
+   título em gradiente com drop-shadow, o grid Wide do DS e
+   o indicador de scroll.
+
+   Grid: max-width 1440 + padding 0 16px, colunas 10/8/6/4 nos
+   breakpoints 1440/1439/864/576 com gaps 32/32/24/16.
+   ══════════════════════════════════════════════════════════════════════ */
+
+html, body { margin: 0; background: var(--bb); }
+/* display desta página = Poppins, que vem do root.css */
+:root { --font-display: 'Poppins', sans-serif; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   HERO
+
+   300vh de altura: os blocos são position: fixed e a coreografia inteira
+   é dirigida pelo scroll dentro dessa faixa (script.js). É a mesma
+   estrutura do aichampion, sem o canvas do fundo e sem a camada .noise.
+   ══════════════════════════════════════════════════════════════════════ */
+.hero { height: 300vh; position: relative; }
+
+/* Canoa CÔNCAVA, invertida na vertical: radial centrado no BASE-centro com
+   núcleo transparente, então o "buraco" morde pra cima no meio e a luz
+   pc300 desce nas laterais. Ancorada no topo.
+   (O nome .canoa-bottom vem do aichampion, onde ela fica no rodapé. Aqui
+   está no topo; mantido o nome pra não quebrar a referência no script.js.) */
+.canoa-bottom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 150% 125% at 50% 100%,
+            transparent 70%,
+            rgba(100, 100, 255, 0.25) 90%,
+            rgba(100, 100, 255, 1) 100%),
+        linear-gradient(to bottom,
+            rgba(100, 100, 255, 0.1),
+            transparent);
+}
+
+/* Vídeo de fundo, o mesmo da home. Fixo porque o hero tem 300vh e os
+   blocos são fixos: assim ele acompanha a tela durante toda a coreografia.
+   Fica em z-index 0, atrás da canoa (1) e dos textos (10). O
+   object-position é o da home, que enquadra o assunto acima do centro. */
+.hero-bg {
+    position: fixed;
+    top: -256px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 960px;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center center;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Véu entre o vídeo (z 0) e os textos (z 10). Sem ele o texto some nas
+   partes claras do vídeo. Deixa o miolo transparente de propósito, que é
+   onde o brilho do X aparece. */
+.hero-scrim {
+    position: fixed;
+    top: -256px;          /* mesma caixa do .hero-bg: o véu tem que cobrir
+                             o vídeo, não a viewport. Com top: 0 a ponta opaca
+                             do gradiente caia ABAIXO do vídeo, pintando --bb
+                             sobre --bb, e o scrim não aparecia. */
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 960px;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--bb), transparent);
+}
+/* Acima de 1440 o vídeo cobre mais tela e o brilho do X fica mais forte:
+   o véu para em --bb-25 no topo em vez de zerar, domando o brilho sem
+   apagar o vídeo. */
+@media (min-width: 1440px) {
+    /* Em tela larga o vídeo sobe mais, tirando o X de cima do título.
+       O véu acompanha o mesmo top: ele existe pra cobrir o VÍDEO, e se as
+       duas caixas se descolam a ponta opaca do gradiente cai fora do
+       vídeo e o scrim volta a não aparecer. */
+    .hero-bg,
+    .hero-scrim { top: -30%; }
+    .hero-scrim {
+        background: linear-gradient(to top, var(--bb), var(--bb-25));
+    }
+}
+
+/* Marca no tratamento da home: canto superior direito, 120x36, meia
+   opacidade. Substitui o lockup centralizado que veio do aichampion. */
+.hero-logo {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 120px;
+    height: 36px;
+    display: block;
+    opacity: 0.5;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* Grid do hero (DS Wide: 10 cols / max 1440, cai 8/6/4). Os três wrappers
+   usam o mesmo grid pra as colunas do título e do texto se alinharem. */
+.hero-grid {
+    position: fixed;
+    left: 50%;
+    z-index: 10;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    pointer-events: none;
+}
+/* título: centralizado na tela */
+.hero-title-wrap { top: 50%; transform: translate(-50%, calc(-50% - 128px)); }
+/* lede e detalhe: o JS gruda o topo no rodapé do título */
+.hero-lede-wrap,
+.hero-detail-wrap { top: 50%; bottom: 0; transform: translateX(-50%); align-items: center; }
+/* escondidos até o JS posicionar com as fontes já carregadas, senão o
+   primeiro paint mostra os blocos sobrepostos */
+.hero-title-wrap, .hero-lede-wrap, .hero-detail-wrap { visibility: hidden; }
+
+/* Título: 6 colunas centradas, base leve. O gradiente e o background-clip
+   moram SÓ nas .ltr, nunca no h1: o JS quebra o título em spans
+   inline-block, e background-clip: text não recorta através deles, então
+   o clip do pai ficaria sem glifo e o Chrome pinta um resíduo do
+   gradiente na borda esquerda. O text-fill transparente fica no pai
+   porque as .ltr herdam. */
+.hero-title {
+    grid-column: 3 / span 6;
+    grid-row: 1;              /* os dois títulos na MESMA célula, sobrepostos */
+    margin: 0;
+    text-align: center;
+    font-weight: 300;
+    /* clamp ancorado: 1.75rem @576px -> 3.25rem @1440px */
+    font-size: clamp(1.75rem, 0.75rem + 2.7778vw, 3.25rem);
+    line-height: 1.2;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 16px var(--bb));
+}
+/* palavra inteira não quebra no meio, só nos espaços */
+.hero-title .word { white-space: nowrap; }
+.hero-title .ltr {
+    display: inline-block;
+    will-change: transform, opacity;
+    /* Gradiente Low Emphasis do DS. O aichampion usa um bw -> ln800
+       solto; aqui vale o token (--bw -> --bw-50). */
+    background-image: var(--text-gradient-low);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Lede: 4 primeiras colunas, alinhado à esquerda da tela */
+.hero-lede-col {
+    grid-column: 1 / span 4;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    will-change: transform, opacity;
+}
+.hero-lede {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+/* Prova social, portada da home (site-dependencias/home.css). O estado
+   inicial de reveal de lá (opacity 0 + blur + translate, que o observer
+   da home desfaz) ficou de fora: aqui quem controla a opacidade do bloco
+   é a coreografia do scroll, via .hero-lede-col. */
+.hero-prova { display: flex; flex-direction: column; gap: 12px; }
+.depos-social-proof { display: flex; align-items: center; gap: 12px; }
+.depos-avatar-stack { display: flex; flex-direction: row; }
+.depos-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    background: var(--dn700) center / cover no-repeat;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: -4px 0 0 0 var(--bb-25), inset 0 0 4px 0 var(--bw-25);
+}
+.depos-avatar + .depos-avatar { margin-left: -20px; }
+.depos-eyebrow { font: var(--label); color: var(--bw-75); margin: 0; }
+.depos-stars { display: flex; align-items: center; gap: 4px; }
+.depos-star-stack { display: flex; flex-direction: row; }
+.depos-star-stack .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--sg500);
+    font-variation-settings: 'FILL' 1;
+}
+.depos-star-stack .material-symbols-outlined + .material-symbols-outlined { margin-left: -4px; }
+.depos-rating { font: var(--p-s); color: var(--sg300); margin: 0 0 0 4px; }
+
+/* Os dois botões: mesma linha do lede, nas últimas colunas. O wrapper do
+   grid é pointer-events: none, então aqui o clique é religado. */
+.hero-ctas {
+    grid-column: 7 / -1;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    /* 24px entre os dois blocos porque cada um agora carrega botão + ícones;
+       com 12px as duas notas encostavam e viravam um bloco só. */
+    gap: 24px;
+    pointer-events: auto;
+    will-change: transform, opacity;
+}
+.hero-cta-bloco { display: flex; flex-direction: column; gap: 8px; }
+.hero-ctas .btn { width: 100%; box-sizing: border-box; text-align: center; }
+
+/* Linha abaixo de cada botão: o que aquele caminho destrava, em ícone.
+   Os SVGs das formações são coloridos, então entram sem filtro. */
+.hero-cta-nota {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+    font: var(--label-xs);
+    color: var(--bw-50);
+}
+.hero-cta-icone { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; display: block; }
+/* a fila das 7: sem texto, só os ícones, com respiro entre eles */
+.hero-cta-nota--todas { gap: 6px; flex-wrap: wrap; }
+/* Lockup do Infinite Pass abrindo a fila. Mais alto que os ícones porque
+   é um lockup de duas linhas de texto: a 24px as letras sumiriam. O traço
+   separa o nome do produto do que ele destrava. */
+.hero-logo-ip { height: 32px; width: auto; display: block; flex-shrink: 0; }
+.hero-logo-sep--curto { height: 24px; }
+
+/* Detalhe: 4 colunas centradas, entra de baixo pra cima. Quem anima é a
+   coluna, pra os logos subirem junto com o texto que eles creditam. */
+.hero-detail-col {
+    grid-column: 4 / span 4;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    will-change: transform, opacity;
+}
+.hero-detail {
+    text-align: start;
+    font: var(--p-l);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* Fila de logos, padrão .hero-logos do aichampion: opacidade baixa e um
+   traço de 2px entre as marcas. Os três webp já são brancos com alfa,
+   então não precisam de filtro no fundo escuro.
+   As alturas são diferentes de propósito: as proporções vão de 1,96
+   (H2R) a 6,12 (Exame), e uma altura única deixaria o Exame gigante ao
+   lado do H2R. Isto é equilíbrio óptico, não medida igual. */
+.hero-logos { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+/* NAO chamar de .hero-logo: esse nome pertence à marca Xperiun fixa no
+   canto superior direito. Com o mesmo nome, estes três herdavam
+   position: fixed / top / right / z-index e saiam do fluxo, empilhados
+   no canto. */
+.logo-estudo { width: auto; opacity: 0.25; display: block; flex-shrink: 0; }
+.logo-estudo--h2r   { height: 30px; }
+.logo-estudo--totvs { height: 24px; }
+.logo-estudo--exame { height: 18px; }
+.hero-logo-sep { width: 2px; height: 32px; background: var(--bw-10); flex-shrink: 0; }
+
+/* Indicador de scroll, centrado no rodapé da tela */
+.ic-scroll-hint {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bw-5);
+    pointer-events: none;
+    animation: ic-scroll-cue 1.6s ease-in-out infinite;
+}
+.ic-scroll-tri {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--bw-50);
+}
+/* a animação mantém o translateX(-50%) do centramento no eixo X */
+@keyframes ic-scroll-cue {
+    0%   { transform: translate(-50%, -8px); opacity: 0; }
+    50%  { opacity: 1; }
+    100% { transform: translate(-50%, 8px); opacity: 0; }
+}
+
+@media (max-width: 1439px) {
+    .hero-grid { grid-template-columns: repeat(8, 1fr); }
+    .hero-title { grid-column: 2 / span 6; }
+    .hero-detail-col { grid-column: 3 / span 4; }
+    .hero-ctas { grid-column: 6 / -1; }
+}
+@media (max-width: 864px) {
+    /* Prova social compacta: aí o hero é vertical e cada pixel de altura
+       conta pra os botões não saírem da tela. As estrelas saem, o rótulo
+       encolhe e os avatares perdem 12px de diâmetro. */
+    .depos-stars { display: none; }
+    .depos-eyebrow { font: var(--label-xs); }
+    .depos-avatar { width: 28px; height: 28px; }
+    .depos-avatar + .depos-avatar { margin-left: -14px; }
+
+    .hero-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    .hero-title,
+    .hero-detail-col,
+    .hero-lede-col,
+    .hero-ctas { grid-column: 1 / -1; }
+    /* lede e botões empilhados, centralizados vertical, 32px entre eles */
+    .hero-lede-wrap { align-content: center; row-gap: 32px; }
+    .hero-ctas { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+    .hero-cta-bloco { flex: 1 1 260px; }
+}
+@media (max-width: 576px) {
+    .hero-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    /* Volta pra coluna. Precisa desfazer as duas regras do tier de cima:
+       o align-items: flex-start impediria os blocos de esticar, e o
+       flex: 1 1 260px passa a valer na ALTURA quando a direção é column,
+       inflando cada bloco pra 260px e jogando os botões pra fora da tela. */
+    .hero-ctas { flex-direction: column; align-items: stretch; gap: 20px; }
+    .hero-cta-bloco { flex: 0 0 auto; }
+}
+
+/* ── Hero parado, pra quem pede menos movimento ────────────────────────
+   Sem os 300vh e sem position: fixed: uma tela normal, tudo visível. */
+.hero--estatico {
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+    padding: 160px 0 96px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.hero--estatico .hero-grid {
+    position: static;
+    transform: none;
+    top: auto;
+    bottom: auto;
+    margin: 0 auto;
+    visibility: visible;
+}
+.hero--estatico .hero-bg,
+.hero--estatico .hero-scrim { position: absolute; height: 100%; }
+.hero--estatico .canoa-bottom { position: absolute; height: 100%; }
+.hero--estatico .hero-title2,
+.hero--estatico .ic-scroll-hint { display: none; }
+.hero--estatico .hero-detail-col { opacity: 1; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ESTRUTURA CURRICULAR
+
+   Porte da .sec-courses de ed/formacoes/style.css em versão DARK.
+   Diferenças em relação ao original:
+     1. background --bb no lugar de --ln100
+     2. sem .sec-courses::before e ::after (o recorte claro do topo, que
+        só existe pra costurar a seção clara com a seção escura acima)
+     3. sem os overrides de cor escura no header: com fundo escuro valem
+        as cores base do .sec-eyebrow / .sec-title / .sec-lede
+   O .course-card::before FICA: é o degradê que torna o título legível
+   sobre a imagem do card, não é decoração.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Convenção de seção, portada do DS. O estado inicial de reveal do
+   original (opacity 0) ficou de fora: esta página não tem o observer que
+   o desfaz, então os blocos nasceriam invisíveis. */
+.sec-eyebrow {
+    font: var(--label-s);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: var(--pc200);
+}
+.sec-title {
+    font: var(--h3);
+    font-weight: 300;
+    color: var(--bw);
+    /* padding + margin negativa: compensação do mask-image, não mexer */
+    margin: -64px;
+    padding: 64px;
+    box-sizing: content-box;
+    -webkit-mask-image: var(--text-gradient-low);
+    mask-image: var(--text-gradient-low);
+}
+.sec-lede {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+
+/* PIN DE SAÍDA DA SEÇÃO DE CURSOS
+   Mesmo desenho do hero: um bloco para de rolar e o próximo desliza por
+   cima dele. Aqui quem faz isso é sticky, não `fixed` + script.
+
+   O wrapper é indispensável. Sticky se prende ao bloco contentor, e sem
+   wrapper esse bloco é o body inteiro: com `bottom: 0` a seção era puxada
+   pra cima até bater no topo do body e ficava colada lá desde o scroll 0
+   (medido: subia 2850px, a altura do hero). Com o wrapper uma viewport
+   mais alto que a seção, a folga vira exatamente a duração do pin: a
+   seção rola normal, trava com a borda de baixo no rodapé da viewport por
+   100vh de scroll, e depois solta.
+
+   A folga precisa ser um elemento, não padding: sticky se prende ao
+   CONTENT box do contentor, e padding fica fora dele. Com padding-bottom a
+   folga media zero e a seção soltava na hora (medido: bottom caindo de 950
+   pra 700 em vez de travar).
+
+   Nada de overflow aqui: `hidden` ou `clip` no wrapper mata o sticky. */
+.courses-folga { height: var(--courses-folga, 100vh); }
+.sec-courses {
+    /* `bottom: 0` seria o sticky errado: ele segura um elemento que vem DE
+       BAIXO, prendendo-o no rodapé até a posição natural alcançar (medido:
+       a seção subia 2850px e colava no topo do body desde o scroll 0).
+       Pra travar a CAUDA de um bloco mais alto que a viewport o offset é
+       `top: 100vh - altura`, negativo, que segura a seção no instante em
+       que a borda de baixo dela chegaria no rodapé. A altura só existe em
+       runtime, então quem escreve a variável é o script.js. */
+    position: sticky;
+    top: var(--courses-pin-top, 0px);
+    /* Acima de TODO o hero, não só da canoa: o .hero-grid vive em z-index
+       10, então com 2 o título fixo do hero passava por cima da seção
+       durante a transição. Fica abaixo da marca (.hero-logo, z 50), que
+       é elemento de página. */
+    z-index: 20;
+    /* o respiro vertical mora no .courses-wave, como no hero */
+    padding: 0;
+    background: var(--bb);
+    /* O .sec-title carrega padding: 64px com margin: -64px (compensação do
+       mask-image, que a memória do projeto proíbe zerar). Esse halo estoura
+       a viewport em tela estreita: num 430px o título ia de -48 a 478.
+       Aqui ele é só padding transparente, então dá pra recortar. `clip`, e
+       não `hidden`, pra não criar um container de scroll. */
+    overflow-x: clip;
+}
+/* Banho de luz pc200 descendo do topo da seção. Vem depois de todo o
+   conteúdo no DOM, então pinta por cima; pointer-events: none pra não
+   capturar clique. */
+.sec-courses::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--pc500) 15%, transparent), transparent);
+    pointer-events: none;
+    height: 512px;
+}
+
+/* Wrapper no padrão .hero-wave: respiro generoso e isolation, que é o que
+   deixa o float com z-index -1 aparecer sobre o fundo da seção em vez de
+   sumir atrás dele. Sem a classe .wave-section: o degradê animado do
+   rodapé (o ::before dela, que mora no root.css) foi dispensado. */
+.courses-wave {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-top: 192px;
+    padding-bottom: 208px;
+}
+
+/* Imagem flutuando à direita, portada do .hero-bg-float das formações.
+   Sem a animação de entrada com blur do original (esta página não tem o
+   reveal que a dispara); fica só a oscilação contínua. */
+.sec-courses .hero-bg-float {
+    position: absolute;
+    top: -64px;
+    right: -64px;
+    width: calc(50% + 128px);
+    z-index: -1;
+    pointer-events: none;
+    animation: courses-float 4000ms ease-in-out infinite;
+}
+.sec-courses .hero-bg-float img { display: block; width: 100%; height: auto; }
+/* degradê que dissolve a imagem no fundo da seção */
+.sec-courses .hero-bg-float::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(-135deg, transparent 0%, var(--bb) 75%);
+    pointer-events: none;
+}
+@keyframes courses-float {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-16px); }
+    100% { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sec-courses .hero-bg-float { animation: none; }
+}
+@media (min-width: 1440px) {
+    .sec-courses .hero-bg-float { right: calc(50vw - 784px); width: 800px; }
+}
+
+.courses-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.courses-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.courses-grid {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+}
+
+/* Card Capa, reproduzido do original */
+.course-card {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 35% 32px 32px 32px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.course-card-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background: center / cover no-repeat;
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+.course-card:hover .course-card-bg {
+    transform: scale(1.1);
+    filter: blur(8px);
+}
+/* Sem blur animado em tela pequena, regra do projeto */
+@media (max-width: 864px) {
+    .course-card:hover .course-card-bg { filter: none; }
+}
+.course-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--bb), transparent 100%);
+}
+.course-card-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.course-card-tags .tag-status { background-color: var(--bb-50); }
+.course-card-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+.course-card-title {
+    font: var(--label-l);
+    color: var(--bw);
+    margin: 0;
+}
+.course-card-text {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.course-card-arrow {
+    flex-shrink: 0;
+    color: var(--bw);
+    font-size: 24px;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-weight: 400;
+}
+/* a descrição só aparece no modal */
+.course-card-desc { display: none; }
+
+/* Arranjo dos cards. O original do f6 lista nth-child(1..10) com o ritmo
+   3,3,4 / 4,3,3 / 3,4,3 : cada linha soma 10 colunas e o card largo muda
+   de posição a cada linha (fim, início, meio). Com 19 cards a lista fixa
+   não serve, então o mesmo ritmo vira um ciclo de 9.
+   Um ciclo de 3 (3,3,4) deixaria o card largo sempre no fim, com todas as
+   linhas idênticas. */
+@media (min-width: 1153px) {
+    .course-card:nth-child(9n+1) { grid-column: span 3; }
+    .course-card:nth-child(9n+2) { grid-column: span 3; }
+    .course-card:nth-child(9n+3) { grid-column: span 4; }
+    .course-card:nth-child(9n+4) { grid-column: span 4; }
+    .course-card:nth-child(9n+5) { grid-column: span 3; }
+    .course-card:nth-child(9n+6) { grid-column: span 3; }
+    .course-card:nth-child(9n+7) { grid-column: span 3; }
+    .course-card:nth-child(9n+8) { grid-column: span 4; }
+    .course-card:nth-child(9n)   { grid-column: span 3; }
+
+    /* Última linha. Toda linha cheia tem 3 cards, porque as únicas
+       combinações de 3 e 4 que fecham as 10 colunas são (3,3,4), (3,4,3) e
+       (4,3,3). Com uma contagem que não é múltipla de 3 sempre sobra
+       curso, e a sobra segue a mesma regra de sempre: span 4, igual ao
+       card 10 do f6.
+       Quem se ajusta é o card de OFERTA, que não faz parte do ritmo dos
+       cursos: ele toma o que restar da linha. */
+    .course-card:last-child:nth-child(3n+1),
+    .course-card:last-child:nth-child(3n+2),
+    .course-card:nth-last-child(2):nth-child(3n+1) { grid-column: span 4; }
+    /* 4 do curso + 6 da oferta = 10 */
+    /* 4 do curso + 6 da oferta = 10 */
+    .courses-grid > .of-oferta { grid-column: span 6; }
+}
+/* O penultimo filho e o ultimo card de curso. Sem isto ele estica pra
+   acompanhar a altura do bloco de oferta ao lado. */
+.courses-grid > .course-card:nth-last-child(2) { align-self: start; }
+
+@media (max-width: 1439px) {
+    .courses-inner { grid-template-columns: repeat(8, 1fr); }
+    .courses-header { grid-column: span 4; }
+}
+@media (max-width: 1152px) {
+    .courses-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    /* sem isto o `span 6` da regra base cria 4 colunas implicitas num grid
+       de 2 e espreme os cards */
+    .courses-grid > .of-oferta { grid-column: 1 / -1; }
+}
+@media (max-width: 864px) {
+    .courses-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+    .courses-header { grid-column: 1 / -1; }
+    .courses-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 576px) {
+    .courses-wave { padding-top: 128px; padding-bottom: 128px; }
+    .courses-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+    .courses-grid { gap: 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   AS 7 FORMAÇÕES
+   Portado de ed/formacoes/style.css. Lá tudo é escopado em
+   `body.formacoes-hub`; aqui o prefixo saiu, porque pôr a classe no body
+   traria junto hero, stats e oferta do hub, que colidiriam com os desta
+   página.
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-formacoes {
+    padding: 128px 16px;
+}
+.formacoes-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+.formacoes-layout {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+.formacoes-nav {
+    grid-column: span 3;
+    position: sticky;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.formacoes-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.formacoes-title {
+    font: var(--h3);
+    font-weight: 300;
+    color: var(--bw);
+    max-width: 680px;
+    /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
+}
+.formacoes-nav-list {
+    display: flex;
+    flex-direction: column;
+}
+.formacoes-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px 12px 24px;
+    border: none;
+    background-color: transparent;
+    background-image: linear-gradient(90deg, var(--pc500-50), transparent, transparent);
+    background-size: 200%;
+    background-position: 100% center;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    color: var(--bw-50);
+    position: relative;
+    transition: color 0.3s, background-position 0.3s;
+}
+.formacoes-nav-item:hover {
+    color: var(--bw-75);
+    background-position: 50% center;
+}
+.formacoes-nav-item.is-active {
+    color: var(--bw);
+    background-position: 0% center;
+}
+.formacoes-nav-item.is-active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--pc400);
+}
+.formacoes-nav-label {
+    font: var(--p);
+}
+.formacao-label {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+.formacao-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.formacoes-nav-item .formacao-title-group {
+    gap: 0;
+}
+.formacao-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 48px;
+    border-radius: 16px;
+}
+.formacao-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--dn800), transparent);
+    border-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+.formacao-card > :not(.formacao-card-img) {
+    position: relative;
+    z-index: 2;
+}
+.formacao-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+}
+.formacao-card-img {
+    position: absolute;
+    top: 50%;
+    right: -48px;
+    width: 512px;
+    height: 512px;
+    object-fit: cover;
+    object-position: top;
+    transform: translateY(-50%) rotate(-7.5deg) scale(1.25);
+    filter: blur(4px);
+    opacity: 1;
+    z-index: 0;
+    pointer-events: none;
+    transition: 0.5s transform ease-out, 0.5s filter ease-out, 0.5s opacity ease-out;
+    mask-image: linear-gradient(to right, transparent, black);
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+}
+.formacao-card.is-revealed .formacao-card-img {
+    transform: translateY(-50%) rotate(-15deg) scale(1);
+    filter: blur(0);
+    opacity: 0.5;
+}
+.formacao-title {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+.formacao-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.formacao-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.formacao-divider {
+    width: 100%;
+    height: 2px;
+    background: var(--bw-10);
+    flex-shrink: 0;
+}
+.formacao-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.formacao-price {
+    font: var(--p);
+    font-weight: 400;
+    color: var(--bw);
+}
+.formacoes-cards {
+    grid-column: span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-top: 152px;
+}
+/* ── Mobile portrait (≤576px): remove blurs de animação ──────────
+           Redefine keyframes sem blur e zera filter:none nos estados iniciais
+           paired com transition. Decorativos (backdrop-filter,
+gradient blobs)
+           ficam intactos. .formacao-card-img mantém blur (pedido explícito). */
+        @media (max-width: 576px) {
+    @keyframes hero-bg-enter {
+    from { opacity: 0; transform: translateY(64px); }
+    to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes cta-card-enter {
+    from { opacity: 0; transform: translateY(-64px); }
+    to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-tags .tag-status,
+    .hero-p,
+    .depos-social-proof,
+    .depos-stars {
+    filter: none;
+    }
+}
+@media (max-width: 1439px) {
+    .formacoes-layout {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .formacoes-cards {
+        grid-column: span 5;
+    }
+}
+@media (max-width: 864px) {
+    .formacoes-nav {
+        position: static;
+        grid-column: span 1;
+    }
+    .formacoes-nav-list {
+        display: none;
+    }
+    .formacoes-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .formacoes-cards {
+        grid-column: span 1;
+        padding-top: 0;
+    }
+    .formacao-card {
+        padding: 32px;
+    }
+    .sec-why,
+    .sec-formacoes,
+    .sec-oferta,
+    .sec-depos,
+    .sec-faq,
+    .sec-cta {
+        padding-top: 96px;
+        padding-bottom: 96px;
+    }
+}
+@media (max-width: 576px) {
+    .formacoes-layout {
+        grid-template-columns: 1fr;
+    }
+    .formacao-card {
+        padding: 24px;
+    }
+    .formacao-card.is-revealed .formacao-card-img {
+        opacity: 0.25;
+    }
+}
+
+/* Ajustes proprios sobre o portado das formacoes. */
+.sec-formacoes {
+    /* O .sec-title tem padding: 64px com margin: -64px (compensacao do
+       mask-image, que a memoria do projeto proibe zerar). Em tela estreita
+       esse halo estoura a viewport. Aqui e so padding transparente, entao
+       da pra recortar. `clip`, e nao `hidden`, pra nao criar um container
+       de scroll. */
+    overflow-x: clip;
+    /* Os 16px moram no .formacoes-inner, nao aqui: com eles na secao o
+       container capava em 1440 SEM padding proprio, e acima de 1440 o
+       conteudo media 1440 em vez de 1408, dando colunas de 115,2px contra
+       os 112px das outras secoes. */
+    padding: 128px 0;
+}
+.formacoes-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+/* O topo do primeiro card alinha com o topo da .formacoes-nav-list; quem
+   mede e escreve a variavel e o script.js. */
+.formacoes-cards { padding-top: var(--formacoes-offset, 0px); }
+
+/* A nav mede 704px. Com `top: 32px` ela precisa de 736px de viewport; em
+   janela mais baixa que isso ela gruda mas fica com o pe cortado, e os
+   ultimos itens nunca ficam alcancaveis: parece que o sticky quebrou.
+   Limitando a altura ao que cabe na tela, ela rola por dentro nesses
+   casos e continua imovel nos demais. O overflow fica NO proprio elemento
+   sticky, entao nao interfere no sticky dele. */
+.formacoes-nav {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    /* a rolagem interna existe so pra alcancar os ultimos itens em tela
+       baixa; a barra em si nao entra no desenho */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.formacoes-nav::-webkit-scrollbar { width: 0; height: 0; }
+@media (max-width: 864px) {
+    .formacoes-cards { padding-top: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   APRENDA ATIVAMENTE
+   Portado de ed/business-cases/style.css. As duas imagens entram com fade
+   quando a seção aparece: quem adiciona .is-entered é o script.js.
+   ══════════════════════════════════════════════════════════════════════ */
+/* ── seções extras (alinhadas ao grid de conteúdo 1152) ── */
+.bc-sec {
+    padding: 128px 0;
+}
+.bc-sec--flush-top {
+    padding-top: 0; margin-top: -128px;
+}
+/* ── aprenda ativamente: container light (tipo courses-depos-track), fundo
+   ln100 e conteúdo em cores escuras pra contraste. ── */
+.bc-active-track {
+    position: relative;
+}
+.bc-active-sec {
+    position: relative; background: var(--ln100);
+}
+/* notch/wave no topo (mesmo da sec-courses): a faixa ln100 sobe à direita
+   e a wave curva faz a transição da seção escura acima. */
+.bc-active-sec::before {
+    content: ''; position: absolute; top: -80px; left: calc(50% + 64px); right: 0;
+    height: 96px; background: var(--ln100); pointer-events: none;
+}
+.bc-active-sec::after {
+    content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+    width: 160px; height: 96px; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48' viewBox='0 0 80 48' fill='none'%3E%3Cpath d='M80 0V48H0V40H2.74516C11.2321 40 19.3714 36.6286 25.3726 30.6274L46.6274 9.3726C52.6286 3.3714 60.7679 0 69.2548 0H80Z' fill='%23EBEBF5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.bc-active-sec .sec-eyebrow {
+    color: var(--pc500);
+}
+.bc-active-sec .sec-title {
+    color: var(--bb);
+}
+.bc-active-sec .sec-lede {
+    color: var(--bb-75);
+}
+/* continuação plana à ESQUERDA da wave (espelho do .bc-active-sec::before,
+   metade + lado invertido). */
+.bc-case-panel::before {
+    content: ''; position: absolute; top: -40px; left: 0; right: calc(50% + 32px);
+    height: 48px; background: var(--ln200); pointer-events: none;
+    border-radius: 16px 0 0 0;
+}
+/* mesma wave do .bc-active-sec::after, pela metade (80×48) e invertida na
+   horizontal; cor = ln200 (a do painel), pra parecer o painel subindo. */
+.bc-case-panel::after {
+    content: ''; position: absolute; top: -40px; left: 50%;
+    transform: translateX(-50%) scaleX(-1); width: 80px; height: 48px; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48' viewBox='0 0 80 48' fill='none'%3E%3Cpath d='M80 0V48H0V40H2.74516C11.2321 40 19.3714 36.6286 25.3726 30.6274L46.6274 9.3726C52.6286 3.3714 60.7679 0 69.2548 0H80Z' fill='%23E1E1EB'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+/* mesmo grid da explore: imagens (5 cols, esq) + conteúdo (4 cols, dir);
+   pula a coluna 6 no Wide. */
+.bc-active-inner {
+    width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px;
+    box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: 32px; align-items: center;
+}
+.bc-active-media {
+    grid-column: span 5; position: relative; aspect-ratio: 4 / 3;
+}
+.bc-active-text {
+    grid-column: 7 / span 4; display: flex; flex-direction: column; gap: 16px;
+}
+/* duas imagens ~4 cols de width (80% do container 5 cols): 1ª top-right, 2ª bottom-left. */
+.bc-active-img {
+    position: absolute; width: 80%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px;
+}
+.bc-active-img--1 {
+    top: 0; right: 0;
+}
+.bc-active-img--2 {
+    bottom: 0; left: 0; z-index: 1;
+}
+/* Portfólio: mesmo grid da bc-active-sec, mas invertido — texto (conteúdo)
+   à esquerda, ilustração (iframe) à direita. */
+.bc-portfolio-over .bc-active-text {
+    grid-column: 1 / span 4;
+}
+/* bc-active-img: a 1ª vem da direita (+64px), a 2ª da esquerda (-64px). */
+.bc-active-img {
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.7s ease-out, filter 0.7s ease-out, transform 0.7s ease-out;
+}
+.bc-active-img--1 {
+    transform: translateX(64px);
+}
+.bc-active-img--2 {
+    transform: translateX(-64px);
+}
+.bc-active-img.is-entered {
+    opacity: 1; filter: blur(0); transform: translateX(0);
+}
+@media (max-width: 1439px) {
+    .bc-active-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .bc-active-media {
+        grid-column: span 5;
+    }
+    .bc-active-text {
+        grid-column: 6 / -1;
+    }
+    .bc-portfolio-over .bc-active-text {
+        grid-column: 1 / span 3;
+    }
+}
+@media (max-width: 1152px) {
+    .bc-active-inner {
+        grid-template-columns: 1fr;
+    }
+    .bc-active-media, .bc-active-text {
+        grid-column: 1;
+    }
+    /* inverte a ordem: conteúdo em cima, imagens embaixo. */
+        .bc-active-text {
+        order: -1;
+    }
+    /* vertical: texto full em cima; base + overlay continuam na MESMA linha
+           (offset) embaixo. */
+        .bc-portfolio-over .bc-active-inner {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .bc-portfolio-over .bc-active-text {
+        grid-column: 1 / -1; grid-row: 1;
+    }
+}
+
+/* ======================================================================
+   CORPO DO CARD DE FORMACAO
+   Padrao .area-card-body de /ed/areas/: texto e CTA empilhados a esquerda,
+   pasta 3D a direita. Portado de ed/areas/style.css, onde tudo e escopado
+   em body.areas-hub. O padding da origem sai: aqui quem paga o respiro e o
+   .formacao-card, que ja tem 48px.
+   ====================================================================== */
+.area-card-body {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 48px;
+}
+.area-card-cols { flex: 1; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.area-card-col { display: flex; flex-direction: column; gap: 16px; }
+.area-card-col--cta {
+    gap: 32px;
+    align-items: flex-start;
+    border-top: 2px solid var(--bw-15);
+    padding-top: 24px;
+}
+.area-cta-text { font: var(--p-s); color: var(--bw-75); margin: 0; }
+.formacao-card .area-folder { flex-shrink: 0; }
+/* Horizontal (padrao): a pasta ocupa 100% da altura */
+.formacao-card .folder3d { height: 100%; }
+@media (max-width: 1152px) {
+    /* Vertical: a pasta ocupa 100% da largura */
+    .area-card-body { flex-direction: column; }
+    .formacao-card .folder3d { width: 100%; height: auto; }
+}
+@media (max-width: 864px) {
+    /* Horizontal de novo */
+    .area-card-body { flex-direction: row; }
+    .formacao-card .folder3d { width: auto; height: 100%; }
+}
+@media (max-width: 576px) {
+    .area-card-body { flex-direction: column; }
+    .formacao-card .folder3d { width: 100%; height: auto; }
+}
+
+/* Ajuste proprio sobre o portado dos business cases: o .sec-title carrega
+   padding 64px com margin -64px (compensacao do mask-image, que a memoria
+   do projeto proibe zerar) e a imagem 2 sangra pra esquerda de proposito.
+   Sem corte aqui os dois viravam scroll horizontal de 48px na pagina
+   inteira. `clip`, e nao `hidden`, pra nao criar container de scroll. */
+.bc-active-track { overflow-x: clip; }
+/* Mesmo motivo nas duas secoes novas: o .sec-title carrega padding 64px com
+   margin -64px (compensacao do mask-image, que a memoria do projeto proibe
+   zerar) e o halo estourava 48px pra fora em telas de ate 864, virando
+   scroll horizontal na pagina inteira. */
+.bc-sec { overflow-x: clip; }
+
+/* ======================================================================
+   INFINITE PASS
+   ====================================================================== */
+.ip {
+    position: relative;
+    /* Mesmo mecanismo da .sec-courses sobre o hero: fundo opaco mais um
+       z-index acima de tudo que vem antes. Em z 2 esta secao passava por
+       baixo do .hero-lede-wrap, que e fixed em z 10 e continua na tela
+       aqui; 30 a poe tambem acima da propria .sec-courses (z 20). */
+    z-index: 30;
+    /* devolve a folga que o .courses-folga criou: e esta margem que faz a
+       secao subir por cima da cauda travada em vez de comecar depois, e por
+       isso tem que casar com ela. */
+    margin-top: calc(-1 * var(--courses-folga, 100vh));
+    padding: 128px 0;
+    background: var(--bb);
+    overflow: hidden;
+}
+/* Mesma tarja de topo da .sec-courses. */
+.ip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--pc500) 15%, transparent), transparent);
+    pointer-events: none;
+    height: 512px;
+}
+.ip-inner {
+    /* Tier Wide do DS: 1440 com 10 colunas de base, caindo pra 8, 6 e 4. */
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+/* Bloco da marca: titulo e video dividem a mesma caixa, o video atras.
+   isolation pra o z-index negativo do video nao cair atras do fundo. */
+.ip-marca {
+    grid-column: 1 / -1;
+    position: relative;
+    isolation: isolate;
+    /* referencia pro cqw do titulo: a largura real deste bloco, sem a
+       barra de rolagem que o 100vw inclui */
+    container-type: inline-size;
+}
+.ip-titulo {
+    margin: 0;
+    /* Syne, self-hosted no DS. Peso 400 e o da origem e existe no subset. */
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    text-transform: uppercase;
+    /* Tamanho CALCULADO, nao chutado. Medido no navegador: "INFINITE" em
+       Syne 400 ocupa 3,9961x o font-size. O 1.012 deixa um fio de respiro.
+
+       A medida vem de cqw, nao de vw: 100vw INCLUI a barra de rolagem,
+       entao em sistema com barra classica (~15px) a conta pedia mais
+       largura do que existia e a ultima letra do INFINITE quebrava pra a
+       linha de baixo.
+
+       O teto de 1120px e a largura de 8 colunas do grid 1440 (8x112 +
+       7x32), que e o span do INFINITE. */
+    font-size: calc(min(1120px, 100cqw) / (3.9961 * 1.012));
+    /* proporcao da origem: 204 / 272 */
+    line-height: 0.75;
+    color: var(--bw);
+    /* Mesmas trilhas do .ip-inner (o .ip-marca e 1 / -1) pra cada linha
+       poder se ancorar num lado. */
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+/* Depois do split em letras cada uma e uma caixa inline-block, e o
+   navegador pode quebrar entre quaisquer duas. Texto inteiro so quebraria
+   num espaco, entao o nowrap devolve o comportamento de antes. */
+.ip-titulo-linha { white-space: nowrap; }
+/* INFINITE nas 8 colunas da esquerda, PASS nas 8 da direita: as duas
+   linhas se sobrepoem no miolo e o lockup fica escalonado. */
+.ip-titulo-linha:first-child {
+    grid-column: 1 / span 8;
+    text-align: left;
+}
+.ip-titulo-linha:last-child {
+    grid-column: 3 / span 8;
+    text-align: right;
+}
+.ip-video {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(1280px, 115%);
+    height: auto;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+/* Cada letra do lockup sobe e some no seu proprio tempo (INFINITE da
+   esquerda pra direita, PASS da direita pra esquerda). Sem blur em lugar
+   nenhum: o fade faz esse trabalho. */
+.ip-letra {
+    display: inline-block;
+    will-change: transform, opacity;
+}
+
+/* Chamada e oferta */
+.ip-cta {
+    grid-column: span 4;
+    /* O .ip-marca e posicionado e o video dentro dele sobra pra baixo.
+       Elemento posicionado pinta acima de conteudo em fluxo normal, entao
+       sem isto o video cobria este texto. */
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    /* sai pra esquerda no scroll, escrito pelo script.js */
+    will-change: transform, opacity;
+}
+/* .ip-h3 e .ip-p nao tem regra propria de proposito: quem entrega tipo,
+   cor e mascara e o .sec-title / .sec-lede do padrao de secao. Redeclarar
+   `margin: 0` aqui zerava a margem negativa que compensa o padding de
+   64px do halo. */
+.ip-btn { margin-top: 8px; }
+
+/* Tier de 8 colunas. Span 8 de 10 remapeia pra 8 de 8: sem folga pra o
+   escalonamento, mas as ancoras (INFINITE a esquerda, PASS a direita)
+   continuam. */
+@media (max-width: 1439px) {
+    .ip-inner { grid-template-columns: repeat(8, 1fr); }
+    .ip-titulo {
+        grid-template-columns: repeat(8, 1fr);
+        /* O teto de 1120px so vale no grid de 10 colunas, onde 1120 e a
+           largura de 8 delas. Aqui o span 8 e a linha inteira, entao o
+           teto fazia o lockup parar antes do fim das trilhas (medido: 1107
+           de 1168 em viewport 1200). */
+        font-size: calc(100cqw / (3.9961 * 1.012));
+    }
+    .ip-titulo-linha:first-child { grid-column: 1 / -1; }
+    .ip-titulo-linha:last-child { grid-column: 1 / -1; }
+}
+/* Abaixo do tier Desktop o lockup volta ao empilhamento simples, alinhado
+   a direita: o titulo ja ocupa a largura toda e nao sobra coluna pra
+   escalonar. */
+@media (max-width: 1152px) {
+    .ip-titulo {
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+    }
+    .ip-titulo-linha:first-child,
+    .ip-titulo-linha:last-child {
+        display: block;
+        text-align: right;
+    }
+}
+@media (max-width: 864px) {
+    .ip-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+    .ip-cta { grid-column: 1 / -1; }
+    /* Degrau, nao penhasco. O teto de 420px que estava aqui derrubava a
+       razao video/lockup de 1,16 (constante acima de 864) pra 0,51, e
+       ainda oscilava dentro do tier porque o min trocava de braco. */
+    .ip-video { width: 100%; }
+}
+@media (max-width: 576px) {
+    .ip { padding: 96px 0; }
+    .ip-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+    /* ultimo degrau: o row-gap cai pra 32 e o video acompanha */
+    .ip-video { width: 90%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ip-video { display: none; }
+}
+
+/* ======================================================================
+   PRECO
+   Peca unica, usada tanto no bloco da formacao quanto no Infinite Pass.
+   ====================================================================== */
+.preco { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.preco-linha { display: inline-flex; align-items: flex-start; gap: 8px; color: var(--bw); }
+.preco-multi { font: var(--label-s); color: var(--bw-50); }
+.preco-valor {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 0.825em;
+    background: linear-gradient(180deg, var(--bw) 0%, var(--bw-50) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.preco-detalhe { font: var(--p-s); color: var(--bw-50); }
+
+/* ======================================================================
+   OFERTA DA FORMACAO
+   Item do grid de cursos, nao uma secao: por isso NAO usa .sec-eyebrow /
+   .sec-title / .sec-lede, que sao o cabecalho de uma secao e trariam junto
+   a mascara de gradiente e o halo de 64px do titulo.
+   O h3 fica pelo outline do documento, no mesmo nivel dos
+   .course-card-title que dividem a grade com ele, mas com corpo de label L.
+   ====================================================================== */
+.of-oferta {
+    grid-column: span 6;
+    /* nao estica: a altura e a do proprio conteudo, ancorada no topo da
+       linha (quem define a altura da linha e o card de curso ao lado) */
+    align-self: start;
+    /* Mesmas trilhas do .courses-grid: como o bloco ocupa 6 colunas do
+       pai, um repeat(6, 1fr) com o mesmo gap de 32 reproduz exatamente
+       aquelas trilhas. Texto em 4 colunas, preco em 2, ambos caindo em
+       linha de grade de verdade em vez de um `auto` arbitrario. */
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    column-gap: 32px;
+    /* conteudo no topo */
+    align-items: start;
+}
+.of-info {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+/* icone da formacao num box da mesma cor da tag ao lado: o
+   tag-status[data-semantic="neutral"] usa --pc300-15 de fundo. */
+.of-marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.of-icone-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--pc300-15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.of-icone {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+.of-titulo {
+    font: var(--label-l);
+    color: var(--bw);
+    margin: 0;
+}
+.of-desc {
+    font: var(--p-s);
+    color: var(--er300);
+    margin: 0;
+}
+.of-btn { margin-top: 8px; }
+/* Escopado no .of-oferta pra nao pegar o mesmo bloco de preco dentro da
+   .ip-cta, que nao tem divisor. Linha de 2px, o minimo da regra do
+   projeto, no mesmo desenho do divisor do .area-card-col--cta. */
+.of-oferta > .preco {
+    grid-column: span 2;
+    border-left: 2px solid var(--bw-10);
+    padding-left: 32px;
+    /* a coluna ocupa a altura toda do bloco, pra o divisor correr de ponta
+       a ponta; o conteudo fica centrado nela. O .preco ja e flex column,
+       entao basta o justify-content. */
+    align-self: stretch;
+    justify-content: center;
+}
+/* Empilha quando a largura aperta: em 430 sobrariam ~190px pro texto ao
+   lado do preco. O divisor vira horizontal.
+   Precisa vir DEPOIS da regra base, senao a base (mesma especificidade,
+   mais abaixo no arquivo) sobrescreve a media query. */
+@media (max-width: 576px) {
+    .of-oferta {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+    .of-info { grid-column: 1 / -1; }
+    .of-oferta > .preco {
+        grid-column: 1 / -1;
+        border-left: 0;
+        border-top: 2px solid var(--bw-10);
+        padding-left: 0;
+        padding-top: 24px;
+    }
+}
+
+/* O CTA "Conhecer todos" nasce no ed/areas/pasta.js, que e compartilhado
+   com /ed/areas/ e nao deve ser editado por causa desta pagina; some por
+   CSS. Aqui o popup ja e a lista completa daquela formacao, entao o botao
+   nao leva a lugar nenhum. */
+.lb-foot > .btn { display: none; }
+
+/* ======================================================================
+   POPUP DE CURSO (lightbox das pastas)
+   Portado de ed/formacoes/style.css. O pasta.css so ajusta o padding e
+   avisa que reusa o visual do .course-modal*, que mora la; a pagina
+   /ed/areas/ carrega aquele style.css inteiro, esta aqui nao.
+   ====================================================================== */
+/* ── Course Modal ────────────────────────────────────────── */
+        .course-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;   /* acima do menu (z-index 9999) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    /* só visibility no container (com delay no fechar pra deixar os
+    filhos fazerem fade antes de sumir). os fades ficam nos filhos */
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s;
+}
+.course-modal.is-open {
+    visibility: visible;
+    transition: visibility 0s linear 0s;
+}
+.course-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--bb-75);
+    /* blur estático; o fade é via opacity (barato/GPU), então o blur
+    entra suave junto sem reanimar o raio a cada frame */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.course-modal.is-open .course-modal-backdrop {
+    opacity: 1;
+}
+.course-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 688px;
+    box-sizing: border-box;
+    border-radius: 16px;
+    overflow: hidden auto;                 /* x: recorta (radius) · y: rola se passar da viewport */
+    max-height: calc(100vh - 32px);        /* - padding 16px do .course-modal (topo+base) */
+    background: var(--dn800);
+    /* entrada: fade + sobe e cresce levemente até o estado neutro */
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.course-modal.is-open .course-modal-card {
+    opacity: 1;
+    transform: none;
+}
+.course-modal-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 4px 0 var(--bw-15);
+    pointer-events: none;
+    z-index: 3;
+}
+.course-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 4;
+}
+.course-modal-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 48px 48px 32px 48px;
+    box-sizing: border-box;
+}
+.course-modal-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--dn800), transparent);
+    pointer-events: none;
+}
+.course-modal-title {
+    position: relative;
+    z-index: 1;
+    font: var(--h4);
+    color: var(--bw);
+    margin: 0;
+}
+.course-modal-body {
+    padding: 0 48px 48px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.course-modal-stats {
+    display: flex;
+}
+.course-modal-stat {
+    padding: 0 32px;
+}
+.course-modal-stat:first-child {
+    padding-left: 0;
+}
+.course-modal-stat:last-child {
+    padding-right: 0;
+}
+.course-modal-stat + .course-modal-stat {
+    border-left: 2px solid var(--bw-10);
+}
+.course-modal-stat-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.course-modal-stat-label {
+    font: var(--label-s);
+    color: var(--bw-50);
+}
+.course-modal-stat-value {
+    font: var(--label);
+    color: var(--bw);
+}
+.course-modal-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+    .course-modal,
+    .course-modal-card,
+    .course-modal-backdrop {
+        transition: none;
+    }
+}
+@media (max-width: 576px) {
+    .course-modal-body {
+        padding: 24px;
+    }
+    .course-modal-media {
+        padding: 24px;
+    }
+    .course-modal-stat {
+        padding: 0 16px;
+    }
+}
+
+/* ======================================================================
+   OVERVIEW E BUSINESS CASES POR AREA
+   Portado de ed/formacoes/style.css e ed/business-cases/style.css, nessa
+   ordem: a pagina de origem carrega os dois e ambos definem .troca-card,
+   entao a ordem decide quem ganha. Seletores escolhidos a partir das
+   classes que o HTML das duas secoes realmente usa.
+   ====================================================================== */
+
+/* ---- de ed/formacoes/style.css ---- */
+/* Card no estilo troca-card (home3) reproduzido */
+        .troca-card {
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(45deg, var(--ln500-25), var(--ln500-50));
+}
+.troca-meta {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+}
+.troca-card-title {
+    font: var(--h6);
+    font-weight: 400;
+    margin: 0;
+    color: var(--bb);
+}
+.troca-card-body {
+    font: var(--p); color: var(--bb-75); margin: 0;
+}
+.troca-card--text .troca-meta {
+    flex: 1 1 auto;
+}
+
+/* ---- de ed/business-cases/style.css ---- */
+/* ── seções extras (alinhadas ao grid de conteúdo 1152) ── */
+.bc-sec {
+    padding: 128px 0;
+}
+/* segunda seção (overview): bottom da sec-cards-duo (208px),
+top padrão. */
+#bc-overview {
+    padding: 128px 0 208px;
+}
+/* ── overview: bento de Step Cards. Linha 1: header (6 cols) + card 01 (4 cols).
+   Linha 2: card 02 (4 cols) + card 03 (6 cols). Step Card = base troca-card
+   (home.css),
+versão dark,
+trazida pra cá porque a página não carrega home.css.
+   Tipografia do header segue o DS (sec-title/lede). ── */
+.bc-how-inner {
+    width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px;
+    box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px;
+}
+.bc-how-header {
+    grid-column: 1 / span 6; align-self: center;
+    display: flex; flex-direction: column; gap: 16px;
+}
+.bc-step {
+    grid-column: span 4;
+}
+.bc-step--wide {
+    grid-column: span 6;
+}
+/* Step Card do DS (base troca-card do home.css),
+SEM imagem: só o número
+   grande + título + texto,
+no fundo dn800 com glow roxo. Trazido pra cá
+   porque a página não carrega o home.css. A célula .bc-step é o container
+   (padding do meta acompanha a largura). */
+.bc-step .troca-card {
+    position: relative; isolation: isolate; overflow: hidden;
+    border-radius: 16px; height: 100%; display: flex; flex-direction: column; background: none;
+}
+.bc-step .troca-card::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    border-radius: inherit; pointer-events: none;
+    background: linear-gradient(135deg, var(--dn800), transparent);
+}
+.bc-step .troca-card::after {
+    content: ""; position: absolute; top: -128px; left: 50%;
+    transform: translateX(-50%); width: 256px; height: 256px; border-radius: 50%;
+    background: var(--pc300); filter: blur(256px); pointer-events: none; z-index: -1;
+}
+.bc-step .troca-meta {
+    position: relative; isolation: isolate; height: 100%;
+    display: flex; flex-direction: column; gap: 10px; justify-content: flex-end;
+    padding: 128px 64px 64px;
+}
+.bc-step .troca-num {
+    position: absolute; left: -32px; top: -32px; width: 120%;
+    font-size: 16rem; line-height: 1em; font-weight: 400; font-style: italic;
+    background: linear-gradient(135deg, var(--pc300-25), transparent);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    pointer-events: none; user-select: none; z-index: -1;
+}
+.bc-step .troca-card-title {
+    font: var(--h6); font-weight: 400; margin: 0; color: var(--bw);
+}
+.bc-step .troca-card-body {
+    font: var(--p); color: var(--bw-75); margin: 0;
+}
+/* Só o card 3 (bc-step--wide) tem imagem/demo. HORIZONTAL por padrão:
+   imagem à DIREITA full-bleed + texto à esquerda (row-reverse); a demo
+   estica pra altura do card e a imagem preenche com height:100%; meta com
+   altura natural e sem padding do lado da imagem. Só vira vertical no
+   mobile (<=576,
+mais abaixo). */
+.bc-step--wide .troca-card {
+    flex-direction: row-reverse;
+}
+.bc-step--wide .troca-demo {
+    position: relative; flex: 0 0 50%; padding: 0;
+}
+.bc-step--wide .troca-demo-img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+    mask-image: linear-gradient(to right, transparent, black);
+}
+.bc-step--wide .troca-meta {
+    flex: 0 0 50%; height: auto; padding: 128px 0 64px 64px;
+}
+/* ── Business Cases: 5 cards especiais (container ln200 + inner ln300),
+cada card ocupa metade das colunas. Seção light (sem notch). ── */
+.bc-cases-sec {
+    background: var(--ln100);
+}
+.bc-cases-sec .sec-eyebrow {
+    color: var(--pc500);
+}
+.bc-cases-sec .sec-title {
+    color: var(--bb);
+}
+/* A secao e clara, entao o lede nao pode herdar o --bw-75 do padrao: some
+   no fundo. Mesmo tratamento que a origem da a .bc-active-sec. */
+.bc-cases-sec .sec-lede {
+    color: var(--bb-75);
+}
+.bc-cases-track .bc-cases-sec {
+    position: sticky;
+    top: calc(100vh - var(--bc-cases-height, 100vh));
+    z-index: 0;
+    padding-bottom: 256px;
+}
+/* grid imitando o .courses-inner: header span 5 + grid aninhado repeat(10)
+   com cards em bento (spans 3/3/4...). */
+.bc-cases-inner {
+    width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box;
+}
+/* header ocupa uma célula de card no grid; cards fluem em volta. */
+.bc-cases-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+}
+.bc-cases-header {
+    display: flex; flex-direction: column; justify-content: flex-start; gap: 16px;
+}
+.bc-case-card {
+    background: var(--ln200); border-radius: 24px; padding: 8px;
+}
+.bc-case-card[data-area] {
+    cursor: pointer;
+}
+/* número de Business Cases no canto inferior direito do painel. */
+.bc-case-count {
+    position: absolute; right: 24px; bottom: 24px; font-size: 2.5rem; line-height: 1; color: var(--bb);
+}
+/* ícone arrow_outward no canto inferior esquerdo do painel. */
+.bc-case-arrow {
+    position: absolute; left: 24px; bottom: 24px; font-size: 2rem; color: var(--bb);
+}
+.bc-case-card-inner {
+    position: relative; overflow: hidden; background: var(--ln300); border-radius: 16px 16px 0 0; pointer-events: none;
+}
+/* 3 imagens empilhadas (top 0/32/64) + painel no bottom (top 200,
+bw). */
+.bc-case-img {
+    position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; border-radius: 16px; box-shadow: 0 0 16px 0 var(--bb-25); transition: transform 0.4s ease;
+}
+.bc-case-img--1 {
+    top: 0; opacity: 0.5;
+}
+.bc-case-img--2 {
+    top: 16px; opacity: 0.75;
+}
+.bc-case-img--3 {
+    top: 32px;
+}
+/* scrim sobre a imagem 3 (bb 0.25 embaixo → transparent em cima). */
+.bc-case-scrim {
+    position: absolute; left: 0; top: 32px; width: 100%; aspect-ratio: 16 / 9;
+    border-radius: 16px; pointer-events: none; transition: transform 0.4s ease;
+    background: linear-gradient(to top, var(--bb-25), transparent);
+}
+/* hover: 2ª imagem desce 32px,
+3ª (e o scrim) descem 64px. */
+.bc-case-card:hover .bc-case-img--2 {
+    transform: translateY(32px);
+}
+.bc-case-card:hover .bc-case-img--3,
+.bc-case-card:hover .bc-case-scrim {
+    transform: translateY(64px);
+}
+.bc-case-panel {
+    position: relative; margin-top: 56.25%; width: 100%; min-height: 128px; padding: 0 24px 24px 24px; box-sizing: border-box; background: var(--ln200); border-radius: 0 16px 0 0;
+}
+/* label do painel: "Business Cases" (bb) + área (h4,
+bb-50). */
+.bc-case-label {
+    position: relative; z-index: 1; top: -1.25rem; max-width: 75%;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.bc-case-label span {
+    font: var(--label-xs); color: var(--bb);
+}
+.bc-case-label h4 {
+    font: var(--label); color: var(--bb-50); margin: 0;
+}
+/* continuação plana à ESQUERDA da wave (espelho do .bc-active-sec::before,
+metade + lado invertido). */
+.bc-case-panel::before {
+    content: ''; position: absolute; top: -40px; left: 0; right: calc(50% + 32px);
+    height: 48px; background: var(--ln200); pointer-events: none;
+    border-radius: 16px 0 0 0;
+}
+/* mesma wave do .bc-active-sec::after,
+pela metade (80×48) e invertida na
+   horizontal; cor = ln200 (a do painel),
+pra parecer o painel subindo. */
+.bc-case-panel::after {
+    content: ''; position: absolute; top: -40px; left: 50%;
+    transform: translateX(-50%) scaleX(-1); width: 80px; height: 48px; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48' viewBox='0 0 80 48' fill='none'%3E%3Cpath d='M80 0V48H0V40H2.74516C11.2321 40 19.3714 36.6286 25.3726 30.6274L46.6274 9.3726C52.6286 3.3714 60.7679 0 69.2548 0H80Z' fill='%23E1E1EB'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+/* ── reveal no scroll (JS adiciona .is-entered; padrão do formacoes/script.js).
+   Estado inicial = escondido (fade + blur,
+sobe 32px onde não há transform
+   próprio); a transição usa ease-out. ────────────────────────────────────── */
+/* bc-step + layer-stack: sem transform próprio → fade + blur + sobe 32px. */
+.bc-step,
+.bc-explore-layer-stack {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(32px);
+    transition: opacity 0.7s ease-out, filter 0.7s ease-out, transform 0.7s ease-out;
+}
+.bc-step.is-entered,
+.bc-explore-layer-stack.is-entered {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+@media (max-width: 576px) {
+    #bc-overview {
+        padding: 96px 0 176px;
+    }
+    .bc-cases-track .bc-cases-sec {
+        padding-bottom: 192px;
+    }
+    .bc-cases-grid {
+        gap: 16px;
+    }
+}
+@media (max-width: 864px) {
+    .bc-how-inner {
+        grid-template-columns: 1fr;
+    }
+    .bc-how-header,
+    .bc-step,
+    .bc-step--wide {
+        grid-column: 1;
+    }
+}
+
+/* ======================================================================
+   PIN DE SAIDA DOS BUSINESS CASES
+   Mesmo desenho do par .sec-courses -> .ip. `bottom: 0` seria o sticky
+   errado (ele segura um elemento que vem DE BAIXO); pra travar a CAUDA de
+   um bloco mais alto que a viewport o offset e `top: 100vh - altura`,
+   negativo, e a altura so existe em runtime, entao quem escreve a
+   variavel e o script.js. A folga precisa ser um elemento, nao padding:
+   sticky se prende ao CONTENT box do contentor.
+   ====================================================================== */
+.cases-folga { height: var(--cases-folga, 100vh); }
+.bc-cases-sec {
+    position: sticky;
+    top: var(--cases-pin-top, 0px);
+    /* respiro maior no pe, pedido explicito. So aqui: aplicado na .bc-sec
+       pegava tambem a .bc-active-sec. */
+    padding-bottom: 256px;
+    /* acima do .hero-lede-wrap, que e fixed em z 10 e continua na tela aqui.
+       Sem `background` aqui de proposito: a secao ja e opaca por design, em
+       --ln100, e sobrescrever com --bb apagava o titulo dela, que e --bb. */
+    z-index: 40;
+}
+
+/* ======================================================================
+   POR QUE O VITALICIO
+   Estrutura da .conta-grid de ed/formacoes/style.css: a .vit-row sangra
+   de ponta a ponta e leva o fio de 2px que separa as linhas; o
+   .vit-row-inner e quem prende o conteudo ao container.
+   A diferenca e o miolo: la e um par rotulo/valor num flex, aqui sao nome
+   e descricao, entao o inner virou grid do DS (3 + 7 de 10 colunas) em vez
+   de um flex com largura arbitraria.
+   ====================================================================== */
+.vit {
+    position: relative;
+    padding: 128px 0;
+    /* o halo de 64px do .sec-title, como nas outras secoes */
+    overflow-x: clip;
+}
+.vit-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.vit-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 720px;
+}
+.vit-grid {
+    margin-top: 64px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+}
+.vit-row + .vit-row { box-shadow: inset 0 2px 0 0 var(--bw-10); }
+.vit-row-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 8px;
+}
+.vit-nome {
+    grid-column: span 3;
+    font: var(--p);
+    color: var(--sc500);
+    margin: 0;
+}
+.vit-texto {
+    grid-column: span 7;
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+@media (max-width: 1439px) {
+    .vit-row-inner { grid-template-columns: repeat(8, 1fr); }
+    .vit-texto { grid-column: span 5; }
+}
+@media (max-width: 864px) {
+    .vit-row-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    .vit-nome,
+    .vit-texto { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .vit { padding: 96px 0; }
+    .vit-row-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+        padding: 24px 16px;
+    }
+}
+
+/* ======================================================================
+   OFERTAS
+   Portado da sec-oferta de ed/formacoes/style.css. Ficaram de fora as
+   regras do .oferta-anuidade-track, que fazem a secao grudar dentro de um
+   wrapper que esta pagina nao tem.
+   ====================================================================== */
+/* ── Section Oferta (planos) ─────────────────────────────── */
+        .sec-oferta {
+    padding: 128px 0;
+    /* O .sec-title carrega padding 64px com margin -64px (compensacao do
+       mask-image, que a memoria do projeto proibe zerar). Em tela estreita
+       esse halo estoura 48px pra fora e vira scroll horizontal na pagina
+       inteira. Mesmo corte que as outras secoes ja levam. */
+    overflow-x: clip;
+}
+.oferta-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.oferta-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 832px;
+}
+.oferta-grid {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: auto 1fr auto;
+    column-gap: 32px;
+    row-gap: 24px;
+}
+.oferta-card {
+    grid-column: span 5;
+    grid-row: span 3;
+    display: grid;
+    grid-template-rows: subgrid;
+    padding: 48px;
+    border-radius: 16px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--dn900), transparent);
+    --card-accent: var(--bw-15);
+    box-sizing: border-box;
+    opacity: 0;
+}
+.oferta-card.is-entered {
+    animation: cta-card-enter 0.6s ease-out both;
+}
+/* ::before combina linha de 2px no topo + inset shadow.
+           z-index: 1 fica acima da .oferta-card-img (z:0),
+garantindo que
+           o shadow seja desenhado por cima da imagem. */
+        .oferta-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(to right, transparent, var(--card-accent), transparent) top / 100% 2px no-repeat;
+    box-shadow: inset 0 32px 64px -16px var(--card-accent);
+    transition: box-shadow 0.4s ease;
+}
+.oferta-card::after {
+    content: "";
+    position: absolute;
+    top: -128px;
+    left: 0;
+    width: 100%;
+    height: 256px;
+    border-radius: 50%;
+    background: var(--card-accent);
+    filter: blur(128px);
+    pointer-events: none;
+    z-index: 1;
+}
+.oferta-card > :not(.oferta-card-img) {
+    position: relative; z-index: 2;
+}
+.oferta-card .oferta-card-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 75%;
+    height: auto;
+    transform: translate(25%, -25%) rotate(-15deg);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    mask-image: linear-gradient(to right, transparent, black);
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+}
+.oferta-icon-box {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--bw-5);
+    box-sizing: border-box;
+}
+.oferta-icon {
+    width: 48px; height: 48px; object-fit: contain;
+}
+.oferta-card--full {
+    --card-accent: var(--pc300-25);
+}
+.oferta-card--full .oferta-icon-box {
+    background: var(--pc300-10);
+}
+.oferta-card--f1 {
+    --card-accent: rgba(225, 150, 50, 0.25);
+}
+.oferta-card--f1 .oferta-icon-box {
+    background: rgba(225, 150, 50, 0.10);
+}
+.oferta-card--f1 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(225, 150, 50, 0.25); color: rgb(225, 150, 50);
+}
+.oferta-card--f2 {
+    --card-accent: rgba(225, 100, 50, 0.25);
+}
+.oferta-card--f2 .oferta-icon-box {
+    background: rgba(225, 100, 50, 0.10);
+}
+.oferta-card--f2 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(225, 100, 50, 0.25); color: rgb(225, 100, 50);
+}
+.oferta-card--f3 {
+    --card-accent: rgba(50, 200, 150, 0.25);
+}
+.oferta-card--f3 .oferta-icon-box {
+    background: rgba(50, 200, 150, 0.10);
+}
+.oferta-card--f3 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(50, 200, 150, 0.25); color: rgb(50, 200, 150);
+}
+.oferta-card--f4 {
+    --card-accent: rgba(50, 200, 200, 0.25);
+}
+.oferta-card--f4 .oferta-icon-box {
+    background: rgba(50, 200, 200, 0.10);
+}
+.oferta-card--f4 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(50, 200, 200, 0.25); color: rgb(50, 200, 200);
+}
+.oferta-card--f5 {
+    --card-accent: rgba(100, 200, 50, 0.25);
+}
+.oferta-card--f5 .oferta-icon-box {
+    background: rgba(100, 200, 50, 0.10);
+}
+.oferta-card--f5 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(100, 200, 50, 0.25); color: rgb(100, 200, 50);
+}
+.oferta-card--f6 {
+    --card-accent: rgba(50, 100, 255, 0.25);
+}
+.oferta-card--f6 .oferta-icon-box {
+    background: rgba(50, 100, 255, 0.10);
+}
+.oferta-card--f6 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(50, 100, 255, 0.25); color: rgb(50, 100, 255);
+}
+.oferta-card--f7 {
+    --card-accent: rgba(225, 50, 50, 0.25);
+}
+.oferta-card--f7 .oferta-icon-box {
+    background: rgba(225, 50, 50, 0.10);
+}
+.oferta-card--f7 .oferta-card-eyebrow-row .tag-status {
+    background-color: rgba(225, 50, 50, 0.25); color: rgb(225, 50, 50);
+}
+.oferta-card-top {
+    display: flex; flex-direction: column; gap: 24px;
+}
+.oferta-card-eyebrow-row {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.oferta-card-title {
+    font: var(--h4); font-weight: 300; color: var(--bw); margin: 0;
+}
+.oferta-card-title strong {
+    font-weight: 700;
+}
+.oferta-price-block {
+    display: flex; flex-direction: column; gap: 4px;
+}
+.oferta-price {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    color: var(--bw);
+}
+.oferta-price .multi {
+    font: var(--label-s); color: var(--bw-50);
+}
+.oferta-price .value {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 0.825em;
+    background: linear-gradient(180deg, var(--bw) 0%, var(--bw-50) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.oferta-price-detail {
+    font: var(--p-s); color: var(--bw-50); margin: 0;
+}
+.oferta-divider {
+    width: 100%; height: 2px; background: var(--bw-15); flex-shrink: 0;
+}
+.oferta-checks {
+    list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; flex: 1; align-content: start;
+}
+.oferta-check {
+    font: var(--p); color: var(--bw); padding-right: 12px; position: relative;
+}
+.oferta-check strong {
+    font-weight: 700;
+}
+.oferta-check::before {
+    content: "";
+    position: absolute;
+    left: -48px;
+    top: 0;
+    width: 2px;
+    height: 1.5rem;
+    background: var(--sc500);
+}
+/* oferta-checks: colapsa listas com mais de 7 itens (toggle "Ver todos").
+           Os 2 últimos itens visíveis ganham blur/opacity decrescente p/ sinalizar
+           que há mais conteúdo (some ao clicar em "Ver todos"). */
+        .oferta-check {
+    transition: filter 0.2s ease, opacity 0.2s ease;
+}
+.oferta-check.is-hidden {
+    display: none;
+}
+.oferta-check.is-fade-1 {
+    filter: blur(2px);
+}
+.oferta-check.is-fade-2 {
+    filter: blur(4px);
+}
+.oferta-check.is-fade-1:not(.is-disabled) {
+    opacity: 0.5;
+}
+.oferta-check.is-fade-2:not(.is-disabled) {
+    opacity: 0.25;
+}
+.oferta-checks-toggle-row {
+    list-style: none;
+}
+.oferta-checks-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: var(--label);
+    color: var(--pc200);
+    transition: color 0.2s ease;
+}
+.oferta-checks-toggle:hover {
+    color: var(--pc100);
+}
+.oferta-checks-toggle .material-symbols-outlined {
+    font-size: 20px;
+    transition: transform 0.2s ease;
+}
+.oferta-checks-toggle[aria-expanded="true"] .material-symbols-outlined {
+    transform: rotate(180deg);
+}
+.oferta-check.is-revealing {
+    animation: oferta-check-reveal 0.3s ease both;
+}
+.oferta-check.is-hiding {
+    animation: oferta-check-hide 0.25s ease both;
+}
+.oferta-check.is-disabled.is-revealing {
+    animation: oferta-check-reveal-disabled 0.3s ease both;
+}
+.oferta-check.is-disabled.is-hiding {
+    animation: oferta-check-hide-disabled 0.25s ease both;
+}
+.oferta-completa-icons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.oferta-completa-icons img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    opacity: 0.15;
+    filter: brightness(0) invert(1);
+}
+/* Card da completa: todos os ícones em cor cheia */
+        .oferta-card--full .oferta-completa-icons img {
+    opacity: 1;
+    filter: none;
+}
+/* Cards de formação: só o ícone da própria formação em cor cheia */
+        .oferta-card--f1 .oferta-completa-icons .oferta-completa-icon--f1,
+.oferta-card--f2 .oferta-completa-icons .oferta-completa-icon--f2,
+.oferta-card--f3 .oferta-completa-icons .oferta-completa-icon--f3,
+.oferta-card--f4 .oferta-completa-icons .oferta-completa-icon--f4,
+.oferta-card--f5 .oferta-completa-icons .oferta-completa-icon--f5,
+.oferta-card--f6 .oferta-completa-icons .oferta-completa-icon--f6,
+.oferta-card--f7 .oferta-completa-icons .oferta-completa-icon--f7 {
+    opacity: 1;
+    filter: none;
+}
+/* Check bullet do card completa: sg300 (dourado) ao invés de sc500 (verde) */
+        .oferta-card--full .oferta-check::before {
+    background: var(--sg300);
+}
+.oferta-card-action {
+    display: flex; flex-direction: column; gap: 16px; align-self: start;
+}
+.oferta-risk {
+    font: var(--p-s); color: var(--bw-50); margin: 0;
+}
+.oferta-card .btn {
+    align-self: start; width: auto; flex: 0 0 auto;
+}
+/* Navegação prev/next do mini-carrossel: oculta acima de 864px */
+        .oferta-nav {
+    display: none;
+}
+/* Footer movido pra /footer/footer.css — carregado dinamicamente
+           via footer/footer-include.js. Não duplicar regras aqui. */
+
+    
+
+        /* ════════════════════════════════════════════════════════════
+           INDEX HUB (formacoes/index.html) — migrado do inline \3c style>
+           Escopado por para não afetar as páginas de
+           formação que compartilham style.css mas usam alguns mesmos
+           seletores (.hero-wave,
+.sec-cta,
+.sec-oferta) com regras próprias.
+           ═════════════════════════════════════════════════════════ */
+        body.formacoes-hub {
+    /* Hero do hub — overrides do .hero-wave de style.css (formacao pages têm
+    hero diferente). Mantido inline temporariamente; será movido depois. */
+    /* Animação de entrada do deck: marquee-boxes fadeiam em ordem
+    aleatória, hero-box entra por último com fade + translateY. */
+    /* Bloco "conta" embutido dentro de sec-oferta (full-width, edge-to-edge).
+    Por isso sec-oferta perdeu o padding horizontal (mudou para 128px 0) e
+    .oferta-inner herdou o padding 0 16px. .conta-grid ocupa 100% da .sec-oferta. */
+    /* Wrapper que envolve sec-depos + sec-faq no HUB — mesmo padrão visual de
+    .perfis-depos-wrap (background blur de gradientes radiais + fade
+    scrim nas bordas).
+    Override: .sec-faq na base do style.css tem background: var(--bb)
+    sólido que cobriria o pseudo-element do wrap. Aqui zera pra que o
+    gradiente do wrap se estenda também sobre o sec-faq. */
+}
+.sec-oferta {
+    padding: 128px 0;
+}
+.oferta-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+.oferta-header {
+    max-width: 832px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.oferta-title {
+    font: var(--h3);
+    font-weight: 300;
+    color: var(--bw);
+    max-width: 680px;
+    /* margin/padding/box-sizing herdados de .sec-title (mask compensation) */
+}
+.oferta-subtitle {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.oferta-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: auto 1fr auto;
+    column-gap: 32px;
+    row-gap: 24px;
+}
+.oferta-card {
+    grid-column: span 5;
+    grid-row: span 3;
+    display: grid;
+    grid-template-rows: subgrid;
+    padding: 48px;
+    border-radius: 16px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--dn900), transparent);
+    /* --card-accent NÃO redefinido aqui: o default vem da regra
+    global .oferta-card (var(--bw-15)) e os modifiers
+    .oferta-card--full e .oferta-card--fN sobrescrevem com suas
+    cores. Setar --card-accent aqui mata o modifier no hub. */
+}
+.oferta-card::after {
+    content: "";
+    position: absolute;
+    top: -128px;
+    left: 0;
+    width: 100%;
+    height: 256px;
+    border-radius: 50%;
+    background: var(--card-accent);
+    filter: blur(128px);
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.4s ease;
+}
+.oferta-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.oferta-card > :not(.oferta-card-img) {
+    position: relative;
+    z-index: 2;
+}
+/* Dropdown aberto fica na frente de TUDO no card.
+           Especificidade (0,
+4,
+0 / 0,
+3,
+0) precisa vencer ".oferta-card > :not(.oferta-card-img)"
+           (0,
+3,
+1),
+que senão fixaria o card-top em z-index 2 e deixaria as opções por baixo dos irmãos. */
+        .oferta-card > .oferta-card-top:has(.dropdown-group.is-open) {
+    z-index: 30;
+}
+.oferta-card .oferta-card-top .dropdown-group.is-open {
+    z-index: 30;
+}
+.oferta-card .dropdown {
+    background-color: var(--dn500-50);
+}
+.oferta-card .oferta-card-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 75%;
+    height: auto;
+    transform: translate(25%, -25%) rotate(-15deg);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    mask-image: linear-gradient(to right, transparent, black);
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+}
+.oferta-card-label {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.oferta-price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.oferta-price {
+    font: var(--h2);
+    color: var(--bw);
+    margin: 0;
+}
+.oferta-price-detail {
+    font: var(--p-s);
+    color: var(--bw-50);
+    margin: 0;
+}
+.oferta-card-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.oferta-icon-box {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--bw-5);
+    transition: background 0.4s ease;
+}
+.oferta-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+.oferta-divider {
+    width: 100%;
+    height: 2px;
+    background: var(--bw-15);
+    flex-shrink: 0;
+}
+.oferta-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    align-content: start;
+}
+.oferta-check {
+    font: var(--p);
+    color: var(--bw);
+    padding-right: 12px;
+    position: relative;
+}
+.oferta-check::before {
+    content: "";
+    position: absolute;
+    left: -48px;
+    top: 0;
+    width: 2px;
+    height: 1.5rem;
+    background: var(--sc500);
+}
+.oferta-card > .btn {
+    align-self: start;
+    justify-self: start;
+}
+.oferta-card-action {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.oferta-btn-group {
+    display: flex;
+    gap: 16px;
+}
+@media (max-width: 1439px) {
+    .oferta-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .oferta-header {
+        grid-column: span 4;
+    }
+    .oferta-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .oferta-card {
+        grid-column: span 4;
+    }
+}
+@media (max-width: 864px) {
+    .oferta-inner {
+        grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px;
+    }
+    .oferta-header {
+        grid-column: 1 / -1;
+    }
+    /* Mini-carrossel: cards lado-a-lado com 64px de preview do próximo (ou anterior).
+                   margin negativo cancela o padding lateral de .oferta-inner; padding interno de
+                   16px no grid e scroll-padding-left = gap+peek alinha o snap simetricamente. */
+                .oferta-grid {
+        display: flex;
+        grid-template-columns: none;
+        grid-template-rows: none;
+        gap: 24px;
+        column-gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 88px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .oferta-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .oferta-card {
+        grid-column: auto;
+        grid-row: auto;
+        flex: 0 0 calc(100% - 72px);
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .oferta-nav {
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+    }
+    .oferta-nav .btn[disabled] {
+        display: none;
+    }
+    .oferta-grid {
+        grid-template-columns: 1fr;
+    }
+    .oferta-card {
+        grid-column: span 1;
+    }
+    .sec-why,
+    .sec-formacoes,
+    .sec-oferta,
+    .sec-depos,
+    .sec-faq,
+    .sec-cta {
+        padding-top: 96px;
+        padding-bottom: 96px;
+    }
+}
+@media (max-width: 576px) {
+    .sec-oferta {
+        padding: 96px 0;
+    }
+    .oferta-inner {
+        grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px;
+    }
+    .oferta-grid {
+        gap: 16px;
+        column-gap: 16px;
+        scroll-padding-left: 80px;
+    }
+    .oferta-card {
+        flex: 0 0 calc(100% - 64px);
+        padding: 32px;
+    }
+    .oferta-card {
+        padding: 32px;
+    }
+    .oferta-check::before {
+        left: -32px;
+    }
+}
+
+/* Os cards nascem com opacity 0 e so aparecem com .is-entered, que na
+   origem vem de um observer do formacoes/script.js. Aqui quem adiciona a
+   classe e o script.js desta pagina; o fallback abaixo garante que, se o
+   observer nao rodar, o conteudo nao fique invisivel. */
+@media (prefers-reduced-motion: reduce) {
+    .oferta-card { opacity: 1; animation: none; }
+}
+
+/* ======================================================================
+   KEYFRAMES
+   Meus extratores de CSS pulam blocos @, entao estas nunca vieram nos
+   ports. Sem elas o `animation: cta-card-enter` nao resolvia e os
+   .oferta-card ficavam presos no opacity: 0 da regra base. A unica
+   copia que existia na pagina estava dentro do @media de 576, que
+   redefine as animacoes sem blur.
+   ====================================================================== */
+@keyframes cta-card-enter {
+from { opacity: 0; filter: blur(32px); transform: translateY(-64px); }
+to   { opacity: 1; filter: blur(0px);  transform: translateY(0); }
+}
+@keyframes oferta-check-hide {
+from { opacity: 1; transform: translateY(0); }
+to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes oferta-check-hide-disabled {
+from { opacity: 0.25; transform: translateY(0); }
+to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes oferta-check-reveal {
+from { opacity: 0; transform: translateY(-6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@keyframes oferta-check-reveal-disabled {
+from { opacity: 0; transform: translateY(-6px); }
+to { opacity: 0.25; transform: translateY(0); }
+}
+
+/* Logo do Infinite Pass ao lado do icone, so no card do vitalicio. Classe
+   propria em vez de reusar a .hero-logo-ip: aquela e do hero, e o tamanho
+   e o unico que os dois compartilham. */
+.oferta-marca {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.oferta-logo-ip {
+    height: 32px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* ======================================================================
+   MEDIA QUERIES QUE FALTAVAM
+   Meu parser de CSS lia "tudo antes da chave" como seletor, e um
+   comentario colado logo acima do @media entrava junto: o
+   startswith('@media') falhava, o bloco virava uma regra normal com
+   seletor = comentario, nao casava com classe nenhuma e era descartado
+   inteiro. A origem tem um comentario exatamente antes de tres @media,
+   entao estas regras nunca chegaram no port.
+   Ficaram de fora, de proposito, duas que contrariam adaptacoes desta
+   pagina: o padding da .sec-courses em 576 (aqui quem paga o respiro e o
+   .courses-wave) e o do .area-card-body em 768 (aqui quem paga e o
+   .formacao-card).
+   ====================================================================== */
+@media (max-width: 1439px) {
+    .bc-how-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    /* Faltava no port: e ela que joga o terceiro step pra linha inteira no
+       tier de 8 colunas. Sem isso o arranjo divergia da origem. */
+    .bc-step:nth-child(n+3) {
+        grid-column: 1 / -1;
+    }
+    .bc-how-header {
+        grid-column: 1 / span 4;
+    }
+    .bc-step {
+        grid-column: span 4;
+    }
+}
+@media (max-width: 1152px) {
+    .bc-cases-grid {
+        grid-template-columns: repeat(2, 1fr); gap: 24px;
+    }
+}
+@media (max-width: 864px) {
+    .bc-cases-grid {
+        grid-template-columns: 1fr;
+    }
+    /* Repetidas aqui porque o bloco de 1439 logo acima e mais novo que o
+       @media (max-width: 864px) que ja existia no arquivo, e passava por
+       cima dele: as duas media queries casam em telas estreitas e a que
+       vem depois vence. */
+    .bc-how-inner { grid-template-columns: 1fr; }
+    .bc-how-header,
+    .bc-step,
+    .bc-step--wide { grid-column: 1; }
+}
+@media (max-width: 576px) {
+    .bc-step .troca-meta {
+        padding: 128px 32px 32px;
+    }
+    .bc-step--wide .troca-card {
+        flex-direction: column-reverse;
+    }
+    .bc-step--wide .troca-demo {
+        flex: 0 0 auto;
+    }
+    .bc-step--wide .troca-demo-img {
+        position: static; width: 100%; height: auto; aspect-ratio: 16 / 10;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, black);
+        mask-image: linear-gradient(to bottom, transparent, black);
+    }
+    .bc-step--wide .troca-meta {
+        flex: 0 0 auto; padding: 128px 32px 32px;
+    }
+}
+
+/* ======================================================================
+   BONUS
+   O miolo do card vem do .gains-card de /ed/aichampion/: mesmos paddings,
+   mesmos tipos e os fios de 2px em --bw-10. A diferenca e o arranjo: la os
+   cards sao uma pilha vertical ao lado de uma nav sticky, aqui sao dois
+   lado a lado numa linha. Por isso os trilhos e fios foram redesenhados
+   como um box-shadow so no container, com o divisor entre os dois cards.
+   ====================================================================== */
+.bonus {
+    position: relative;
+    padding: 128px 0;
+    /* halo de 64px do .sec-title, como nas outras secoes */
+    overflow-x: clip;
+}
+.bonus-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+.bonus-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 720px;
+}
+.bonus-cards {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* so os trilhos laterais; os fios de cima e de baixo sao os pseudos
+       abaixo, porque precisam vazar ate as bordas da tela */
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+/* Fios horizontais de ponta a ponta da viewport, como na origem. La o
+   alcance vem de duas variaveis que o script.js escreve
+   (--gains-cards-left e --gains-vw); aqui sai de graca centrando um
+   elemento de 100vw, porque a .bonus ja corta o que passa das bordas. */
+.bonus-cards::before,
+.bonus-cards::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 2px;
+    background: var(--bw-10);
+    pointer-events: none;
+    z-index: 1;
+}
+.bonus-cards::before { top: 0; }
+.bonus-cards::after { bottom: 0; }
+/* divisor entre os dois; na origem ele e horizontal porque os cards
+   empilham */
+.bonus-cards > .gains-card + .gains-card {
+    box-shadow: inset 2px 0 0 0 var(--bw-10);
+}
+.gains-card {
+    position: relative;
+    isolation: isolate;
+    /* empilhado: imagem em cima, texto embaixo */
+    display: flex;
+    flex-direction: column;
+    /* o 80px de topo da origem abria espaco pra aba do .gains-toptag, que
+       nao vem junto porque a copy nao traz rotulo por card */
+    padding: 48px;
+    gap: 32px;
+}
+/* A imagem ocupa a largura do card, em 3/1. O slot vazio some, pra um
+   card sem imagem nao abrir buraco. */
+.gains-card-media {
+    flex: 0 0 auto;
+    width: 100%;
+}
+.gains-card-media:empty { display: none; }
+.gains-card-media img {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+.gains-card-content {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+}
+.gains-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.gains-card-title {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+.gains-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+/* a tag fica do tamanho do proprio texto; sem isto ela estica pra largura
+   do card, porque o .gains-card-body e um flex column com align-items
+   stretch */
+.gains-warn {
+    align-self: flex-start;
+    margin: 0;
+}
+@media (max-width: 864px) {
+    .bonus-cards { grid-template-columns: minmax(0, 1fr); }
+    /* empilhados, o divisor volta a ser horizontal, como na origem */
+    .bonus-cards > .gains-card + .gains-card {
+        box-shadow: inset 0 2px 0 0 var(--bw-10);
+    }
+}
+@media (max-width: 576px) {
+    .bonus { padding: 96px 0; }
+    .bonus-inner { gap: 48px; }
+    .gains-card { padding: 32px; }
+}
+
+/* ======================================================================
+   DEPOIMENTOS
+   Portado do .depos-faq-wrap de ed/aichampion/dependencias/style.css, sem
+   a parte de FAQ. Ficaram de fora .depos-avatar, .depos-social-proof e
+   .depos-stars, que colidem com o hero desta pagina (o avatar de la nao
+   tem `center / cover`, e os outros dois nascem em opacity 0 esperando um
+   observer que apagaria a prova social do hero), e os .sec-* escopados no
+   wrapper, que sao duplicata do padrao de secao daqui.
+   ====================================================================== */
+.depos-faq-wrap {
+    position: relative; z-index: 80; overflow: hidden;
+}
+.sec-depos {
+    padding: 128px 0;
+}
+.depos-inner {
+    max-width: 1440px; margin: 0 auto; padding: 0 16px 64px; box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr); column-gap: 32px; row-gap: 64px;
+}
+.depos-header {
+    grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
+}
+.depos-header-left {
+    display: flex; flex-direction: column; gap: 16px;
+}
+.depos-avatar-stack {
+    display: flex; flex-direction: row;
+}
+.depos-avatar + .depos-avatar {
+    margin-left: -20px;
+}
+.depos-eyebrow {
+    font: var(--label); color: var(--bw-75); margin: 0;
+}
+.depos-star-stack {
+    display: flex; flex-direction: row;
+}
+.depos-star-stack .material-symbols-outlined {
+    font-size: 20px; color: var(--sg500); font-variation-settings: 'FILL' 1;
+}
+.depos-star-stack .material-symbols-outlined + .material-symbols-outlined {
+    margin-left: -4px;
+}
+.depos-rating {
+    font: var(--p-s); color: var(--sg300); margin: 0 0 0 4px;
+}
+.depos-nav {
+    display: flex; gap: 16px; flex-shrink: 0; opacity: 0;
+}
+.depos-nav.is-entered {
+    animation: cta-card-enter 0.6s ease-out both;
+}
+.depos-carousel-wrap {
+    max-width: 1440px; margin: 0 auto; padding: 0 0 0 16px; overflow: hidden; position: relative; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 128px), transparent 100%); mask-image: linear-gradient(to right, #000 calc(100% - 128px), transparent 100%);
+}
+.depos-track {
+    display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.depos-track::-webkit-scrollbar {
+    display: none;
+}
+.depos-card {
+    flex: 0 0 calc((100% - 3 * 24px - 64px) / 3); scroll-snap-align: start; opacity: 0;
+}
+.depos-card.is-entered {
+    animation: cta-card-enter 0.6s ease-out both;
+}
+.depos-video {
+    aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; position: relative;
+}
+.depos-video[data-vid] {
+    cursor: pointer;
+}
+.depos-thumb {
+    width: 100%; height: 100%; object-fit: cover; display: block; -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 100%); mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+}
+.depos-info {
+    position: absolute; bottom: 0; left: 0; padding: 16px; z-index: 2; display: flex; flex-direction: row; align-items: center; gap: 12px;
+}
+.depos-info-text {
+    display: flex; flex-direction: column; gap: 2px;
+}
+.depos-info-label {
+    font: var(--p-s); color: var(--bw-75); margin: 0;
+}
+.depos-info-name {
+    font: var(--p-l); color: var(--bw); margin: 0;
+}
+.depos-play {
+    width: 48px; height: 48px; border-radius: 1920px; background: var(--bw-15); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--bw); pointer-events: none; transition: background 0.2s; align-self: flex-start;
+}
+.depos-play .material-symbols-outlined {
+    font-size: 28px; font-variation-settings: 'FILL' 1;
+}
+.depos-video[data-vid]:hover .depos-play {
+    background: var(--bw-25);
+}
+.depos-video iframe {
+    width: 100%; height: 100%; border: 0; display: block;
+}
+.champ-wrap {
+    max-width: 1440px; margin: 64px auto 0; padding: 0 16px; box-sizing: border-box;
+}
+.champ-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+}
+.champ-card {
+    display: flex; flex-direction: column;
+}
+.champ-media {
+    position: relative;
+}
+.champ-img {
+    width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; opacity: 0;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 100%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 100%);
+}
+.champ-img.is-entered {
+    animation: cta-card-enter 0.6s ease-out both;
+}
+.champ-content {
+    position: relative; z-index: 1; margin-top: -32px; padding: 0 16px 16px; display: flex; flex-direction: column; gap: 16px;
+}
+.champ-quote {
+    font-family: var(--font-display); font-weight: 700; font-size: 6rem; line-height: 0; color: var(--pc300); display: block;
+}
+.champ-text {
+    display: flex; flex-direction: column; gap: 8px;
+}
+.champ-quote-text {
+    font: var(--p); font-style: italic; color: var(--bw-75); margin: 0;
+}
+.champ-quote-text--s {
+    font: var(--p-s); font-style: italic;
+}
+.champ-summary {
+    font: var(--p-s); color: var(--bw-50); margin: 0;
+}
+.champ-name {
+    font: var(--label); color: var(--bw);
+}
+.depos-employers {
+    margin-top: 80px;
+}
+.depos-employers-inner {
+    max-width: 1440px; margin: 0 auto; padding: 0 16px 64px; box-sizing: border-box; display: grid; grid-template-columns: repeat(10, 1fr); column-gap: 32px;
+}
+.depos-employers-header {
+    grid-column: span 5; display: flex; flex-direction: column; gap: 16px;
+}
+.depos-logos-section {
+    padding: 0 16px; overflow: hidden; box-shadow: inset 0 2px 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+}
+.depos-logos-grid {
+    max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(2, auto); grid-auto-rows: 0px; overflow: hidden; box-shadow: inset -2px 0 0 0 var(--bw-15);
+}
+.depos-logo-card {
+    padding: 24px 16px; display: flex; align-items: center; justify-content: center; min-height: 80px; box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+}
+.depos-logo-card img {
+    max-width: 100%; max-height: 64px; object-fit: contain; opacity: 0.5; display: block; transition: opacity 0.6s ease;
+}
+.depos-logo-card:nth-child(n+7) {
+    box-shadow: inset 2px 0 0 0 var(--bw-15);
+}
+@media (min-width: 1440px) {
+    .depos-carousel-wrap {
+        max-width: none; margin: 0; padding-left: 0;
+    }
+    .depos-track {
+        scroll-snap-type: none;
+    }
+    .depos-card {
+        flex: 0 0 calc((1408px - 2 * 24px) / 3); scroll-snap-align: none;
+    }
+}
+@media (max-width: 1439px) {
+    .depos-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .depos-employers-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .depos-employers-header {
+        grid-column: span 4;
+    }
+}
+@media (max-width: 1152px) {
+    .depos-card {
+        flex: 0 0 calc((100% - 2 * 24px - 64px) / 2);
+    }
+    .depos-logos-grid {
+        grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, auto);
+    }
+    .depos-logo-card:nth-child(n+7) {
+        box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+    }
+    .depos-logo-card:nth-child(n+9) {
+        box-shadow: inset 2px 0 0 0 var(--bw-15);
+    }
+}
+@media (max-width: 864px) {
+    .depos-inner {
+        grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; padding-bottom: 48px;
+    }
+    .depos-header {
+        flex-direction: column; align-items: flex-start;
+    }
+    .champ-grid {
+        grid-template-columns: repeat(2, 1fr); gap: 24px;
+    }
+    .depos-employers-inner {
+        grid-template-columns: repeat(6, 1fr); column-gap: 24px; padding-bottom: 48px;
+    }
+    .depos-employers-header {
+        grid-column: 1 / -1;
+    }
+    .depos-logos-grid {
+        grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, auto);
+    }
+    .depos-logo-card:nth-child(n+9) {
+        box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+    }
+    .depos-logo-card:nth-child(n+7) {
+        box-shadow: inset 2px 0 0 0 var(--bw-15);
+    }
+}
+@media (min-width: 576px) and (max-width: 864px) {
+    .depos-card {
+        flex: 0 0 calc(100% - 24px - 32px);
+    }
+}
+@media (max-width: 576px) {
+    .sec-depos {
+        padding: 96px 0;
+    }
+    .depos-inner {
+        grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; padding-bottom: 32px;
+    }
+    .depos-track {
+        gap: 16px;
+    }
+    .depos-card {
+        flex: 0 0 calc(100% - 16px - 32px);
+    }
+    .champ-grid {
+        grid-template-columns: 1fr; gap: 32px;
+    }
+    .depos-employers-inner {
+        grid-template-columns: repeat(4, 1fr); column-gap: 16px; padding-bottom: 32px;
+    }
+    .depos-logos-grid {
+        grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, auto);
+    }
+    .depos-logo-card:nth-child(n+7) {
+        box-shadow: inset 2px 0 0 0 var(--bw-15), inset 0 -2px 0 0 var(--bw-15);
+    }
+    .depos-logo-card:nth-child(n+5) {
+        box-shadow: inset 2px 0 0 0 var(--bw-15);
+    }
+    .depos-social-proof, .depos-stars {
+        filter: none;
+    }
+}
+
+/* ======================================================================
+   O QUE ESTA INCLUSO (sec-skills) E PROXIMO PASSO (sec-cta)
+   Portados de ed/formacoes/style.css.
+   ====================================================================== */
+.sec-skills {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 128px 0 208px;
+}
+.skills-inner {
+    /* Tier Wide do DS, como as outras secoes desta pagina: 1440 com 10
+       colunas de base. Na origem esta secao vive numa pagina de formacao,
+       que roda no tier Desktop de 1152 com 8. */
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+/* .sec-skills::before removido a pedido: era o halo radial de --pc500 */
+.skills-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    grid-column: span 4;
+}
+.skills-grid {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    opacity: 0;
+}
+.skills-grid.is-entered {
+    animation: cta-card-enter 0.6s ease-out both;
+}
+.skill-tile {
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: linear-gradient(135deg, var(--dn500-50), transparent);
+}
+.skill-tile--wide {
+    grid-column: span 2;
+}
+.skill-tile-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bw-5);
+    color: var(--pc200);
+}
+.skill-tile-icon .material-symbols-outlined {
+    font-size: 24px;
+    font-weight: 200;
+    font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+    display: inline-flex;
+}
+.skill-tile-name {
+    font: var(--label-l);
+    color: var(--bw);
+    margin: 0 0 8px;
+}
+.skill-tile-meta {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.sec-cta {
+    padding: 128px max(16px, calc(50vw - 704px));
+}
+.oferta-anuidade-track ~ .sec-cta {
+    position: relative;
+    z-index: 3;
+}
+.cta-inner {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 32px;
+    align-items: stretch;
+}
+.cta-left {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    justify-content: flex-end;
+}
+.cta-right {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+.cta-header {
+    display: flex; flex-direction: column; gap: 16px;
+}
+.cta-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+}
+.cta-right .tag-status,
+.cta-right .btn {
+    opacity: 0;
+}
+.cta-right .tag-status.is-entered,
+.cta-right .btn.is-entered {
+    animation: cta-card-enter 0.6s ease-out both;
+}
+.cta-sub {
+    font: var(--p-l);
+    color: var(--bw-75);
+    margin: 0;
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.cta-actions {
+    display: flex; flex-wrap: wrap; gap: 16px;
+}
+@media (max-width: 864px) {
+    .skills-inner {
+        grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px;
+    }
+    .skills-header {
+        grid-column: 1 / -1;
+    }
+    .skills-grid {
+        grid-template-columns: 1fr; gap: 24px;
+    }
+    .skill-tile--wide {
+        grid-column: span 1;
+    }
+    .cta-inner {
+        grid-template-columns: repeat(6, 1fr); gap: 24px;
+    }
+    .cta-left,
+    .cta-right {
+        grid-column: span 6;
+    }
+    .sec-why,
+    .sec-formacoes,
+    .sec-oferta,
+    .sec-depos,
+    .sec-faq,
+    .sec-cta {
+        padding-top: 96px;
+        padding-bottom: 96px;
+    }
+}
+@media (max-width: 576px) {
+    .sec-skills {
+        padding: 96px 0 176px;
+    }
+    .skills-inner {
+        grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px;
+    }
+    .skills-grid {
+        gap: 16px;
+    }
+    .skill-tile {
+        padding: 24px;
+    }
+    .sec-cta {
+        padding: 96px 16px;
+    }
+    .cta-inner {
+        grid-template-columns: repeat(4, 1fr); gap: 16px;
+    }
+    .cta-left,
+    .cta-right {
+        grid-column: span 4;
+    }
+}
+@media (max-width: 1439px) {
+    .cta-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    .cta-left,
+    .cta-right {
+        grid-column: span 4;
+    }
+}
+
+/* A palavra inteira vira um span nowrap quando o script.js fatia o titulo
+   em letras, pra a quebra de linha continuar caindo entre palavras. */
+.word-nowrap { white-space: nowrap; }
+
+/* Escada do grid da sec-skills, que passou pro tier Wide. */
+@media (max-width: 1439px) {
+    .skills-inner { grid-template-columns: repeat(8, 1fr); }
+}
+@media (max-width: 864px) {
+    .skills-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+}
+@media (max-width: 576px) {
+    .skills-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+}
+
+/* ======================================================================
+   BARRA DE CTA FIXA
+   Portada do .bottom-cta de /ed/aichampion/. A regra de quando aparece e
+   propria desta pagina e vive no script.js.
+   ====================================================================== */
+.bottom-cta {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 12px;
+    box-sizing: border-box;
+    background: linear-gradient(to top, var(--bb-75), transparent 75%);
+    z-index: 500;
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.bottom-cta.is-hidden { transform: translateY(100%); opacity: 0; }
+.bottom-cta .bottom-cta-blur { position: absolute; inset: 0; pointer-events: none; }
+.bottom-cta-blur-2  { -webkit-backdrop-filter: blur(2px);  backdrop-filter: blur(2px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 100%); mask: linear-gradient(to top, #000 0%, transparent 100%); }
+.bottom-cta-blur-4  { -webkit-backdrop-filter: blur(4px);  backdrop-filter: blur(4px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 66%);  mask: linear-gradient(to top, #000 0%, transparent 66%); }
+.bottom-cta-blur-8  { -webkit-backdrop-filter: blur(8px);  backdrop-filter: blur(8px);  -webkit-mask: linear-gradient(to top, #000 0%, transparent 42%);  mask: linear-gradient(to top, #000 0%, transparent 42%); }
+.bottom-cta-blur-16 { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); -webkit-mask: linear-gradient(to top, #000 0%, transparent 22%);  mask: linear-gradient(to top, #000 0%, transparent 22%); }
+.bottom-cta .bottom-cta-btn { position: relative; z-index: 1; width: auto; align-self: flex-end; pointer-events: auto; }
+
+
+/* ======================================================================
+   FECHAMENTO
+   As cinco secoes finais dividem UM fundo, em vez de um pseudo por secao.
+   O container carrega o preto opaco (que a .vit precisava pra cobrir a
+   .bc-cases-sec travada) e o gradiente vem no pseudo, que em z-index -1
+   pinta acima desse fundo e abaixo das secoes. Por isso elas ficaram sem
+   background proprio: qualquer preto nelas taparia o gradiente.
+
+   A margem negativa que era da .vit passou pra ca: quem sobe por cima da
+   cauda travada agora e o bloco inteiro.
+   ====================================================================== */
+.fechamento {
+    position: relative;
+    isolation: isolate;
+    z-index: 50;
+    margin-top: calc(-1 * var(--cases-folga, 100vh));
+    background: var(--bb);
+}
+.fechamento::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 20% 60%, var(--pc900) 0%, transparent 70%),
+        radial-gradient(ellipse at 60% 40%, var(--bb) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 40%, var(--bb) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 20%, var(--pc900) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 100%, var(--bb) 0%, transparent 100%),
+        radial-gradient(ellipse at 100% 100%, var(--bb) 0%, transparent 70%);
+    background-size: 100% 100%;
+}
+
+/* ======================================================================
+   BOTAO FIXO DO WHATSAPP
+   Copiado da versao publicada em xperiun.com/ed/aichampion/. O repo local
+   nao tem esse componente, entao os valores vieram de la, nao de chute.
+   ====================================================================== */
+.wa-float {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 600;
+    background: linear-gradient(135deg, var(--sc500), var(--sc700));
+    color: var(--sc900);
+    overflow: visible;
+    transition: bottom 0.4s ease;
+}
+.wa-float svg { display: block; width: 32px; height: 32px; }
+.wa-float .menu-perfil-notif {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--er500-50);
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+.wa-float .menu-perfil-notif .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--bw);
+    transform-origin: center top;
+    animation: sino-balanca 2.5s ease infinite;
+}
+@keyframes sino-balanca {
+    0%   { transform: rotate(0deg); }
+    6%   { transform: rotate(15deg); }
+    12%  { transform: rotate(-11.25deg); }
+    18%  { transform: rotate(7.5deg); }
+    24%  { transform: rotate(-3.75deg); }
+    30%  { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+@media (max-width: 576px) {
+    .wa-float { right: 16px; bottom: 16px; }
+}
+/* sobe quando a barra de CTA esta em cena, pra nao disputar a mesma faixa */
+@media (max-width: 864px) {
+    :root.tem-barra-cta .wa-float { bottom: 164px; }
+}

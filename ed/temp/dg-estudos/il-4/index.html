@@ -13,9 +13,107 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
     <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
     <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
-    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-4/style.css?v=2">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-4/style.css?v=26">
 </head>
 <body>
+    <!-- Duas colunas: as três recomendações à esquerda, em peças do mesmo estilo da
+         Causa raiz da ilustração 2 (ícone à esquerda, texto no meio, selo à direita),
+         e à direita um campo com o núcleo e 8 quadrados.
 
+         Cada quadrado carrega DUAS posições: --sx/--sy, onde ele fica espalhado, e
+         --ax/--ay, o lugar dele no anel que os oito formam quando a marcha começa.
+         A posição solta é em % do campo; a do anel vem das variáveis --borda e --fim,
+         que são as MESMAS que a linha de ligação usa de inset. Assim o traço passa
+         pelo centro dos quadrados por construção, não por coincidência de números.
+         Cada posição solta fica perto do lugar dela no anel, pra a junção não cruzar o
+         campo.
+
+         O check existe nas três peças desde o começo, escondido: quem o acende é a
+         animação, que liga uma peça por tempo e deixa as anteriores acesas. Assim não
+         há nada a criar ou remover em tempo de execução.
+
+         A marcha, no ciclo de 8s: 1a peça acende, os quadrados se juntam e o núcleo
+         aparece; 2a peça acende, a linha liga os oito, os quadrados vão de dn500 pra
+         ln900 e o núcleo começa o sonar; 3a peça acende, os quadrados vão pra sc300, a
+         linha vira sc500-25 e o núcleo recebe o selo de verificado; e tudo volta ao
+         repouso pra recomeçar. -->
+    <div class="il-rec">
+        <div class="il-rec-lista">
+            <div class="il-card">
+                <div class="il-rec-item">
+                    <span class="material-symbols-outlined il-rec-ico">database</span>
+                    <div class="il-rec-texto">
+                        <span class="il-rec-label">Padronizar fontes de dados</span>
+                        <div class="il-rec-preview">
+                            <span></span>
+                        </div>
+                    </div>
+                    <span class="il-rec-selo">
+                        <span class="material-symbols-outlined">check</span>
+                    </span>
+                </div>
+            </div>
+            <div class="il-card">
+                <div class="il-rec-item">
+                    <span class="material-symbols-outlined il-rec-ico">account_tree</span>
+                    <div class="il-rec-texto">
+                        <span class="il-rec-label">Automatizar integrações e cargas</span>
+                        <div class="il-rec-preview">
+                            <span></span>
+                        </div>
+                    </div>
+                    <span class="il-rec-selo">
+                        <span class="material-symbols-outlined">check</span>
+                    </span>
+                </div>
+            </div>
+            <div class="il-card">
+                <div class="il-rec-item">
+                    <span class="material-symbols-outlined il-rec-ico">shield</span>
+                    <div class="il-rec-texto">
+                        <span class="il-rec-label">Fortalecer governança e qualidade</span>
+                        <div class="il-rec-preview">
+                            <span></span>
+                        </div>
+                    </div>
+                    <span class="il-rec-selo">
+                        <span class="material-symbols-outlined">check</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="il-rec-campo">
+            <!-- A linha que liga os oito: um retângulo cujo traço passa pelo centro de
+                 cada quadrado, porque o inset dele são os mesmos --borda e --fim que
+                 posicionam o anel. Entra com a 2a recomendação. -->
+            <span class="il-rec-liga"></span>
+            <!-- Núcleo, no meio do campo: a caixa entra com a 1a recomendação e o
+                 sonar dela com a 2a. O sonar é um elemento só; os dois anéis dele são
+                 pseudo-elementos. -->
+            <div class="il-rec-nucleo">
+                <span class="il-rec-sonar"></span>
+                <span class="material-symbols-outlined">database</span>
+                <!-- selo de verificado, no canto de cima a direita da caixa: entra com
+                     a 3a recomendacao -->
+                <span class="material-symbols-outlined il-rec-verificado">verified</span>
+            </div>
+            <!-- canto superior esquerdo -->
+            <span class="il-rec-quadrado" style="--sx: 22%; --sy: 8%; --ax: var(--borda); --ay: var(--borda)"></span>
+            <!-- meio de cima -->
+            <span class="il-rec-quadrado" style="--sx: 58%; --sy: 18%; --ax: 50%; --ay: var(--borda)"></span>
+            <!-- canto superior direito -->
+            <span class="il-rec-quadrado" style="--sx: 84%; --sy: 5%; --ax: var(--fim); --ay: var(--borda)"></span>
+            <!-- meio da direita -->
+            <span class="il-rec-quadrado" style="--sx: 76%; --sy: 44%; --ax: var(--fim); --ay: 50%"></span>
+            <!-- canto inferior direito -->
+            <span class="il-rec-quadrado" style="--sx: 92%; --sy: 78%; --ax: var(--fim); --ay: var(--fim)"></span>
+            <!-- meio de baixo -->
+            <span class="il-rec-quadrado" style="--sx: 44%; --sy: 94%; --ax: 50%; --ay: var(--fim)"></span>
+            <!-- canto inferior esquerdo -->
+            <span class="il-rec-quadrado" style="--sx: 8%; --sy: 82%; --ax: var(--borda); --ay: var(--fim)"></span>
+            <!-- meio da esquerda -->
+            <span class="il-rec-quadrado" style="--sx: 16%; --sy: 38%; --ax: var(--borda); --ay: 50%"></span>
+        </div>
+    </div>
 </body>
 </html>

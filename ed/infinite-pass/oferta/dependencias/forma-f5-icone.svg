@@ -1,0 +1,9 @@
+<svg width="260" height="260" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M180 100L100 20V0H160L260 100H180ZM90 70V40H60L0 100V160L90 70ZM0 160L100 260H160V240L80 160H0ZM170 190V220H200L260 160V100L170 190Z" fill="url(#grad-python-ds)"/>
+<defs>
+<linearGradient id="grad-python-ds" x1="50" y1="210" x2="210" y2="50" gradientUnits="userSpaceOnUse">
+<stop stop-color="#78AA9B"/>
+<stop offset="1" stop-color="#AFE6B4"/>
+</linearGradient>
+</defs>
+</svg>

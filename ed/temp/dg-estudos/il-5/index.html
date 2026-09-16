@@ -13,9 +13,59 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
     <link rel="stylesheet" href="/ed/formacoes/style.css?v=5">
     <link rel="stylesheet" href="/ed/temp/dg-estudos/_estudo.css?v=2">
-    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-5/style.css?v=2">
+    <link rel="stylesheet" href="/ed/temp/dg-estudos/il-5/style.css?v=7">
 </head>
 <body>
+    <!-- Três etapas empilhadas, em peças do mesmo estilo das outras ilustrações.
+         Cada linha tem três blocos: o número no lugar do ícone, o rótulo no meio e, à
+         direita, uma caixa fixa de 128 com a tag de prioridade e duas linhas de
+         preview de texto embaixo dela.
+         A tag é o .tag-status do DS, no menor tamanho (data-size="s"), com a semântica
+         carregando a cor: error na alta e warning na média e na baixa.
 
+         Uma peça ativa por vez, em ciclo infinito: a ativa fica limpa e as outras duas
+         em blur e meia opacidade. As três dividem uma keyframe e se distinguem só pela
+         fase, que sai do --ciclo no CSS. -->
+    <div class="il-plano">
+        <div class="il-card">
+            <div class="il-plano-item">
+                <div class="il-plano-num">1</div>
+                <span class="il-plano-label">Corrigir problemas críticos de qualidade e integração</span>
+                <div class="il-plano-lado">
+                    <span class="tag-status" data-size="s" data-semantic="error">alta</span>
+                    <div class="il-plano-preview">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="il-card">
+            <div class="il-plano-item">
+                <div class="il-plano-num">2</div>
+                <span class="il-plano-label">Reestruturar modelagem e padrões de dados</span>
+                <div class="il-plano-lado">
+                    <span class="tag-status" data-size="s" data-semantic="warning">média</span>
+                    <div class="il-plano-preview">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="il-card">
+            <div class="il-plano-item">
+                <div class="il-plano-num">3</div>
+                <span class="il-plano-label">Evoluir governança e monitoramento</span>
+                <div class="il-plano-lado">
+                    <span class="tag-status" data-size="s" data-semantic="warning">baixa</span>
+                    <div class="il-plano-preview">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

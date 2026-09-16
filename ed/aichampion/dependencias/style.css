@@ -70,9 +70,13 @@
     /* clamp ancorado: 1.75rem @576px -> 3.25rem @1440px. O mínimo bate exatamente
        em 576px, então abaixo de 576 já trava em 1.75rem (sem salto, sem media query). */
     font-size: clamp(1.75rem, 0.75rem + 2.7778vw, 3.25rem);
-    background-image: linear-gradient(90deg, var(--bw), var(--ln800));
-    -webkit-background-clip: text;
-    background-clip: text;
+    /* O text-fill transparente fica AQUI no pai (as .ltr herdam), mas o gradiente e
+       o background-clip: text moram SÓ nas .ltr. NÃO mover de volta pro pai: o JS
+       quebra o título todo em spans .ltr inline-block, e background-clip: text não
+       recorta através de inline-block, então o clip do pai fica sem glifo pra
+       recortar e o Chrome pinta um resíduo do gradiente na borda esquerda do
+       content (visível quando o título ocupa a largura toda, grid-column: 1 / -1
+       em <=864px). Sem background no pai, sem vazamento. */
     -webkit-text-fill-color: transparent;
     /* sombra via drop-shadow (funciona com o gradiente, ≠ text-shadow); cor --bb */
     filter: drop-shadow(0 0 16px rgba(0, 0, 10, 1));

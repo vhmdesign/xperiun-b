@@ -68,6 +68,18 @@
    Mora aqui porque os DOIS carros (o dos painéis escuros e o do feixe) precisam da
    mesma duração pra andar em passo: com o número escrito em dois lugares, mexer num só
    dessincronizaria o escuro do feixe. */
+/* Duas medidas da faixa do CTA que outras regras precisam ler, por isso ficam aqui em
+   cima e não escondidas no meio do arquivo.
+
+   --cta-btn-topo é onde a borda de cima do botão cai, contada do rodapé da tela: 12 do
+   padding da faixa mais 34 do botão no tamanho S (8 de padding, 17,5 de entrelinha e
+   mais 8). É a partir dela que a miniatura do vídeo se posiciona. O número é medido, e
+   muda se o botão trocar de tamanho: com data-size="m" o botão vai a 42 e este valor
+   vira 54. */
+:root {
+    --cta-altura: 140px;
+    --cta-btn-topo: 46px;
+}
 .sec-diagnostico { position: relative; z-index: 2; margin-top: -80px; --dg-varre: 8s; }
 .sec-diagnostico .diagnostico-inner { max-width: 1440px; margin: 0 auto; padding: 0 16px; box-sizing: border-box; }
 .sec-diagnostico .diagnostico-row {
@@ -2757,8 +2769,11 @@
    largura inteira e sem isso ela comeria o clique de tudo que passasse por
    baixo. É o mesmo motivo de cada camada de blur também ser none.
    z-index 50 fica abaixo do 9999 do .popup-form, então a barra não aparece por
-   cima do modal do form. */
-.bottom-cta { position: fixed; left: 0; bottom: 0; width: 100%; height: 140px;
+   cima do modal do form.
+
+   O botão fica centrado, e quem sai da frente é a miniatura do vídeo: em tela estreita
+   ela sobe pra 16px acima dele quando a faixa aparece (ver .dg-pip). */
+.bottom-cta { position: fixed; left: 0; bottom: 0; width: 100%; height: var(--cta-altura);
     box-sizing: border-box; z-index: 50;
     display: flex; align-items: flex-end; justify-content: center;
     padding-bottom: 12px;
@@ -2795,4 +2810,195 @@
     width: auto; pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) {
     .bottom-cta { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PLAYER FLUTUANTE — miniatura no canto que cresce ao clicar
+   Dois estados na MESMA caixa, e é essa a decisão que sustenta o resto: o iframe fica
+   parado no DOM e o que anima é a caixa em volta. Um player que muda de lugar na
+   árvore, ou que troca de src, remonta e volta o vídeo pro começo a cada clique.
+
+   Por isso também não uso scale pra crescer: transform escalaria os controles do
+   player junto, e o que se quer é uma tela maior, não um player ampliado. Cresce em
+   largura, e a proporção 16:9 do quadro dá a altura.
+
+   z-index 60 fica acima da .bottom-cta (50) e abaixo do .popup-form (9999): a miniatura
+   passa por cima do desfoque da faixa, mas nunca por cima do botão, porque sobe quando
+   ele aparece.
+   ══════════════════════════════════════════════════════════════ */
+.dg-pip {
+    position: fixed;
+    right: 32px;
+    bottom: 16px;
+    z-index: 60;
+    width: 320px;
+    overflow: hidden;
+    box-shadow: var(--ring-15), 0 16px 48px 0 var(--bb-75);
+    transition: width 0.4s ease, right 0.4s ease, bottom 0.4s ease, transform 0.4s ease;
+}
+/* Aberto: centrado pelo par right/bottom em 50% mais o translate de meia caixa. É o
+   jeito de centrar sem trocar de esquema de posicionamento no meio da transição, que é
+   o que faria a caixa saltar em vez de andar. O teto de 1120 é o cap do container Wide
+   menos as margens; os 92vw seguram em tela estreita. */
+.dg-pip.is-aberto {
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 50%);
+    width: min(1120px, 92vw);
+}
+.dg-pip-quadro {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--bb);
+}
+.dg-pip-quadro iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+/* A miniatura inteira é o botão de abrir: alvo grande, sem ícone competindo com o
+   frame do vídeo. Ele cobre o iframe de propósito, porque na miniatura os controles do
+   player são pequenos demais pra serem úteis. Aberto, sai da frente. */
+.dg-pip-abrir {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+.dg-pip.is-aberto .dg-pip-abrir { display: none; }
+/* O fechar só existe no estado aberto, e fica acima do iframe. bw-75 sobre o bb-75 pra
+   ele aparecer tanto em quadro claro quanto escuro. */
+.dg-pip-fechar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    padding: 0;
+    border-radius: 12px;
+    background: var(--bb-75);
+    color: var(--bw-75);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+.dg-pip.is-aberto .dg-pip-fechar { display: flex; }
+.dg-pip-fechar:hover { color: var(--bw); }
+.dg-pip-fechar .material-symbols-outlined { font-size: 24px; }
+/* O véu: escurece a página e recebe o clique de fechar. Fica logo abaixo do player e
+   acima de todo o resto. O blur é estático, não animado, então respeita a regra da
+   página sobre desfoque em movimento. */
+.dg-pip-fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 59;
+    background: var(--bb-75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+.dg-pip-fundo.is-aberto {
+    opacity: 1;
+    pointer-events: auto;
+}
+/* A subida só existe onde o botão, que é centrado, chega debaixo da miniatura. Ela
+   começa em W - 216 (16 de margem mais 200 de largura em tela estreita) e ele termina em
+   W/2 + 92 (metade dos 184 do botão): os dois se encontram enquanto W for menor que 616.
+   Acima disso sobra vão de sobra e o vídeo fica onde está, a 16 do rodapé.
+
+   O 616 é medido, não escolhido: sai da largura do botão com o rótulo atual. Um rótulo
+   mais longo empurra esse limite pra cima.
+
+   Quando sobe, pousa 16px acima do BOTÃO e não da faixa: ela tem 140px e quase tudo ali
+   é desfoque, então subir os 140 deixaria o vídeo boiando no meio da tela.
+
+   O seletor de irmão funciona porque o .dg-pip vem depois da .bottom-cta no HTML, e quem
+   o dispara é a mesma classe que o JS liga e desliga na faixa: a miniatura acompanha o
+   CTA sem uma segunda regra em JavaScript pra manter em sincronia.
+
+   O :not(.is-aberto) preserva o estado grande. Sem ele esta regra, de especificidade
+   maior, venceria o bottom: 50% do aberto e o vídeo abriria colado no rodapé. */
+@media (max-width: 616px) {
+    .bottom-cta:not(.is-hidden) ~ .dg-pip:not(.is-aberto) {
+        bottom: calc(var(--cta-btn-topo) + 16px);
+    }
+}
+/* Em telas estreitas a miniatura encolhe e chega mais perto das bordas, senão ela come
+   metade da largura útil. */
+/* Em telas estreitas a miniatura encolhe e chega mais perto das bordas, senão ela come
+   metade da largura útil. A subida acima do botão continua valendo aqui, e é ela que
+   mantém os dois separados: o botão é centrado e a miniatura fica por cima dele. */
+@media (max-width: 576px) {
+    .dg-pip { right: 16px; width: 200px; }
+    .dg-pip.is-aberto { right: 50%; bottom: 50%; width: 92vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .dg-pip, .dg-pip-fundo { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SEÇÃO AUTOQUALIFICAÇÃO — portada do /cp/data-squads/
+   Regras vindas de lá: .mk-sec é a moldura de seção daquela página (128 de padding e
+   overflow-x: clip). As .auto-* eram um arranjo de duas colunas com checklist; com a
+   copy desta página sobrou só o bloco centrado do fecho, e as regras da lista saíram
+   junto com ela.
+
+   overflow-x: clip e não hidden: clip corta sem criar contexto de rolagem, então um
+   sticky de dentro continua funcionando. É o mesmo motivo pelo qual a origem escolheu
+   assim.
+   ══════════════════════════════════════════════════════════════ */
+.mk-sec { padding: 128px 0; overflow-x: clip; }
+.mk-sec .sec-lede { max-width: 720px; }
+.sec-auto .auto-inner { width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 0 16px; box-sizing: border-box;
+    display: grid; grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px; row-gap: 48px; align-items: start; }
+/* O fecho é centrado nos dois eixos: span 6 no meio das 10 colunas (2 + 6 + 2) e o
+   conteúdo alinhado ao centro dentro dele.
+   Span 6 e não os 4 da origem porque lá este bloco era só o arremate embaixo de uma
+   checklist; aqui ele é a seção inteira, e 4 colunas dariam uma medida estreita demais
+   pro título. */
+.auto-cta { grid-column: 3 / span 6; display: flex; flex-direction: column;
+    align-items: center; text-align: center; gap: 24px; }
+.auto-cta-text { font: var(--p); color: var(--bw-75); margin: 0; }
+/* A ressalva depois do botão: um degrau abaixo do corpo no tamanho e no tom, porque ela
+   não argumenta, só tira um risco de cima do leitor. O gap de 24 da coluna seria muito
+   pra ela, que pertence ao botão; -8 a devolve pra perto dele. */
+.auto-nota { font: var(--p-s); color: var(--bw-50); margin: -8px 0 0; }
+@media (max-width: 1439px) {
+    .sec-auto .auto-inner { grid-template-columns: repeat(8, 1fr); }
+    /* 1 + 6 + 1: mesmo centro nas 8 colunas */
+    .auto-cta { grid-column: 2 / span 6; }
+}
+@media (max-width: 864px) {
+    .sec-auto .auto-inner { grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px; row-gap: 32px; }
+    .auto-cta { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-auto .auto-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+}
+
+/* A entrada segue o mesmo par desta página: estado inicial aqui, aceso pelo .is-entered
+   que o item 5 do JS aplica.
+
+   Aqui o bloco inteiro entra junto, título incluído, e não só o miolo como nas outras
+   seções: o .sec-title dentro dele é animado pelo formacoes/script.js, que trata só do
+   texto, enquanto este trata da caixa. Os dois convivem porque partem das mesmas opções
+   de observer. */
+.sec-auto .auto-cta { opacity: 0; }
+.sec-auto .auto-cta.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+    .sec-auto .auto-cta { opacity: 1; animation: none; }
 }

@@ -753,12 +753,16 @@ html, body { margin: 0; padding: 0; }
    assim vence a base em 1152–1439, e o ≤1152 (compacto/sticky recalc)
    sobrepõe abaixo de 1152 por vir depois no source. */
 @media (max-width: 1439px) {
-    /* Intro: 10 → 8 cols. title span 5 (row 1), text span 4 (row 2),
-       cta -3/-1 (row 2) — arranjo idêntico ao desktop em 8 cols.
-       NÃO mexe em padding/pseudos (isso fica no ≤1152). */
+    /* Intro: 10 → 8 cols com os spans REMAPEADOS (regra do DS), pra
+       manter o arranjo do desktop: title 5→4 (50% em ambos), texto
+       4→3, cta -3/-1 (2 cols). Row 2 = 3 + 3 + 2 = 8 e fecha exato.
+       Manter text span 4 aqui estourava a row (4+4+2=10 em 8 cols):
+       o 2º parágrafo caía em 4 colunas IMPLÍCITAS de ~0px à direita
+       e comprimia título e 1º parágrafo. NÃO mexe em padding/pseudos
+       (isso fica no ≤1152). */
     .mba-intro-inner { grid-template-columns: repeat(8, 1fr); }
-    .mba-intro-title { grid-column: span 5; }
-    .mba-intro-text { grid-column: span 4; }
+    .mba-intro-title { grid-column: span 4; }
+    .mba-intro-text { grid-column: span 3; }
     .btn.mba-intro-cta { grid-column: -3 / -1; }
 
     /* Target: 10 → 8 cols mantendo o lado-a-lado do desktop (lead

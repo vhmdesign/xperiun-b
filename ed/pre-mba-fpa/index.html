@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-09-10">
+
+    <title>Pré-MBA FP&amp;A, Xperiun</title>
+    <meta name="description" content="Imersão de 3 aulas ao vivo em FP&amp;A, 05, 06 e 07 de outubro às 19h30. Ciclo completo, IA aplicada e reforma tributária, com certificado.">
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/pre-mba-fpa/dependencias/style.css?v=3">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ===================================================================
+     PRÉ-MBA FP&A, /ed/pre-mba-fpa/
+
+     Landing de captação, SEM menu e SEM footer, mesma decisão do
+     /ed/pre-vitalicio/ e do /ed/infinite-pass/: qualquer saída pro
+     resto do site é vazamento. Não existe um único link pra fora
+     nesta página; o único caminho é o popup de inscrição (form 516 na
+     AC). O aviso legal de copyright fica nas meta tags de copyright do
+     head, no fingerprint antes do fim do body e no anti-copy.js.
+
+     ORDEM DAS SEÇÕES
+       tarja corrida                      (.pre-tarja)
+       header + a linha invisível         (.pre-top: header + .pre-linha)
+       sai do operacional, entra no estratégico  (.pre-vira-track)
+       oferta                             (.pre-cta)
+       prova social                       (.pre-prova)
+       as três aulas + oferta de novo     (.pre-fim-track: .pre-aulas + .pre-cta)
+       barra de CTA fixa                  (.pre-bottom-cta)
+
+     As duas ofertas são o MESMO markup duplicado, compartilhando CSS:
+     mudança de copy ou de estrutura precisa ser feita nas duas.
+
+     DEPENDÊNCIAS em dependencias/: style.css, script.js, as imagens em
+     WebP e os dois MP4 do scrub. Os PNG de origem e os masters ficam
+     FORA de /ed/, em temp/fontes-pre-mba-fpa/, porque o build copia
+     as-is tudo que está em ed/ e eles iriam pro ar sem serem usados.
+
+     HEADER: grid Wide de 10 colunas. Lead nas colunas 1..4 (logo,
+     título, lede, CTA), 5 e 6 vazias (separação de 2 colunas) e aside
+     nas 7..10, em sub-grid de 2 × 2:
+
+       colunas      7 e 8                  9 e 10
+       linha 1     (vazia)          card bw (6 horas de conteúdo)
+       linha 2   card pc200         card C8FFC8 (Sempre às 19h30)
+                 (lockup Xperiun)
+
+     Paleta: tokens oficiais do root.css mais os dois verdes desta
+     página (--pre-gr500 #00FF64 e --pre-gr100 #C8FFC8), declarados no
+     style.css.
+
+     JS: nada inline nesta página além dos três blocos obrigatórios do
+     template (guard de protocolo no head, GTM e fingerprint). O
+     comportamento dos CTAs mora no script.js, via data-abre-popup.
+
+     E nada de tag literal aqui dentro: escrever head ou fechamento
+     de body num comentário quebra minificador e linter, e foi o que
+     jogou este texto na tela.
+     =================================================================== -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     TARJA DO TOPO
+
+     Port do .ip-tarja de /ed/infinite-pass/. As duas listas são
+     IGUAIS e o trilho anda -50%: quando a cópia chega onde a primeira
+     estava, a animação reinicia e a emenda não aparece. A segunda leva
+     aria-hidden porque é repetição visual, não conteúdo novo.
+
+     As quatro frases se repetem três vezes em cada lista pra a metade
+     ficar mais larga que a tela. Mexer no número de itens muda a
+     largura e, com ela, a velocidade percebida do laço.
+
+     O separador entre as frases é um quadrado desenhado no CSS, e não
+     um caractere: interpunct e travessão são proibidos na página.
+     ═══════════════════════════════════════════════════════════ -->
+<div class="pre-tarja">
+    <div class="pre-tarja-trilho">
+        <ul class="pre-tarja-lista">
+            <li>Pré-MBA</li>
+            <li>Imersão FP&amp;A</li>
+            <li>Inteligência Artificial</li>
+            <li>Reforma Tributária</li>
+            <li>Pré-MBA</li>
+            <li>Imersão FP&amp;A</li>
+            <li>Inteligência Artificial</li>
+            <li>Reforma Tributária</li>
+            <li>Pré-MBA</li>
+            <li>Imersão FP&amp;A</li>
+            <li>Inteligência Artificial</li>
+            <li>Reforma Tributária</li>
+        </ul>
+        <ul class="pre-tarja-lista" aria-hidden="true">
+            <li>Pré-MBA</li>
+            <li>Imersão FP&amp;A</li>
+            <li>Inteligência Artificial</li>
+            <li>Reforma Tributária</li>
+            <li>Pré-MBA</li>
+            <li>Imersão FP&amp;A</li>
+            <li>Inteligência Artificial</li>
+            <li>Reforma Tributária</li>
+            <li>Pré-MBA</li>
+            <li>Imersão FP&amp;A</li>
+            <li>Inteligência Artificial</li>
+            <li>Reforma Tributária</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Wrapper do topo: engloba o header e a primeira seção e é ELE quem
+     apara o que vaza (overflow hidden). Isso libera o header pra ficar
+     overflow visible, então a figura e os orbs deixam de ser cortados
+     na borda do header e podem atravessar pra dentro da primeira
+     seção, sendo aparados só no fim dela. -->
+<div class="pre-top">
+
+<header class="pre-header">
+    <!-- Orbs do topo direito: container retangular com dois orbs em
+         radial-gradient, o maior (pc200) à esquerda e o menor (pc400) à
+         direita. Camada mais funda do header, atrás do aside. -->
+    <div class="pre-hd-orbs" aria-hidden="true">
+        <div class="pre-hd-orb pre-hd-orb--1"></div>
+        <div class="pre-hd-orb pre-hd-orb--2"></div>
+    </div>
+
+    <div class="pre-header-inner">
+
+        <div class="pre-hd-lead">
+            <!-- Logo na versão clara, que é a que se lê sobre fundo
+                 escuro. A escura (logo-escuro.webp) fica disponível pra
+                 uso sobre superfície clara. -->
+            <!-- Marca: logo da página e, à direita dele, o rótulo da
+                 edição. A linha de 2px em bw-10 é o border-left do selo,
+                 então ela divide os dois na vertical. O rótulo é texto
+                 de verdade, não pseudo: nomeia a edição, então é
+                 conteúdo e precisa ser selecionável e legível por leitor
+                 de tela. -->
+            <div class="pre-hd-marca">
+                <img class="pre-hd-logo" src="/ed/pre-mba-fpa/dependencias/logo-claro.webp"
+                     alt="Xperiun" width="180" height="36">
+                <div class="pre-hd-selo">
+                    <span class="pre-hd-selo-texto">Edição Reforma Tributária</span>
+                </div>
+            </div>
+
+            <h1 class="pre-hd-title">Empresas <span class="pre-hd-title-hl">pagam mais pelo profissional de <span class="pre-hd-title-it">FP&amp;A</span> que decide</span>. <span class="pre-hd-title-it">Não pelo que apenas reporta</span></h1>
+
+            <p class="pre-hd-p"><span class="pre-hd-p-hl">Domine o ciclo completo de FP&amp;A</span>, conectar as demonstrações financeiras à estratégia, <span class="pre-hd-p-hl">aplique IA</span> e entenda os <span class="pre-hd-p-hl">primeiros impactos da reforma tributária</span> no planejamento financeiro.</p>
+
+            <a class="btn pre-hd-cta" data-size="m" href="#" data-abre-popup="popup-form-pre-mba-fpa">Garantir vaga</a>
+        </div>
+
+        <!-- Figura do header. Um único <img> em duas versões: acima de
+             864 o arquivo grande, posicionado absoluto e centrado no
+             header; abaixo de 864 a versão mobile (768px, 44 KB), que
+             entra no fluxo do grid entre o lead e os cards.
+
+             O <source media> garante que só UM dos dois arquivos é
+             baixado: abaixo de 864 o header-man.webp original nem é
+             requisitado. O display: contents no <picture> tira a caixa
+             do wrapper, deixando o <img> ser o próprio grid item. -->
+        <picture class="pre-hd-figure-pic">
+            <source media="(max-width: 864px)"
+                    srcset="/ed/pre-mba-fpa/dependencias/header-man-mobile.webp"
+                    width="768" height="1278">
+            <img src="/ed/pre-mba-fpa/dependencias/header-man.webp" alt="" aria-hidden="true"
+                 width="832" height="1384" class="pre-hd-figure">
+        </picture>
+
+        <!-- Três cards no mesmo padrão: padding 32, sem radius, label no
+             topo à esquerda e label L embaixo à direita, texto em bb. Só
+             o background muda entre eles. -->
+        <div class="pre-hd-aside">
+            <div class="pre-hd-card pre-hd-card--bw">
+                <p class="pre-hd-card-label">6 horas de conteúdo</p>
+                <p class="pre-hd-card-note">3 aulas ao vivo</p>
+            </div>
+            <div class="pre-hd-card pre-hd-card--gr100">
+                <p class="pre-hd-card-label">Sempre às 19h30</p>
+                <p class="pre-hd-card-note">05, 06 e 07 de outubro</p>
+            </div>
+            <div class="pre-hd-card pre-hd-card--pc200">
+                <!-- No lugar do rótulo de texto, o lockup da Xperiun em bb.
+                     Tem role e aria-label porque é a única coisa que diz a
+                     marca neste card: com aria-hidden, o leitor de tela
+                     ouviria só "Incluso Certificado". -->
+                <div class="pre-hd-card-marca" role="img" aria-label="Xperiun"></div>
+                <p class="pre-hd-card-note">Incluso Certificado</p>
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SEÇÃO 1: a Reforma Tributária chega à mesa de decisão
+
+     Um grande container bw ocupando as 10 colunas: título e lede na
+     metade esquerda e, 64px abaixo, dois cards de dado lado a lado,
+     ln300 à esquerda e pc200 à direita. As metades são do container bw,
+     que é um grid de 10 colunas por dentro.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="pre-linha">
+    <div class="pre-linha-inner">
+        <div class="pre-linha-box">
+            <!-- Título e lede num bloco só, que ocupa a linha 1 do box.
+                 Juntá-los evita renumerar as linhas do grid e mantém o
+                 intervalo interno menor que os 64px de row-gap do box. -->
+            <div class="pre-linha-head">
+                <h2 class="pre-linha-title">A Reforma Tributária não termina no fiscal, <span class="pre-linha-title-hl">ela chega à mesa de decisão</span></h2>
+                <p class="pre-linha-lede">Enquanto as regras mudam, empresas precisam rever possíveis impactos sobre preço, margem, caixa, capital de giro, orçamento e forecast.</p>
+            </div>
+
+            <!-- Cards de dado. O primeiro credita a fonte com o logo da
+                 Robert Half; o segundo, com Grant Thornton e ANEFAC. Os
+                 três ficam no tamanho original do arquivo, e o
+                 align-items center da linha alinha pelo meio as alturas
+                 diferentes. O margin-top auto do bloco da
+                 estatística desce os dois pro rodapé do card, então os
+                 números ficam alinhados entre si mesmo com o logo só de
+                 um lado. -->
+            <div class="pre-linha-card pre-linha-card--ln300">
+                <div class="pre-linha-dado">
+                    <span class="pre-linha-dado-num">58%</span>
+                    <p class="pre-linha-dado-text">dos gestores acreditam que FP&amp;A lidera a demanda por profissionais em Finanças e Contabilidade</p>
+                </div>
+                <div class="pre-linha-card-fontes">
+                    <img class="pre-linha-card-logo" src="/ed/pre-mba-fpa/dependencias/logo-robert-half.webp"
+                         alt="Robert Half" width="86" height="12" loading="lazy">
+                </div>
+            </div>
+
+            <div class="pre-linha-card pre-linha-card--pc200">
+                <div class="pre-linha-dado">
+                    <span class="pre-linha-dado-num">14%</span>
+                    <p class="pre-linha-dado-text">apenas das empresas pesquisadas se consideram muito preparadas para a Reforma Tributária</p>
+                </div>
+                <div class="pre-linha-card-fontes">
+                    <img class="pre-linha-card-logo" src="/ed/pre-mba-fpa/dependencias/logo-grant-thornton.webp"
+                         alt="Grant Thornton" width="96" height="18" loading="lazy">
+                    <span class="pre-linha-card-sep" aria-hidden="true"></span>
+                    <img class="pre-linha-card-logo" src="/ed/pre-mba-fpa/dependencias/logo-anefac.webp"
+                         alt="ANEFAC" width="32" height="30" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Bloco de texto nas últimas 6 colunas do box (5 a 10). -->
+            <div class="pre-linha-text">
+                <p class="pre-linha-text-p">Os números revelam uma oportunidade clara: As empresas precisam de profissionais de FP&amp;A justamente quando ainda existem mais perguntas do que respostas.</p>
+                <p class="pre-linha-text-p">Profissionais capazes de analisar diferentes possibilidades, antecipar riscos e mostrar à liderança como cada cenário pode afetar o negócio.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faixa de garantia: segundo .pre-linha-inner, colado no primeiro
+         (sem margem entre eles). O verde vive num box que ocupa 1 / -1,
+         pra bater exatamente com a largura do box bw de cima (1408).
+         Se o fundo fosse no próprio inner, ele pegaria também os 16px
+         de padding lateral e sobraria 16px de cada lado. -->
+    <div class="pre-linha-inner">
+        <div class="pre-linha-garantia">
+            <h3 class="pre-linha-garantia-title">O fiscal interpreta a regra. O FP&amp;A projeta o impacto.</h3>
+        </div>
+    </div>
+</section>
+
+</div><!-- /.pre-top -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     SEÇÃO 2: sai do operacional, entra no estratégico
+
+     Seção com pin. O .pre-vira-track dá o curso de scroll (300vh, o
+     mesmo valor do hero do /ed/pre-vitalicio/) e o .pre-vira fica
+     sticky ocupando a viewport. Um único progresso (0..1) dentro desse
+     curso comanda duas coisas:
+
+       - o currentTime do vídeo (scrub, ele não toca sozinho)
+       - a troca no painel da direita: "Hoje você..." sai por cima e
+         "No MBA vai aprender a..." entra por baixo, com o pai clipando
+
+     Grid: título nas colunas 1..4 (linha 1); vídeo nas 1..5 e painel
+     nas 7..10 (linha 2), com a coluna 6 de separação.
+
+     O pin é progressive enhancement: por padrão a seção é empilhada e
+     legível, e o script.js só adiciona .is-live acima de 864 e sem
+     prefers-reduced-motion. Sem JS os dois blocos aparecem um abaixo
+     do outro, nada fica escondido.
+     ═══════════════════════════════════════════════════════════ -->
+<div class="pre-vira-track">
+    <section class="pre-vira">
+        <div class="pre-vira-inner">
+            <h2 class="pre-vira-title">Saia do operacional braçal,<br><span class="pre-vira-title-hl">Entre na conversa estratégica</span></h2>
+
+            <!-- Vídeo do scrub: ele nunca recebe play(), quem manda no
+                 currentTime dele é o scroll (ver script.js). preload
+                 auto porque seek em vídeo não bufferizado engasga.
+
+                 As duas versões são all-intra (todo frame é keyframe),
+                 que é o que faz o seek ser instantâneo. A desktop é
+                 quadrada 832px (886 KB) e a mobile já vem recortada no
+                 21:9 que o layout mostra abaixo de 864 (640×274,
+                 320 KB).
+
+                 A escolha do arquivo é feita no script.js por
+                 matchMedia, e NÃO por <source media>: em <video> o
+                 suporte a media no <source> é inconsistente entre
+                 navegadores, diferente do que acontece em <picture>.
+                 Assim só um dos dois arquivos é baixado. -->
+            <div class="pre-vira-video">
+                <!-- Fallback: primeiro e último frame empilhados, com o
+                     último aparecendo conforme o scroll. Se o vídeo não
+                     tocar (codec, política do navegador, rede), sobra
+                     um crossfade entre os dois extremos em vez de uma
+                     caixa vazia. Enquanto o mp4 carrega, é isso que
+                     aparece. loading lazy porque a seção fica longe da
+                     dobra. -->
+                <img class="pre-vira-video-fb" src="/ed/pre-mba-fpa/dependencias/pre-vira-frame-1.webp"
+                     alt="" aria-hidden="true" loading="lazy" width="832" height="832">
+                <img class="pre-vira-video-fb pre-vira-video-fb--fim" src="/ed/pre-mba-fpa/dependencias/pre-vira-frame-2.webp"
+                     alt="" aria-hidden="true" loading="lazy" width="832" height="832">
+
+                <video class="pre-vira-video-el" muted playsinline preload="auto" aria-hidden="true"
+                       data-src-desktop="/ed/pre-mba-fpa/dependencias/pre-vira-video-desktop.mp4"
+                       data-src-mobile="/ed/pre-mba-fpa/dependencias/pre-vira-video-mobile.mp4"></video>
+            </div>
+
+            <div class="pre-vira-panel">
+                <div class="pre-vira-card pre-vira-card--hoje">
+                    <h3 class="pre-vira-card-title">Hoje você...</h3>
+                    <ul class="pre-vira-list">
+                        <li>Reage ao fechamento e às urgências do mês</li>
+                        <li>Passa mais tempo consolidando do que analisando</li>
+                        <li>Mantém projeções sem testar novas premissas</li>
+                        <li>Enxerga a Reforma Tributária apenas como assunto do fiscal</li>
+                        <li>É chamado para reportar o que já aconteceu</li>
+                    </ul>
+                </div>
+
+                <div class="pre-vira-card pre-vira-card--futuro">
+                    <h3 class="pre-vira-card-title">No MBA vai aprender a...</h3>
+                    <ul class="pre-vira-list">
+                        <li>Conectar budget, forecast, realizado e decisão</li>
+                        <li>Revisar premissas diante da Reforma Tributária</li>
+                        <li>Modelar impactos sobre caixa, preço, margem e orçamento</li>
+                        <li>Usar IA para acelerar o operacional e ampliar a análise</li>
+                        <li>Estar preparado para opinar antes das decisões</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SEÇÃO 3: fechamento e oferta
+
+     Lead nas 4 primeiras colunas, ticket nas 5 últimas. O fundo é o
+     mesmo gradiente pc700 → pc500 da metade de baixo da seção 2, aqui
+     ocupando a seção toda, então o gradiente atravessa a emenda entre
+     as duas seções sem quebra.
+
+     A copy trouxe um interpunct em "Inscrições abertas · Condição
+     especial", e ele é proibido na página: virou ponto.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="pre-cta">
+    <div class="pre-cta-inner">
+        <div class="pre-cta-lead">
+            <!-- Mesmo logo do header, na mesma classe. -->
+            <img class="pre-hd-logo" src="/ed/pre-mba-fpa/dependencias/logo-claro.webp"
+                 alt="Xperiun" width="180" height="36">
+
+            <h2 class="pre-cta-title">Três noites para começar a <span class="pre-cta-title-hl">elevar o nível da sua atuação financeira</span></h2>
+            <p class="pre-cta-nota">Inscrições abertas. Condição especial no lote atual. Pagamento único, sem assinatura.</p>
+
+            <!-- Mesmos blocos dos dois dados do ticket, aqui no verde
+                 claro e em 2 × 2. A copy veio com dois pontos depois do
+                 rótulo ("FP&A Xperiun 2026:"), que é notação de
+                 par rótulo/valor: no layout a separação já é a quebra
+                 entre as duas linhas, então os dois pontos saíram, como
+                 nos cards do header. -->
+            <div class="pre-cta-extras">
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">FP&amp;A Xperiun 2026</p>
+                    <p class="pre-cta-dado-valor">Incluso Certificado</p>
+                </div>
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">Apoio</p>
+                    <p class="pre-cta-dado-valor">Materiais complementares</p>
+                </div>
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">Garantia incondicional</p>
+                    <p class="pre-cta-dado-valor">7 dias de garantia</p>
+                </div>
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">6 horas de conteúdo</p>
+                    <p class="pre-cta-dado-valor">3 aulas ao vivo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket em duas partes empilhadas. A primeira leva o filler
+             da imagem, os dois dados e o preço; a segunda, o botão e o
+             código de barras. Na emenda, cada metade recebe um chanfro
+             reto de 45° e 32px nos dois cantos daquele lado: os quatro
+             juntos abrem um V de 64px em cada ponta, e a linha
+             pontilhada corre de um vértice ao outro. Nada de meia-lua
+             e nada de radius. -->
+        <div class="pre-cta-ticket">
+            <!-- Arte do ticket na proporção da origem (1,79:1) nos
+                 dois tamanhos: quem recorta pros 160px de altura é o
+                 object-fit: cover, com o enquadramento no
+                 object-position do CSS. -->
+            <img class="pre-cta-ticket-fig" src="/ed/pre-mba-fpa/dependencias/pre-cta-ticket-fig-1664.webp"
+                 srcset="/ed/pre-mba-fpa/dependencias/pre-cta-ticket-fig-832.webp 832w,
+                         /ed/pre-mba-fpa/dependencias/pre-cta-ticket-fig-1664.webp 1664w"
+                 sizes="(max-width: 864px) 100vw, 688px"
+                 alt="" aria-hidden="true" loading="lazy"
+                 width="1664" height="929">
+
+            <div class="pre-cta-ticket-topo">
+                <div class="pre-cta-dados">
+                    <div class="pre-cta-dado">
+                        <p class="pre-cta-dado-label">Segunda à quarta</p>
+                        <p class="pre-cta-dado-valor">05, 06 e 07 de outubro</p>
+                    </div>
+                    <div class="pre-cta-dado">
+                        <p class="pre-cta-dado-label">Ao vivo</p>
+                        <p class="pre-cta-dado-valor">Sempre às 19h30</p>
+                    </div>
+                </div>
+
+                <p class="pre-cta-preco-de">De <del>R$ 297</del> por</p>
+
+                <p class="pre-cta-preco">
+                    <span class="pre-cta-preco-moeda">R$</span>
+                    <span class="pre-cta-preco-valor">37</span>
+                </p>
+            </div>
+
+            <div class="pre-cta-ticket-corte" aria-hidden="true"></div>
+
+            <div class="pre-cta-ticket-base">
+                <a class="btn pre-cta-btn" data-size="m" href="#" data-abre-popup="popup-form-pre-mba-fpa">Garantir vaga pré-MBA</a>
+                <div class="pre-cta-barras" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SEÇÃO 4: prova
+
+     Port do .champ-grid de /ed/aichampion/: foto em 16/9 esmaecendo pro
+     topo, aspa grande em pc300 subindo 32px sobre a foto, citação em
+     itálico, e embaixo o nome e a linha de apoio, que são os papéis do
+     .champ-name e do .champ-summary de lá.
+
+     As fotos saem de origens de 400 × 400 e vão pro 16:9 do card por
+     recorte de altura: 400 × 225 é o maior tamanho sem ampliar.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="pre-prova">
+    <div class="pre-prova-inner">
+        <!-- Cabeçalho no papel do .depos-header-left de /ed/aichampion/:
+             prova social, título e estrelas em coluna. Os avatares são
+             preenchidos pelo script.js com as thumbs compartilhadas de
+             depoimento, sorteadas, como lá. -->
+        <div class="pre-prova-head">
+            <div class="pre-prova-social">
+                <div class="pre-prova-avatar-stack" aria-hidden="true">
+                    <div class="pre-prova-avatar"></div>
+                    <div class="pre-prova-avatar"></div>
+                    <div class="pre-prova-avatar"></div>
+                    <div class="pre-prova-avatar"></div>
+                    <div class="pre-prova-avatar"></div>
+                </div>
+                <p class="pre-prova-eyebrow">+35 mil alunos</p>
+            </div>
+
+            <h2 class="pre-prova-title">Não é promessa, é <span class="pre-prova-title-hl">o que já aconteceu</span> com quem chegou aqui antes</h2>
+
+            <div class="pre-prova-stars">
+                <div class="pre-prova-star-stack" aria-hidden="true">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                </div>
+                <p class="pre-prova-rating">Avaliação média 4,9 estrelas</p>
+            </div>
+        </div>
+
+        <div class="pre-prova-grid">
+            <article class="pre-prova-card">
+                <div class="pre-prova-media">
+                    <img class="pre-prova-fig" src="/ed/pre-mba-fpa/dependencias/pre-prova-fig-shirley-400.webp"
+                         alt="Shirley Bianchi" loading="lazy"
+                         width="400" height="225">
+                </div>
+                <div class="pre-prova-content">
+                    <span class="pre-prova-quote" aria-hidden="true">&#8220;</span>
+                    <div class="pre-prova-text">
+                        <p class="pre-prova-quote-text">Aquilo se pagou várias vezes, e continua se pagando.</p>
+                        <span class="pre-prova-name">Shirley Bianchi</span>
+                        <p class="pre-prova-summary">Aluna MBA Xperiun</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pre-prova-card">
+                <div class="pre-prova-media">
+                    <img class="pre-prova-fig" src="/ed/pre-mba-fpa/dependencias/pre-prova-fig-anderson-400.webp"
+                         alt="Anderson Souza" loading="lazy"
+                         width="400" height="225">
+                </div>
+                <div class="pre-prova-content">
+                    <span class="pre-prova-quote" aria-hidden="true">&#8220;</span>
+                    <div class="pre-prova-text">
+                        <p class="pre-prova-quote-text">É um dos melhores investimentos que fiz na vida. Mudou meu patamar.</p>
+                        <span class="pre-prova-name">Anderson Souza</span>
+                        <p class="pre-prova-summary">Aluno MBA Xperiun</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pre-prova-card">
+                <div class="pre-prova-media">
+                    <img class="pre-prova-fig" src="/ed/pre-mba-fpa/dependencias/pre-prova-fig-thiago-400.webp"
+                         alt="Thiago Annibal" loading="lazy"
+                         width="400" height="225">
+                </div>
+                <div class="pre-prova-content">
+                    <span class="pre-prova-quote" aria-hidden="true">&#8220;</span>
+                    <div class="pre-prova-text">
+                        <p class="pre-prova-quote-text">Entrei de cabeça. É uma comunidade: sinto que tenho amigos.</p>
+                        <span class="pre-prova-name">Thiago Annibal</span>
+                        <p class="pre-prova-summary">Aluno MBA Xperiun</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pre-prova-card">
+                <div class="pre-prova-media">
+                    <img class="pre-prova-fig" src="/ed/pre-mba-fpa/dependencias/pre-prova-fig-ricardo-400.webp"
+                         alt="Ricardo Kuerten" loading="lazy"
+                         width="400" height="225">
+                </div>
+                <div class="pre-prova-content">
+                    <span class="pre-prova-quote" aria-hidden="true">&#8220;</span>
+                    <div class="pre-prova-text">
+                        <p class="pre-prova-quote-text">São 600 alunos na primeira turma. Só a conexão já vale o curso.</p>
+                        <span class="pre-prova-name">Ricardo Kuerten</span>
+                        <p class="pre-prova-summary">Aluno MBA Xperiun</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- Wrapper do fim: engloba as aulas e a oferta de fechamento, e é ele
+     que dá o referêncial pro sticky de offset negativo das aulas. Não
+     pode ter overflow: qualquer clipping num ancestral mata o sticky.
+     Ver o bloco REVEAL DO FIM no style.css. -->
+<div class="pre-fim-track">
+
+<!-- ═══════════════════════════════════════════════════════════
+     SEÇÃO 5: as três aulas
+
+     Port do .fases-stage de /cp/data-squads/: o palco gruda com sticky
+     e o scroll vertical vira deslocamento horizontal no trilho de cards
+     de 832px, com o número da aula sangrando pelo canto. Abaixo de 865
+     o script desliga e os cards empilham.
+
+     A copy trouxe interpunct nas datas ("05/10 · 19h30"), proibido na
+     página: virou vírgula.
+
+     A foto abre o bloco de tópicos e a lista vem ao lado dela; os itens
+     são <li> com a mesma barrinha de 4 × 4 da lista da seção 2.
+
+     As fotos dos professores são quadradas de 256, que é o dobro da
+     caixa de 128 em que aparecem.
+
+     ═══════════════════════════════════════════════════════════ -->
+<section class="pre-aulas">
+    <div class="pre-aulas-stage">
+        <div class="pre-aulas-track">
+
+            <!-- Cabeçalho como PRIMEIRO item do trilho, com 544px, que é
+                 o estado inline da referência. Lá ele nasce no topo do
+                 palco e o JS o move pra cá acima de 864; aqui ele já
+                 nasce no lugar, e abaixo de 864 o trilho vira coluna e
+                 ele volta a ser o bloco de cima sozinho, sem JS. -->
+            <div class="pre-aulas-header">
+                <!-- Mesmo logo do header, na mesma classe. -->
+                <img class="pre-hd-logo" src="/ed/pre-mba-fpa/dependencias/logo-claro.webp"
+                 alt="Xperiun" width="180" height="36">
+
+                <h2 class="pre-aulas-title">3 aulas, 3 especialistas, <span class="pre-aulas-title-hl">3 competências que definem a carreira</span></h2>
+            </div>
+
+            <article class="pre-aulas-card">
+                <div class="pre-aulas-card-meta">
+                    <div class="pre-aulas-card-num" aria-hidden="true">01</div>
+                    <div class="pre-aulas-card-head">
+                        <div class="pre-aulas-card-foto">
+                            <img class="pre-aulas-card-fig" src="/ed/pre-mba-fpa/dependencias/pre-aulas-fig-rafael-256.webp"
+                                 alt="Rafael Gross, professor da Aula 1" loading="lazy"
+                                 width="256" height="256">
+                        </div>
+                        <div class="pre-aulas-card-ident">
+                            <p class="pre-aulas-card-data">05/10, 19h30</p>
+                            <p class="pre-aulas-card-nome">Rafael Gross</p>
+                            <h3 class="pre-aulas-card-title">Papel Estratégico do FP&amp;A</h3>
+                        </div>
+                    </div>
+                    <div class="pre-aulas-card-topicos">
+                        <p class="pre-aulas-card-lead">Qual o papel do profissional de FP&amp;A do futuro:</p>
+                        <ul class="pre-aulas-card-list">
+                            <li>Pare de olhar só pro retrovisor. Comece a olhar pra frente</li>
+                            <li>Como transformar dado bruto em informação, e informação em decisão</li>
+                            <li>O profissional estratégico que a diretoria escuta (e o operacional que ela ignora)</li>
+                        </ul>
+                    </div>
+                    <p class="pre-aulas-card-bonus">
+                        <span class="pre-aulas-card-bonus-label">Bônus</span>
+                        Glossário Prático de FP&amp;A + Mapa do Ciclo de Gestão
+                    </p>
+                </div>
+            </article>
+
+            <article class="pre-aulas-card">
+                <div class="pre-aulas-card-meta">
+                    <div class="pre-aulas-card-num" aria-hidden="true">02</div>
+                    <div class="pre-aulas-card-head">
+                        <div class="pre-aulas-card-foto">
+                            <img class="pre-aulas-card-fig" src="/ed/pre-mba-fpa/dependencias/pre-aulas-fig-thomas-256.webp"
+                                 alt="Thomas Laurentino, professor da Aula 2" loading="lazy"
+                                 width="256" height="256">
+                        </div>
+                        <div class="pre-aulas-card-ident">
+                            <p class="pre-aulas-card-data">06/10, 19h30</p>
+                            <p class="pre-aulas-card-nome">Thomas Laurentino</p>
+                            <h3 class="pre-aulas-card-title">Relatórios que Geram Decisão</h3>
+                        </div>
+                    </div>
+                    <div class="pre-aulas-card-topicos">
+                        <p class="pre-aulas-card-lead">Conectando relatórios e ferramentas ao plano estratégico do negócio:</p>
+                        <ul class="pre-aulas-card-list">
+                            <li>Por que o lucro no papel nem sempre aparece no caixa da empresa</li>
+                            <li>Por que nem todo crescimento é sustentável, e como identificar isso antes que vire problema</li>
+                            <li>Introdução à Reforma Tributária: o que o FP&amp;A precisa começar a observar no caixa, na precificação e no planejamento financeiro</li>
+                        </ul>
+                    </div>
+                    <p class="pre-aulas-card-bonus">
+                        <span class="pre-aulas-card-bonus-label">Bônus</span>
+                        Guia Prático: Impacto da Reforma Tributária no FP&amp;A + Guia de Classificação Gerencial + Ponte Contábil
+                    </p>
+                </div>
+            </article>
+
+            <article class="pre-aulas-card">
+                <div class="pre-aulas-card-meta">
+                    <div class="pre-aulas-card-num" aria-hidden="true">03</div>
+                    <div class="pre-aulas-card-head">
+                        <div class="pre-aulas-card-foto">
+                            <img class="pre-aulas-card-fig" src="/ed/pre-mba-fpa/dependencias/pre-aulas-fig-iago-256.webp"
+                                 alt="Iago Braz, professor da Aula 3" loading="lazy"
+                                 width="256" height="256">
+                        </div>
+                        <div class="pre-aulas-card-ident">
+                            <p class="pre-aulas-card-data">07/10, 19h30</p>
+                            <p class="pre-aulas-card-nome">Iago Braz</p>
+                            <h3 class="pre-aulas-card-title">IA Aplicada em Finanças</h3>
+                        </div>
+                    </div>
+                    <div class="pre-aulas-card-topicos">
+                        <p class="pre-aulas-card-lead">A IA como aliada estratégica do profissional de FP&amp;A:</p>
+                        <ul class="pre-aulas-card-list">
+                            <li>Como tirar 80% do operacional do seu dia e sobrar tempo pra análise</li>
+                            <li>Simular cenários, escrever narrativas e acelerar fechamento com IA</li>
+                            <li>As ferramentas que já existem, e que ninguém na sua empresa tá usando direito</li>
+                        </ul>
+                    </div>
+                    <p class="pre-aulas-card-bonus">
+                        <span class="pre-aulas-card-bonus-label">Bônus</span>
+                        Mapa de Ferramentas de IA pra FP&amp;A
+                    </p>
+                </div>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SEÇÃO 6: fechamento e oferta (repetição da seção 3)
+
+     Mesmo bloco da seção 3, palavra por palavra, fechando a página
+     depois das aulas. Qualquer mudança de copy ou de estrutura tem
+     que ser feita NOS DOIS lugares: eles compartilham o CSS, mas o
+     markup é duplicado.
+
+     Lead nas 4 primeiras colunas, ticket nas 5 últimas. O fundo é o
+     mesmo gradiente pc700 → pc500 da metade de baixo da seção 2, aqui
+     ocupando a seção toda, então o gradiente atravessa a emenda entre
+     as duas seções sem quebra.
+
+     A copy trouxe um interpunct em "Inscrições abertas · Condição
+     especial", e ele é proibido na página: virou ponto.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="pre-cta">
+    <div class="pre-cta-inner">
+        <div class="pre-cta-lead">
+            <!-- Mesmo logo do header, na mesma classe. -->
+            <img class="pre-hd-logo" src="/ed/pre-mba-fpa/dependencias/logo-claro.webp"
+                 alt="Xperiun" width="180" height="36">
+
+            <h2 class="pre-cta-title">Três noites para começar a <span class="pre-cta-title-hl">elevar o nível da sua atuação financeira</span></h2>
+            <p class="pre-cta-nota">Inscrições abertas. Condição especial no lote atual. Pagamento único, sem assinatura.</p>
+
+            <!-- Mesmos blocos dos dois dados do ticket, aqui no verde
+                 claro e em 2 × 2. A copy veio com dois pontos depois do
+                 rótulo ("FP&A Xperiun 2026:"), que é notação de
+                 par rótulo/valor: no layout a separação já é a quebra
+                 entre as duas linhas, então os dois pontos saíram, como
+                 nos cards do header. -->
+            <div class="pre-cta-extras">
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">FP&amp;A Xperiun 2026</p>
+                    <p class="pre-cta-dado-valor">Incluso Certificado</p>
+                </div>
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">Apoio</p>
+                    <p class="pre-cta-dado-valor">Materiais complementares</p>
+                </div>
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">Garantia incondicional</p>
+                    <p class="pre-cta-dado-valor">7 dias de garantia</p>
+                </div>
+                <div class="pre-cta-dado pre-cta-dado--gr100">
+                    <p class="pre-cta-dado-label">6 horas de conteúdo</p>
+                    <p class="pre-cta-dado-valor">3 aulas ao vivo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket em duas partes empilhadas. A primeira leva o filler
+             da imagem, os dois dados e o preço; a segunda, o botão e o
+             código de barras. Na emenda, cada metade recebe um chanfro
+             reto de 45° e 32px nos dois cantos daquele lado: os quatro
+             juntos abrem um V de 64px em cada ponta, e a linha
+             pontilhada corre de um vértice ao outro. Nada de meia-lua
+             e nada de radius. -->
+        <div class="pre-cta-ticket">
+            <!-- Arte do ticket na proporção da origem (1,79:1) nos
+                 dois tamanhos: quem recorta pros 160px de altura é o
+                 object-fit: cover, com o enquadramento no
+                 object-position do CSS. -->
+            <img class="pre-cta-ticket-fig" src="/ed/pre-mba-fpa/dependencias/pre-cta-ticket-fig-1664.webp"
+                 srcset="/ed/pre-mba-fpa/dependencias/pre-cta-ticket-fig-832.webp 832w,
+                         /ed/pre-mba-fpa/dependencias/pre-cta-ticket-fig-1664.webp 1664w"
+                 sizes="(max-width: 864px) 100vw, 688px"
+                 alt="" aria-hidden="true" loading="lazy"
+                 width="1664" height="929">
+
+            <div class="pre-cta-ticket-topo">
+                <div class="pre-cta-dados">
+                    <div class="pre-cta-dado">
+                        <p class="pre-cta-dado-label">Segunda à quarta</p>
+                        <p class="pre-cta-dado-valor">05, 06 e 07 de outubro</p>
+                    </div>
+                    <div class="pre-cta-dado">
+                        <p class="pre-cta-dado-label">Ao vivo</p>
+                        <p class="pre-cta-dado-valor">Sempre às 19h30</p>
+                    </div>
+                </div>
+
+                <p class="pre-cta-preco-de">De <del>R$ 297</del> por</p>
+
+                <p class="pre-cta-preco">
+                    <span class="pre-cta-preco-moeda">R$</span>
+                    <span class="pre-cta-preco-valor">37</span>
+                </p>
+            </div>
+
+            <div class="pre-cta-ticket-corte" aria-hidden="true"></div>
+
+            <div class="pre-cta-ticket-base">
+                <a class="btn pre-cta-btn" data-size="m" href="#" data-abre-popup="popup-form-pre-mba-fpa">Garantir vaga pré-MBA</a>
+                <div class="pre-cta-barras" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div><!-- /.pre-fim-track -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     BARRA DE CTA FIXA
+
+     Port do .bottom-cta de /ed/aichampion/: quatro camadas de
+     backdrop-filter mascaradas em alturas diferentes, o que faz o blur
+     do fundo crescer de cima pra baixo em vez de ligar de uma vez, mais
+     um gradiente pro bb. A barra não captura clique (pointer-events
+     none); só o botão captura.
+
+     O botão vem no estilo desta página: verde puro com texto bb e sem
+     o ring inset do DS.
+
+     Aparece quando o .pre-top (header mais seção 1) termina de passar
+     pelo topo da viewport, e não no fim da página, pra existir um
+     caminho de inscrição durante todo o corpo da landing.
+     ═══════════════════════════════════════════════════════════ -->
+<div class="pre-bottom-cta is-hidden">
+    <div class="pre-bottom-cta-blur pre-bottom-cta-blur-2" aria-hidden="true"></div>
+    <div class="pre-bottom-cta-blur pre-bottom-cta-blur-4" aria-hidden="true"></div>
+    <div class="pre-bottom-cta-blur pre-bottom-cta-blur-8" aria-hidden="true"></div>
+    <div class="pre-bottom-cta-blur pre-bottom-cta-blur-16" aria-hidden="true"></div>
+    <a class="btn pre-bottom-cta-btn" data-size="m" href="#" data-abre-popup="popup-form-pre-mba-fpa">Garantir vaga</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     POPUPS E SCRIPTS
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Formulário de inscrição do Pré-MBA FP&A, form 516 na AC. O
+     form-include.js troca este placeholder pelo conteúdo de
+     site-popups/form-pre-mba-fpa.html e injeta form.css e form.js. -->
+<div data-popup-form="pre-mba-fpa"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js"></script>
+
+<!-- Reveal do topo: .pre-linha sobe por cima do .pre-header, que esmaece. -->
+<script src="/ed/pre-mba-fpa/dependencias/script.js?v=2" defer></script>
+
+<!-- Scroll suave da página inteira, self-hosted, o mesmo do
+     /ed/pre-vitalicio/ e do /ed/infinite-pass/. -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C e drag de
+     imagem. Fica porque esta é página de venda; em página de leitura do
+     aluno ele sai, que é a regra do template. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

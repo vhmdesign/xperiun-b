@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-08-29">
+    <title>Pré-Vitalício, Xperiun</title>
+    <meta name="description" content="Dois caminhos para entrar na maior plataforma de aceleração profissional em IA e dados do país: a Formação em IA e Automação por 1 ano, ou a Xperiun Completa vitalícia.">
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <!-- Pasta 3D + lightbox dos cursos (.folder3d*, .lb-*) -->
+    <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
+    <link rel="stylesheet" href="/ed/pre-vitalicio/dependencias/style.css?v=122">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ===================================================================
+     HERO, portado de /ed/aichampion/ COM a mecânica de scroll e a
+     animação de título letra a letra. Saíram só o canvas do fundo
+     animado (#hero-canvas / #fill-canvas) e a camada .noise.
+
+     O hero tem 300vh de altura: os blocos são position: fixed e a
+     coreografia inteira é dirigida pelo scroll dentro dessa faixa.
+     Como o canvas de preenchimento saiu (era ele que cobria o hero no
+     fim, lá no aichampion), aqui os blocos saem de cena sozinhos na
+     última fase, deixando a tela limpa pra próxima seção.
+     =================================================================== -->
+<header class="hero">
+
+    <!-- Vídeo de fundo da home. Fixo, cobrindo a viewport atrás de tudo
+         do hero. O poster segura o primeiro quadro enquanto o mp4 carrega. -->
+    <video class="hero-bg" autoplay muted loop playsinline aria-hidden="true"
+           poster="/ed/site-dependencias/site-media/home/sec01bg.webp">
+        <source src="/ed/site-dependencias/site-media/home/sec01bg.mp4" type="video/mp4">
+    </video>
+
+    <!-- Marca no mesmo tratamento da home: canto superior direito, 120x36,
+         opacidade 0.5. -->
+    <img src="/ed/site-dependencias/site-imagens/Base White Logo.svg" alt="Xperiun" class="hero-logo">
+
+    <!-- Véu sobre o vídeo. O X do vídeo tem regiões quase brancas
+         (luminância acima de 240) que caem justo atrás do lede e da prova
+         social, e aí o texto em --bw-75 desaparece. O véu escurece o topo
+         e a metade de baixo, deixando o miolo livre pro brilho aparecer. -->
+    <div class="hero-scrim" aria-hidden="true"></div>
+
+    <div class="canoa-bottom" aria-hidden="true"></div>
+
+    <!-- Os dois títulos ocupam a MESMA célula do grid (sobrepostos): o
+         primeiro sai letra a letra, o segundo entra letra a letra. -->
+    <div class="hero-grid hero-title-wrap">
+        <h1 class="hero-title">A maior plataforma de <span style="font-weight: 700">aceleração profissional em IA e dados</span> do país</h1>
+        <h1 class="hero-title hero-title2">Duas profissões vão decidir a década. <span style="font-weight: 700">Aqui você domina as duas</span></h1>
+    </div>
+
+    <div class="hero-grid hero-lede-wrap">
+        <div class="hero-lede-col">
+            <p class="hero-lede">Você tem dois caminhos para entrar. Um te dá um ano para dominar Inteligência Artificial. O outro te dá a plataforma inteira, para sempre.</p>
+            <!-- Prova social: os mesmos .depos-social-proof e .depos-stars da
+                 home. O estado inicial de reveal (opacity 0 + blur) deles fica
+                 de fora aqui, porque quem anima esse bloco é o .hero-lede-col
+                 na coreografia do scroll. -->
+            <div class="hero-prova">
+                <div class="depos-social-proof">
+                    <div class="depos-avatar-stack">
+                        <div class="depos-avatar"></div>
+                        <div class="depos-avatar"></div>
+                        <div class="depos-avatar"></div>
+                        <div class="depos-avatar"></div>
+                        <div class="depos-avatar"></div>
+                    </div>
+                    <p class="depos-eyebrow">+35 mil alunos</p>
+                </div>
+                <div class="depos-stars">
+                    <div class="depos-star-stack">
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                    </div>
+                    <p class="depos-rating">Avaliação média 4,9 estrelas</p>
+                </div>
+            </div>
+        </div>
+        <div class="hero-ctas">
+            <!-- Cada CTA carrega, logo abaixo, o que ele destrava em ícone:
+                 uma formação de um lado, as sete do outro. É a comparação
+                 inteira sem precisar de mais uma linha de texto. -->
+            <div class="hero-cta-bloco">
+                <a class="btn" data-size="m" data-emphasis="subtle" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-formacao')">Garantir Formação em IA</a>
+                <div class="hero-cta-nota">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20&amp;%20IA.svg" alt="" loading="lazy">
+                    <span>Formação Completa em Inteligência Artificial e Automação</span>
+                </div>
+            </div>
+
+            <div class="hero-cta-bloco">
+                <a class="btn" data-size="m" data-emphasis="high" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-vitalicio')">Garantir Acesso Vitalício</a>
+                <div class="hero-cta-nota hero-cta-nota--todas">
+                    <img class="hero-logo-ip" src="/ed/pre-vitalicio/dependencias/logo-infinite-pass.svg" alt="Infinite Pass" loading="lazy">
+                    <span class="hero-logo-sep hero-logo-sep--curto" aria-hidden="true"></span>
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20B%C3%A1sico.svg" alt="Power BI Básico ao Intermediário" title="Power BI Básico ao Intermediário" loading="lazy">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Power%20BI%20Intermedi%C3%A1rio.svg" alt="Power BI Intermediário ao Avançado" title="Power BI Intermediário ao Avançado" loading="lazy">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft%20Fabric.svg" alt="Microsoft Fabric" title="Microsoft Fabric" loading="lazy">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Banco%20de%20Dados%20&amp;%20SQL.svg" alt="Banco de Dados e SQL" title="Banco de Dados e SQL" loading="lazy">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Python%20&amp;%20Data%20Science.svg" alt="Python e Data Science" title="Python e Data Science" loading="lazy">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20&amp;%20IA.svg" alt="Inteligência Artificial e Automação" title="Inteligência Artificial e Automação" loading="lazy">
+                    <img class="hero-cta-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Carreira%20&amp;%20Neg%C3%B3cios.svg" alt="Carreira e Negócios" title="Carreira e Negócios" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-grid hero-detail-wrap">
+        <div class="hero-detail-col">
+            <!-- Fila de logos no padrão .hero-logos do aichampion: marcas em
+                 opacidade baixa, separadas por um traço de 2px. Aqui elas
+                 creditam o estudo citado logo abaixo. -->
+            <div class="hero-logos">
+                <img class="logo-estudo logo-estudo--h2r" src="/ed/pre-vitalicio/dependencias/logo-h2r.webp" alt="H2R" loading="lazy">
+                <span class="hero-logo-sep" aria-hidden="true"></span>
+                <img class="logo-estudo logo-estudo--totvs" src="/ed/pre-vitalicio/dependencias/logo-totvs.webp" alt="Totvs" loading="lazy">
+                <span class="hero-logo-sep" aria-hidden="true"></span>
+                <img class="logo-estudo logo-estudo--exame" src="/ed/pre-vitalicio/dependencias/logo-exame.webp" alt="Exame" loading="lazy">
+            </div>
+            <p class="hero-detail">O estudo da H2R em parceria com a Totvs projeta as profissões mais relevantes até o final da década. <span style="color: var(--sg300)">Duas delas estão dentro da Xperiun: Especialista em IA e Machine Learning e Analista e Cientista de Dados</span></p>
+        </div>
+        <div class="ic-scroll-hint" aria-hidden="true"><span class="ic-scroll-tri"></span></div>
+    </div>
+</header>
+
+<!-- ===================================================================
+     ESTRUTURA CURRICULAR. Porte da .sec-courses de
+     /ed/formacoes/f6-automacao-ia.html em versão dark: mesmo grid, mesmos
+     cards, sem os dois pseudoelementos decorativos da seção
+     (.sec-courses::before e ::after, o recorte claro do topo), que só
+     fazem sentido sobre o fundo --ln100 do original.
+     =================================================================== -->
+<!-- O wrapper existe só pra dar folga ao sticky: ele é uma viewport
+     mais alto que a seção, e essa sobra é o quanto a seção fica presa
+     enquanto a .ip sobe por cima dela. -->
+<div class="courses-pin">
+<section class="sec-courses" id="cursos">
+    <!-- Mesmo arranjo do hero das formações: wrapper com o respiro e o
+         isolation do .hero-wave, mais a imagem flutuando à direita. SEM a
+         classe .wave-section: ela só existe pelo ::before (o degradê
+         animado do rodapé), que foi dispensado. O .courses-header ocupa 5
+         das 10 colunas, então a metade direita fica livre pro float. -->
+    <div class="courses-wave">
+        <div class="hero-bg-float" aria-hidden="true">
+            <img src="/ed/site-dependencias/site-media/formacoes/bg/formacao-autoia.webp" alt="" draggable="false">
+        </div>
+        <div class="courses-inner">
+        <div class="courses-header">
+            <span class="courses-eyebrow sec-eyebrow">Estrutura curricular</span>
+            <h2 class="courses-title sec-title">O que está incluso na <span style="font-weight: 700">Formação em Inteligência Artificial e Automação</span></h2>
+            <p class="courses-lede sec-lede">19 cursos que vão do fundamento de IA generativa até colocar a sua solução no ar: Claude no dia a dia e na análise, agentes com Python, automação no N8N, Power Automate e Power Apps, criação visual dirigida por IA, banco de dados no Supabase e publicação com Github e Vercel.</p>
+        </div>
+
+        <div class="courses-grid">
+            <article class="course-card" tabindex="0" role="button" data-aulas="56">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Imersão Bê-a-bá da IA.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">13h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">César Germano</span>
+            </div>
+            <h3 class="course-card-title">Imersão Bê-a-bá da IA</h3>
+            <p class="course-card-desc">Bê-a-bá da IA é uma imersão prática para quem quer aprender a usar Inteligência Artificial de forma simples e aplicada no dia a dia. Você vai conhecer as principais ferramentas do mercado, criar automações, construir páginas em minutos e sair com clareza sobre como aplicar IA no seu trabalho ou negócio.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="15">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Desvendando a Inteligência Artificial e o ChatGPT.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">1h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">César Germano</span>
+            </div>
+            <h3 class="course-card-title">Desvendando a Inteligência Artificial e o ChatGPT</h3>
+            <p class="course-card-desc">Aprenda os fundamentos da IA e descubra como usar o ChatGPT no dia a dia. Em apenas 1 hora, você vai aprender a criar prompts eficazes, explorar geração de conteúdo e dados, e aplicar IA com mais confiança e produtividade.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="8">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Projetos Práticos com Inteligência Artificial.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">1h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">César Germano</span>
+            </div>
+            <h3 class="course-card-title">Projetos Práticos com Inteligência Artificial</h3>
+            <p class="course-card-desc">Aplique IA em desafios reais com projetos guiados. Em 1 hora, aprenda a resolver problemas de startups, conteúdo digital, produtividade e análise de dados. Uma abordagem prática para transformar teoria em ação.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="8">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Crie Apps e Sites com IA usando Lovable.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">2h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">César Germano</span>
+            </div>
+            <h3 class="course-card-title">Crie Apps e Sites com IA usando Lovable</h3>
+            <p class="course-card-desc">Aprenda a transformar ideias em sites e plataformas web funcionais usando Lovable, a ferramenta de vibe-coding que escreve o código por você. Em 5 aulas práticas, você sai do zero, sem precisar saber programar, até publicar seu próprio projeto online, incluindo páginas de portfólio, landing pages e até uma plataforma completa com banco de dados via Supabase. É o caminho mais rápido pra quem quer parar de depender de programador, validar uma ideia rápido ou criar produtos digitais usando IA como motor de execução.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="29">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/N8N, Automação Inteligente de Tarefas e Processos.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">6h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">César Germano</span>
+            </div>
+            <h3 class="course-card-title">N8N, Automação Inteligente de Tarefas e Processos</h3>
+            <p class="course-card-desc">Domine o N8N e crie automações eficientes. Em cerca de 6 horas, aprenda a construir fluxos visuais, integrar APIs, tratar dados e otimizar processos com controle e escalabilidade em diferentes áreas.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="13">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Python, LLMs e Agentes de IA.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">2h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">César Germano</span>
+            </div>
+            <h3 class="course-card-title">Python, LLMs e Agentes de IA</h3>
+            <p class="course-card-desc">Aprenda a usar Python com modelos de linguagem para criar aplicações inteligentes. Em 4 horas, conecte APIs, trabalhe com embeddings e LangChain, e desenvolva agentes com lógica, memória e autonomia.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="40">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Power Automate Essencial.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">14h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">Anderson Rocha</span>
+            </div>
+            <h3 class="course-card-title">Power Automate Essencial</h3>
+            <p class="course-card-desc">Domine o Power Automate para automatizar processos de negócios. Este curso abrange os conceitos essenciais e técnicas práticas para criar fluxos de trabalho eficientes, aumentando a produtividade e a automação de tarefas.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="69">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Power Apps Essencial.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">13h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">Daniel Petrin</span>
+            </div>
+            <h3 class="course-card-title">Power Apps Essencial</h3>
+            <p class="course-card-desc">Aprenda a criar aplicativos com Power Apps. Este curso aborda os fundamentos e práticas para construir aplicativos personalizados, otimizando processos e melhorando a eficiência em suas atividades, com foco no desenvolvimento de soluções.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="22">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Power Apps, Aplicativo de Checklist.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">3h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">Daniel Petrin</span>
+            </div>
+            <h3 class="course-card-title">Power Apps, Aplicativo de Checklist</h3>
+            <p class="course-card-desc">Crie um aplicativo de checklist prático com Power Apps. Este curso guia você através do processo de desenvolvimento de um aplicativo funcional, aplicando conceitos essenciais de design e funcionalidade para otimizar fluxos de trabalho.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button" data-aulas="40">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Power Apps, Aplicativo de Gestão de Documentos.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+            <span class="tag-status" data-semantic="neutral" data-size="s">7h</span>
+            <span class="tag-status" data-semantic="neutral" data-size="s">Daniel Petrin</span>
+            </div>
+            <h3 class="course-card-title">Power Apps, Aplicativo de Gestão de Documentos</h3>
+            <p class="course-card-desc">Crie aplicativos de gestão de documentos eficazes com o Power Apps. Este curso prático orienta você na construção de aplicativos personalizados para simplificar o gerenciamento de documentos e dados, melhorando a eficiência organizacional.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="" data-professor="Iago" data-aulas="">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Desvendando%20o%20Claude_%20IA%20como%20Copiloto%20de%20Trabalho.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">Iago</span>
+            </div>
+            <h3 class="course-card-title">Desvendando o Claude: IA como Copiloto de Trabalho</h3>
+            <p class="course-card-desc">Conheça o Claude do zero e transforme a IA no seu parceiro de trabalho diário. Neste curso você aprende a conversar, delegar e construir junto com o Claude na web, saindo do uso solto de chat para um método de coworking com a IA que acelera relatórios, análises, textos e decisões na sua área. Ideal para quem quer começar a trabalhar lado a lado com a inteligência artificial sem complicação.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="" data-professor="Leo" data-aulas="">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Claude%20Code%20Aplicado_%20Construa%20Solu%C3%A7%C3%B5es%20com%20IA.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">Leo</span>
+            </div>
+            <h3 class="course-card-title">Claude Code Aplicado: Construa Soluções com IA</h3>
+            <p class="course-card-desc">Descubra como usar o Claude Code para criar soluções reais mesmo sem ser programador. A IA escreve, testa e organiza o código por você enquanto você conduz a solução do problema até o resultado. Ao longo do curso você acompanha a construção prática de ferramentas e automações aplicadas ao negócio, entendendo o suficiente das peças para dirigir a IA com segurança.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="" data-professor="Sayuri" data-aulas="">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Claude%20para%20Analistas_%20IA%20na%20An%C3%A1lise%20e%20na%20Decis%C3%A3o.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">Sayuri</span>
+            </div>
+            <h3 class="course-card-title">Claude para Analistas: IA na Análise e na Decisão</h3>
+            <p class="course-card-desc">Aplique o Claude ao trabalho de quem vive de dados e decisões. Aprenda a usar a IA para explorar bases, gerar hipóteses, escrever fórmulas, redigir análises e transformar número em recomendação clara. Um curso pensado para o analista que quer decidir mais rápido e com mais confiança, usando o Claude como camada de raciocínio ao lado das ferramentas que já domina.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="" data-professor="Matheus" data-aulas="">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Design%20e%20V%C3%ADdeo%20com%20IA_%20Cria%C3%A7%C3%A3o%20Visual%20Dirigida%20por%20Claude.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">Matheus</span>
+            </div>
+            <h3 class="course-card-title">Design e Vídeo com IA: Criação Visual Dirigida por Claude</h3>
+            <p class="course-card-desc">Use a IA como diretor criativo para produzir peças visuais e vídeos com qualidade profissional. Você aprende a planejar, roteirizar e prompar criações visuais com o apoio do Claude, orquestrando as ferramentas de imagem e vídeo para tirar uma ideia da cabeça e colocá-la pronta, sem depender de um time de design.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="" data-professor="César" data-aulas="">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Supabase%20sem%20C%C3%B3digo_%20Banco%20de%20Dados%20para%20suas%20Solu%C3%A7%C3%B5es%20de%20IA.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">César</span>
+            </div>
+            <h3 class="course-card-title">Supabase sem Código: Banco de Dados para suas Soluções de IA</h3>
+            <p class="course-card-desc">Dê memória e estrutura às soluções que você cria com IA. Neste curso você aprende a montar e conectar um banco de dados no Supabase de forma guiada, com a IA fazendo o trabalho pesado, para que suas automações e aplicações guardem, consultem e organizem dados de verdade. A base técnica que faltava para sair do protótipo e ter algo que funciona de ponta a ponta.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="" data-professor="César e Iago" data-aulas="">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Github%20e%20Vercel_%20Coloque%20no%20Ar%20o%20que%20Voc%C3%AA%20Criou%20com%20IA.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">César e Iago</span>
+            </div>
+            <h3 class="course-card-title">Github e Vercel: Coloque no Ar o que Você Criou com IA</h3>
+            <p class="course-card-desc">Aprenda a publicar e manter suas soluções sem ser desenvolvedor. Este curso mostra, passo a passo e com apoio da IA, como versionar seu projeto no Github e colocá-lo no ar pela Vercel, do link que você compartilha até a atualização segura. O elo final para que o que você construiu com IA saia da sua máquina e chegue às pessoas.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="10h" data-professor="" data-aulas="139">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/AI%20Champion.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">10h</span>
+                <span class="tag-status" data-semantic="neutral" data-size="s">3 módulos</span>
+            </div>
+            <h3 class="course-card-title">AI Champion</h3>
+            <p class="course-card-desc">🚀 A IA já entrou na sua empresa. Falta decidir quem vai liderar a aplicação dela. Esta formação te coloca nesse lugar. São 4 módulos que saem do fundamento e chegam na construção real: você entende como um modelo funciona por dentro, conecta o Claude aos seus fluxos de trabalho, constrói uma aplicação completa e termina orquestrando agentes que executam tarefas de ponta a ponta. 🎯 O foco é negócio, não programação. Você não vai virar desenvolvedor. Vai virar a pessoa que sabe o que pedir para a IA, como pedir, e principalmente o que nunca entregar para ela.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <article class="course-card" tabindex="0" role="button"
+                data-duracao="5h" data-professor="" data-aulas="35">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Git%20%26%20GitHub%20para%20Colabora%C3%A7%C3%A3o.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">5h</span>
+                <span class="tag-status" data-semantic="neutral" data-size="s">8 módulos</span>
+            </div>
+            <h3 class="course-card-title">Git &amp; GitHub para Colaboração</h3>
+            <p class="course-card-desc">Versionamento profissional, branches, PRs, code review, documentação técnica e organização de repositórios.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+                        <article class="course-card" tabindex="0" role="button"
+                data-duracao="12h" data-professor="" data-aulas="12">
+            <span class="course-card-bg" style="background-image: url('/ed/site-dependencias/site-media/formacoes/aulas/f6/Lives%20dos%20Incompar%C3%A1veis.webp');"></span>
+            <div class="course-card-container">
+            <div class="course-card-text">
+            <div class="course-card-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="s">12h</span>
+                <span class="tag-status" data-semantic="neutral" data-size="s">1 módulo</span>
+            </div>
+            <h3 class="course-card-title">Lives dos Incomparáveis</h3>
+            <p class="course-card-desc">Toda terça-feira, às 15h no Youtube, uma live nova sobre o que tá rolando de mais atual no mundo de dados, Power BI, DAX, modelagem, IA aplicada, automação, mercado, carreira e os bastidores de quem entrega projeto real. Cada live fica disponível por 7 dias no Youtube. Depois sai do ar. O acervo das lives na plataforma continua seu pra revisitar quando quiser.</p>
+            </div>
+            <span class="material-symbols-outlined course-card-arrow">arrow_insert</span>
+            </div>
+            </article>
+            <!-- Oferta da formação, fechando o grid de cursos. Classes
+                 próprias (.of-*): começou como o .oferta-card das formações,
+                 mas foi modificado a ponto de não ser mais aquele
+                 componente. -->
+            <div class="of-oferta">
+                <div class="of-info">
+                    <div class="of-marca">
+                        <span class="of-icone-box">
+                            <img class="of-icone" src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20&amp;%20IA.svg" alt="" width="20" height="20">
+                        </span>
+                        <span class="tag-status" data-size="s" data-semantic="neutral">Acesso por 12 meses</span>
+                    </div>
+                    <h3 class="of-titulo">Formação Inteligência Artificial e Automação</h3>
+                    <a class="btn of-btn" data-size="m" data-emphasis="neutral" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-formacao')">Garantir a Formação em IA e Automação</a>
+                    <p class="of-desc">Pra ter as 7 formações e o acesso vitalício, o caminho é o Infinite Pass.</p>
+                </div>
+                <p class="preco">
+                    <span class="preco-linha"><span class="preco-multi">12×</span><span class="preco-valor">47</span></span>
+                    <span class="preco-detalhe">ou R$ 497,00 à vista</span>
+                </p>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>
+    <div class="courses-folga" aria-hidden="true"></div>
+</div>
+
+
+<!-- ===================================================================
+     INFINITE PASS. Réplica do class="hero" de /ed/infinite-pass/,
+     adaptada ao design system e ao grid do projeto:
+
+     - grid Wide do DS (max 1440, 10/8/6/4 colunas) no lugar da largura
+       fixa de 1120 do Elementor;
+     - tipografia via --font-family-horizontal (Syne, self-hosted no DS,
+       pesos 400 e 700) e clamp no título, que na origem era 272px fixos
+       e estouraria no mobile;
+     - cores só por token: --bw, --bw-75, --bw-50, --pc200, --pc500;
+     - botão do DS (.btn) no lugar do .btn-oferta custom.
+
+     Semântica: na origem "INFINITE PASS" é <h1> e cada letra vira um
+     <span> pra animação. Aqui o <h1> já é do hero da página, então
+     este vira <h2> e o bloco de chamada desce pra <h3>, sem os spans
+     por letra, que eram só gancho de animação.
+     =================================================================== -->
+<section class="ip" id="infinite-pass">
+    <div class="ip-inner">
+        <div class="ip-marca">
+            <h2 class="ip-titulo">
+                <span class="ip-titulo-linha">Infinite</span>
+                <span class="ip-titulo-linha">Pass</span>
+            </h2>
+            <video class="ip-video" autoplay muted loop playsinline aria-hidden="true"
+                   poster="/ed/pre-vitalicio/dependencias/ip-hero-poster.webp">
+                <source src="/ed/pre-vitalicio/dependencias/ip-hero-video.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="ip-cta">
+            <span class="ip-eyebrow sec-eyebrow">Acesso vitalício</span>
+            <h3 class="ip-h3 sec-title">Uma decisão, e a <span style="font-weight: 700">plataforma inteira é sua</span></h3>
+            <p class="ip-p sec-lede">O Infinite Pass dá acesso vitalício à Xperiun Completa: as 7 formações, os 47 cursos, a Biblioteca de Business Cases e a comunidade. Paga uma vez, nunca mais renova.</p>
+            <p class="preco">
+                <span class="preco-linha"><span class="preco-multi">12×</span><span class="preco-valor">147,97</span></span>
+                <span class="preco-detalhe">ou R$ 1.497,00 à vista</span>
+            </p>
+            <a class="btn ip-btn" data-size="m" data-emphasis="high" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-vitalicio')">Garantir Acesso Vitalício</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     AS 7 FORMACOES. Portado de /ed/formacoes/ (o hub). Caminhos passados
+     pra absolutos e o CSS trazido junto, porque esta pagina nao carrega o
+     style.css das formacoes.
+     =================================================================== -->
+<section class="sec-formacoes">
+    <div class="formacoes-inner" id="formacoes-inner">
+        <div class="formacoes-layout">
+            <nav class="formacoes-nav">
+                <div class="formacoes-header">
+                    <span class="formacoes-eyebrow sec-eyebrow">Xperiun Completa</span>
+                    <h2 class="formacoes-title sec-title">Tenha <span style="font-weight: 700">acesso vitalício</span> a todas Formações da Plataforma Xperiun</h2>
+                </div>
+                <div class="formacoes-nav-list">
+                    <button class="formacoes-nav-item is-active" data-target="f1">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Básico.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 1</span>
+                            <span class="formacoes-nav-label">Power BI Básico ao Intermediário</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="f2">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Intermediário.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 2</span>
+                            <span class="formacoes-nav-label">Power BI Intermediário ao Avançado</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="f3">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft Fabric.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 3</span>
+                            <span class="formacoes-nav-label">Microsoft Fabric</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="f4">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Banco de Dados & SQL.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 4</span>
+                            <span class="formacoes-nav-label">Banco de Dados &amp; SQL</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="f5">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Python & Data Science.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 5</span>
+                            <span class="formacoes-nav-label">Python &amp; Data Science</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="f6">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Automação & IA.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 6</span>
+                            <span class="formacoes-nav-label">Inteligência Artificial e Automação</span>
+                        </div>
+                    </button>
+                    <button class="formacoes-nav-item" data-target="f7">
+                        <img src="/ed/site-dependencias/site-media/formacoes/icones/Carreira & Negócios.svg" width="32" height="32" alt="">
+                        <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 7</span>
+                            <span class="formacoes-nav-label">Carreira &amp; Negócios</span>
+                        </div>
+                    </button>
+                </div>
+            </nav>
+
+            <div class="formacoes-cards">
+                <div class="formacao-card motion" id="f1">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-pbi.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Básico.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 1</span>
+                            <h3 class="formacao-title">Power BI Básico ao Intermediário</h3>
+                        </div>
+                        <p class="formacao-desc">Do Excel ao primeiro dashboard usado pelo chefe em reunião, em 4 a 8 semanas.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~38h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">8 cursos</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f1-power-bi-basico-intermediario">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f1"></div>
+                    </div>
+                </div>
+
+                <div class="formacao-card motion" id="f2">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-pbia.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Intermediário.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 2</span>
+                            <h3 class="formacao-title">Power BI Intermediário ao Avançado</h3>
+                        </div>
+                        <p class="formacao-desc">Do dashboard bonito ao dashboard que decide o negócio. DAX sênior, modelagem real, governança corporativa.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~103h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">9 cursos</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f2-power-bi-intermediario-avancado">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f2"></div>
+                    </div>
+                </div>
+
+                <div class="formacao-card motion" id="f3">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-fabric.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft Fabric.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 3</span>
+                            <h3 class="formacao-title">Microsoft Fabric</h3>
+                        </div>
+                        <p class="formacao-desc">Saia na frente em uma stack que vai virar padrão. Quem domina primeiro define os próximos 3 anos da carreira.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~53h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">3 cursos</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f3-microsoft-fabric">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f3"></div>
+                    </div>
+                </div>
+
+                <div class="formacao-card motion" id="f4">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-bdsql.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Banco de Dados & SQL.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 4</span>
+                            <h3 class="formacao-title">Banco de Dados &amp; SQL</h3>
+                        </div>
+                        <p class="formacao-desc">Pare de depender do TI. Consultas direto no banco corporativo e Data Warehouse profissional.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~57h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">3 cursos + bônus</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f4-banco-de-dados-sql">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f4"></div>
+                    </div>
+                </div>
+
+                <div class="formacao-card motion" id="f5">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-dspython.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Python & Data Science.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 5</span>
+                            <h3 class="formacao-title">Python &amp; Data Science</h3>
+                        </div>
+                        <p class="formacao-desc">Automatize relatórios, conecte APIs, aplique ML em perguntas reais, processe big data com Spark.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~58h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">7 cursos</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f5-python-data-science">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f5"></div>
+                    </div>
+                </div>
+
+                <div class="formacao-card motion" id="f6">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-autoia.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Automação & IA.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 6</span>
+                            <h3 class="formacao-title">Inteligência Artificial e Automação</h3>
+                        </div>
+                        <p class="formacao-desc">Dobre sua produtividade. Agentes de IA, N8N, Power Automate e Power Apps saindo do operacional repetitivo.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~89h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">19 cursos</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f6-automacao-ia">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f6"></div>
+                    </div>
+                </div>
+
+                <div class="formacao-card motion" id="f7">
+                    <img class="formacao-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-negocios.webp" width="512" height="512" alt="">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Carreira & Negócios.svg" width="48" height="48" alt="">
+                    <div class="area-card-body">
+                        <div class="area-card-cols">
+                            <div class="area-card-col">
+                                <div class="formacao-title-group">
+                            <span class="formacao-label">Formação 7</span>
+                            <h3 class="formacao-title">Carreira &amp; Negócios</h3>
+                        </div>
+                        <p class="formacao-desc">Técnica é metade. Posicione carreira, prospecte clientes, entenda FP&A, vire quem é consultado antes da decisão.</p>
+                        <div class="formacao-tags">
+                            <span class="tag-status" data-size="m" data-semantic="neutral">~31h</span>
+                            <span class="tag-status" data-size="m" data-semantic="neutral">6 cursos</span>
+                        </div>
+                            </div>
+                            <div class="area-card-col area-card-col--cta">
+                                <p class="area-cta-text">Incluso na Xperiun Completa</p>
+                                <a class="btn" data-size="s" data-emphasis="subtle" href="/ed/formacoes/f7-carreira-negocios">Ver formação</a>
+                            </div>
+                        </div>
+                        <!-- pasta 3D com os cursos desta formação, montada no script.js -->
+                        <div class="area-folder" data-f="f7"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     O QUE ESTA INCLUSO. Estrutura da sec-skills de
+     /ed/formacoes/f1-power-bi-basico-intermediario.html com o conteudo
+     do completa-tiles da home: o .skill-tile e o .completa-tile tem a
+     mesma forma (icone, nome, meta), entao so o conteudo mudou.
+     =================================================================== -->
+<section class="sec-skills" id="sec-skills">
+    <div class="skills-inner">
+    <div class="skills-header">
+        <span class="skills-eyebrow sec-eyebrow">Xperiun Completa</span>
+        <h2 class="skills-title sec-title">Tudo o que você precisa pra virar o profissional <span style="font-weight: 700">consultado antes da decisão</span></h2>
+        <p class="skills-lede sec-lede">O ecossistema inteiro num plano só, com acesso vitalício.</p>
+    </div>
+
+    <div class="skills-grid">
+        <div class="skill-tile skill-tile--wide">
+            <div class="skill-tile-icon"><span class="material-symbols-outlined">school</span></div>
+            <div>
+                <h3 class="skill-tile-name">7 Formações por Competência</h3>
+                <p class="skill-tile-meta">47 cursos de conteúdo aplicado</p>
+            </div>
+        </div>
+        <div class="skill-tile">
+            <div class="skill-tile-icon"><span class="material-symbols-outlined">menu_book</span></div>
+            <div>
+                <h3 class="skill-tile-name">Biblioteca Na Prática</h3>
+                <p class="skill-tile-meta">45 Business Cases de empresas brasileiras</p>
+            </div>
+        </div>
+        <div class="skill-tile">
+            <div class="skill-tile-icon"><span class="material-symbols-outlined">groups</span></div>
+            <div>
+                <h3 class="skill-tile-name">Comunidade Xperiun</h3>
+                <p class="skill-tile-meta">Troca com gente de negócio, dúvidas e projetos</p>
+            </div>
+        </div>
+        <div class="skill-tile">
+            <div class="skill-tile-icon"><span class="material-symbols-outlined">play_circle</span></div>
+            <div>
+                <h3 class="skill-tile-name">Acervo de Lives + Workshops</h3>
+                <p class="skill-tile-meta">Aplicações reais em arquivo crescente</p>
+            </div>
+        </div>
+        <div class="skill-tile">
+            <div class="skill-tile-icon"><span class="material-symbols-outlined">verified</span></div>
+            <div>
+                <h3 class="skill-tile-name">Certificado MEC via UNIFATEC</h3>
+                <p class="skill-tile-meta">Reconhecido pelo RH de empresa grande</p>
+            </div>
+        </div>
+        <div class="skill-tile skill-tile--wide">
+            <div class="skill-tile-icon"><span class="material-symbols-outlined">trending_up</span></div>
+            <div>
+                <h3 class="skill-tile-name">Rota de Carreira</h3>
+                <p class="skill-tile-meta">Portfólio, LinkedIn Champion e plano de 1º Emprego em dados</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+
+<!-- ===================================================================
+     OVERVIEW. Portado de /ed/business-cases/. Vem antes do
+     bc-active-track, na mesma ordem da origem.
+     =================================================================== -->
+<section class="bc-sec" id="bc-overview">
+    <div class="bc-how-inner">
+        <div class="bc-how-header">
+            <span class="sec-eyebrow">Business Cases</span>
+            <h2 class="sec-title">Tenha acesso a <span style="font-weight: 700">todos os Business Cases</span> com a <span style="font-weight: 700">Xperiun Completa</span></h2>
+            <p class="sec-lede">A Plataforma Xperiun conta com um acervo de Business Cases, cursos práticos de análise de dados aplicados em cenários reais do mercado.</p>
+        </div>
+        <div class="bc-step">
+            <article class="troca-card">
+                <div class="troca-meta">
+                    <div class="troca-num">01</div>
+                    <h3 class="troca-card-title">Resolva demandas reais do mercado de BI</h3>
+                    <p class="troca-card-body">Obtenha acesso a uma ampla variedade de projetos e desenvolva confiança ao resolver até mesmo as tarefas mais complexas.</p>
+                </div>
+            </article>
+        </div>
+        <div class="bc-step">
+            <article class="troca-card">
+                <div class="troca-meta">
+                    <div class="troca-num">02</div>
+                    <h3 class="troca-card-title">Aplique seu conhecimento na prática</h3>
+                    <p class="troca-card-body">Aprenda fazendo e coloque suas habilidades à prova fora da zona de conforto dos cursos ministrados por instrutores e tutoriais.</p>
+                </div>
+            </article>
+        </div>
+        <div class="bc-step bc-step--wide">
+            <article class="troca-card">
+                <div class="troca-demo"><img class="troca-demo-img" src="/ed/site-dependencias/site-media/business-cases/troca-demo-img.webp" alt=""></div>
+                <div class="troca-meta">
+                    <div class="troca-num">03</div>
+                    <h3 class="troca-card-title">Construa e enriqueça o seu portfólio</h3>
+                    <p class="troca-card-body">Crie projetos reais de BI e reúna evidências práticas para destacar sua evolução no mercado.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     APRENDA ATIVAMENTE. Portado de /ed/business-cases/ (bc-active-track
+     com a .bc-sec dentro). O CSS veio junto porque esta pagina nao
+     carrega o style.css de business-cases.
+     =================================================================== -->
+<div class="bc-active-track">
+<section class="bc-sec bc-active-sec">
+    <div class="bc-active-inner">
+        <div class="bc-active-media">
+            <img class="bc-active-img bc-active-img--1" src="/ed/site-dependencias/site-media/business-cases/bc-active-img01.webp" alt="">
+            <img class="bc-active-img bc-active-img--2" src="/ed/site-dependencias/site-media/business-cases/bc-active-img02.webp" alt="">
+        </div>
+        <div class="bc-active-text">
+            <span class="sec-eyebrow">Aprenda Ativamente</span>
+            <h2 class="sec-title">Teste e <span style="font-weight: 700">aplique suas habilidades</span></h2>
+            <p class="sec-lede">Não se trata de replicar passos na tela, os Business Cases ajudam você a desenvolver intuição e solidificar seu conhecimento, desenvolvendo sua capacidade analítica, pensamento crítico e habilidade de resolução de problemas reais.</p>
+        </div>
+    </div>
+</section>
+</div>
+<!-- ===================================================================
+     BUSINESS CASES POR AREA. Portado de /ed/business-cases/. O wrapper
+     .bc-cases-track ficou de fora: la ele so serve pra a
+     .bc-portfolio-over deslizar por cima, e o portfolio nao vem.
+     =================================================================== -->
+<!-- O wrapper existe so pra dar folga ao sticky: a folga e uma viewport
+     mais alta que a secao, e e ela que mede quanto tempo a secao fica
+     presa enquanto a .vit sobe por cima. -->
+<div class="cases-pin">
+<section class="bc-sec bc-cases-sec" id="bc-cases">
+    <div class="bc-cases-inner">
+        <div class="bc-cases-grid">
+            <div class="bc-cases-header">
+                <span class="sec-eyebrow">Áreas Específicas</span>
+                <h2 class="sec-title">Encontre o <span style="font-weight: 700">próximo case</span> para o seu portfólio de projetos</h2>
+                <p class="sec-lede">Conheça o nosso acervo de Business Cases disponíveis.</p>
+            </div>
+            <div class="bc-case-card" data-area="al"><div class="bc-case-card-inner">
+                <img class="bc-case-img bc-case-img--1" src="/ed/site-dependencias/site-media/areas/logistica/iniciante/Desempenho Logístico.webp" alt="">
+                <img class="bc-case-img bc-case-img--2" src="/ed/site-dependencias/site-media/areas/logistica/intermediario/Logística com Cálculo de OTIF.webp" alt="">
+                <img class="bc-case-img bc-case-img--3" src="/ed/site-dependencias/site-media/areas/logistica/intermediario/Indicadores de Desempenho Logístico.webp" alt="">
+                <span class="bc-case-scrim"></span>
+                <div class="bc-case-panel"><div class="bc-case-label"><span>Business Cases</span><h4>Logística</h4></div><span class="material-symbols-outlined bc-case-arrow">arrow_outward</span><span class="bc-case-count">04</span></div>
+            </div></div>
+            <div class="bc-case-card" data-area="af"><div class="bc-case-card-inner">
+                <img class="bc-case-img bc-case-img--1" src="/ed/site-dependencias/site-media/areas/financeira/intermediario/Dashboard Financeiro Xperia Automotive.webp" alt="">
+                <img class="bc-case-img bc-case-img--2" src="/ed/site-dependencias/site-media/areas/financeira/intermediario/Case de Controladoria com DRE.webp" alt="">
+                <img class="bc-case-img bc-case-img--3" src="/ed/site-dependencias/site-media/areas/financeira/avancado/DRE Avançada.webp" alt="">
+                <span class="bc-case-scrim"></span>
+                <div class="bc-case-panel"><div class="bc-case-label"><span>Business Cases</span><h4>Financeiro</h4></div><span class="material-symbols-outlined bc-case-arrow">arrow_outward</span><span class="bc-case-count">11</span></div>
+            </div></div>
+            <div class="bc-case-card" data-area="av"><div class="bc-case-card-inner">
+                <img class="bc-case-img bc-case-img--1" src="/ed/site-dependencias/site-media/areas/vendas/iniciante/Desafio MR Bolos.webp" alt="">
+                <img class="bc-case-img bc-case-img--2" src="/ed/site-dependencias/site-media/areas/vendas/intermediario/Desafio Bitrix24.webp" alt="">
+                <img class="bc-case-img bc-case-img--3" src="/ed/site-dependencias/site-media/areas/vendas/iniciante/Dashboard de Vendas da PBIDist.webp" alt="">
+                <span class="bc-case-scrim"></span>
+                <div class="bc-case-panel"><div class="bc-case-label"><span>Business Cases</span><h4>Vendas</h4></div><span class="material-symbols-outlined bc-case-arrow">arrow_outward</span><span class="bc-case-count">12</span></div>
+            </div></div>
+            <div class="bc-case-card" data-area="arh"><div class="bc-case-card-inner">
+                <img class="bc-case-img bc-case-img--1" src="/ed/site-dependencias/site-media/areas/rh/iniciante/Dashboard de RH da Klog.webp" alt="">
+                <img class="bc-case-img bc-case-img--2" src="/ed/site-dependencias/site-media/areas/rh/iniciante/KPIs de Recursos Humanos (RH).webp" alt="">
+                <img class="bc-case-img bc-case-img--3" src="/ed/site-dependencias/site-media/areas/rh/intermediario/Análise de Dados para Recursos Humanos.webp" alt="">
+                <span class="bc-case-scrim"></span>
+                <div class="bc-case-panel"><div class="bc-case-label"><span>Business Cases</span><h4>Recursos Humanos</h4></div><span class="material-symbols-outlined bc-case-arrow">arrow_outward</span><span class="bc-case-count">05</span></div>
+            </div></div>
+            <div class="bc-case-card" data-area="ad"><div class="bc-case-card-inner">
+                <img class="bc-case-img bc-case-img--1" src="/ed/site-dependencias/site-media/areas/diversos/intermediario/Dashboard de Compras.webp" alt="">
+                <img class="bc-case-img bc-case-img--2" src="/ed/site-dependencias/site-media/areas/diversos/avancado/Chamados de Suporte (SAC) com Cálculo de SLA.webp" alt="">
+                <img class="bc-case-img bc-case-img--3" src="/ed/site-dependencias/site-media/areas/diversos/iniciante/Dashboard da Fórmula 1.webp" alt="">
+                <span class="bc-case-scrim"></span>
+                <div class="bc-case-panel"><div class="bc-case-label"><span>Business Cases</span><h4>Diversos</h4></div><span class="material-symbols-outlined bc-case-arrow">arrow_outward</span><span class="bc-case-count">09</span></div>
+            </div></div>
+        </div>
+    </div>
+</section>
+    <div class="cases-folga" aria-hidden="true"></div>
+</div>
+
+<!-- ===================================================================
+     POR QUE O VITALICIO. Estrutura da .conta-grid de /ed/formacoes/:
+     a linha sangra ate as bordas da tela e o miolo dela fica preso ao
+     container de 1440, com os fios verticais marcando esse limite.
+     =================================================================== -->
+<!-- ===================================================================
+     FECHAMENTO. As cinco secoes finais dividem UM fundo em gradiente,
+     no pseudo deste container. Elas proprias ficam sem background pra
+     o gradiente aparecer; quem carrega o preto opaco (necessario pra
+     cobrir a .bc-cases-sec travada) e o container.
+     =================================================================== -->
+<div class="fechamento">
+<section class="vit" id="por-que-vitalicio">
+    <div class="vit-inner">
+        <div class="vit-header">
+            <span class="sec-eyebrow">Infinite Pass</span>
+            <h2 class="sec-title">Por que garantir o <span style="font-weight: 700">Vitalício hoje?</span></h2>
+            <p class="sec-lede">Porque o mercado não tá perguntando se você “gosta de tecnologia”, está premiando quem entrega mais com menos. Ao garantir o Vitalício, você compra 5 coisas:</p>
+        </div>
+    </div>
+    <div class="vit-grid">
+        <div class="vit-row">
+            <div class="vit-row-inner">
+                <h3 class="vit-nome">Economia Inteligente</h3>
+                <p class="vit-texto">Você trava o preço hoje e nunca mais paga renovações anuais. Economize mais de R$ 1.000,00 todos os anos pelo resto da vida.</p>
+            </div>
+        </div>
+        <div class="vit-row">
+            <div class="vit-row-inner">
+                <h3 class="vit-nome">Atualização Perpétua</h3>
+                <p class="vit-texto">A IA muda toda semana. Com o Vitalício, todas as novas trilhas que a Xperiun lançar no futuro entram para você sem custo adicional.</p>
+            </div>
+        </div>
+        <div class="vit-row">
+            <div class="vit-row-inner">
+                <h3 class="vit-nome">Seu Ritmo, Suas Regras</h3>
+                <p class="vit-texto">Sem pressão de prazo de expiração. Estude quando puder, reveja quando precisar. O conhecimento é seu por direito.</p>
+            </div>
+        </div>
+        <div class="vit-row">
+            <div class="vit-row-inner">
+                <h3 class="vit-nome">Comunidade Incomparável</h3>
+                <p class="vit-texto">Conexão vitalícia com uma rede de networking de mais de 70 mil alunos e especialistas.</p>
+            </div>
+        </div>
+        <div class="vit-row">
+            <div class="vit-row-inner">
+                <h3 class="vit-nome">E mais</h3>
+                <p class="vit-texto">Sem curso solto, sem ficar pulando tutorial. Na Plataforma da Xperiun você segue trilha, projeto, método.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     BONUS. Miolo do card portado do .gains-card de /ed/aichampion/, mas
+     em duas colunas numa linha so, em vez da pilha vertical com nav
+     lateral da origem.
+     =================================================================== -->
+<section class="bonus" id="bonus">
+    <div class="bonus-inner">
+        <div class="bonus-header">
+            <span class="sec-eyebrow">Bônus</span>
+            <h2 class="sec-title">Só pra quem <span style="font-weight: 700">decide agora</span></h2>
+        </div>
+        <div class="bonus-cards">
+            <article class="gains-card">
+                <div class="gains-card-media">
+                    <img src="/ed/aichampion/dependencias/gains-card-media-03.webp" loading="lazy" alt="">
+                </div>
+                <div class="gains-card-content">
+                    <div class="gains-card-body">
+                        <span class="tag-status gains-warn" data-semantic="warning" data-size="s">Bônus</span>
+                        <h3 class="gains-card-title">Livro dos Incomparáveis, edição digital</h3>
+                        <p class="gains-desc">O manifesto sobre o que significa ser o profissional de negócio que não tem par na área em que atua.</p>
+                        <p class="gains-desc">Leitura de referência pra quem está construindo algo relevante.</p>
+                    </div>
+                </div>
+            </article>
+            <article class="gains-card">
+                <div class="gains-card-media">
+                    <img src="/ed/pre-vitalicio/dependencias/gains-card-media-01.webp" loading="lazy" alt="">
+                </div>
+                <div class="gains-card-content">
+                    <div class="gains-card-body">
+                        <span class="tag-status gains-warn" data-semantic="warning" data-size="s">Bônus</span>
+                        <h3 class="gains-card-title">MCP desenvolvido pela Xperiun</h3>
+                        <p class="gains-desc">Ligue o acervo da Xperiun no seu Claude. Ele responde em qual aula o assunto está, com o minuto e o link, e quando você descreve um problema do trabalho, devolve o caminho até a resposta no método da escola.</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===================================================================
+     OFERTAS. Portado da sec-oferta de /ed/formacoes/f6-automacao-ia.html.
+     Os valores e a segunda oferta foram trocados: la a Completa e
+     anuidade, aqui e o Infinite Pass vitalicio.
+     =================================================================== -->
+<section class="sec-oferta" id="sec-oferta">
+    <div class="oferta-inner">
+    <div class="oferta-header">
+        <span class="oferta-eyebrow sec-eyebrow">Investimento</span>
+        <h2 class="oferta-title sec-title">Escolha o plano <span style="font-weight: 700">ideal pra você</span></h2>
+        <p class="oferta-lede sec-lede">Leva só essa formação por 12 meses, ou a plataforma inteira com acesso vitalício.</p>
+        <div class="oferta-nav">
+            <button class="btn" data-size="m-ico" data-emphasis="subtle" id="oferta-prev" aria-label="Voltar" disabled>
+                <span class="material-symbols-outlined">arrow_left_alt</span>
+                Voltar
+            </button>
+            <button class="btn" data-size="m-ico" data-emphasis="medium-core" id="oferta-next" aria-label="Ver melhor oferta">
+                Ver melhor oferta
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+        </div>
+    </div>
+    <div class="oferta-grid">
+
+        <article class="oferta-card oferta-card--f6">
+            <img src="/ed/site-dependencias/site-media/formacoes/bg/formacao-autoia.webp" alt="" class="oferta-card-img">
+            <div class="oferta-card-top">
+                <div class="oferta-icon-box">
+                    <img src="/ed/site-dependencias/site-media/formacoes/icones/Automação & IA.svg" alt="" class="oferta-icon">
+                </div>
+                <div class="oferta-card-eyebrow-row">
+                    <span class="tag-status" data-semantic="neutral" data-size="m">Foco em Automation &amp; IA Mastery</span>
+                </div>
+                <h3 class="oferta-card-title">Formação <span style="font-weight: 700">Inteligência Artificial e Automação</span></h3>
+                <div class="oferta-price-block">
+                    <span class="oferta-price"><span class="multi">12×</span><span class="value">47</span></span>
+                    <span class="oferta-price-detail">ou R$ 497,00 à vista</span>
+                </div>
+                <a class="btn" data-size="m" data-emphasis="neutral" href="#" onclick="event.preventDefault(); window.openPopup && window.openPopup('popup-form-formacao')">Garantir a Formação em IA e Automação</a>
+                <div class="oferta-divider"></div>
+                <div class="oferta-completa-icons">
+                    <img class="oferta-completa-icon oferta-completa-icon--f1" src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Básico.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f2" src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Intermediário.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f3" src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft Fabric.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f4" src="/ed/site-dependencias/site-media/formacoes/icones/Banco de Dados & SQL.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f5" src="/ed/site-dependencias/site-media/formacoes/icones/Python & Data Science.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f6" src="/ed/site-dependencias/site-media/formacoes/icones/Automação & IA.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f7" src="/ed/site-dependencias/site-media/formacoes/icones/Carreira & Negócios.svg" alt="" loading="lazy">
+                </div>
+            </div>
+            <ul class="oferta-checks">
+                <li class="oferta-check">19 cursos, ~89h de conteúdo</li>
+                <li class="oferta-check">Acesso por 12 meses</li>
+                <li class="oferta-check">Certificado Xperiun por competência</li>
+            </ul>
+            <div class="oferta-card-action">
+                <p class="oferta-risk">Pra ter as 7 formações e o acesso vitalício, o caminho é o Infinite Pass.</p>
+            </div>
+        </article>
+
+        <article class="oferta-card oferta-card--full">
+            <img src="/ed/site-dependencias/site-media/formacoes/bg/formacao-xperiun.webp" alt="" class="oferta-card-img">
+            <div class="oferta-card-top">
+                <div class="oferta-marca">
+                    <div class="oferta-icon-box">
+                        <svg width="48" height="48" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Símbolo Xperiun"><path d="M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92 -71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z" fill="url(#oferta-xperiun-grad)"/><defs><linearGradient id="oferta-xperiun-grad" x1="42.11" y1="757.899" x2="757.9" y2="42.109" gradientUnits="userSpaceOnUse"><stop stop-color="#9600ff"/><stop offset="1" stop-color="#4b00ff"/></linearGradient></defs></svg>
+                    </div>
+                    <img class="oferta-logo-ip" src="/ed/pre-vitalicio/dependencias/logo-infinite-pass.svg" alt="Infinite Pass" loading="lazy">
+                </div>
+                <div class="oferta-card-eyebrow-row">
+                    <span class="tag-status" data-semantic="gold" data-size="m">Infinite Pass: acesso vitalício</span>
+                </div>
+                <h3 class="oferta-card-title">Xperiun <span style="font-weight: 700">Completa</span></h3>
+                <div class="oferta-price-block">
+                    <span class="oferta-price"><span class="multi">12×</span><span class="value">147,97</span></span>
+                    <span class="oferta-price-detail">ou R$ 1.497,00 à vista</span>
+                </div>
+                <a class="btn" data-size="m" data-emphasis="high" href="#" onclick="event.preventDefault(); window.openPopup && window.openPopup('popup-form-vitalicio')">Garantir Acesso Vitalício</a>
+                <div class="oferta-divider"></div>
+                <div class="oferta-completa-icons">
+                    <img class="oferta-completa-icon oferta-completa-icon--f1" src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Básico.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f2" src="/ed/site-dependencias/site-media/formacoes/icones/Power BI Intermediário.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f3" src="/ed/site-dependencias/site-media/formacoes/icones/Microsoft Fabric.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f4" src="/ed/site-dependencias/site-media/formacoes/icones/Banco de Dados & SQL.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f5" src="/ed/site-dependencias/site-media/formacoes/icones/Python & Data Science.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f6" src="/ed/site-dependencias/site-media/formacoes/icones/Automação & IA.svg" alt="" loading="lazy">
+                    <img class="oferta-completa-icon oferta-completa-icon--f7" src="/ed/site-dependencias/site-media/formacoes/icones/Carreira & Negócios.svg" alt="" loading="lazy">
+                </div>
+            </div>
+            <ul class="oferta-checks">
+                <li class="oferta-check">As 7 Formações por Competência (47 cursos)</li>
+                <li class="oferta-check">Biblioteca Na Prática (45 Business Cases reais)</li>
+                <li class="oferta-check">Comunidade Xperiun (Discord, lives quinzenais e workshops)</li>
+                <li class="oferta-check">Acervo de Lives (177h) e Workshops (47h)</li>
+                <li class="oferta-check"><span style="color: var(--sg300)">Certificado MEC via UNIFATEC</span> (único produto com selo)</li>
+                <li class="oferta-check">Rota de Carreira (Portfólio, LinkedIn Champion, Curso 1º Emprego)</li>
+                <li class="oferta-check">20% off em MBA e Pós Tech (Passaporte Acadêmico)</li>
+            </ul>
+            <div class="oferta-card-action">
+                <p class="oferta-risk">Acesso vitalício. Paga uma vez, nunca mais renova.</p>
+            </div>
+        </article>
+
+    </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     DEPOIMENTOS. Portado do .depos-faq-wrap de /ed/aichampion/, sem a
+     sec-faq. O reveal dos cards e feito pelo script.js desta pagina.
+     =================================================================== -->
+<div class="depos-faq-wrap">
+<section class="sec-depos" id="sec-depos">
+    <div class="depos-inner">
+    <div class="depos-header">
+        <div class="depos-header-left">
+            <div class="depos-social-proof">
+                <div class="depos-avatar-stack">
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                    <div class="depos-avatar"></div>
+                </div>
+                <p class="depos-eyebrow">+35 mil alunos</p>
+            </div>
+            <h2 class="depos-title sec-title">Quem <span style="font-weight: 700">aprendeu na Xperiun</span> está dizendo</h2>
+            <div class="depos-stars">
+                <div class="depos-star-stack">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                </div>
+                <p class="depos-rating">Avaliação média 4,9 estrelas</p>
+            </div>
+        </div>
+        <div class="depos-nav">
+            <button class="btn" data-size="m" data-icon data-emphasis="subtle" id="depos-prev" aria-label="Anterior" disabled>
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button class="btn" data-size="m" data-icon data-emphasis="subtle" id="depos-next" aria-label="Próximo">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+    </div>
+    </div>
+    <div class="depos-carousel-wrap">
+        <div class="depos-track" id="depos-track">
+            <div class="depos-card"><div class="depos-video" data-vid="rfp3nnEuQic"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-edson.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Edson</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="5fjerKKTGGs"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-eduardo.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Eduardo</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="vfbwoyCyv9Y"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-claudio.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cláudio</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="9xt3-AQcH80"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-cleiton.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Cleiton</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="bPFL_QZYiwg"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-daniel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Daniel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="kHV7Tqnv1nY"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-vinicius.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vinícius</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="fwOgSvKf5fA"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-gabriel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Gabriel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="CkKg8x9ADC4"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-ezequiel.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Ezequiel</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="Jdi6xmjSqPc"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-louiz.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Louiz</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="i_OWt-A5kDg"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-pedro.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Pedro</p></div></div></div></div>
+            <div class="depos-card"><div class="depos-video" data-vid="FPi0RUmpmb8"><img class="depos-thumb" src="/ed/site-dependencias/site-media/depoimento-video-thumb/depoimento-video-thumb-vitoria.webp" alt="" loading="lazy"><div class="depos-info"><button class="depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="depos-info-text"><p class="depos-info-label">Assistir depoimento de:</p><p class="depos-info-name">Vitória</p></div></div></div></div>
+        </div>
+    </div>
+
+    <div class="champ-wrap">
+      <div class="champ-grid">
+        <article class="champ-card">
+          <div class="champ-media">
+            <img class="champ-img" src="/ed/aichampion/dependencias/champ-img-robert.webp" loading="lazy" alt="Robert Gabriel Ferraz">
+          </div>
+          <div class="champ-content">
+            <span class="champ-quote">&#8220;</span>
+            <div class="champ-text">
+              <p class="champ-quote-text champ-quote-text--s">Tínhamos custo de R$ 11 milhões nesse indicador. Atualmente R$ 7,2 milhões. Redução de quase R$ 4 milhões. Tudo com 8% do curso concluído.</p>
+              <p class="champ-summary">R$ 3,8 milhões de redução de custo. Com 8% do conteúdo.</p>
+              <span class="champ-name">Robert Gabriel Ferraz</span>
+            </div>
+          </div>
+        </article>
+        <article class="champ-card">
+          <div class="champ-media">
+            <img class="champ-img" src="/ed/aichampion/dependencias/champ-img-vitoria.webp" loading="lazy" alt="Vitória Vicente">
+          </div>
+          <div class="champ-content">
+            <span class="champ-quote">&#8220;</span>
+            <div class="champ-text">
+              <p class="champ-quote-text champ-quote-text--s">Comecei como assistente de BI. Hoje sou analista no Santander. Em fevereiro assumo uma vaga sênior, com salário de 5 dígitos. Menos de 2 anos.</p>
+              <p class="champ-summary">Assistente para sênior. Dois anos.</p>
+              <span class="champ-name">Vitória Vicente</span>
+            </div>
+          </div>
+        </article>
+        <article class="champ-card">
+          <div class="champ-media">
+            <img class="champ-img" src="/ed/aichampion/dependencias/champ-img-eduardo.webp" loading="lazy" alt="Eduardo Almeida Bandeira">
+          </div>
+          <div class="champ-content">
+            <span class="champ-quote">&#8220;</span>
+            <div class="champ-text">
+              <p class="champ-quote-text">Fui convidado para mudar de posição internamente.</p>
+              <p class="champ-summary">Não procurou a vaga. A vaga foi até ele.</p>
+              <span class="champ-name">Eduardo Almeida Bandeira</span>
+            </div>
+          </div>
+        </article>
+        <article class="champ-card">
+          <div class="champ-media">
+            <img class="champ-img" src="/ed/aichampion/dependencias/champ-img-vinicius.webp" loading="lazy" alt="Vinicius Carecho Ferrer">
+          </div>
+          <div class="champ-content">
+            <span class="champ-quote">&#8220;</span>
+            <div class="champ-text">
+              <p class="champ-quote-text">Fui de júnior para especialista sem mudar de área.</p>
+              <p class="champ-summary">Sem largar o que já fazia. Cresceu onde estava.</p>
+              <span class="champ-name">Vinicius Carecho Ferrer</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="depos-employers">
+        <div class="depos-employers-inner">
+        <div class="depos-employers-header">
+            <h2 class="depos-employers-title sec-title">Quem já é <span style="font-weight: 700">Incomparável</span> trabalha aqui</h2>
+        </div>
+        </div>
+        <div class="depos-logos-section">
+            <div class="depos-logos-grid" id="depos-logos-grid">
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+                <div class="depos-logo-card"><img src="" alt="" loading="lazy"></div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+
+<!-- ===================================================================
+     PROXIMO PASSO. Portado da sec-cta de /ed/formacoes/. A copy foi
+     trocada pelos dois caminhos desta pagina, e os botoes apontam
+     pros popups daqui.
+     =================================================================== -->
+<section class="sec-cta" id="sec-cta">
+    <div class="cta-inner">
+        <div class="cta-left">
+            <div class="cta-header">
+                <span class="cta-eyebrow sec-eyebrow">Próximo passo</span>
+                <h2 class="cta-title sec-title"><span style="font-weight: 700">Você decide</span> qual porta abre primeiro</h2>
+            </div>
+            <p class="cta-sub">A Formação em Inteligência Artificial e Automação é o caminho de um ano. O Infinite Pass é o caminho de quem quer a plataforma inteira, pra sempre. Os dois levam ao mesmo lugar, com alcance diferente.</p>
+        </div>
+        <div class="cta-right">
+            <div class="cta-tags">
+                <span class="tag-status" data-semantic="neutral" data-size="m">Acesso por 12 meses</span>
+                <span class="tag-status" data-semantic="neutral" data-size="m">Acesso vitalício</span>
+                <span class="tag-status" data-semantic="neutral" data-size="m">Comunidade Xperiun</span>
+            </div>
+            <div class="cta-actions">
+                <a href="#" class="btn" data-size="m" data-emphasis="subtle" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-formacao')">Garantir a Formação em IA e Automação</a>
+                <a href="#" class="btn" data-size="m" data-emphasis="high" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-vitalicio')">Garantir Acesso Vitalício</a>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+
+
+
+
+
+
+
+<!-- ===================================================================
+     INCLUDES PADRÃO
+     =================================================================== -->
+
+<!-- Botao fixo do WhatsApp. Lido da versao publicada em
+     xperiun.com/ed/aichampion/ (o repo local nao tem esse componente).
+     Numero e o mesmo que o footer do site ja usa. -->
+<a class="btn wa-float" data-size="m" data-icon=""
+   href="https://api.whatsapp.com/send?phone=554831974984&amp;text=Ol%C3%A1!%20Tenho%20interesse%20na%20Xperiun%20e%20queria%20tirar%20algumas%20d%C3%BAvidas."
+   target="_blank" rel="noopener" aria-label="Tirar dúvidas no WhatsApp"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill="none" d="M0 0h24v24H0z"></path><path d="M7.25361 18.4944L7.97834 18.917C9.18909 19.623 10.5651 20 12.001 20C16.4193 20 20.001 16.4183 20.001 12C20.001 7.58172 16.4193 4 12.001 4C7.5827 4 4.00098 7.58172 4.00098 12C4.00098 13.4363 4.37821 14.8128 5.08466 16.0238L5.50704 16.7478L4.85355 19.1494L7.25361 18.4944ZM2.00516 22L3.35712 17.0315C2.49494 15.5536 2.00098 13.8345 2.00098 12C2.00098 6.47715 6.47813 2 12.001 2C17.5238 2 22.001 6.47715 22.001 12C22.001 17.5228 17.5238 22 12.001 22C10.1671 22 8.44851 21.5064 6.97086 20.6447L2.00516 22ZM8.39232 7.30833C8.5262 7.29892 8.66053 7.29748 8.79459 7.30402C8.84875 7.30758 8.90265 7.31384 8.95659 7.32007C9.11585 7.33846 9.29098 7.43545 9.34986 7.56894C9.64818 8.24536 9.93764 8.92565 10.2182 9.60963C10.2801 9.76062 10.2428 9.95633 10.125 10.1457C10.0652 10.2428 9.97128 10.379 9.86248 10.5183C9.74939 10.663 9.50599 10.9291 9.50599 10.9291C9.50599 10.9291 9.40738 11.0473 9.44455 11.1944C9.45903 11.25 9.50521 11.331 9.54708 11.3991C9.57027 11.4368 9.5918 11.4705 9.60577 11.4938C9.86169 11.9211 10.2057 12.3543 10.6259 12.7616C10.7463 12.8783 10.8631 12.9974 10.9887 13.108C11.457 13.5209 11.9868 13.8583 12.559 14.1082L12.5641 14.1105C12.6486 14.1469 12.692 14.1668 12.8157 14.2193C12.8781 14.2457 12.9419 14.2685 13.0074 14.2858C13.0311 14.292 13.0554 14.2955 13.0798 14.2972C13.2415 14.3069 13.335 14.2032 13.3749 14.1555C14.0984 13.279 14.1646 13.2218 14.1696 13.2222V13.2238C14.2647 13.1236 14.4142 13.0888 14.5476 13.097C14.6085 13.1007 14.6691 13.1124 14.7245 13.1377C15.2563 13.3803 16.1258 13.7587 16.1258 13.7587L16.7073 14.0201C16.8047 14.0671 16.8936 14.1778 16.8979 14.2854C16.9005 14.3523 16.9077 14.4603 16.8838 14.6579C16.8525 14.9166 16.7738 15.2281 16.6956 15.3913C16.6406 15.5058 16.5694 15.6074 16.4866 15.6934C16.3743 15.81 16.2909 15.8808 16.1559 15.9814C16.0737 16.0426 16.0311 16.0714 16.0311 16.0714C15.8922 16.159 15.8139 16.2028 15.6484 16.2909C15.391 16.428 15.1066 16.5068 14.8153 16.5218C14.6296 16.5313 14.4444 16.5447 14.2589 16.5347C14.2507 16.5342 13.6907 16.4482 13.6907 16.4482C12.2688 16.0742 10.9538 15.3736 9.85034 14.402C9.62473 14.2034 9.4155 13.9885 9.20194 13.7759C8.31288 12.8908 7.63982 11.9364 7.23169 11.0336C7.03043 10.5884 6.90299 10.1116 6.90098 9.62098C6.89729 9.01405 7.09599 8.4232 7.46569 7.94186C7.53857 7.84697 7.60774 7.74855 7.72709 7.63586C7.85348 7.51651 7.93392 7.45244 8.02057 7.40811C8.13607 7.34902 8.26293 7.31742 8.39232 7.30833Z"></path></svg><span class="menu-perfil-notif" aria-hidden="true"><span class="material-symbols-outlined">notifications</span></span></a>
+
+<!-- Barra de CTA fixa. Portada de /ed/aichampion/; aparece so na faixa do
+     Infinite Pass, ver script.js. -->
+<div class="bottom-cta is-hidden">
+    <div class="bottom-cta-blur bottom-cta-blur-2" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-4" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-8" aria-hidden="true"></div>
+    <div class="bottom-cta-blur bottom-cta-blur-16" aria-hidden="true"></div>
+    <a class="btn bottom-cta-btn" data-size="s" data-emphasis="high" href="#" onclick="event.preventDefault(); window.openPopup &amp;&amp; window.openPopup('popup-form-vitalicio')">Garantir Acesso Vitalício</a>
+</div>
+
+<div data-popup-form="formacao"></div>
+<div data-popup-form="vitalicio"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js"></script>
+
+<!-- Sem menu e sem footer nesta página: ela é uma escolha entre dois
+     caminhos e não deve oferecer saída pra lugar nenhum além dos dois
+     CTAs. O copyright legal, que normalmente viria do footer, fica nas
+     meta tags do <head> e no fingerprint no fim deste arquivo. -->
+
+<!-- revela os .motion (animação das imagens dos cards de formação) -->
+<script src="/ed/motion-cards.js"></script>
+<!-- catálogo dos 47 cursos das 7 formações, usado pra montar as pastas -->
+<script src="/ed/site-dependencias/dados-cursos.js?v=1"></script>
+<!-- XpFolder: pasta 3D + lightbox -->
+<script src="/ed/areas/pasta.js?v=1"></script>
+<!-- AREAS (catalogo dos business cases), o clique dos .bc-case-card e o
+     reveal dos .bc-step vivem aqui. Carregado em vez de copiado pra nao
+     duplicar o catalogo. -->
+<script src="/ed/business-cases/script.js?v=1"></script>
+<script src="/ed/pre-vitalicio/dependencias/script.js?v=122"></script>
+<!-- Smooth scroll do site: lerp em window.scrollY, respeita
+     prefers-reduced-motion e ignora carrosséis horizontais. -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- © 2026 Xperiun. Conteúdo protegido por direitos autorais. Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

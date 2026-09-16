@@ -1,14 +1,408 @@
 /* Ilustração 4: Recomendações de melhoria
-   Card --4, span 6 de 10, 832px no tier base.
 
-   Vazio de propósito. Regras do desenho vão aqui.
+   Duas colunas: as três recomendações à esquerda, em peças do mesmo estilo da Causa
+   raiz da ilustração 2, e à direita um campo com 8 quadrados soltos.
 
-   Lembretes do projeto, pra não precisar refazer depois:
-   · traço mínimo 2px, nunca 1px, e borda por box-shadow inset e não por border;
-   · cor sempre por token do root.css, nunca hex solto;
-   · transition e animation só com keyword (ease, ease-out), sem cubic-bezier;
-   · nenhuma animação com filter blur abaixo de 864px;
-   · ícone só do subset do Material Symbols (conferir o BASE do dl-symbols.cjs) e
-     com font-variation-settings "wght" 200;
-   · posição que precisa acompanhar largura vai em porcentagem, não em px medido.
+   A conta das larguras fecha em 100%: 55% da lista, mais 16 de vão, mais
+   calc(45% - 16px) do campo. Os 16 saem da largura do campo justamente pra o vão não
+   empurrar nada pra fora.
+   As duas medidas andam em par. Com a lista nos 65% de antes e o campo em 45%, a
+   linha pediria 110%: os dois têm flex-shrink 1, então encolheriam proporcionais à
+   base e nenhum ficaria na largura declarada, o campo inclusive parando perto de 41%
+   em vez dos 45 pedidos.
+
+   Altura de 256, e não os 384 das outras três: aqui ela bate exatamente com a pilha
+   de peças, sem sobra. A conta fecha porque cada peça mede 80 (16 de padding, 48 do
+   ícone, que é o item mais alto da linha, e 16 do outro lado) e são três com dois
+   vãos de 8: 240 + 16 = 256. O ícone dá 48 cravados porque o .material-symbols-
+   outlined vem com line-height 1 do fonts.css.
+   Com isso a ilustração fica mais baixa que as outras na fileira de cards.
+*/
+
+.il-rec {
+    /* ciclo da marcha, dividido em 4 tempos iguais (2s cada): tudo apagado, depois a
+       1a, depois a 2a e por fim a 3a, cada uma ficando acesa até o fim. Uma variável
+       só, pra mudar o ritmo num lugar e as três acompanharem. */
+    --ciclo: 8s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    height: 256px;
+}
+
+/* min-width: 0 porque item de flex tem min-width auto, que é o tamanho do conteúdo:
+   sem isso um rótulo longo poderia empurrar a lista além dos 65%. */
+.il-rec-lista {
+    width: 55%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Mesma peça das outras ilustrações: raio 16, padding 16, gradiente 132deg de bw-15
+   a bw-5. Sem teto de largura: aqui ela preenche a coluna. */
+.il-card {
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+
+/* uma linha por peça: ícone à esquerda, texto à direita */
+.il-rec-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.il-rec-ico {
+    flex: 0 0 auto;
+    font-size: 48px;
+    color: var(--bw);
+    /* opsz 24 e não 48: o subset é gerado com opsz@24 (ver dl-symbols.cjs), então é o
+       único valor desse eixo disponível. Pedir outro cai no fallback. */
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+}
+/* min-width: 0 pra o preview poder encolher e não empurrar o ícone */
+.il-rec-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.il-rec-label { font: var(--label); color: var(--bw-50); }
+/* representação de texto: uma barra de 4px, sem raio, na largura toda da coluna.
+   O container fica em coluna com gap mesmo com uma barra só: é o slot da
+   representação, e é ele que espaça se uma segunda linha voltar. */
+.il-rec-preview { display: flex; flex-direction: column; gap: 8px; }
+.il-rec-preview span { height: 4px; width: 100%; background: var(--bw-50); }
+/* Selo fechando a linha: quadrado de 32, sem raio, como os outros quadrados do
+   desenho. flex: 0 0 auto pra ele não ceder largura quando o rótulo for longo, que é
+   o oposto do .il-rec-texto: um estica, o outro fica. */
+.il-rec-selo {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    background: var(--bw-10);
+    /* centra o check nos 32 do selo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── a marcha ───────────────────────────────────────────────────
+   As peças acendem uma a uma e cada uma FICA acesa até a última acender; aí o ciclo
+   volta ao zero e as três apagam juntas. O rótulo vai pra sc500 e o check aparece no
+   selo, também em sc500.
+
+   O ciclo tem 4 tempos iguais de 2s: até 25% tudo apagado (é o retorno, e é o que
+   deixa o reinício visível), 25% acende a 1a, 50% a 2a, 75% a 3a. Como cada peça só
+   liga e não desliga, o acúmulo sai do próprio desenho da keyframe, sem contador nem
+   JS.
+
+   As transições são RAMPAS, não degraus: cada stop de partida fica 6% antes do de
+   chegada, o que dá cerca de meio segundo de passagem num ciclo de 8s, e o
+   ease-in-out arredonda as duas pontas. No fim, de 94% a 100%, as três apagam
+   juntas em rampa também, então o loop fecha sem salto.
+
+   Por que seis keyframes e não três com variável: variável de CSS não interpola, ela
+   troca de valor no meio do intervalo. Era isso que dava o degrau. Pra a passagem ser
+   suave, o que anima tem que ser a propriedade final, e o rótulo e o check animam
+   propriedades diferentes (color e opacity) em elementos diferentes, então cada um
+   precisa da sua. As três de cada lado dividem a forma e mudam só o ponto de virada,
+   que é o índice vezes 25%. */
+.il-rec-label { color: var(--bw-50); }
+.il-rec-selo .material-symbols-outlined {
+    font-size: 24px;
+    color: var(--sc500);
+    /* opsz 24 e não 48: o subset é gerado com opsz@24, então é o único valor desse
+       eixo disponível. */
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+    opacity: 0;
+}
+
+.il-rec-lista .il-card:nth-child(1) .il-rec-label { animation: il-rec-rotulo-1 var(--ciclo) ease-in-out infinite; }
+.il-rec-lista .il-card:nth-child(2) .il-rec-label { animation: il-rec-rotulo-2 var(--ciclo) ease-in-out infinite; }
+.il-rec-lista .il-card:nth-child(3) .il-rec-label { animation: il-rec-rotulo-3 var(--ciclo) ease-in-out infinite; }
+.il-rec-lista .il-card:nth-child(1) .il-rec-selo .material-symbols-outlined { animation: il-rec-tique-1 var(--ciclo) ease-in-out infinite; }
+.il-rec-lista .il-card:nth-child(2) .il-rec-selo .material-symbols-outlined { animation: il-rec-tique-2 var(--ciclo) ease-in-out infinite; }
+.il-rec-lista .il-card:nth-child(3) .il-rec-selo .material-symbols-outlined { animation: il-rec-tique-3 var(--ciclo) ease-in-out infinite; }
+
+@keyframes il-rec-rotulo-1 {
+    0%, 19%  { color: var(--bw-50); }
+    25%, 94% { color: var(--sc500); }
+    100%     { color: var(--bw-50); }
+}
+@keyframes il-rec-rotulo-2 {
+    0%, 44%  { color: var(--bw-50); }
+    50%, 94% { color: var(--sc500); }
+    100%     { color: var(--bw-50); }
+}
+@keyframes il-rec-rotulo-3 {
+    0%, 69%  { color: var(--bw-50); }
+    75%, 94% { color: var(--sc500); }
+    100%     { color: var(--bw-50); }
+}
+@keyframes il-rec-tique-1 {
+    0%, 19%  { opacity: 0; }
+    25%, 94% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@keyframes il-rec-tique-2 {
+    0%, 44%  { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@keyframes il-rec-tique-3 {
+    0%, 69%  { opacity: 0; }
+    75%, 94% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    /* sem marcha: as três ficam no repouso, rótulo em bw-50 e sem check. O desenho
+       continua legível, só não aponta uma peça por vez. */
+    .il-rec-label,
+    .il-rec-selo .material-symbols-outlined,
+    /* os quadrados param espalhados, cada um no --sx/--sy dele, e o núcleo fica
+       escondido, que é o repouso dos dois */
+    .il-rec-quadrado,
+    .il-rec-nucleo,
+    .il-rec-liga,
+    /* o sonar para junto: sem a comporta e sem os anéis não sobra nada piscando */
+    .il-rec-sonar,
+    .il-rec-sonar::before,
+    .il-rec-sonar::after,
+    .il-rec-verificado { animation: none; }
+}
+
+/* O campo dos quadrados, com o mesmo fundo das peças (132deg de bw-15 a bw-5), então
+   ele lê como um painel e não como área vazia.
+   align-self: stretch pra ele ocupar a altura toda da linha, já que as posições dos
+   quadrados são percentuais e precisam de uma caixa cheia pra se espalhar; sem isso
+   ele mediria só o conteúdo, que é zero (tudo é absoluto). */
+.il-rec-campo {
+    /* Onde o anel encosta, e de onde a linha de ligação tira o inset dela. Uma
+       variável e o complemento dela, então mudar --borda move os oito quadrados e o
+       traço juntos, sem chance de um sair do outro. */
+    --borda: 10%;
+    --fim: calc(100% - var(--borda));
+    position: relative;
+    width: calc(45% - 16px);
+    align-self: stretch;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+}
+/* Os quadrados. Cada um tem dois lugares, os dois em % do campo: --sx/--sy espalhado
+   e --ax/--ay no anel.
+
+   O anel usa 10 / 50 / 90 nos dois eixos, então ele NÃO é 1/1: sendo porcentagem do
+   campo, ele nasce com a mesma proporção dele e acompanha se o campo mudar de forma.
+   São 4 cantos e 4 meios de lado, e como os cantos contam pros dois lados que tocam,
+   cada lado fica com 3 quadrados, que é o que 8 dá exatamente.
+
+   Anima left/top, e não translate: porcentagem em translate resolve contra o tamanho
+   do PRÓPRIO elemento (16px), não contra o campo, então ela não serviria pra
+   posicionar. Em left/top a porcentagem é do bloco de contenção, que é o campo, e é
+   isso que faz o anel herdar a proporção dele.
+   O custo é animar propriedades de layout em vez de transform. Aceitável aqui: são 8
+   elementos de 16px, absolutos, e nenhum blur envolvido.
+
+   Centrados por margem negativa de 8 (metade dos 16), e não por translate, pra a
+   ancoragem não depender de transform.
+
+   Os quadrados respondem a duas peças: se juntam quando a 1a acende e mudam de dn500
+   pra ln900 quando a 2a acende, cada coisa na rampa de 6% da sua. */
+.il-rec-quadrado {
+    position: absolute;
+    left: var(--sx);
+    top: var(--sy);
+    margin: -8px;
+    width: 16px;
+    height: 16px;
+    background: var(--dn500);
+    /* Duas animações no mesmo quadrado, em tempos diferentes e sem se atrapalhar
+       porque mexem em propriedades diferentes: a posição entra com a 1a peça e a cor
+       com a 2a. */
+    animation: il-rec-junta var(--ciclo) ease-in-out infinite,
+               il-rec-tinge var(--ciclo) ease-in-out infinite;
+}
+/* a junção, no tempo da 1a peça */
+@keyframes il-rec-junta {
+    0%, 19%  { left: var(--sx); top: var(--sy); }
+    25%, 94% { left: var(--ax); top: var(--ay); }
+    100%     { left: var(--sx); top: var(--sy); }
+}
+/* A cor passa por três estágios, um por peça: dn500 no repouso, ln900 quando a 2a
+   acende e sc300 quando a 3a acende. O estágio do meio fecha em 69% pra a rampa até
+   75% ser a mesma das outras coisas que a 3a dispara.
+   A leitura é a estrutura saindo do cinza escuro, ganhando presença em cinza claro e
+   por fim virando verde, a família de sucesso. */
+@keyframes il-rec-tinge {
+    0%, 44%  { background: var(--dn500); }
+    50%, 69% { background: var(--ln900); }
+    75%, 94% { background: var(--sc300); }
+    100%     { background: var(--dn500); }
+}
+
+/* A linha de ligação: um retângulo do --borda ao --fim, ou seja com o traço passando
+   exatamente pelo centro dos quadrados do anel, porque são as mesmas variáveis que
+   posicionam eles.
+   Traço por box-shadow inset, e não por border: é a convenção do DS, e o token
+   --ring-15 já é inset 0 0 0 2px var(--bw-15), a espessura e a cor pedidas. border
+   ainda somaria na caixa e mexeria no encaixe com os quadrados.
+   Aparece com a 2a recomendação: reaproveita a keyframe do check dela, mesma
+   propriedade e mesmo instante. */
+.il-rec-liga {
+    position: absolute;
+    inset: var(--borda);
+    box-shadow: var(--ring-15);
+    opacity: 0;
+    /* duas animações: a linha aparece com a 2a peça e troca de cor com a 3a */
+    animation: il-rec-tique-2 var(--ciclo) ease-in-out infinite,
+               il-rec-liga-cor var(--ciclo) ease-in-out infinite;
+}
+/* O verde vai escrito por extenso, e não por token de ring: os --ring-* do DS são
+   todos da família bw e não existe um de sc. A forma é a mesma do --ring-15
+   (inset 0 0 0 2px), então os 2px e o inset continuam vindo da convenção; só a cor é
+   que muda. */
+@keyframes il-rec-liga-cor {
+    0%, 69%  { box-shadow: var(--ring-15); }
+    75%, 94% { box-shadow: inset 0 0 0 2px var(--sc500-25); }
+    100%     { box-shadow: var(--ring-15); }
+}
+
+/* O núcleo: caixa no centro do campo, com o ícone de database dentro. Mesma caixa de
+   ícone das outras ilustrações (raio 16, gradiente 132deg de bw-15 a bw-5) e o ícone
+   na mesma medida dos das recomendações, 48 em weight 200.
+   O anel deixa 80% do campo livre no miolo, o que dá uns 183 por 205 no card: a caixa
+   de 64 (8 de padding mais 48 do ícone, mais 8 do outro lado) sobra folga pros dois
+   lados.
+
+   Aqui o translate pode centrar, ao contrário dos quadrados: nada mais disputa o
+   transform desta caixa, porque quem se move nela é só a opacidade.
+
+   Reaproveita a keyframe do check da 1a peça: é a mesma propriedade (opacity), na
+   mesma rampa e no mesmo instante, então duplicá-la só abriria chance de as duas
+   saírem de sincronia depois. O núcleo aparece junto com a 1a recomendação e com a
+   junção dos quadrados, que é o mesmo momento do ciclo. */
+.il-rec-nucleo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 8px;
+    border-radius: 16px;
+    background: linear-gradient(132deg, var(--bw-15), var(--bw-5));
+    display: flex;
+    opacity: 0;
+    animation: il-rec-tique-1 var(--ciclo) ease-in-out infinite;
+}
+/* O sonar do núcleo. Dois anéis DUROS abrindo do contorno da caixa, na técnica dos
+   pontos da ilustração 3 (.dg-risco-ponto): box-shadow com blur 0 e só o spread
+   crescendo, então a borda é reta em vez de esfumada, e tempo linear, sem acelerar
+   nem frear. Foi o esfumado do glow anterior que saiu.
+
+   Três camadas, cada uma com um trabalho:
+     .il-rec-sonar        é a comporta. A opacidade dela entra com a 2a peça, então o
+                          sonar só existe dali em diante, e ela apaga junto no fim do
+                          ciclo. Uma comporta separada é o que permite o anel ter
+                          período próprio (2s) sem depender do ciclo de 8s.
+     ::before e ::after   são os dois anéis, meio período de diferença um do outro,
+                          então sempre há um a caminho enquanto o outro sai.
+   A opacidade do anel fica dentro da da comporta, e opacidade multiplica: por isso o
+   sonar não pode aparecer antes da 2a peça, nem sobreviver ao fim do ciclo.
+
+   O spread de 32 é o dobro do que a ilustração 3 usa, porque ali o alvo é um
+   quadradinho de 10 e aqui é uma caixa de 80: proporcionalmente é o mesmo alcance.
+   O radius herdado faz o anel acompanhar o canto arredondado da caixa.
+
+   O anel vai na família primária, em 10%. Três coisas seguram a intensidade: o 10% do
+   token, o fade-in do próprio anel e a rampa da comporta.
+
+   pc300-10 e não pc200-10: o root.css só tem escala de alfa pra pc500 e pc300, e o
+   pc200 existe apenas cheio (#9696FF). Inventar um rgba do pc200 a 10% seria pôr cor
+   fora do sistema; o pc300-10 é o 10% que o DS realmente oferece na família primária.
+   Se o tom mais claro do pc200 for necessário, o caminho é abrir --pc200-10 no
+   root.css, que é mudança de design system e não desta ilustração. */
+.il-rec-sonar {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    /* Comporta com rampa PRÓPRIA, mais longa que a das outras coisas da 2a peça: 12%
+       do ciclo (perto de 1s) contra os 6% das demais. O sonar é a única coisa aqui que
+       já está em movimento quando a comporta abre, então ele pode entrar no meio de um
+       anel; a rampa longa é o que transforma isso em surgimento em vez de estalo. */
+    animation: il-rec-abre var(--ciclo) ease-in-out infinite;
+}
+@keyframes il-rec-abre {
+    0%, 38%  { opacity: 0; }
+    50%, 88% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+.il-rec-sonar::before,
+.il-rec-sonar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    /* ease-out no lugar de linear: o anel abre rápido e desacelera, que é como uma
+       onda se comporta. Linear dava a expansão dura da ilustração 3, e aqui você pediu
+       o contrário. */
+    animation: il-rec-sonar 2s ease-out infinite;
+}
+/* meio período atrás, pra sempre haver um anel a caminho enquanto o outro sai */
+.il-rec-sonar::before { animation-delay: -1s; }
+@keyframes il-rec-sonar {
+    0%   { box-shadow: 0 0 0 0 var(--pc300-10);    opacity: 0; }
+    25%  { opacity: 1; }
+    100% { box-shadow: 0 0 0 32px var(--pc300-10); opacity: 0; }
+}
+
+.il-rec-nucleo .material-symbols-outlined {
+    font-size: 48px;
+    color: var(--pc200);
+    /* opsz 24 e não 48: o subset é gerado com opsz@24, então é o único valor desse
+       eixo disponível. */
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+    /* o sonar é irmão anterior do glifo e posicionado; relative traz o glifo de volta
+       pra frente dos anéis */
+    position: relative;
+}
+
+/* Selo de verificado, pendurado no canto de cima à direita da caixa do núcleo, meio
+   dentro e meio fora (os -12 são metade do glifo de 24). Entra com a 3a peça, e por
+   isso reaproveita a keyframe do check dela: mesma propriedade e mesmo instante.
+
+   O seletor precisa dos dois níveis pra vencer a regra do ícone do núcleo, que também
+   casa com .material-symbols-outlined e fixa 48px, pc200 e position: relative. Com a
+   mesma especificidade e vindo depois, este passa na frente. */
+.il-rec-nucleo .il-rec-verificado {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    font-size: 24px;
+    color: var(--sc500);
+    /* opsz 24 e não 48: o subset é gerado com opsz@24, então é o único valor desse
+       eixo disponível. */
+    font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 24;
+    opacity: 0;
+    animation: il-rec-tique-3 var(--ciclo) ease-in-out infinite;
+}
+
+/* ── notas ───────────────────────────────────────────────────────
+   1. A lista foi de 65% pra 55% junto com o campo indo pra 45%. Sem isso a linha
+      pediria 110% e o flex-shrink dividiria o estouro entre os dois, deixando o campo
+      perto de 41%. Se a lista tiver que voltar aos 65%, o campo cabe em
+      calc(35% - 16px).
+
+   2. Uma barra de preview por peça, contra as duas da Causa raiz da ilustração 2.
+
+   3. O campo ganhou o fundo das peças, mas segue sem raio: você pediu só o
+      background. Com as peças em raio 16 ao lado, um border-radius: 16px nele
+      alinharia os dois. É uma linha.
+
+   4. O ícone ficou em bw, como a lupa da Causa raiz. Você não indicou cor pra ele; o
+      que você indicou em bw-50 foi o texto.
 */
