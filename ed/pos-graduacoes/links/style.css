@@ -1,0 +1,358 @@
+/* ═══════════════════════════════════════════════════════════════
+   /ed/pos-graduacoes/links/ — página só com a sec-posgrad.
+   Porte fiel do bloco .sec-posgrad de ed/site-dependencias/home.css
+   (+ as regras de apoio que ele consome lá: .sec-eyebrow, .sec-title,
+   .sec-lede, .troca-card-title, .enter-card / @keyframes
+   cta-card-enter). Sem menu, sem footer, sem layers de scroll da home:
+   aqui o scroll é o da própria página.
+   ═══════════════════════════════════════════════════════════════ */
+
+body {
+    margin: 0;
+    background: var(--bb);
+}
+
+/* ── Logo fixo no topo (de home.css, .hero-logo) ─────────── */
+/* A home esconde este logo em ≤864px porque lá o .hero-logo-inline
+   assume dentro do hero. Esta página não tem hero, então o fixo fica
+   visível em todos os breakpoints — senão a página ficaria sem marca
+   no mobile. */
+.hero-logo {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 120px;
+    height: 36px;
+    display: block;
+    opacity: 0.5;
+    z-index: 50;
+    pointer-events: none;
+    transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* ── Tipografia de seção (de home.css) ───────────────────── */
+.sec-title {
+    font: var(--h3);
+    /* 200: peso mais leve self-hosted do Poppins (não existe 300). */
+    font-weight: 200;
+    color: var(--bw);
+    /* padding 64 + margin -64 = folga pro halo do blur da entrada,
+       sem deslocar o layout. Não zerar. */
+    margin: -64px;
+    opacity: 0;
+    -webkit-mask-image: var(--text-gradient-low);
+    mask-image: var(--text-gradient-low);
+    padding: 64px;
+    box-sizing: content-box;
+}
+.sec-lede {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.troca-card-title {
+    font: var(--h6);
+    font-weight: 400;
+    margin: 0;
+    color: var(--bw);
+}
+
+/* ── Entrada dos cards (de home.css) ─────────────────────── */
+@keyframes cta-card-enter {
+    from { opacity: 0; filter: blur(32px); transform: translateY(-64px); }
+    to   { opacity: 1; filter: blur(0px);  transform: translateY(0); }
+}
+.enter-card { opacity: 0; }
+.enter-card.is-entered { animation: cta-card-enter 0.9s ease-out both; }
+
+/* ── sec-posgrad ─────────────────────────────────────────── */
+/* padding lateral = container Wide 1440 (1408 de conteúdo + 16 + 16) */
+.sec-posgrad { padding: 128px max(16px, calc(50vw - 704px)); }
+/* Header centralizado (a home alinha à esquerda). Mantém
+   align-items: stretch pra que o .sec-title continue ocupando a
+   largura toda — o texto centraliza via text-align, e o par
+   padding 64 / margin -64 do halo segue intacto. */
+.posgrad-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 680px;
+    margin: 0 auto 64px;
+    text-align: center;
+}
+.posgrad-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+.posgrad-card {
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.posgrad-card-media {
+    position: relative;
+    min-height: 288px;
+    padding: 32px 32px 0 32px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+.posgrad-logo-top {
+    width: 117px;
+    position: relative;
+    z-index: 1;
+}
+.posgrad-logo-center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 16px 0;
+}
+.posgrad-logo-main { width: 160px; }
+.posgrad-card-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.posgrad-card-scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.posgrad-card--pc .posgrad-card-scrim { background: linear-gradient(to top, var(--pc800), color-mix(in srgb, var(--pc800) 25%, transparent)); }
+.posgrad-card--pp .posgrad-card-scrim { background: linear-gradient(to top, var(--pp800), color-mix(in srgb, var(--pp800) 25%, transparent)); }
+.posgrad-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+.posgrad-tag { background-color: var(--sg500-15); color: var(--sg300); }
+.posgrad-card-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px 32px 32px 32px;
+    flex: 1;
+}
+.posgrad-card--pc .posgrad-card-bottom { background: var(--pc800); }
+.posgrad-card--pp .posgrad-card-bottom { background: var(--pp800); }
+.posgrad-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: calc(100% - 16px - 192px);
+}
+.posgrad-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.posgrad-card-desc { font: var(--p); color: var(--bw-75); margin: 0; }
+.posgrad-card-cta {
+    width: 192px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+}
+.posgrad-card-cta .btn { width: 100%; }
+
+/* Card MBA FP&A: mídia baseada no .mba-offer-card-header (glow pulsante +
+   stripes radiais), no lugar do vídeo/foto de fundo. */
+.posgrad-card-media--fpa {
+    background: linear-gradient(to bottom, var(--dn800), transparent);
+    isolation: isolate;
+}
+.posgrad-fpa-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(90deg, transparent, var(--pc500));
+    animation: posgrad-fpa-glow 4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes posgrad-fpa-glow {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 1; }
+}
+.posgrad-fpa-stripes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    pointer-events: none;
+}
+.posgrad-fpa-stripes > div {
+    flex: 1 1 0;
+    height: 100%;
+    background: radial-gradient(ellipse, transparent 0%, var(--bb) 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+}
+.posgrad-logo-main--fpa { width: 220px; }
+
+@media (max-width: 1152px) {
+    .posgrad-card-bottom { flex-direction: column; }
+    .posgrad-card-body { width: 100%; }
+    .posgrad-card-cta { width: 100%; }
+}
+@media (max-width: 864px) {
+    .posgrad-cards { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 576px) {
+    .sec-posgrad { padding: 96px 16px; }
+    .posgrad-cards { gap: 16px; }
+}
+
+/* ── Card e-Mec/MEC com foil holográfico ─────────────────────────
+   Porte de ed/pos-graduacoes/mba-fpa.css (.mba-bridge-*). Lá a
+   .mba-card-bridge tem height 0 e o card fica absolute em top: -80
+   pra atravessar a fronteira hero/intro. Aqui o card fecha a página,
+   então a seção entra no fluxo normal (altura reservada) e o card
+   centraliza junto com o resto do conteúdo. O visual do card, o tilt
+   3D e o overlay iridescente são idênticos.
+   ───────────────────────────────────────────────────────────────── */
+.mba-card-bridge {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 128px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+.mba-bridge-card {
+    position: relative;
+    width: 176px;
+    height: 208px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+/* Card visual (recebe o tilt 3D + bg); o .mba-bridge-card é só o host/âncora */
+.mba-bridge-fx {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    border-radius: 16px;
+    overflow: hidden;            /* recorta o overlay no formato arredondado */
+    isolation: isolate;          /* contém o mix-blend ao card */
+    background: linear-gradient(180deg, var(--ln200), var(--bw));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    transform: perspective(700px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    transform-origin: center center;
+    transition: transform 200ms ease-out;
+    will-change: transform;
+}
+/* Topo: ícone + label "e-Mec" em pc500, centralizados. */
+.mba-bridge-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.mba-bridge-emec-icon {
+    width: 24px;
+    height: auto;
+    flex-shrink: 0;
+}
+.mba-bridge-emec-label {
+    font: var(--label);
+    color: var(--pc500);
+}
+/* Selo MEC: tamanho natural, ancorado no bottom via space-between. */
+.mba-bridge-selo {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+}
+
+/* ── Foil holográfico do card (overlay iridescente sobre o card) ── */
+.mba-bridge-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+.mba-bridge-overlay g {
+    transform-box: view-box;
+    transform-origin: center;
+    will-change: transform;
+}
+/* Cores da iridescência — tokens do root, em ordem espectral */
+.mba-ov-1  polygon { fill: var(--er300); }
+.mba-ov-2  polygon { fill: var(--wr300); }
+.mba-ov-3  polygon { fill: var(--sc500); }
+.mba-ov-4  polygon { fill: var(--sc300); }
+.mba-ov-5  polygon { fill: var(--pc300); }
+.mba-ov-6  polygon { fill: var(--pc500); }
+.mba-ov-7  polygon { fill: var(--pp500); }
+.mba-ov-8  polygon { fill: transparent; }
+.mba-ov-9  polygon { fill: transparent; }
+.mba-ov-10 polygon { fill: var(--bw); }
+/* Shimmer ocioso: cada polígono oscila ±10° em torno de i*10° (defasado) */
+.mba-ov-1  { animation: mbaOverlay1  5s infinite; }
+.mba-ov-2  { animation: mbaOverlay2  5s infinite; }
+.mba-ov-3  { animation: mbaOverlay3  5s infinite; }
+.mba-ov-4  { animation: mbaOverlay4  5s infinite; }
+.mba-ov-5  { animation: mbaOverlay5  5s infinite; }
+.mba-ov-6  { animation: mbaOverlay6  5s infinite; }
+.mba-ov-7  { animation: mbaOverlay7  5s infinite; }
+.mba-ov-8  { animation: mbaOverlay8  5s infinite; }
+.mba-ov-9  { animation: mbaOverlay9  5s infinite; }
+.mba-ov-10 { animation: mbaOverlay10 5s infinite; }
+@keyframes mbaOverlay1  { 0%,100% { transform: rotate(0deg); }   50% { transform: rotate(10deg); } }
+@keyframes mbaOverlay2  { 0%,100% { transform: rotate(10deg); }  50% { transform: rotate(20deg); } }
+@keyframes mbaOverlay3  { 0%,100% { transform: rotate(20deg); }  50% { transform: rotate(30deg); } }
+@keyframes mbaOverlay4  { 0%,100% { transform: rotate(30deg); }  50% { transform: rotate(40deg); } }
+@keyframes mbaOverlay5  { 0%,100% { transform: rotate(40deg); }  50% { transform: rotate(50deg); } }
+@keyframes mbaOverlay6  { 0%,100% { transform: rotate(50deg); }  50% { transform: rotate(60deg); } }
+@keyframes mbaOverlay7  { 0%,100% { transform: rotate(60deg); }  50% { transform: rotate(70deg); } }
+@keyframes mbaOverlay8  { 0%,100% { transform: rotate(70deg); }  50% { transform: rotate(80deg); } }
+@keyframes mbaOverlay9  { 0%,100% { transform: rotate(80deg); }  50% { transform: rotate(90deg); } }
+@keyframes mbaOverlay10 { 0%,100% { transform: rotate(90deg); }  50% { transform: rotate(100deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .mba-bridge-overlay g { animation: none !important; }
+    .mba-bridge-fx { transition: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE / TOUCH: remove o blur das animações (as animações seguem
+   rodando em opacity/transform). Mesmo recorte do fim do home.css,
+   limitado ao que esta página usa.
+   ════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse), (max-width: 864px) {
+    .sec-lede,
+    [class*="-title"] span,
+    h2 span, h3 span {
+        filter: none !important;
+    }
+
+    .sec-lede {
+        transition: opacity 0.5s ease, transform 0.5s ease !important;
+    }
+
+    @keyframes cta-card-enter {
+        from { opacity: 0; transform: translateY(-64px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+}
