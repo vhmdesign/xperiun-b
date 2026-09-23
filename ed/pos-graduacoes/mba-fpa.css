@@ -380,6 +380,9 @@ html, body { margin: 0; padding: 0; }
     z-index: 2;
     pointer-events: none;
 }
+/* É um <a> pro cadastro no e-MEC. `text-decoration: none` também no
+   :hover porque o root.css sublinha `a:not(.btn):hover`, e o sublinhado
+   propagaria pro "e-Mec" e pro selo dentro do card. */
 .mba-bridge-card {
     position: absolute;
     top: -80px;
@@ -389,7 +392,9 @@ html, body { margin: 0; padding: 0; }
     box-sizing: border-box;
     pointer-events: auto;
     cursor: pointer;
+    text-decoration: none;
 }
+.mba-bridge-card:hover { text-decoration: none; }
 /* Card visual (recebe o tilt 3D + bg); o .mba-bridge-card é só o host/âncora */
 .mba-bridge-fx {
     width: 100%;
