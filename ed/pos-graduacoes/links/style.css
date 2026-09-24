@@ -335,6 +335,43 @@ body {
     .mba-bridge-fx { transition: none; }
 }
 
+/* ── Botão flutuante de WhatsApp ─────────────────────────────────
+   Porte do .wa-float de ed/aichampion/dependencias/style.css.
+   Base .btn do root (data-size="m" + data-icon) com a cor success
+   500→700; o badge repete o menu-perfil-notif.
+   ───────────────────────────────────────────────────────────────── */
+.wa-float {
+    position: fixed; right: 24px; bottom: 24px; z-index: 600;
+    background: linear-gradient(135deg, var(--sc500), var(--sc700));
+    color: var(--sc900);   /* fill do SVG (currentColor) = verde escuro sobre o gradiente success */
+    overflow: visible;     /* deixa o badge de notificação vazar pra fora do botão */
+}
+.wa-float svg { display: block; width: 32px; height: 32px; }
+.wa-float .menu-perfil-notif {
+    position: absolute; top: -6px; right: -6px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--er500-50);
+    display: grid; place-items: center;
+    pointer-events: none;
+}
+.wa-float .menu-perfil-notif .material-symbols-outlined {
+    font-size: 16px; color: var(--bw);
+    transform-origin: top center;
+    animation: sino-balanca 2.5s ease infinite;
+}
+@keyframes sino-balanca {
+    0%   { transform: rotate(0); }
+    6%   { transform: rotate(15deg); }
+    12%  { transform: rotate(-11.25deg); }
+    18%  { transform: rotate(7.5deg); }
+    24%  { transform: rotate(-3.75deg); }
+    30%  { transform: rotate(0); }
+    100% { transform: rotate(0); }
+}
+@media (max-width: 576px) {
+    .wa-float { right: 16px; bottom: 16px; }
+}
+
 /* ════════════════════════════════════════════════════════════════
    MOBILE / TOUCH: remove o blur das animações (as animações seguem
    rodando em opacity/transform). Mesmo recorte do fim do home.css,
