@@ -354,8 +354,16 @@ body {
     display: grid; place-items: center;
     pointer-events: none;
 }
-.wa-float .menu-perfil-notif .material-symbols-outlined {
-    font-size: 16px; color: var(--bw);
+/* Sino como SVG inline, não como ligature do Material Symbols. A
+   ligature depende da fonte de ícones resolver; quando ela não
+   resolve, o badge renderiza a palavra "notifications" por extenso e
+   vaza pra fora do círculo. Como este é o único ícone da página, o
+   SVG também evita baixar a fonte inteira por causa dele.
+   Path extraído do próprio subset (uniE7F4, wght 400 / FILL 0). */
+.wa-float .menu-perfil-notif svg {
+    width: 16px; height: 16px;
+    display: block;
+    fill: var(--bw);
     transform-origin: top center;
     animation: sino-balanca 2.5s ease infinite;
 }
