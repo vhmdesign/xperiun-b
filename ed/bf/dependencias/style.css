@@ -1,0 +1,2797 @@
+/* ══════════════════════════════════════════════════════════════════════
+   BLACK FRIDAY (/ed/bf/)
+   Header recriado da LP antiga (xperiun.com/lp/bff/). O visual é o da
+   origem; o que mudou é o grid, que agora é o Wide do DS: max-width 1440,
+   10 → 8 (≤1439) → 6 (≤864) → 4 (≤576) colunas, gaps 32/32/24/16. As
+   @media vêm DEPOIS das regras base, senão o span base sobrescreve o do
+   breakpoint.
+
+   Cores da origem trocadas pelos tokens do root.css que elas já eram:
+     #1e1e28 → --dn700        #9696ff → --pc200       #0a0a14 → --dn900
+     #ffff00 → --wr500        #ffc801 → --wr700       #00000a → --bb
+     rgba(255,255,0,.25) → --wr500-25    rgba(75,0,255,.5) → --pc500-50
+     #f5f5ffbf → --bw-75
+   O único valor sem token era o fim do gradiente do título,
+   rgba(245,245,255,.35): ficou o --bw-50 do --text-gradient-low do DS.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Syne na página inteira, como na /ed/infinite-pass/: trocar a família
+   do token troca todos os tokens de texto do DS de uma vez (--h*, --p*,
+   --label*, --btn*), sem reescrever regra por regra. Os ícones não mudam:
+   o .material-symbols-outlined declara a família dele.
+
+   A Syne só tem pesos de 400 a 800 (é variável, 400 por padrão). Por isso
+   os títulos ficam em 400 com o destaque em 700, e nada aqui pede menos
+   que 400. */
+:root { --font-family: "Syne", sans-serif; }
+
+body {
+    margin: 0;
+    background: var(--bb);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════════════════════════════ */
+.bf-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 96px 0 196px;
+    background-image: linear-gradient(180deg, var(--dn700) 0%, transparent 100%);
+}
+
+.hero-logo {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    width: 160px;
+    height: 48px;
+    transform: translateX(-50%);
+    z-index: 2;
+    opacity: 0.5;
+}
+
+.bf-hero-inner {
+    /* Trilhas do grid em variáveis: o lockup refaz a conta de `span 6`
+       com elas (ver .bf-lockup). Mudou o grid, mudam as duas. */
+    --cols: 10;
+    --gap: 32px;
+    position: relative;
+    z-index: 2;
+    container-type: inline-size;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: var(--gap);
+    row-gap: 0;
+    align-items: center;
+}
+
+/* ── Lockup ─────────────────────────────────────────────────────────────
+   Na origem, BLACK e FRIDAY viviam numa caixa de 832px (= span 6): BLACK
+   encostado na direita, FRIDAY na esquerda. Aqui a caixa é o span 6 do
+   grid em que ela está:
+
+       coluna = (100cqw - (cols - 1) x gap) / cols
+       span 6 = 6 x coluna + 5 x gap
+
+   No 6 e no 4 colunas o span 6 passa da largura toda e o min() trava em
+   100cqw.
+
+   O tamanho da letra sai da mesma caixa. Na origem o FRIDAY ocupava 0,925
+   dela (770 de 832). O peso é o da origem, 900, e medido no navegador
+   "FRIDAY" nesse peso mede 6,082x o font-size: o font-size é o que
+   devolve os mesmos 0,925 da caixa. No Wide isso dá 126px, praticamente
+   os 8rem da origem. */
+.bf-lockup {
+    --lock-w: min(100cqw, (100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) * 6 + 5 * var(--gap));
+    grid-column: 3 / span 6;
+    position: relative;
+    margin-bottom: 64px;
+}
+.bf-titulo {
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 900;
+    /* O arquivo da Syne é VARIÁVEL (wght 400 a 800, padrão 400) e o
+       fonts.css declara o mesmo arquivo como "400" e como "700" fixos.
+       Sem fixar o eixo aqui, o Safari e outros desenham o padrão 400. O
+       eixo da Syne vai até 800, então o 900 pedido (como na origem) é
+       desenhado no 800, exatamente como a origem também desenha. */
+    font-variation-settings: 'wght' 900;
+    font-size: calc(var(--lock-w) * 0.925 / 6.082);
+    line-height: 0.75;
+    text-transform: uppercase;
+    color: var(--bw);
+    display: flex;
+    flex-direction: column;
+}
+/* Cada palavra pinta o próprio gradiente (background-clip: text), como na
+   origem. O padding vertical estende a caixa do fundo além do line-height
+   de 0.75, senão o topo e a base das letras ficariam sem tinta; a margem
+   negativa devolve o espaçamento. */
+.bf-titulo-linha {
+    display: block;
+    width: fit-content;
+    padding: 0.1em 0;
+    margin: -0.1em 0;
+    white-space: nowrap;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bf-titulo-linha--black {
+    margin-left: auto;
+    background-image: linear-gradient(90deg, var(--bw), var(--bw-50));
+}
+.bf-titulo-linha--friday {
+    background-image: linear-gradient(270deg, var(--bw), var(--bw-50));
+}
+
+/* Selo: borda serrilhada girando e miolo parado, levemente inclinado. */
+.bf-selo {
+    position: absolute;
+    right: -32px;
+    bottom: -32px;
+    width: 96px;
+    height: 96px;
+    z-index: 2;
+    /* Fundo --bb-75 atrás do selo, SÓ na área do miolo. O ::after tem
+       backdrop-filter e cobre o círculo inteiro, então ele desfoca tudo o
+       que está atrás, inclusive os dentes do ::before; com o fundo
+       chegando até a borda, o preto entrava nesse desfoque e escurecia os
+       dentes, como se estivesse por cima deles. O selo-75.webp é opaco a
+       partir de 8px de 264 (3%) da borda: o disco do fundo para em 93% do
+       raio, embaixo do miolo opaco, e a faixa dos dentes fica sem preto. */
+    background: radial-gradient(circle closest-side, var(--bb-75) 93%, transparent 93%);
+}
+.bf-selo::before,
+.bf-selo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.bf-selo::before {
+    background-image: url("/ed/bf/dependencias/selo-borda.webp");
+    animation: spin 1s linear infinite;
+    will-change: transform;
+}
+.bf-selo::after {
+    background-image: url("/ed/bf/dependencias/selo-75.webp");
+    border-radius: 100%;
+    transform: rotate(7.5deg);
+    /* Sem o backdrop-filter da /ed/bf/: ele pintava uma cópia desfocada
+       do que está atrás (::before + fundo --bb-75) por cima dos dentes, na
+       faixa onde o selo-75 é transparente, e o desfoque espalhava o preto
+       ali, escurecendo a borda. Com o fundo preto atrás, o texto vazado já
+       mostra --bb-75 e o desfoque não tem mais função. */
+}
+
+/* ── Entrada do título ──────────────────────────────────────────────────
+   Cada palavra entra INTEIRA, do lado em que está ancorada: BLACK (na
+   direita da caixa) vem da direita, FRIDAY (na esquerda) vem da esquerda,
+   e as duas se encontram no lugar. A palavra não é quebrada em letras de
+   propósito: o gradiente é pintado na palavra (background-clip: text), e
+   letras soltas em inline-block perderiam a tinta.
+
+   Depois das duas, o selo "carimba": cresce girando até a inclinação de
+   repouso. A animação é no .bf-selo; o giro contínuo da borda mora no
+   ::before dele e segue independente.
+
+   Só CSS, na carga: o header está no fold, não há o que esperar. Com
+   `both`, o estado inicial vale desde o primeiro paint, sem flash. */
+.bf-titulo-linha--black  { animation: bf-entra-dir 0.9s ease-out both; }
+.bf-titulo-linha--friday { animation: bf-entra-esq 0.9s ease-out 0.15s both; }
+.bf-selo                 { animation: bf-selo-entra 0.6s ease-out 0.7s both; }
+
+@keyframes bf-entra-dir {
+    from { opacity: 0; transform: translateX(0.5em); filter: blur(16px); }
+    to   { opacity: 1; transform: translateX(0);     filter: blur(0); }
+}
+@keyframes bf-entra-esq {
+    from { opacity: 0; transform: translateX(-0.5em); filter: blur(16px); }
+    to   { opacity: 1; transform: translateX(0);      filter: blur(0); }
+}
+@keyframes bf-selo-entra {
+    from { opacity: 0; transform: scale(0.5) rotate(-180deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Regra do projeto: sem blur ANIMADO abaixo de 864. As keyframes são
+   redefinidas sem o filter; o deslize e o fade continuam. */
+@media (max-width: 864px) {
+    @keyframes bf-entra-dir {
+        from { opacity: 0; transform: translateX(0.5em); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes bf-entra-esq {
+        from { opacity: 0; transform: translateX(-0.5em); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bf-titulo-linha--black,
+    .bf-titulo-linha--friday,
+    .bf-selo { animation: none; }
+}
+
+/* ── Texto e botão ──────────────────────────────────────────────────── */
+/* Tag da data e P L num bloco próprio, alinhados à esquerda, nas mesmas
+   colunas do lockup: 3 / span 6 (10 cols), 2 / span 6 (8 cols) e 1 / -1
+   (6 e 4 cols), remapeados nas @media do header. */
+.bf-hero-chamada {
+    grid-column: 3 / span 6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+/* A promessa, em warning: a cor da oferta na página. */
+.bf-hero-chamada-destaque { color: var(--wr500); }
+/* A lede agora só leva o P, ao lado do botão. */
+.bf-hero-lede {
+    grid-column: 3 / span 4;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+.bf-hero-lede-l {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bw);
+}
+.bf-hero-lede-p {
+    margin: 0;
+    font: var(--p);
+    color: var(--bw-75);
+}
+.bf-hero-acao {
+    grid-column: 7 / span 2;
+    align-self: center;
+}
+
+/* Botão da origem: pílula externa translúcida + pílula interna em
+   gradiente amarelo. No hover a externa vira roxa e a interna ganha
+   brilho em --pc200. */
+.bf-btn {
+    display: flex;
+    padding: 8px;
+    border-radius: 1920px;
+    background: var(--wr500-25);
+    text-decoration: none;
+    transition: background 0.5s ease;
+}
+.bf-btn > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 1920px;
+    background-image: linear-gradient(90deg, var(--wr500), var(--wr700));
+    font: 400 1rem/1 var(--font-family-horizontal);
+    color: var(--bb);
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.5s ease;
+}
+/* `a.bf-btn` e não `.bf-btn`: o root.css tem `a:not(.btn):hover` com
+   underline, de especificidade (0,2,1), que venceria um `.bf-btn:hover`
+   (0,2,0). Com o `a` na frente empata, e este arquivo vem depois. */
+a.bf-btn:hover,
+a.bf-btn:focus-visible {
+    background: var(--pc500-50);
+    text-decoration: none;
+    outline: none;
+}
+.bf-btn:hover > span,
+.bf-btn:focus-visible > span {
+    box-shadow: 0 16px 32px 0 var(--pc200), inset 0 -4px 16px 2px var(--pc200);
+}
+
+/* ── Faixas ─────────────────────────────────────────────────────────────
+   Faixas de ponta a ponta (não são layout de colunas). Fundo em degradê
+   dn900 → pc200 → pc200 → dn900, 40px de altura, 40s por volta, como na
+   origem. O passo é -50% porque a trilha tem DOIS grupos idênticos.
+   O blur das duas de trás é ESTÁTICO (decorativo): o que anda é o texto
+   dentro delas, não o filtro. */
+.bf-faixa {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, var(--dn900) 0%, var(--pc200) 25%, var(--pc200) 75%, var(--dn900) 100%);
+    pointer-events: none;
+}
+.bf-faixa--frente {
+    bottom: 64px;
+    z-index: 1;
+    pointer-events: auto;
+}
+.bf-faixa--meio {
+    bottom: 64px;
+    transform: rotate(3.75deg);
+    filter: blur(4px);
+    opacity: 0.45;
+}
+.bf-faixa--fundo {
+    top: 25%;
+    transform: rotate(-7.5deg) scale(2);
+    filter: blur(4px);
+    opacity: 0.15;
+}
+.bf-faixa-trilha {
+    display: flex;
+    width: max-content;
+    animation: bf-faixa 40s linear infinite;
+}
+.bf-faixa--frente:hover .bf-faixa-trilha { animation-play-state: paused; }
+.bf-faixa-grupo {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.bf-faixa-grupo li {
+    margin: 0;
+    padding-left: 32px;
+    font: 400 1rem/1 var(--font-family-horizontal);
+    color: var(--bb);
+    white-space: nowrap;
+}
+@keyframes bf-faixa {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* ── Breakpoints ────────────────────────────────────────────────────── */
+@media (max-width: 1439px) {
+    .bf-hero-inner { --cols: 8; }
+    .bf-lockup,
+    .bf-hero-chamada { grid-column: 2 / span 6; }
+    .bf-hero-lede  { grid-column: 2 / span 4; }
+    .bf-hero-acao  { grid-column: 6 / span 2; }
+}
+@media (max-width: 864px) {
+    .bf-hero       { padding: 80px 0 160px; }
+    .hero-logo       { width: 120px; height: 36px; }
+    .bf-hero-inner { --cols: 6; --gap: 24px; }
+    .bf-lockup,
+    .bf-hero-chamada,
+    .bf-hero-lede,
+    .bf-hero-acao  { grid-column: 1 / -1; }
+    .bf-lockup     { margin-bottom: 32px; }
+    .bf-hero-lede  { margin-bottom: 16px; }
+    .bf-selo       { right: -16px; }
+    .bf-faixa--meio { transform: rotate(7.5deg); }
+}
+@media (max-width: 576px) {
+    .bf-hero-inner { --cols: 4; --gap: 16px; }
+    .bf-selo       { right: 0; bottom: -16px; width: 64px; height: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bf-faixa-trilha,
+    .bf-selo::before { animation: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   COMPARATIVO
+   Porte dos cards do "Como adquirir" da /ed/formacoes/ (.sec-oferta; o
+   bloco da conta, .conta-grid, saiu).
+   Lá o visual final é a soma das regras base com as do hub
+   (`body.formacoes-hub .oferta-*`); aqui as duas camadas viraram uma só,
+   sem o escopo de body, e o grid foi encaixado no do DS:
+
+       10 cols: header span 5, cards span 5 + span 5
+        8 cols: header span 4, cards span 4 + span 4
+        6 cols: tudo 1 / -1, cards empilhados
+        4 cols: idem, card com padding 32
+
+   O peso de base do título é 400, o menor que a Syne tem.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Convenção de seção (a mesma da /ed/formacoes/) ────────────────────
+   padding 64 + margin -64 do título é a folga do halo do blur da entrada
+   letra a letra, que a máscara cortaria. NÃO zerar. */
+.sec-title {
+    font: var(--h3);
+    font-weight: 400;
+    color: var(--bw);
+    margin: -64px;
+    /* O --text-gradient-low do DS (--bw → --bw-50), mas medido na área do
+       TEXTO: a máscara cobre a caixa inteira, incluindo os 64px de folga
+       de cada lado, e com o token puro o degradê começava e terminava
+       nessa folga, fora das letras. As paradas em 64px e 100% - 64px
+       alinham o começo e o fim do degradê com as bordas do texto. Vale
+       pra todos os títulos de seção da página. */
+    -webkit-mask-image: linear-gradient(90deg, var(--bw) 64px, var(--bw-50) calc(100% - 64px));
+    mask-image: linear-gradient(90deg, var(--bw) 64px, var(--bw-50) calc(100% - 64px));
+    padding: 64px;
+    box-sizing: content-box;
+}
+.sec-lede {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.word-nowrap { white-space: nowrap; }
+
+/* Estado inicial da entrada só com JS (a .bf-js vem do script.js). */
+.bf-js .sec-title { opacity: 0; }
+.bf-js .sec-lede {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+
+@keyframes cta-card-enter {
+    from { opacity: 0; filter: blur(32px); transform: translateY(-64px); }
+    to   { opacity: 1; filter: blur(0px);  transform: translateY(0); }
+}
+
+.sec-oferta {
+    padding: 128px 0;
+}
+.oferta-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.oferta-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* Linhas do comparativo, compartilhadas pelos dois cards via subgrid:
+       topo | 6 itens
+   Assim cada item fica na mesma altura do item correspondente no outro
+   card, mesmo quando o topo de um é mais alto (o da formação tem o
+   dropdown) ou quando uma descrição quebra em duas linhas e a outra não. */
+.oferta-grid {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: auto repeat(6, auto);
+    column-gap: 32px;
+    row-gap: 24px;
+}
+
+/* ── Seletor de oferta (só no celular) ─────────────────────────────────
+   O .of-perfil da /ed/infinite-pass/oferta/, com as regras de lá. Fica
+   escondido acima de 864; abaixo, ele é a navegação do carrossel dos
+   cards (ver as @media do comparativo).
+
+   O esconder é `.of-perfil.bf-perfil` (duas classes), e não só
+   `.bf-perfil`: o `display: flex` do .of-perfil logo abaixo tem a mesma
+   especificidade de uma classe só e, vindo depois, venceria. */
+.of-perfil.bf-perfil { display: none; }
+.of-perfil {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    border-radius: 9999px;
+    background-color: var(--bw-10);
+}
+/* O input some da vista mas continua no fluxo de foco: `display: none` ou
+   `visibility: hidden` o tirariam da navegação por teclado e das setas do
+   grupo de rádio, que é justamente o que se ganha usando rádio de verdade. */
+.of-perfil-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+.of-perfil-opcao {
+    flex: 1;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    text-align: center;
+    font: var(--label-s);
+    color: var(--bw-50);
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+/* Selecionado em warning, a cor da oferta desta página (na origem é o
+   verde --sc500). */
+.of-perfil-input:checked + .of-perfil-opcao {
+    background-color: var(--wr500);
+    color: var(--bb);
+}
+/* O foco precisa aparecer em algum lugar, já que o input é invisível. */
+.of-perfil-input:focus-visible + .of-perfil-opcao {
+    box-shadow: inset 0 0 0 2px var(--bw);
+}
+
+/* ── Card ──────────────────────────────────────────────────────────── */
+.oferta-card {
+    --card-accent: var(--bw-15);
+    grid-column: span 5;
+    grid-row: span 7;
+    display: grid;
+    grid-template-rows: subgrid;
+    padding: 48px;
+    border-radius: 16px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--dn900), transparent);
+    box-sizing: border-box;
+}
+/* Posição explícita dos dois cards. A oferta da Black Friday vem PRIMEIRO
+   no HTML (é ela que sobe pro topo quando os dois empilham no celular),
+   então no desktop cada card diz a coluna e a fileira dele: a formação à
+   esquerda e a oferta à direita, como antes. Sem isso o auto-placement
+   seguiria a ordem do HTML e inverteria os dois também aqui. */
+.oferta-card--formacao { grid-column: 1 / span 5; grid-row: 1 / span 7; }
+.oferta-card--bf       { grid-column: 6 / span 5; grid-row: 1 / span 7; }
+/* Fio de 2px no topo + brilho interno, na cor da formação escolhida. */
+.oferta-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(to right, transparent, var(--card-accent), transparent) top / 100% 2px no-repeat;
+    box-shadow: inset 0 32px 64px -16px var(--card-accent);
+    transition: box-shadow 0.4s ease;
+}
+.oferta-card::after {
+    content: "";
+    position: absolute;
+    top: -128px;
+    left: 0;
+    width: 100%;
+    height: 256px;
+    border-radius: 50%;
+    background: var(--card-accent);
+    filter: blur(128px);
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.4s ease;
+}
+.oferta-card > :not(.oferta-card-img) { position: relative; z-index: 2; }
+/* Dropdown aberto na frente de tudo no card. */
+.oferta-card > .oferta-card-top:has(.dropdown-group.is-open) { z-index: 30; }
+.oferta-card .oferta-card-top .dropdown-group.is-open { z-index: 30; }
+.oferta-card .dropdown { background-color: var(--dn500-50); }
+
+.oferta-card .oferta-card-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 75%;
+    height: auto;
+    transform: translate(25%, -25%) rotate(-15deg);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+    mask-image: linear-gradient(to right, transparent, black);
+}
+
+.oferta-card--full { --card-accent: var(--pc300-25); }
+/* Cores das formações: as mesmas da /ed/formacoes/. O script.js reescreve
+   o --card-accent inline a 15% quando a formação muda, como lá. */
+.oferta-card--f1 { --card-accent: rgba(225, 150, 50, 0.25); }
+.oferta-card--f2 { --card-accent: rgba(225, 100, 50, 0.25); }
+.oferta-card--f3 { --card-accent: rgba(50, 200, 150, 0.25); }
+.oferta-card--f4 { --card-accent: rgba(50, 200, 200, 0.25); }
+.oferta-card--f5 { --card-accent: rgba(100, 200, 50, 0.25); }
+.oferta-card--f6 { --card-accent: rgba(50, 100, 255, 0.25); }
+.oferta-card--f7 { --card-accent: rgba(225, 50, 50, 0.25); }
+
+.oferta-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+/* O topo mais baixo dos dois estica até a altura do outro: a folga cai
+   ANTES do divisor, que desce junto com os ícones, e não embaixo deles. */
+.oferta-card-top .oferta-divider { margin-top: auto; }
+.oferta-icon-box {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--bw-5);
+    box-sizing: border-box;
+    transition: background 0.4s ease;
+}
+.oferta-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.oferta-price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.oferta-price {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    font: var(--h2);
+    color: var(--bw);
+}
+.oferta-price .multi {
+    font: var(--label-s);
+    color: var(--bw-50);
+}
+.oferta-price .value {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 0.825em;
+    background: linear-gradient(180deg, var(--bw) 0%, var(--bw-50) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+/* Ancoragem da oferta: o preço cheio ao lado do da Black Friday, na
+   mesma estrutura dele, alinhados pela base. */
+.oferta-price-linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 24px;
+}
+/* O valor em --h2 700 (menor que os 64px da oferta, que segue sendo o
+   protagonista), apagado em --bw-50 e marcado com um X de duas linhas
+   de 4px em --er500 por cima. Só o valor leva o X; o "12×" fica limpo. */
+/* Seletor (0,4,0) de propósito: o `.oferta-card--bf .oferta-price .value`
+   (0,3,0), mais abaixo no bloco da oferta, pinta o valor com o gradiente
+   warning e preenchimento transparente, e com especificidade igual ele
+   venceria por vir depois. */
+.oferta-card--bf .oferta-price.oferta-price-de .value {
+    font: var(--h2);
+    font-weight: 700;
+    background: none;
+    -webkit-text-fill-color: var(--bw-50);
+    color: var(--bw-50);
+    /* O <s> traz o line-through do navegador; o X substitui ele. */
+    text-decoration: none;
+    position: relative;
+}
+/* O X: dois gradientes nos cantos opostos. Com ângulo de canto ("to top
+   right"), a linha de 50% do gradiente passa exatamente pelos outros dois
+   cantos, e a espessura medida ao longo dele é a espessura real do traço:
+   50% ± 2px dá uma linha de 4px de canto a canto, em qualquer proporção
+   da caixa. */
+.oferta-card--bf .oferta-price.oferta-price-de .value::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(to top right, transparent calc(50% - 2px), var(--er500) calc(50% - 2px), var(--er500) calc(50% + 2px), transparent calc(50% + 2px)),
+        linear-gradient(to bottom right, transparent calc(50% - 2px), var(--er500) calc(50% - 2px), var(--er500) calc(50% + 2px), transparent calc(50% + 2px));
+}
+.oferta-price-detail {
+    font: var(--p-s);
+    color: var(--bw-50);
+    margin: 0;
+}
+.oferta-divider {
+    width: 100%;
+    height: 2px;
+    background: var(--bw-15);
+    flex-shrink: 0;
+}
+
+/* Ícones das 7: apagados, menos o da formação do card (ou todos, na
+   Completa). Clicar num deles troca a formação, como o dropdown. */
+.oferta-completa-icons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.oferta-completa-icons img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    opacity: 0.15;
+    filter: brightness(0) invert(1);
+}
+.oferta-card--full .oferta-completa-icons img,
+.oferta-card--f1 .oferta-completa-icon--f1,
+.oferta-card--f2 .oferta-completa-icon--f2,
+.oferta-card--f3 .oferta-completa-icon--f3,
+.oferta-card--f4 .oferta-completa-icon--f4,
+.oferta-card--f5 .oferta-completa-icon--f5,
+.oferta-card--f6 .oferta-completa-icon--f6,
+.oferta-card--f7 .oferta-completa-icon--f7 {
+    opacity: 1;
+    filter: none;
+}
+
+/* A lista é ela mesma um subgrid das 6 linhas de item do card. */
+.oferta-checks {
+    grid-row: span 6;
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.oferta-check {
+    position: relative;
+    margin: 0;
+    padding-right: 12px;
+    font: var(--p);
+    color: var(--bw);
+}
+/* Traço de 2px encostado na borda do card: o -48px é o padding dele. */
+.oferta-check::before {
+    content: "";
+    position: absolute;
+    left: -48px;
+    top: 0;
+    width: 2px;
+    height: 1.5rem;
+    background: var(--sc500);
+}
+.oferta-card--full .oferta-check::before { background: var(--sg300); }
+
+/* Item no formato das .completa-tile da home: nome em cima, descrição
+   embaixo. O traço de 2px acompanha a linha do nome (1.5rem). */
+.oferta-check-nome {
+    display: block;
+    font: var(--p);
+    color: var(--bw);
+}
+.oferta-check-meta {
+    display: block;
+    margin-top: 4px;
+    font: var(--p-s);
+    color: var(--bw-50);
+}
+/* Fora do plano: continua na lista pra comparação, apagado. */
+.oferta-check.is-disabled { opacity: 0.25; }
+.oferta-check.is-disabled::before { background: var(--bw-50); }
+/* A credencial do MEC em warning, como a nota do card de Certificações
+   dos Extras: é credencial, não detalhe secundário. */
+.oferta-check-meta--mec { color: var(--wr500); }
+
+/* ── Oferta Black Friday ────────────────────────────────────────────────
+   O card é o da Completa, sem mudança; o que entra em warning é SÓ o
+   valor da oferta, com o --text-gradient-special-warning do root.css. */
+.oferta-card--bf .oferta-icon-box { background: var(--pc300-10); }
+.oferta-card--bf .oferta-price .value {
+    background: var(--text-gradient-special-warning);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Ícone da Xperiun e o lockup em miniatura, lado a lado. */
+.oferta-bf-marca {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+/* O .bf-titulo do topo, menor. Ele zera o que só faz sentido lá: a folga
+   de 64px do halo (aqui não há blur de entrada), o tamanho calculado pelo
+   span 6 (aqui não há --lock-w) e a própria entrada, que rodaria na carga
+   com o card fora da tela. O gradiente das linhas é o mesmo do topo. */
+.bf-titulo--mini {
+    margin: 0;
+    padding: 0;
+    font-size: 40px;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+.bf-titulo--mini .bf-titulo-linha { animation: none; }
+/* No carrossel do celular o card mede a tela menos 64px: em 32px o FRIDAY
+   (6,08x o font-size em Syne 900) passaria da borda ao lado do ícone. Em
+   24px ele mede ~146px e cabe com o ícone e o vão. */
+@media (max-width: 576px) {
+    .bf-titulo--mini { font-size: 24px; }
+}
+
+
+.bf-js .oferta-card { opacity: 0; }
+.bf-js .oferta-card.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+
+/* ── Breakpoints do comparativo ─────────────────────────────────────── */
+@media (max-width: 1439px) {
+    .oferta-inner  { grid-template-columns: repeat(8, 1fr); }
+    .oferta-header { grid-column: span 4; }
+    .oferta-grid   { grid-template-columns: repeat(8, 1fr); }
+    .oferta-card--formacao { grid-column: 1 / span 4; }
+    .oferta-card--bf       { grid-column: 5 / span 4; }
+}
+@media (max-width: 864px) {
+    .sec-oferta    { padding: 96px 0; }
+    .oferta-inner  { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; }
+    .oferta-header,
+    .oferta-grid   { grid-column: 1 / -1; }
+    /* Seletor: aparece, na largura toda, colado nos cards (a margem
+       negativa come metade do row-gap de 48 que o separaria deles). */
+    .of-perfil.bf-perfil { display: flex; grid-column: 1 / -1; margin-bottom: -24px; }
+
+    /* Carrossel: os cards lado a lado num scroll nativo com snap, como o
+       mini-carrossel da /ed/formacoes/ neste tier. A margem negativa leva a
+       trilha até a borda da tela (cancela o padding de 16 do container) e
+       o padding devolve o recuo do primeiro card. Cada card mede a largura
+       toda menos 72px, que é o que deixa a beirada do vizinho à vista. A
+       ordem dos slides é a do HTML: Black Friday primeiro. */
+    .oferta-grid {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 16px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -16px;
+        padding: 0 16px;
+    }
+    .oferta-grid::-webkit-scrollbar { display: none; }
+    /* Sem grid em volta não há subgrid: o card volta a empilhar o próprio
+       conteúdo, com os mesmos respiros (24 entre blocos, 16 entre itens). */
+    .oferta-card--formacao,
+    .oferta-card--bf {
+        flex: 0 0 calc(100% - 72px);
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .oferta-checks {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* Sem blur ANIMADO abaixo de 864: keyframe e lede sem filter. */
+    @keyframes cta-card-enter {
+        from { opacity: 0; transform: translateY(-64px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .bf-js .sec-lede { filter: none; }
+}
+@media (max-width: 576px) {
+    .oferta-inner  { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; }
+    .oferta-card   { padding: 32px; }
+    .oferta-check::before { left: -32px; }
+    .of-perfil.bf-perfil { margin-bottom: -16px; }
+    .oferta-grid   { gap: 16px; }
+    .oferta-card--formacao,
+    .oferta-card--bf { flex-basis: calc(100% - 64px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bf-js .sec-title,
+    .bf-js .sec-lede,
+    .bf-js .oferta-card {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        animation: none;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MANIFESTO (porte da v2 da /ed/bf/ (já removida))
+   Nas mesmas 6 colunas do header (3 / span 6 e 2 / span 6), com os dois
+   parágrafos dividindo elas em 3 + 3:
+       10 cols: título 3 / span 6 | p 3 / span 3 | p forte 6 / span 3
+        8 cols: título 2 / span 6 | p 2 / span 3 | p forte 5 / span 3
+        6 e 4: tudo 1 / -1
+   Vem DEPOIS do .sec-title: o .bf-manifesto-titulo anula a máscara dele
+   com a mesma especificidade, então precisa vir depois no arquivo.
+   ══════════════════════════════════════════════════════════════════════ */
+.bf-manifesto {
+    padding: 128px 0;
+}
+.bf-manifesto-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+    /* `start`: os dois parágrafos alinhados pelo topo. */
+    align-items: start;
+}
+/* As três linhas em --h1, cada uma num tom, com o degradê dos títulos
+   de seção por cima. */
+.bf-manifesto-titulo {
+    grid-column: 3 / span 6;
+    font: var(--h1);
+    font-weight: 400;
+}
+.bf-manifesto-linha { display: block; }
+.bf-manifesto-linha--2 { color: var(--bw-50); }
+.bf-manifesto-linha--3 { color: var(--wr500); }
+.bf-manifesto-p {
+    grid-column: 3 / span 3;
+    margin: 0;
+    font: var(--p);
+    color: var(--bw-75);
+}
+/* A virada do texto: maior (P L, 400) e em --bw. */
+.bf-manifesto-p--forte {
+    grid-column: 6 / span 3;
+    font: var(--p-l);
+    color: var(--bw);
+}
+
+/* Entrada dos dois parágrafos: a mesma do .sec-lede (sobe 16px saindo do
+   desfoque), disparada pelo observador dos cards no script.js, que dá
+   80ms entre um e outro. Abaixo de 864, sem o blur (regra do projeto). */
+.bf-js .bf-manifesto-p {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.bf-js .bf-manifesto-p.is-entered {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .bf-js .bf-manifesto-p {
+        opacity: 1;
+        filter: none;
+        transform: none;
+        transition: none;
+    }
+}
+@media (max-width: 1439px) {
+    .bf-manifesto-inner    { grid-template-columns: repeat(8, 1fr); }
+    .bf-manifesto-titulo   { grid-column: 2 / span 6; }
+    .bf-manifesto-p        { grid-column: 2 / span 3; }
+    .bf-manifesto-p--forte { grid-column: 5 / span 3; }
+}
+@media (max-width: 864px) {
+    .bf-manifesto { padding: 96px 0; }
+    .bf-manifesto-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 32px;
+    }
+    .bf-manifesto-titulo,
+    .bf-manifesto-p,
+    .bf-manifesto-p--forte { grid-column: 1 / -1; }
+    .bf-js .bf-manifesto-p,
+    .bf-js .bf-manifesto-p.is-entered { filter: none; }
+}
+@media (max-width: 576px) {
+    .bf-manifesto { padding: 64px 0; }
+    .bf-manifesto-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FORMAÇÕES E EXTRAS
+   Porte das duas seções da /ed/infinite-pass/oferta/, com as regras da
+   origem (comentários dela inclusos). Ajustes desta página: sem a faixa
+   fixa de bônus, o grude da lateral e a âncora das tags descem pra 32px,
+   e a seção de Formações perde os 192px de topo que lá compensavam o
+   ticket.
+
+   Grid Wide do DS nas duas: lateral 3 + conteúdo 7 (10 cols), 3 + 5
+   (8 cols), empilhadas em 1 / -1 (6 e 4 cols).
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════
+   SEÇÃO 2: AS FORMAÇÕES
+
+   Mesma partição do topo (3 + 7), mas em grid PRÓPRIO: no do topo a
+   lateral do ticket já atravessa as fileiras existentes, e enfiar mais uma
+   seção lá obrigaria a remexer naquele span a cada bloco novo.
+
+   Os cards são o .of-forma-card de /ed/formacoes/, portado. Lá as regras
+   são todas prefixadas por `body.formacoes-hub`, uma classe que esta
+   página não tem, então elas foram reescritas aqui sob `.of-forma`. O
+   desenho é o mesmo; o que mudou:
+
+     - a navegação. Lá é a .formacoes-nav, uma lista vertical de botões
+       grandes; aqui são TAGS, na cor de cada formação;
+     - caminhos absolutos (a origem usa "../", que quebraria daqui);
+     - ids prefixados com "of-", pra não colidirem com nada da página.
+   ══════════════════════════════════════════════════════════════════════ */
+.of-forma {
+    padding: 128px 0;
+}
+.of-forma-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    /* `start` pra lateral não esticar na altura da coluna de cards: um
+       item de grid esticado não tem onde grudar, e o sticky morreria. */
+    align-items: start;
+}
+/* O sticky vai no ITEM DE GRID, não num filho dele.
+
+   Num filho ele não tinha curso nenhum: o bloco-container do grude vira a
+   lateral, e a lateral, com o `align-items: start` do grid, encolhe até a
+   altura do próprio conteúdo. Grudar dentro de uma caixa do seu tamanho é
+   não grudar. A propriedade estava aplicada e não fazia nada.
+
+   No item de grid o bloco-container é a ÁREA de grid, que ocupa a fileira
+   inteira mesmo com o item alinhado no topo. O curso passa a ser a altura
+   dos cards ao lado, que é o que se quer. É assim que a .formacoes-nav da
+   origem faz.
+
+   Os 32px de topo são os mesmos do ticket lá em cima, pra as duas laterais
+   da página pararem na mesma linha. */
+.of-forma-lateral {
+    grid-column: span 3;
+    position: sticky;
+    /* respiro do topo da tela: aqui não há faixa fixa em cima */
+    top: 32px;
+}
+.of-forma-fixo {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.of-forma-titulo {
+    font: var(--h3);
+    font-weight: 400;
+    color: var(--bw);
+}
+
+/* ── Tags de formação ───────────────────────────────────────────────────
+   Substituem a .formacoes-nav da origem. Cada uma carrega a cor da sua
+   formação numa custom property, e todo o resto da regra é comum: a cor
+   entra uma vez por tag, não uma vez por propriedade.
+
+   AS CORES não estão no root.css, e não são invenção minha: são as mesmas
+   sete do `accentColors` de /ed/formacoes/index.js, que a LP do Infinite
+   Pass também já repete em `.ip-capa--fN` como tripla RGB. Escritas aqui
+   em tripla justamente pra alimentar o `rgb(... / alpha)` dos estados.
+   ────────────────────────────────────────────────────────────────────── */
+.of-forma-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.of-forma-tag--f1 { --forma: 225 150 50; }
+.of-forma-tag--f2 { --forma: 225 100 50; }
+.of-forma-tag--f3 { --forma: 50 200 150; }
+.of-forma-tag--f4 { --forma: 50 200 200; }
+.of-forma-tag--f5 { --forma: 100 200 50; }
+.of-forma-tag--f6 { --forma: 50 100 255; }
+.of-forma-tag--f7 { --forma: 225 50 50; }
+/* Estas sete são o componente Button Tags do DS (`.tag`), como as dos
+   Extras e os chips do FAQ: repouso, hover, tamanho e raio vêm do
+   root.css.
+
+   O ativo é a exceção, e é onde a cor da formação sobrevive: no lugar do
+   `--pc500-50` das outras duas, entra a cor de referência de cada uma a
+   50%. Por isso as triplas RGB acima continuam existindo, agora servindo a
+   um estado só em vez de aos três.
+
+   Quem liga e desliga a classe é o IntersectionObserver do script.js
+   desta pasta. */
+/* No repouso a tag é o componente puro: texto em --bw-75, como as dos
+   Extras e os chips do FAQ. A cor da formação aparece só na ativa, e é
+   nela que as triplas RGB acima são usadas. */
+.of-forma-tag.is-active {
+    background-color: rgb(var(--forma) / 0.25);
+    color: var(--bw);
+}
+.of-forma-tag:focus-visible {
+    outline: 2px solid var(--bw);
+    outline-offset: 2px;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────── */
+.of-forma-cards {
+    grid-column: span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.of-forma .of-forma-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 48px;
+    border-radius: 16px;
+    /* âncora do scroll das tags: o mesmo respiro do topo da lateral */
+    scroll-margin-top: 32px;
+}
+.of-forma .of-forma-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--dn800), transparent);
+    border-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+.of-forma .of-forma-card > :not(.of-forma-card-img) {
+    position: relative;
+    z-index: 2;
+}
+/* A arte entra girada, borrada e opaca, e o .motion a revela quando o card
+   cruza a tela (motion-cards.js, carregado no rodapé). */
+.of-forma .of-forma-card-img {
+    position: absolute;
+    top: 50%;
+    right: -48px;
+    width: 512px;
+    height: 512px;
+    object-fit: cover;
+    object-position: top;
+    transform: translateY(-50%) rotate(-7.5deg) scale(1.25);
+    filter: blur(4px);
+    opacity: 1;
+    z-index: 0;
+    pointer-events: none;
+    transition: 0.5s transform ease-out, 0.5s filter ease-out, 0.5s opacity ease-out;
+    -webkit-mask-image: linear-gradient(to right, transparent, black);
+    mask-image: linear-gradient(to right, transparent, black);
+}
+.of-forma .of-forma-card.is-revealed .of-forma-card-img {
+    transform: translateY(-50%) rotate(-15deg) scale(1);
+    filter: blur(0);
+    opacity: 0.5;
+}
+.of-forma .of-forma-card-titulo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.of-forma .of-forma-card-label {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+.of-forma .of-forma-card-titulo {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+.of-forma .of-forma-card-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.of-forma .of-forma-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* ── Corpo do card, no arranjo de /ed/pre-vitalicio/ ────────────────────
+   Texto e CTA empilhados à esquerda, pasta 3D à direita. Substitui o
+   divider + footer + preço que o card tinha na /ed/formacoes/: aqui o
+   preço avulso não é a história, o que está incluso é.
+
+   O padding fica em 0 porque quem paga o respiro é o .of-forma-card, que
+   já tem 48px.
+
+   A pasta troca de orientação três vezes conforme a largura, e não uma:
+   em 1152 ela vira horizontal porque a coluna ficou estreita demais pra
+   duas colunas; em 864 volta a ficar ao lado, porque o card passa a
+   ocupar a largura inteira da tela e sobra espaço de novo; em 576 desce
+   de vez. É a mesma cadência da origem.
+   ────────────────────────────────────────────────────────────────────── */
+.of-forma .of-card-corpo {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 48px;
+}
+.of-forma .of-card-colunas {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+.of-forma .of-card-coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* O ícone da formação. Ele era filho direto do card e ficava no topo de
+   tudo; agora mora dentro do .of-card-colunas, acima do texto, no lugar que
+   era da coluna de CTA.
+
+   O `align-self` não é enfeite: `.of-card-colunas` é flex em coluna, cujo
+   `align-items` implícito é `stretch`, e uma <img> ali esticaria até a
+   largura da coluna, subindo de 48px pra uns 400. Os atributos width e
+   height do HTML não seguram isso, eles só dão a proporção. */
+.of-forma .of-card-colunas > img {
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+.of-forma .of-forma-pasta { flex-shrink: 0; }
+.of-forma .of-forma-card .folder3d { height: 100%; }
+@media (max-width: 1152px) {
+    .of-forma .of-card-corpo { flex-direction: column; }
+    .of-forma .of-forma-card .folder3d { width: 100%; height: auto; }
+}
+
+@media (max-width: 1439px) {
+    .of-forma-inner { grid-template-columns: repeat(8, 1fr); }
+    .of-forma-cards { grid-column: span 5; }
+}
+/* A lateral deixa de ser coluna e vira cabeçalho: largura cheia, sem grude
+   e sem tags, sobrando só o título acima dos cards.
+
+   O grude sai porque, empilhado, ele prenderia o título na frente dos
+   cards durante toda a rolagem da seção. E as tags saem porque navegar
+   entre cards que já estão um debaixo do outro não leva a lugar nenhum.
+   É a mesma decisão da origem, que esconde a .formacoes-nav-list neste
+   tier. */
+@media (max-width: 864px) {
+    .of-forma { padding: 96px 0; }
+    .of-forma-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 32px;
+    }
+    .of-forma-lateral,
+    .of-forma-cards { grid-column: 1 / -1; }
+    .of-forma-lateral { position: static; }
+    .of-forma-tags { display: none; }
+    .of-forma .of-forma-card { padding: 32px; }
+    /* a pasta volta pro lado: o card agora tem a largura da tela inteira */
+    .of-forma .of-card-corpo { flex-direction: row; }
+    .of-forma .of-forma-card .folder3d { width: auto; height: 100%; }
+}
+@media (max-width: 576px) {
+    .of-forma { padding: 64px 0; }
+    .of-forma-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+    .of-forma .of-forma-card { padding: 24px; }
+    .of-forma .of-forma-card.is-revealed .of-forma-card-img { opacity: 0.25; }
+    .of-forma .of-card-corpo { flex-direction: column; }
+    .of-forma .of-forma-card .folder3d { width: 100%; height: auto; }
+}
+
+/* ======================================================================
+   POPUP DE CURSO (lightbox das pastas 3D)
+   O ed/areas/pasta.js monta o popup com as classes .course-modal*, mas o
+   ed/areas/pasta.css NÃO traz o visual delas: ele só ajusta o padding e
+   avisa, em comentário, que reusa o .course-modal* que mora no style.css
+   de Formações. A página /ed/areas/ carrega aquele arquivo inteiro; esta
+   aqui não, então o bloco vem portado, igual ao que /ed/pre-vitalicio/
+   fez pelo mesmo motivo.
+   ====================================================================== */
+.course-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;   /* acima do menu (z-index 9999) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    /* só visibility no container (com delay no fechar pra deixar os
+       filhos fazerem fade antes de sumir). os fades ficam nos filhos */
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s;
+}
+.course-modal.is-open {
+    visibility: visible;
+    transition: visibility 0s linear 0s;
+}
+.course-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--bb-75);
+    /* blur estático; o fade é via opacity (barato/GPU), então o blur
+       entra suave junto sem reanimar o raio a cada frame */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.course-modal.is-open .course-modal-backdrop {
+    opacity: 1;
+}
+.course-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 688px;
+    box-sizing: border-box;
+    border-radius: 16px;
+    overflow: hidden auto;                 /* x: recorta (radius) · y: rola se passar da viewport */
+    max-height: calc(100vh - 32px);        /* - padding 16px do .course-modal (topo+base) */
+    background: var(--dn800);
+    /* entrada: fade + sobe e cresce levemente até o estado neutro */
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.course-modal.is-open .course-modal-card {
+    opacity: 1;
+    transform: none;
+}
+.course-modal-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 4px 0 var(--bw-15);
+    pointer-events: none;
+    z-index: 3;
+}
+.course-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 4;
+}
+.course-modal-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 48px 48px 32px 48px;
+    box-sizing: border-box;
+}
+.course-modal-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--dn800), transparent);
+    pointer-events: none;
+}
+.course-modal-title {
+    position: relative;
+    z-index: 1;
+    font: var(--h4);
+    color: var(--bw);
+    margin: 0;
+}
+.course-modal-body {
+    padding: 0 48px 48px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.course-modal-stats {
+    display: flex;
+}
+.course-modal-stat {
+    padding: 0 32px;
+}
+.course-modal-stat:first-child {
+    padding-left: 0;
+}
+.course-modal-stat:last-child {
+    padding-right: 0;
+}
+.course-modal-stat + .course-modal-stat {
+    border-left: 2px solid var(--bw-10);
+}
+.course-modal-stat-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.course-modal-stat-label {
+    font: var(--label-s);
+    color: var(--bw-50);
+}
+.course-modal-stat-value {
+    font: var(--label);
+    color: var(--bw);
+}
+.course-modal-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+    .course-modal,
+    .course-modal-card,
+    .course-modal-backdrop {
+        transition: none;
+    }
+}
+@media (max-width: 576px) {
+    .course-modal-body {
+        padding: 24px;
+    }
+    .course-modal-media {
+        padding: 24px;
+    }
+    .course-modal-stat {
+        padding: 0 16px;
+    }
+}
+
+/* O CTA "Conhecer todos" nasce no ed/areas/pasta.js, que é compartilhado
+   com /ed/areas/ e não deve ser editado por causa desta página; some por
+   CSS. Aqui o popup JÁ é a lista completa daquela formação, então o botão
+   não leva a lugar nenhum novo. Mesma decisão de /ed/pre-vitalicio/. */
+.lb-foot > .btn { display: none; }
+
+/* O stat "Nível" sai dos popups. Ele é criado pelo pasta.js, que é
+   compartilhado com /ed/areas/ e /ed/pre-vitalicio/, então some por CSS
+   aqui em vez de sumir de lá.
+
+   A segunda regra não é detalhe: `display: none` tira o elemento do
+   desenho, mas não da árvore, então o stat seguinte continua casando o
+   seletor de irmão adjacente e ganharia um traço vertical à esquerda sem
+   nada antes dele, mais o recuo de 32px que só faz sentido entre dois. */
+.course-modal-stat:first-child {
+    display: none;
+}
+.course-modal-stat:first-child + .course-modal-stat {
+    border-left: 0;
+    padding-left: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   EXTRAS
+   Mesmo esqueleto da seção de Formações (lateral de 3 + conteúdo de 7,
+   grid Wide do DS), com uma diferença de comportamento: a tag aqui TROCA
+   a trilha do carrossel em vez de rolar a página até um card.
+
+   A tag acesa é a do slide que está em cena na trilha, e quem liga e
+   desliga a classe é o script desta pasta, a cada quadro da rolagem. É o
+   mesmo `.is-active` das tags de Formações, pelo mesmo motivo: nos dois
+   casos a tag reflete o que está em cena, não uma seleção de aba.
+   ══════════════════════════════════════════════════════════════════════ */
+.of-extras {
+    padding: 128px 0;
+}
+.of-extras-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    /* `start` pelo mesmo motivo da seção de Formações: item esticado não
+       tem folga pra grudar, e o sticky da lateral morreria. */
+    align-items: start;
+}
+/* Sem sticky aqui, ao contrário da lateral de Formações. Lá a lateral
+   acompanha uma coluna de sete cards que rola por muita tela; aqui os
+   slides do carrossel ficam todos na mesma fileira, então a seção é baixa
+   e não há curso pra acompanhar.
+
+   O empilhamento é que importa: a trilha não recorta (de propósito), então
+   o card que está saindo atravessa a coluna da lateral com opacidade
+   parcial, e era desenhado POR CIMA do título e das tags. Os dois eram
+   irmãos estáticos, e aí quem vem depois na marcação ganha, que é a
+   trilha. Com `position` e `z-index` a lateral passa na frente e o card
+   sai por trás dela.
+
+   Sem fundo opaco: o empilhamento sozinho já impede o card de ser
+   desenhado POR CIMA do título e das tags. O que ele deixa de bloquear é o
+   que passa nos vãos, entre as pílulas e entre as linhas do título. */
+.of-extras-lateral {
+    grid-column: span 3;
+    position: relative;
+    z-index: 1;
+}
+.of-extras-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+/* Estas nove são o componente Button Tags do DS (`.tag`), igual aos chips
+   do FAQ: tamanho, cor, raio e hover vêm do root.css. Só o ativo é
+   sobrescrito, e ESCOPADO aqui: escrito como `.tag.is-active` ele mudaria
+   o estado ativo em todas as páginas que usam o componente. */
+.of-extras-tag.is-active {
+    background-color: var(--pc500-50);
+    color: var(--bw);
+}
+/* O anel de foco, que o componente não define. */
+.of-extras-tag:focus-visible {
+    outline: 2px solid var(--bw);
+    outline-offset: 2px;
+}
+
+/* ── Carrossel ──────────────────────────────────────────────────────────
+   A trilha NÃO é um scroller com `overflow`. Foi, e teve que deixar de
+   ser: `overflow-x: auto` recorta na caixa, e o que se quer aqui é o
+   contrário, os cards vizinhos aparecendo POR FORA da coluna. Quem contém
+   o transbordo é o `overflow-x: clip` que o root.css põe na página, então
+   o corte acontece na borda da viewport, não na borda da trilha.
+
+   Sem scroller, a posição vira `transform` escrito pelo script, e o
+   arrastar passa a ser tratado por ele com Pointer Events. Isso também
+   conserta o arraste no desktop, que não existia: scroller nativo se
+   arrasta com o dedo, nunca com o mouse.
+
+   `touch-action: pan-y` é o que divide as águas no telefone: o eixo
+   vertical continua sendo do navegador (a página rola normalmente) e só o
+   horizontal chega até o script.
+   ────────────────────────────────────────────────────────────────────── */
+/* Segunda via de navegação do carrossel, encostada na direita. O
+   `.of-extras-fixo` é flex em coluna, então o respiro até as tags já vem
+   do gap dele. */
+.of-extras-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.of-extras-cards {
+    grid-column: span 7;
+    min-width: 0;
+    display: flex;
+    gap: 32px;
+    /* a trilha é mais larga que a coluna de propósito; não recortar aqui é
+       o ponto do desenho */
+    overflow: visible;
+    touch-action: pan-y;
+    cursor: grab;
+    will-change: transform;
+}
+.of-extras-cards.is-arrastando {
+    cursor: grabbing;
+    /* durante o arraste a posição segue o dedo quadro a quadro; qualquer
+       transição aqui viraria atraso */
+    user-select: none;
+}
+.of-extras-cards:focus-visible {
+    outline: 2px solid var(--bw);
+    outline-offset: 4px;
+}
+/* Sem espiada no tier largo: como nada é recortado, o card seguinte já
+   aparece sozinho, sangrando pra fora da coluna. A espiada explícita entra
+   só nos tiers estreitos, mais abaixo. */
+/* O card que passa da borda esquerda esmaece. Ele não some por recorte
+   nenhum, e é justamente por isso que precisa esmaecer: sem recorte, ele
+   segue caminhando por cima do título e das tags, que são fixos na
+   lateral. A opacidade é escrita pelo script, proporcional ao quanto o
+   card já saiu.
+
+   A transição é o par do movimento da trilha, com a mesma duração e a
+   mesma curva: sem ela, clicar numa tag distante apagava três ou quatro
+   cards de uma vez, no primeiro quadro, enquanto a trilha ainda levava
+   0,4s pra chegar. O apagar acontecia antes do andar.
+
+   No arraste ela sai (regra do `.is-arrastando` abaixo), porque ali a
+   opacidade tem que colar no dedo: qualquer transição viraria atraso. */
+.of-extras-card {
+    position: relative;
+    flex: 0 0 100%;
+    /* Um item flex nao encolhe abaixo do min-content do conteudo dele, por
+       causa do `min-width: auto` implicito, e ai o `flex-basis` acima deixa
+       de valer. A esteira de logos do card da Comunidade tem uma trilha de
+       1360px, e o card inteiro foi junto: virou 1360 no lugar de 966. Como
+       o script calcula a posicao por `indice * passo`, um card fora de
+       medida desalinha TODOS os seguintes, e a partir dele o carrossel
+       parava 394px fora do lugar. */
+    min-width: 0;
+    transition: opacity 0.4s ease-out;
+}
+.of-extras-cards.is-arrastando .of-extras-card {
+    transition: none;
+}
+
+/* O recuo que fecha a volta do carrossel troca os cards de papel: quem
+   assume a cena estava com opacidade 0, lá na outra banda. Com a
+   transição ligada ele entraria esmaecendo por 0.4s, e a emenda, que
+   deveria ser invisível, viraria uma piscada. O script põe esta classe,
+   força o reflow e tira. */
+.of-extras-cards.is-recentrando .of-extras-card {
+    transition: none;
+}
+
+/* Andaime dos slides que ainda não têm conteúdo. Fica no `:empty` de
+   propósito: quem tem card dentro não precisa de superfície nenhuma (o
+   .of-card traz a sua e viraria caixa dentro de caixa), e a regra se
+   apaga sozinha à medida que cada slide for preenchido, sem ninguém
+   precisar lembrar de remover nada. */
+.of-extras-card:empty {
+    min-height: 320px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--dn800), transparent);
+    box-shadow: var(--ring-10);
+}
+
+/* 8 colunas: 3 + 5, o mesmo remapeamento da seção de Formações. */
+@media (max-width: 1439px) {
+    .of-extras-inner { grid-template-columns: repeat(8, 1fr); }
+    .of-extras-cards { grid-column: span 5; }
+    /* A espiada de 32px já entra aqui. A conta é a mesma dos tiers de
+       baixo (trilha , gap , 16px do padding do container) e vale em todos
+       pelo mesmo motivo: a trilha termina na última coluna, então a borda
+       direita dela é a do container, e o que sobra até a borda da TELA são
+       os 16px de padding. */
+    .of-extras-card { flex: 0 0 calc(100% - 32px - 16px); }
+}
+
+/* 6 colunas: empilha.
+
+   ATENÇÃO à diferença pra `.of-forma-tags`, que some neste tier: lá a tag
+   só rolava até um card que continuava lá, então sumir não tirava nada do
+   alcance. Aqui a tag é o ÚNICO caminho até sete dos oito painéis, e
+   escondê-la deixaria a seção com um card e nenhuma saída. Fica. */
+@media (max-width: 864px) {
+    .of-extras { padding: 96px 0; }
+    .of-extras-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+        row-gap: 32px;
+    }
+    .of-extras-lateral,
+    .of-extras-cards { grid-column: 1 / -1; }
+    /* Espiada de 32px a partir daqui. No tier largo ela não entra: lá a
+       coluna dos cards termina perto da borda da tela e o vizinho cai
+       inteiro fora dela, que é o comportamento pedido.
+
+       A conta desconta o GAP mais os 16px de padding do container, e não
+       32px redondos, porque o que se quer são 32px VISÍVEIS: como nada é
+       recortado, o card seguinte não para na borda da coluna, ele segue
+       até a borda da tela. Descontar só o gap deixaria o padding do
+       container virar espiada extra, e apareceriam 48px. */
+    .of-extras-card { flex: 0 0 calc(100% - 32px - 16px); }
+}
+
+/* 4 colunas. */
+@media (max-width: 576px) {
+    .of-extras { padding: 64px 0; }
+    .of-extras-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+    /* O gap acompanha o do grid neste tier; a espiada segue em 32px
+       visíveis, agora descontando o gap de 16 mais os 16 do container. */
+    .of-extras-cards { gap: 16px; }
+    .of-extras-card { flex: 0 0 calc(100% - 16px - 16px); }
+    /* As tags passam de M pra S neste tier. `data-size` é atributo e não
+       tem breakpoint, então o tamanho é reescrito aqui com os valores do
+       PRÓPRIO componente: são exatamente os do `.tag[data-size="s"]` do
+       root.css, não uma escala inventada.
+
+       O seletor CARREGA o atributo de propósito. Só `.of-extras-tag` é uma
+       classe (0,1,0) e perde pro `.tag[data-size="m"]` do DS, que é classe
+       mais atributo (0,2,0), por mais que venha antes no arquivo. Empatando
+       a especificidade, quem vem depois ganha, e este arquivo carrega
+       depois do root.css. */
+    .of-extras-tag[data-size="m"] {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Título da seção + as tags, empilhados, com o mesmo respiro e o mesmo
+   tratamento do par da seção de Formações: peso 400 (o 600 que o --h3 pede
+   não existe self-hosted na Syne e o navegador sintetizaria) e máscara
+   anulada, porque o degradê do .sec-title comeria o fim do texto. O
+   padding/margin de 64px do .sec-title fica: é o halo do blur da animação
+   de entrada, e zerar a margem quebra o alinhamento. */
+.of-extras-fixo {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.of-extras-titulo {
+    font: var(--h3);
+    font-weight: 400;
+    color: var(--bw);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CARDS DE ÁREA dentro dos Extras
+
+   Portados de /ed/areas/style.css, onde as regras são prefixadas por
+   `body.areas-hub`, classe que esta página não tem. Reescritas sob
+   `.of-extras`, mesmo tratamento que a seção de Formações recebeu.
+
+   O que mudou em relação à origem:
+     - a coluna de CTA (.area-card-col--cta, .area-cta-text, .area-cta-price)
+       não veio, porque ela foi removida da marcação;
+     - o card de acervo e o marquee (.area-card--acervo, .bc-marquee*) não
+       vieram: aquele quinto card não existe aqui.
+   ══════════════════════════════════════════════════════════════════════ */
+.of-extras .of-card {
+    border-radius: 16px;
+    background: linear-gradient(to bottom, var(--dn800), transparent);
+}
+/* Mídia do topo: imagem com fade na base, integrando ao corpo. */
+.of-extras .of-card-midia {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+/* `> img` e nao `img`: o media deste bloco passou a poder conter uma
+   esteira de logos, e sem o filho direto esta mascara desceria em cada
+   <img> la dentro, esmaecendo logo por logo. */
+.of-extras .of-card-midia > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}
+/* Corpo: texto à esquerda, pasta 3D à direita. */
+.of-extras .of-card-corpo {
+    padding: 0 48px 48px 48px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 48px;
+}
+.of-extras .of-card-colunas {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+.of-extras .of-card-coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.of-extras .of-card-titulo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 16px;
+}
+.of-extras .of-card-label {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+.of-extras .of-card-titulo {
+    font: var(--h6);
+    font-weight: 400;
+    color: var(--bw);
+    margin: 0;
+}
+.of-extras .of-card-desc {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+}
+.of-extras .of-card-kpis {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--bw-50);
+}
+/* CTA na direita do card, no lugar onde ficava a pasta 3D. O
+   `flex-shrink: 0` impede que o botão seja espremido pelo texto ao lado, e
+   o `align-self: flex-end` o encosta na base do corpo em vez de esticar,
+   que é o padrão do `align-items: stretch` do corpo.
+
+   Os giros de orientação do corpo são os mesmos da origem, nos mesmos
+   pontos; o que sumiu foram as regras de largura e altura da pasta, que
+   não existe mais aqui. Quando o corpo vira coluna, o botão passa a ficar
+   embaixo do texto, e aí ele se alinha à esquerda, não ao centro. */
+.of-extras-cta {
+    flex-shrink: 0;
+    align-self: flex-end;
+}
+@media (max-width: 1152px) {
+    .of-extras .of-card-corpo { flex-direction: column; }
+    .of-extras-cta { align-self: flex-start; }
+}
+@media (max-width: 864px) {
+    .of-extras .of-card-corpo { flex-direction: row; }
+    .of-extras-cta { align-self: flex-end; }
+}
+@media (max-width: 768px) {
+    .of-extras .of-card-corpo { padding: 0 24px 32px; gap: 24px; }
+}
+@media (max-width: 576px) {
+    .of-extras .of-card-corpo { flex-direction: column; }
+    .of-extras-cta { align-self: flex-start; }
+}
+
+/* ======================================================================
+   ESTEIRA DE LOGOS NO CARD DA COMUNIDADE
+
+   Portada do .of-esteira de /ed/temp/marketplace.css, com duas
+   diferenças, ambas por causa da moldura que a recebe:
+
+   1. A pilha mede 264px (dois boxes de 128 e o respiro de 8) e a janela do
+      media mede 240. Em vez de encolher os boxes, ela fica centralizada e
+      a janela corta 12px em cima e embaixo: o box continua do tamanho do
+      original, e o corte some dentro do esmaecimento vertical.
+
+   2. A máscara ganhou a segunda camada. A horizontal é da origem, e faz os
+      logos nascerem e morrerem nas bordas em vez de aparecerem do nada; a
+      vertical é a dos outros oito cards desta seção, e derrete a mídia no
+      corpo do card. As duas se combinam por interseção, então cada pixel
+      só aparece onde AS DUAS deixam. Sem o composite, a de baixo
+      simplesmente substituiria a de cima.
+   ====================================================================== */
+.of-card-midia--esteira {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.of-esteira {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    /* A geometria da esteira sai daqui, e a animacao consome a mesma conta.
+       Com o passo escrito à parte, bastava mexer no tamanho do box pra o
+       laço deixar de fechar e a emenda aparecer. */
+    --of-esteira-item: 128px;
+    --of-esteira-vao: 8px;
+    /* Quantos itens formam um conjunto. É variável porque a esteira dos
+       selos tem sete e esta tem cinco, e o passo da animação sai daqui. */
+    --of-esteira-n: 5;
+    --of-esteira-conjunto: calc(var(--of-esteira-n) * (var(--of-esteira-item) + var(--of-esteira-vao)));
+    /* Mesmo motivo do `min-width` do card, um nivel abaixo: sem isto a
+       pilha adota a largura da trilha (1360px) em vez dos 100% pedidos, e o
+       esmaecimento das laterais iria parar fora da area visivel, deixando
+       os logos cortados a seco na borda. */
+    min-width: 0;
+    -webkit-mask-image:
+        linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%),
+        linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image:
+        linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%),
+        linear-gradient(to bottom, #000 60%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+}
+
+/* Cada fileira esconde o excedente; é o `overflow` daqui que transforma
+   uma trilha larguíssima em janela de rolagem. */
+.of-esteira-janela { overflow: hidden; }
+
+.of-esteira-trilha {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+}
+
+/* 30s para andar UM conjunto, que é a mesma velocidade de antes. */
+.of-esteira-trilha--esq { animation: of-esteira-anda-esq 30s linear infinite; }
+.of-esteira-trilha--dir { animation: of-esteira-anda-dir 30s linear infinite; }
+
+/* O deslocamento é de um CONJUNTO, não de metade da trilha.
+
+   Com `-50%` a trilha tinha que ser exatamente duas metades iguais, e cada
+   metade precisava ser mais larga que a janela, senão no fim do ciclo
+   aparecia vazio à direita: era o que estava acontecendo. Cinco logos dão
+   680px de metade, e a janela do card chega a 966.
+
+   Andando um conjunto, o laço fecha sozinho (o quadro final é idêntico ao
+   inicial, porque as cópias são iguais) e o número de cópias vira só uma
+   questão de COBERTURA: a trilha precisa medir, no mínimo, a janela mais um
+   conjunto. São quatro cópias, 2720px, que cobrem janela de até 2040. A
+   página é Web e capa em 1440, então o card não passa de 966: sobra folga
+   de mais do dobro. */
+@keyframes of-esteira-anda-esq {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-1 * var(--of-esteira-conjunto))); }
+}
+@keyframes of-esteira-anda-dir {
+    from { transform: translateX(calc(-1 * var(--of-esteira-conjunto))); }
+    to { transform: translateX(0); }
+}
+
+.of-esteira-item {
+    flex: 0 0 auto;
+    width: var(--of-esteira-item);
+    height: var(--of-esteira-item);
+    /* margin, e não gap: o passo da animação conta o espaço entre os boxes
+       como parte do box, e `gap` não entra nessa conta (o último de cada
+       cópia não teria o seu). Com margin, cinco boxes medem exatamente
+       --of-esteira-conjunto e o laço fecha. */
+    margin-right: var(--of-esteira-vao);
+    border-radius: 16px;
+    background: var(--dn500-25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* O retrato PREENCHE o box, ao contrário do logo, que ficava contido e
+   centralizado com folga. Logo é marca sobre fundo, e precisa do ar em
+   volta; retrato é a própria imagem, e o fundo do box vira só o que
+   aparece enquanto ele carrega. */
+.of-esteira-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+    opacity: 0.5;
+}
+
+/* O box da comunidade fica parado no centro, na frente das duas fileiras. */
+.of-esteira-centro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 128px;
+    height: 128px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: var(--pc300-15);
+    box-shadow: inset 0 0 0 2px var(--pc300-15), 0 0 96px 0 var(--pc500-50);
+}
+
+.of-esteira-centro-interno {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.of-esteira-centro-interno img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Movimento infinito é exatamente o que essa preferência pede pra desligar,
+   e a esteira parada continua dizendo a mesma coisa. Veio da origem. */
+@media (prefers-reduced-motion: reduce) {
+    .of-esteira-trilha--esq,
+    .of-esteira-trilha--dir { animation: none; }
+}
+
+/* ======================================================================
+   DIAGRAMA DO MARKETPLACE
+
+   O esqueleto é o .of-rede de /ed/temp/marketplace.css (hub no centro,
+   quatro nodes nos cantos, conectores ligando os dois). As FICHAS e as
+   PARTÍCULAS são o .of-rede-ficha e o .of-rede-particula de /cp/data-squads/.
+
+   Três decisões que a moldura impôs:
+
+   1. O palco da origem tem 320px de altura e a mídia do card tem 240. Em
+      vez de recortar, ele mede 240 e o desenho se acomoda: o hub encolheu
+      de 192 pra 160 (mesma proporção de antes, dois terços da altura) e os
+      conectores são calculados, não fixos, então acompanham sozinhos.
+
+   2. Duas fichas de 256px lado a lado mais o hub não cabem numa tela
+      estreita. O palco tem largura mínima e a janela da mídia corta, que é
+      o mesmo recurso do original; a máscara lateral faz o corte virar
+      esmaecimento em vez de talho.
+
+   3. A máscara ganhou a camada vertical dos outros oito cards da seção,
+      pra a mídia derreter no corpo do card como as vizinhas. As duas se
+      combinam por interseção.
+   ====================================================================== */
+.of-card-midia--rede {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.of-rede {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Abaixo disto as duas colunas de fichas encostariam no hub. O palco
+       para de encolher e a janela da mídia passa a cortar, sempre pelos
+       dois lados, porque o pai centraliza. */
+    /* A medida do hub mora aqui, e nao na regra dele, porque o palco
+       inteiro depende dela: o miolo do hub, o halo e a largura minima saem
+       todos desta conta. Mudar o diametro num lugar so reacomoda o resto. */
+    --of-rede-diametro: 160px;
+    /* 512 das duas colunas de fichas, menos os 32 que elas vazam pra fora,
+       mais 32 de folga, mais o hub. Abaixo disto as fichas encostariam
+       nele; o palco para de encolher e a janela da midia passa a cortar,
+       sempre pelos dois lados, porque o pai centraliza. */
+    min-width: calc(512px + var(--of-rede-diametro));
+    flex-shrink: 0;
+    /* Só a máscara horizontal, como na origem. A vertical dos outros cards
+       desta seção chegou a entrar aqui e teve que sair: ela apaga de 60% da
+       altura em diante, e é exatamente ali que moram as duas fichas de
+       baixo, que ficaram ilegíveis. Nada se perde: o que sobra embaixo do
+       diagrama é fundo da mesma cor do corpo do card, então o corte reto
+       não aparece. */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+}
+
+/* ── conectores e partículas ── */
+
+/* `overflow: visible` porque a curva sai um pouco da caixa nas pontas; o
+   recorte de verdade é o da mídia. Sem ponteiro: é desenho, não alvo. */
+.of-rede-conectores {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.of-rede-conectores path {
+    stroke: var(--bw-10);
+    stroke-width: 2;
+    fill: none;
+}
+
+.of-rede-particulas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* A camada das partículas fica logo depois do SVG e antes das fichas, então
+   a partícula some ao chegar no hub em vez de passar por cima dele. */
+.of-rede-particula {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--bw-50);
+    opacity: 0;
+    offset-rotate: 0deg;
+    offset-anchor: center;
+    animation: of-rede-particula var(--dur) linear var(--delay) infinite;
+}
+
+/* Nasce e morre apagada: assim ela não pisca ao aparecer na ficha nem ao
+   ser engolida pelo hub. */
+@keyframes of-rede-particula {
+    0% { offset-distance: 0%; opacity: 0; }
+    12%, 88% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* ── fichas nos quatro cantos ── */
+.of-extras .of-rede-ficha {
+    position: absolute;
+    z-index: 2;
+    width: 256px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 16px 8px 8px;
+    background: var(--dn500-25);
+    border-radius: 12px;
+    box-sizing: border-box;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* 16px PRA FORA nas laterais: as fichas passam da borda do palco e entram
+   na faixa onde a máscara esmaece, então elas se dissolvem na lateral em vez
+   de terminarem numa borda reta. O diagrama passa a parecer maior que o
+   card, que é o efeito pretendido.
+
+   Na vertical a folga não é a mesma nas quatro: a diagonal
+   superior-esquerda / inferior-direita recua 32 e a outra 16. Os quatro
+   recuos iguais deixavam o conjunto simétrico demais, e as curvas entravam
+   no hub duas a duas pelo mesmo ângulo. Com o desencontro elas chegam em
+   quatro alturas diferentes. */
+.of-extras .of-rede-ficha--tl { top: 32px; left: -16px; }
+.of-extras .of-rede-ficha--cl { top: 50%; left: -16px; }
+.of-extras .of-rede-ficha--cr { top: 50%; right: -16px; }
+.of-extras .of-rede-ficha--ct { top: 0; left: 50%; }
+.of-extras .of-rede-ficha--cb { bottom: 0; left: 50%; }
+.of-extras .of-rede-ficha--bl { bottom: 16px; left: -16px; }
+.of-extras .of-rede-ficha--tr { top: 16px; right: -16px; }
+.of-extras .of-rede-ficha--br { bottom: 32px; right: -16px; }
+
+/* As fichas da esquerda são espelhadas: retrato na direita, texto na
+   esquerda e alinhado à direita. Assim o retrato de toda ficha fica na
+   borda virada pro hub, que é de onde o conector sai, e o diagrama passa a
+   ler como simétrico em vez de deslocado pra um lado.
+
+   O padding acompanha o espelho: ele é maior do lado do texto (16 contra
+   8), e mantê-lo como está deixaria o texto colado na borda e o retrato
+   solto. */
+.of-extras .of-rede-ficha--tl,
+.of-extras .of-rede-ficha--bl,
+.of-extras .of-rede-ficha--cl {
+    flex-direction: row-reverse;
+    padding: 8px 8px 8px 16px;
+}
+
+/* Alinhar a caixa (align-items) não bastaria: as duas linhas têm larguras
+   diferentes, e o que precisa encostar à direita é o TEXTO de cada uma. */
+.of-extras .of-rede-ficha--tl .of-rede-ficha-info,
+.of-extras .of-rede-ficha--bl .of-rede-ficha-info,
+.of-extras .of-rede-ficha--cl .of-rede-ficha-info { text-align: right; }
+
+/* As quatro dos meios de borda são fantasma: desfocadas, quase apagadas e
+   maiores que as reais. Elas não informam nada, são textura, e o aumento de
+   escala é o que as afasta para o fundo, como se estivessem fora do plano
+   de foco.
+
+   Sem z-index de propósito: elas vêm antes do <svg> na marcação, então já
+   pintam atrás dos conectores, das partículas e das quatro fichas de
+   verdade, que são z-index 2. */
+.of-extras .of-rede-ficha--fantasma {
+    filter: blur(8px);
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* O recentramento não é enfeite: é o par do `50%`, que alinharia a BORDA da
+   ficha no meio do palco em vez do meio dela. Ele divide o `transform` com
+   a escala porque a propriedade é uma só; declarados separados, o segundo
+   apagaria o primeiro. Por isso as laterais e as de topo/base têm regras
+   distintas: cada par se recentra num eixo diferente. */
+.of-extras .of-rede-ficha--cl,
+.of-extras .of-rede-ficha--cr { transform: translateY(-50%) scale(1.25); }
+
+.of-extras .of-rede-ficha--ct,
+.of-extras .of-rede-ficha--cb { transform: translateX(-50%) scale(1.25); }
+
+.of-extras .of-rede-ficha-retrato {
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.of-extras .of-rede-ficha-retrato img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.of-extras .of-rede-ficha-info {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.of-extras .of-rede-ficha-cargo { font: var(--label-s); color: var(--bw-75); }
+.of-extras .of-rede-ficha-nome { font: var(--label-xs); color: var(--bw-50); }
+
+/* ── hub ── */
+.of-rede-hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--of-rede-diametro);
+    height: var(--of-rede-diametro);
+    border-radius: 50%;
+    z-index: 2;
+    box-sizing: border-box;
+    /* Tudo em fração do diâmetro: um décimo de respiro, e o halo em dois
+       quintos de desfoque por um quinto de alcance. Em pixels fixos, o hub
+       menor ficaria com o miolo espremido e um halo maior que ele. */
+    padding: calc(var(--of-rede-diametro) / 10);
+    background: var(--dn800);
+    /* O halo de --dn900 é o que abre espaço em volta do círculo: ele apaga o
+       fundo logo atrás, e o traço do conector desaparece antes de encostar,
+       em vez de terminar num encontro seco. */
+    box-shadow: 0 0 calc(var(--of-rede-diametro) * 0.4) 0 var(--pc500-15),
+                0 0 calc(var(--of-rede-diametro) * 0.4) calc(var(--of-rede-diametro) / 5) var(--dn900),
+                inset 0 0 calc(var(--of-rede-diametro) / 10) 0 var(--pc300-5);
+    animation: of-rede-hub-brilho 4s ease-in-out infinite;
+}
+
+/* Pulso do .ds-hub do data-squads, aqui em cima das sombras que o hub do
+   marketplace já tinha. As três estáticas são repetidas nos dois quadros
+   porque animar `box-shadow` substitui a propriedade inteira: sem repetir,
+   o halo e o brilho interno sumiriam no meio do ciclo. */
+@keyframes of-rede-hub-brilho {
+    0%, 100% {
+        box-shadow: 0 0 calc(var(--of-rede-diametro) * 0.4) 0 var(--pc500-15),
+                    0 0 calc(var(--of-rede-diametro) * 0.4) calc(var(--of-rede-diametro) / 5) var(--dn900),
+                    inset 0 0 calc(var(--of-rede-diametro) / 10) 0 var(--pc300-5),
+                    0 0 0 0 transparent;
+    }
+    50% {
+        box-shadow: 0 0 calc(var(--of-rede-diametro) * 0.4) 0 var(--pc500-15),
+                    0 0 calc(var(--of-rede-diametro) * 0.4) calc(var(--of-rede-diametro) / 5) var(--dn900),
+                    inset 0 0 calc(var(--of-rede-diametro) / 10) 0 var(--pc300-5),
+                    0 0 calc(var(--of-rede-diametro) * 0.3) 0 var(--pc300);
+    }
+}
+
+.of-rede-nucleo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: calc(var(--of-rede-diametro) / 10);
+    background: var(--pc300-5);
+}
+
+.of-rede-icone {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--pc300-5);
+}
+
+/* O <svg> traz width/height 48 nos atributos, que valem pro caso de o CSS
+   nao carregar. Aqui ele passa a medir tres decimos do diametro: 48 no hub
+   grande, 24 no pequeno. */
+.of-rede-icone svg {
+    display: block;
+    width: calc(var(--of-rede-diametro) * 0.3);
+    height: calc(var(--of-rede-diametro) * 0.3);
+}
+
+/* Fora da tela o script poe esta classe e nada anima: o diagrama esta em
+   tres copias por causa do carrossel, e sao dezoito particulas por copia. */
+.of-rede.is-paused .of-rede-particula,
+.of-rede.is-paused .of-rede-hub { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+    .of-rede-particula,
+    .of-rede-hub { animation: none; }
+}
+
+/* Abaixo de 1440 a coluna do carrossel encolhe e o palco passa a ser
+   cortado pela janela da mídia. O hub cai pela metade pra devolver espaço
+   às fichas, que não encolhem: elas carregam texto, e texto menor aqui
+   seria ilegível. Tudo que depende do diâmetro (miolo, ícone, halo e a
+   largura mínima do palco) acompanha sozinho, porque sai da mesma conta. */
+@media (max-width: 1439px) {
+    .of-rede { --of-rede-diametro: 80px; }
+}
+
+/* ======================================================================
+   SELO DO E-MEC (card das Certificacoes)
+
+   Sobrou a cabeca do .mba-bridge-card de /ed/pos-graduacoes/mba-fpa.css:
+   icone mais rotulo. A casca clara que vinha junto (.mba-bridge-fx, com o
+   selo do MEC dentro) saiu, e a cabeca desceu pra dentro da coluna de
+   texto, abaixo da nota.
+
+   Com a casca, o rotulo era --pc500 sobre branco. Sem ela, ele passa a
+   viver sobre o preto do card, onde #4B00FF praticamente some. Por isso
+   aqui ele e --pc300, o mesmo roxo um passo mais claro, que e o que a
+   pagina ja usa pra acento sobre fundo escuro. Nao foi escolha de gosto:
+   e a cor de origem deixando de ser legivel quando o fundo mudou.
+   ====================================================================== */
+/* Nota e selo na mesma linha, o selo à direita do texto. `wrap` porque as
+   duas peças têm largura própria: em coluna estreita elas passam uma pra
+   baixo da outra em vez de espremer o texto até quebrar palavra a palavra. */
+.of-extras .of-extras-mec {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+
+.of-extras .of-extras-nota {
+    font: var(--label-s);
+    /* Amarelo de aviso, e não o cinza de nota de rodapé: a linha é uma
+       credencial, não um detalhe secundário. */
+    color: var(--wr500);
+    margin: 0;
+}
+
+.of-extras .of-emec {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.of-extras .of-emec-icone {
+    width: 24px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.of-extras .of-emec-rotulo {
+    font: var(--label);
+    color: var(--pc300);
+}
+
+/* ======================================================================
+   ESTEIRA DOS SELOS DE CERTIFICAÇÃO
+
+   Reaproveita a máquina do marquee do card da Comunidade inteira: a
+   trilha, o recorte de cada fileira, o passo de um conjunto e a máscara
+   lateral. Muda só a aritmética (sete itens de 192 no lugar de cinco de
+   128) e o tratamento da imagem.
+
+   Os selos não moram numa caixa: eles SÃO a arte, com fundo transparente e
+   forma própria. O box perde o fundo e o raio, e a imagem passa a
+   `contain`, que é o que garante que nenhum deles saia cortado caso a arte
+   deixe de ser quadrada um dia.
+
+   A opacidade volta a 1. A regra de 0,5 foi escrita pros retratos da
+   Comunidade, que são textura atrás do box do meio; aqui os selos são o
+   assunto do card, e meio apagados eles diriam o contrário do que o card
+   afirma.
+   ====================================================================== */
+.of-card-midia--selos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.of-esteira--selos {
+    --of-esteira-item: 192px;
+    --of-esteira-n: 7;
+}
+
+.of-esteira--selos .of-esteira-item {
+    background: none;
+    border-radius: 0;
+}
+
+.of-esteira--selos .of-esteira-img {
+    object-fit: contain;
+    opacity: 1;
+}
+
+/* ======================================================================
+   ANIMACAO SO EM CENA
+
+   O script poe `.of-parado` no bloco que saiu da tela, e tudo que anima
+   dentro dele congela. Nao e microtimizacao: a pagina tem o foil dos dois
+   tickets (dez poligonos cada, em duas metades) e nove esteiras rolando
+   sem parar, e quase nada disso esta visivel na maior parte da rolagem.
+
+   `animation-play-state` PAUSA, nao desliga: quando o bloco volta, a
+   animacao retoma de onde parou, em vez de dar um salto pro inicio.
+   ====================================================================== */
+.of-parado,
+.of-parado *,
+.of-parado *::before,
+.of-parado *::after {
+    animation-play-state: paused;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CTA FIXO
+   O .of-rodape-cta da /ed/infinite-pass/oferta/, com as regras de lá e
+   três trocas: o conteúdo (resumo da oferta no lugar do lote), o botão (o
+   .bf-btn do topo, compacto) e o fundo, que lá é vermelho por acompanhar o
+   relógio do lote e aqui é o --bb-75 que a origem já usa no celular.
+
+   Escondida ela é `visibility: hidden` E `pointer-events: none`, não só
+   `opacity: 0`: transparente não é ausente, e uma barra invisível por cima
+   do conteúdo continuaria engolindo clique e recebendo foco.
+
+   O translate do centro e o do movimento dividem a mesma propriedade, por
+   isso os dois estados repetem o -50% do eixo X. z-index 100: acima do
+   conteúdo, abaixo do popup e do lightbox.
+   ══════════════════════════════════════════════════════════════════════ */
+.bf-rodape-cta {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    z-index: 100;
+    width: min(576px, calc(100% - 32px));
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 16px;
+    background-color: var(--bb-75);
+    box-shadow: 0 16px 32px 0 var(--bb-75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 16px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+.bf-rodape-cta.is-visivel {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+}
+
+/* Resumo da oferta: toma a sobra; o botão fica do tamanho do texto. */
+.bf-rodape-info {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.bf-rodape-nome {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+/* Botão e contagem empilhados, a contagem centralizada embaixo dele. */
+.bf-rodape-acao {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+/* Contagem abaixo do botão: números em 1rem / 400 (--label) e em
+   warning, a cor da oferta, com algarismos tabulares pra a linha não
+   tremer quando um número troca; unidades em S (--label-s). */
+.bf-contagem {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    column-gap: 8px;
+    font: var(--label);
+    color: var(--bw-75);
+}
+.bf-contagem-num {
+    color: var(--wr500);
+    font-variant-numeric: tabular-nums;
+}
+.bf-contagem-un { font: var(--label-s); }
+.bf-rodape-preco {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+.bf-rodape-multi {
+    font: var(--label-s);
+    color: var(--bw-50);
+}
+/* O mesmo gradiente warning do valor no card da oferta. */
+.bf-rodape-valor {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+    background: var(--text-gradient-special-warning);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bf-rodape-off {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+
+/* O .bf-btn do topo, compacto: a faixa tem 80px de altura, e a pílula
+   dupla no tamanho do topo passaria disso. */
+.bf-btn--rodape {
+    flex: 0 0 auto;
+    padding: 4px;
+}
+.bf-btn--rodape > span {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+}
+
+/* Em tela estreita ela desce até a borda e vira gaveta: raio só em cima,
+   e o botão passa pra linha de baixo, na largura toda. */
+@media (max-width: 576px) {
+    .bf-rodape-cta {
+        bottom: 0;
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .bf-rodape-info {
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: space-between;
+    }
+    /* Na gaveta o botão vai na largura toda, com a contagem embaixo. */
+    .bf-rodape-acao { align-items: stretch; }
+}
+
+/* Movimento reduzido: ela ainda aparece e some, só não desliza. */
+@media (prefers-reduced-motion: reduce) {
+    .bf-rodape-cta,
+    .bf-rodape-cta.is-visivel { transform: translate(-50%, 0); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PERFIS
+   "A Black Friday da Xperiun é para você que…", no desenho do ref:
+   título em cima, três perfis lado a lado, cada um numa nota no formato
+   do .perfis-note da /ed/formacoes/. No grid completo,
+   alinhado à esquerda como o comparativo e as Formações:
+       10 cols: título 1 / span 5 | perfis span 3 cada (1 a 9)
+        8 cols: título 1 / span 4 | perfis 1 / -1, empilhados
+                (3 perfis não dividem 8 colunas por igual)
+        6 e 4: tudo 1 / -1, perfis empilhados
+   ══════════════════════════════════════════════════════════════════════ */
+/* Sem padding de topo: a seção encosta na de cima. */
+.bf-perfis {
+    padding: 0 0 128px;
+}
+.bf-perfis-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+    align-items: start;
+}
+/* --h3 em 400 com o destaque em 700, com o degradê dos títulos. */
+.bf-perfis-titulo-secao {
+    grid-column: 1 / span 5;
+    font: var(--h3);
+    font-weight: 400;
+    color: var(--bw);
+}
+/* Nota no formato do .perfis-note da /ed/formacoes/ (f1 a f7): padding
+   24/16, degradê do .scrim do DS a 90° e 10%, e a barra de 4px à
+   esquerda, aqui em warning, a cor da oferta na página, no lugar do
+   --sc500 de lá. A barra é box-shadow inset, e não border, pela regra
+   de bordas do projeto. */
+.bf-perfis-nota {
+    grid-column: span 3;
+    /* As três na mesma altura: a fileira mede a nota mais alta e as
+       outras esticam até ela (o grid da seção é `align-items: start`). */
+    align-self: stretch;
+    margin: 0;
+    padding: 24px 16px;
+    box-shadow: inset 4px 0 0 0 var(--wr500);
+    overflow: hidden;
+    --scrim-color: var(--wr500);
+    --scrim-direction: 90deg;
+    --scrim-opacity: 0.10;
+    font: var(--p);
+    color: var(--bw-75);
+}
+/* O primeiro perfil abre na primeira coluna; os outros dois seguem. */
+.bf-perfis-nota:first-of-type { grid-column: 1 / span 3; }
+/* O começo da frase colorido, como o "Encaixe ideal:" de lá. */
+.bf-perfis-nota-destaque { color: var(--wr500); }
+
+
+/* Entrada: a mesma dos cards da oferta (script.js). */
+.bf-js .bf-perfis-nota { opacity: 0; }
+.bf-js .bf-perfis-nota.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+
+@media (max-width: 1439px) {
+    /* Empilhadas, as notas ficam a 16px uma da outra. O row-gap também
+       separa o título das notas, então quem devolve essa distância (48px)
+       é a margem de baixo do título: -64px + 32px de diferença. A margem
+       segue negativa, então a folga do halo do .sec-title continua. */
+    .bf-perfis-inner { grid-template-columns: repeat(8, 1fr); row-gap: 16px; }
+    .bf-perfis-titulo-secao { grid-column: 1 / span 4; margin-bottom: -32px; }
+    .bf-perfis-nota,
+    .bf-perfis-nota:first-of-type { grid-column: 1 / -1; }
+}
+@media (max-width: 864px) {
+    .bf-perfis { padding: 0 0 96px; }
+    .bf-perfis-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+    }
+    .bf-perfis-titulo-secao,
+    .bf-perfis-nota,
+    .bf-perfis-nota:first-of-type { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .bf-perfis { padding: 0 0 64px; }
+    .bf-perfis-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+    /* Título a 32px das notas neste tier: -64px + 48px de diferença. */
+    .bf-perfis-titulo-secao { margin-bottom: -48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bf-js .bf-perfis-nota {
+        opacity: 1;
+        animation: none;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   "75%" EM 900 NAS FAIXAS
+   Só no marquee do topo: o "75%" de cada item vem num <span class="bf-900">.
+   A Syne é variável e vai até 800 no eixo de peso: como no lockup do topo
+   (.bf-titulo), o eixo é fixado em 900 e a fonte desenha no máximo dela.
+   Sem fixar o eixo, o Safari desenharia o 400 padrão.
+   ══════════════════════════════════════════════════════════════════════ */
+.bf-900 {
+    font-weight: 900;
+    font-variation-settings: 'wght' 900;
+}
+/* ══════════════════════════════════════════════════════════════════════
+   FAQ, no padrão da home (ed/site-dependencias/home.css, que importa o
+   da /ed/formacoes/): eyebrow + título no grid (span 5, span 4 no grid
+   de 8, 1 / -1 no 6 e no 4), e a lista FORA do .faq-inner, na largura da
+   tela, com o conteúdo de cada linha alinhado ao container de 1440 pelos
+   anéis laterais de 2px.
+
+   Duas diferenças pra home, ambas regras do projeto:
+     - `.faq-a-wrap` com min-width 0, e NÃO 100%: o 100% quebra o cap de
+       1440 acima de 1440 (bug conhecido do porte deste FAQ);
+     - a abertura em ease-out, no lugar do cubic-bezier da home.
+   256px embaixo (a home tem 128): fecha a página com folga, e a faixa
+   fixa do CTA cobre o fim dela.
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-faq {
+    padding: 128px 0 256px;
+}
+.faq-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 64px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.faq-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+/* Eyebrow da convenção de seção da /ed/formacoes/. */
+.sec-eyebrow {
+    font: var(--label-s);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: var(--pc200);
+}
+.faq-title { max-width: 680px; }
+.faq-grid {
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+}
+.faq-row { padding: 0 16px; cursor: pointer; transition: background-color 0.2s ease; }
+.faq-row:hover { background-color: var(--bw-15); }
+.faq-row + .faq-row { box-shadow: inset 0 2px 0 0 var(--bw-10); }
+.faq-q {
+    list-style: none;
+    cursor: pointer;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q-text { font: var(--p); color: var(--bw); }
+.faq-q-icon { color: var(--bw-50); flex-shrink: 0; font-weight: 200; }
+.faq-a-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    grid-template-columns: minmax(0, 1fr);
+    transition: grid-template-rows 0.45s ease-out;
+    will-change: grid-template-rows;
+}
+.faq-a-grid.is-open { grid-template-rows: 1fr; }
+.faq-a-wrap {
+    min-height: 0;
+    /* width 100% + max-width: ocupa a coluna inteira e para em 1440,
+       alinhado à pergunta. Só com margin: 0 auto o item de grid encolhia
+       até a largura do texto; com min-width: 100% (o da home) ele
+       passava do cap de 1440. */
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 28px;
+    box-sizing: border-box;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.faq-a { font: var(--p); color: var(--bw-75); margin: 0; }
+/* O trecho que o ref marca, só na cor do texto principal. */
+.faq-a-destaque { color: var(--bw); }
+
+/* Entrada: a mesma da home e dos cards da oferta (script.js). */
+.bf-js .faq-grid { opacity: 0; }
+.bf-js .faq-grid.is-entered { animation: cta-card-enter 0.6s ease-out both; }
+
+@media (max-width: 1439px) {
+    .faq-inner { grid-template-columns: repeat(8, 1fr); }
+    .faq-header { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .faq-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; padding-bottom: 48px; }
+    .faq-header { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .sec-faq { padding: 96px 0 256px; }
+    .faq-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; padding-bottom: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .faq-a-grid { transition: none; }
+    .bf-js .faq-grid {
+        opacity: 1;
+        animation: none;
+    }
+}
+/* ══════════════════════════════════════════════════════════════════════
+   POPUP DO GRUPO VIP (form-bf-v3.html, form 407)
+   O visual base vem do form.css compartilhado; aqui fica só o que é desta
+   página, porque o form-include.js descarta qualquer <style> do arquivo do
+   popup. O acento (--popup-accent-rgb: 255, 255, 0, o --wr500) já pinta a
+   tag e o brilho do card pelo form.css.
+   ══════════════════════════════════════════════════════════════════════ */
+/* Caixa do símbolo em --pc300-10, como no card da oferta, e não no
+   amarelo do acento: o símbolo é roxo e sumiria sobre o amarelo. */
+#popup-form-bf-v3 .popup-form-icon-box { background: var(--pc300-10); }
+/* O .bf-btn como <button>: zera o que o navegador põe num botão. O resto
+   (pílula externa, interna em gradiente) vem do .bf-btn lá em cima. */
+button.bf-btn {
+    border: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+button.bf-btn:hover,
+button.bf-btn:focus-visible {
+    background: var(--pc500-50);
+    outline: none;
+}
+/* Durante o envio o form.js desabilita o botão: mesmo tratamento do DS
+   pros botões do popup (opacity 0.25, sem clique). */
+button.bf-btn[disabled] { opacity: 0.25; pointer-events: none; }/* O .bf-btn (pílula dupla) é mais alto que o Cancelar do DS; sem isto o
+   flex esticava o Cancelar até a altura dele. */
+#popup-form-bf-v3 .popup-form-actions { align-items: center; gap: 16px; }
