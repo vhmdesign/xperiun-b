@@ -594,7 +594,7 @@ if (window.matchMedia) {
    O `touch-action: pan-y` do CSS é o par disto: ele deixa a rolagem
    vertical da página com o navegador e manda só o horizontal pra cá.
    ══════════════════════════════════════════════════════════════════════ */
-(function () {
+function iniciaCarrossel() {
     'use strict';
 
     var trilha = document.querySelector('.of-extras-cards');
@@ -861,7 +861,7 @@ if (window.matchMedia) {
 
     mede();
     pinta(false);
-})();
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    Conectores e partículas do diagrama do Marketplace.
@@ -889,7 +889,7 @@ if (window.matchMedia) {
    original e as duas cópias. Rodando antes, só o original teria observador
    de tamanho, e as cópias congelariam com os caminhos da primeira medida.
    ══════════════════════════════════════════════════════════════════════ */
-(function () {
+function iniciaRede() {
     'use strict';
 
     var palcos = document.querySelectorAll('.of-rede');
@@ -1002,7 +1002,7 @@ if (window.matchMedia) {
             }, { rootMargin: '128px' }).observe(palco);
         }
     });
-})();
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    Animacao so quando o bloco esta em cena.
@@ -1020,7 +1020,7 @@ if (window.matchMedia) {
    A margem de 128px liga o bloco um pouco antes de ele aparecer: pausado
    ate o ultimo pixel, a esteira entraria na tela parada por um quadro.
    ══════════════════════════════════════════════════════════════════════ */
-(function () {
+function iniciaParado() {
     'use strict';
 
     if (!window.IntersectionObserver) return;
@@ -1036,6 +1036,42 @@ if (window.matchMedia) {
     }, { rootMargin: '128px' });
 
     Array.prototype.forEach.call(blocos, function (b) { olho.observe(b); });
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Montagem adiada dos Extras.
+
+   O carrossel (cópias dos 9 cards + medida das caixas), o diagrama do
+   Marketplace (conectores medidos ficha a ficha nas 3 cópias) e a pausa
+   fora da tela custavam ~240ms seguidos na thread principal durante a
+   carga, quase tudo layout forçado, e isso travava a entrada animada do
+   header. A seção dos Extras fica bem abaixo da dobra: agora as três
+   montam quando ela chega a 800px da tela, na mesma ordem de antes (o
+   diagrama e a pausa precisam enxergar as cópias que o carrossel cria).
+
+   Sem IntersectionObserver, monta na hora, como antes.
+   ══════════════════════════════════════════════════════════════════════ */
+(function () {
+    'use strict';
+
+    var montado = false;
+    function monta() {
+        if (montado) return;
+        montado = true;
+        iniciaCarrossel();
+        iniciaRede();
+        iniciaParado();
+    }
+
+    var secao = document.getElementById('extras');
+    if (!secao || !('IntersectionObserver' in window)) { monta(); return; }
+
+    var olho = new IntersectionObserver(function (entradas) {
+        if (!entradas[0].isIntersecting) return;
+        olho.disconnect();
+        monta();
+    }, { rootMargin: '800px 0px' });
+    olho.observe(secao);
 })();
 
 /* ══════════════════════════════════════════════════════════════════════
