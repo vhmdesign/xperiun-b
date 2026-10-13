@@ -96,7 +96,7 @@ if (window.matchMedia) {
         icone: '/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg',
         fundo: FUNDOS + 'formacao-xperiun.webp',
         valor: '197',
-        detalhe: 'no cartão: Todas as 7 + extras.',
+        detalhe: 'no cartão ou R$ 1.997 à vista.',
         nome: '7 Formações por Competência',
         meta: 'Power BI, Microsoft Fabric, SQL, Python, IA e Carreira',
         cert: 'Formação Completa reconhecida pelo MEC'

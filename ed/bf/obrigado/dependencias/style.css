@@ -1,0 +1,390 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   OBRIGADO DA BLACK FRIDAY, em duas etapas:
+     /ed/bf/obrigado/         etapa 1, Grupo VIP do WhatsApp
+     /ed/bf/obrigado/agenda/  etapa 2, salvar a data na agenda
+   As duas usam este arquivo.
+
+   UI da /ed/be-a-ba-ia-3/obrigado/ (coluna de leitura centrada, título com
+   destaque, progresso em 3 fases, um CTA por tela e o glow do topo), com a
+   identidade da /ed/bf/: lockup BLACK FRIDAY no lugar do logo, Syne na
+   página inteira e o warning (--wr) como cor de avanço e de destaque, no
+   lugar do verde do Bê-a-Bá. Ficaram de fora a textura ASCII e o noise, que
+   são identidade do Bê-a-Bá (os tiles da máscara são arquivos de lá).
+
+   Botões e link são os componentes do DS sem desvio (.btn L medium-core,
+   .link azul).
+
+   Tokens: todos do root.css. Nenhuma cor escrita à mão.
+
+   Sem grid de colunas aqui, como na referência: é uma coluna de leitura
+   centrada (864px), não um layout em colunas, então o container de
+   1440/1152 do DS não se aplica.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Syne na página inteira, como na /ed/bf/: trocar a família do token troca
+   todos os tokens de texto do DS de uma vez (--h*, --p*, --label*, --btn*). */
+:root { --font-family: "Syne", sans-serif; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bb);
+    color: var(--bw);
+}
+
+img { max-width: 100%; }
+
+/* ══ Coluna central ════════════════════════════════════════════════════════ */
+.obr {
+    position: relative;
+    isolation: isolate;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;       /* mobile: dvh evita o bug do 100vh atrás da UI */
+    padding: 32px 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Pelo topo, e não centralizado na altura: o que importa é o CTA subir
+       pra dentro da dobra. */
+    justify-content: flex-start;
+    text-align: center;
+}
+
+/* Glow do topo: a geometria do .obr-glow da referência (disco de 1440px com o
+   centro bem acima da dobra, `fixed`), mais apagado. */
+.obr-glow {
+    position: fixed;
+    top: -848px;
+    left: calc(50% - 720px);
+    width: 1440px;
+    height: 1440px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, var(--pc100) 0%, var(--pc200) 10%, var(--pc300) 25%, var(--pc500) 35%, var(--pc700) 45%, transparent 70%);
+    opacity: 0.35;
+}
+
+/* ── Logo da Xperiun ────────────────────────────────────────────────────
+   O mesmo do topo da /ed/bf/ (.hero-logo): Base White Logo, 160px, a 50%.
+   Aqui no fluxo da coluna, acima do lockup, em vez de absoluto. */
+.obr-logo {
+    width: 160px;
+    height: auto;
+    display: block;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+/* ── Lockup BLACK FRIDAY (abaixo do logo da Xperiun) ─────────────────
+   O .bf-titulo da /ed/bf/ em tamanho fixo: BLACK encostado na direita,
+   FRIDAY na esquerda, cada palavra com o próprio degradê. */
+.bf-titulo {
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 900;
+    /* Syne variável: sem fixar o eixo o Safari desenha o 400 padrão. */
+    font-variation-settings: 'wght' 900;
+    font-size: 48px;
+    line-height: 0.75;
+    text-transform: uppercase;
+    color: var(--bw);
+    display: flex;
+    flex-direction: column;
+}
+.bf-titulo-linha {
+    display: block;
+    width: fit-content;
+    padding: 0.1em 0;
+    margin: -0.1em 0;
+    white-space: nowrap;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bf-titulo-linha--black {
+    margin-left: auto;
+    background-image: linear-gradient(90deg, var(--bw), var(--bw-50));
+}
+.bf-titulo-linha--friday {
+    background-image: linear-gradient(270deg, var(--bw), var(--bw-50));
+}
+
+/* ── Título + progresso ─────────────────────────────────────────────────── */
+.obr-head {
+    width: 100%;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+.obr-title {
+    margin: 0;
+    font: var(--h2-horizontal);
+    font-weight: 400;
+    color: var(--bw);
+}
+/* Destaque em warning: a cor da oferta na /ed/bf/. */
+.obr-destaque { color: var(--wr500); }
+
+/* ── Progresso (3 fases) ────────────────────────────────────────────────────
+   O .obr-prog da referência: trilho + barra preenchida até a fase atual,
+   círculos branco (feito), warning com pulso (atual) e translúcido
+   (pendente). Grid de 3 colunas IGUAIS, que é o componente (o trilho vai
+   do centro da 1ª ao centro da 3ª), não layout de página.
+
+   Quanto a barra preenche depende da etapa: a página diz qual pelo
+   [data-etapa] da lista. */
+.obr-prog {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.obr-prog::before,
+.obr-prog::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 14px;               /* centro vertical da bolinha de 32px */
+    height: 4px;
+    border-radius: 8px;
+}
+.obr-prog::before {          /* trilho: centro da 1ª col -> centro da 3ª col */
+    left: 16.6667%;
+    width: 66.6667%;
+    background: var(--bw-25);
+}
+/* Preenchido até a fase atual. O que já foi feito é --bw, e o passo atual
+   (o que vai ser completado) é success, --sc500. A barra acompanha: --bw
+   nos trechos entre passos feitos, e um degradê --bw → --sc500 no último
+   trecho, o que chega no passo atual.
+   Etapa 2: só o trecho 1→2, --bw → --sc500.
+   Etapa 3: 1→2 em --bw (dois passos feitos) e 2→3 em --bw → --sc500. O
+   centro da bolinha 2 é 50% da barra. */
+.obr-prog::after {
+    left: 16.6667%;
+    width: 33.3333%;
+    background-image: linear-gradient(90deg, var(--bw), var(--sc500));
+    transition: width 0.5s ease-in-out;
+}
+.obr-prog[data-etapa="3"]::after {
+    width: 66.6667%;
+    background-image: linear-gradient(90deg, var(--bw) 0%, var(--bw) 50%, var(--sc500) 100%);
+}.obr-prog-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.obr-prog-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--label);
+    line-height: 1;
+    color: var(--bw);
+    background: var(--bw-25);            /* pendente: translúcido */
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+}
+.obr-prog-step.is-done .obr-prog-dot {   /* feito: branco */
+    background: var(--bw);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+}
+.obr-prog-step.is-current .obr-prog-dot { /* atual: warning + pulso (2 anéis) */
+    background: var(--wr500);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    animation: obr-pulse 1.5s ease-out infinite;
+}
+@keyframes obr-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--wr500-50),  0 0 0 0 var(--wr500-25); }
+    15%  { box-shadow: 0 0 0 0 var(--wr500-25),  0 0 0 0 var(--wr500-15); }
+    100% { box-shadow: 0 0 0 16px transparent,   0 0 0 32px transparent; }
+}
+.obr-prog-label {
+    font: var(--label);
+    color: var(--bw-50);
+    white-space: nowrap;
+}
+.obr-prog-step.is-done .obr-prog-label,
+.obr-prog-step.is-current .obr-prog-label { color: var(--bw); }
+
+/* ── Corpo ──────────────────────────────────────────────────────────────── */
+.obr-body {
+    width: 100%;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+.obr-body p {
+    margin: 0;
+    font: var(--p);
+    color: var(--bw-75);
+}
+.obr-body .obr-hl { color: var(--bw); }
+/* O nome da etapa ("Garanta sua vaga...", "Salve a data..."), em <h2>. */
+.obr-etapa {
+    margin: 8px 0 0;
+    font: var(--h4);
+    color: var(--bw);
+}
+
+/* ── Ações ──────────────────────────────────────────────────────────────────
+   O CTA é o .btn do DS (M, 1rem). Embaixo dele, a saída secundária no .link
+   do DS (próxima etapa ou o .ics).
+
+   O CTA PRECISA aparecer na tela sem rolar. Os respiros enxutos acima
+   resolvem no desktop; pra telas baixas (celular), o bloco é sticky no
+   pé da tela: se o conteúdo cabe, ele fica no lugar dele; se não cabe, ele
+   gruda na base da tela até a rolagem chegar nele. A caixa é a da faixa do
+   CTA da /ed/bf/ (.bf-rodape-cta.is-visivel), e o blur dela apaga o texto
+   que rola por baixo. */
+.obr-acoes {
+    position: sticky;
+    bottom: 16px;
+    z-index: 2;
+    /* A caixa do .bf-rodape-cta.is-visivel da /ed/bf/: até 576px, padding
+       16, raio 16, blur de 8px e a mesma sombra; o fundo aqui é --bb-5,
+       quase transparente, e quem apaga o texto por baixo é o blur. */
+    width: min(576px, 100%);
+    box-sizing: border-box;
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--bb-5);
+    box-shadow: 0 16px 32px 0 var(--bb-75);
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+}
+
+/* ── Assinatura (etapa 2) ───────────────────────────────────────────────── */
+.obr-assinatura {
+    width: 100%;
+    margin-top: 8px;
+    padding-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.obr-assinatura-frase {
+    margin: 0;
+    font: var(--p);
+    color: var(--bw);
+}
+.obr-assinatura-nome {
+    margin: 0;
+    font: var(--label);
+    color: var(--bw-50);
+}
+
+/* ── Entrada ────────────────────────────────────────────────────────────── */
+.bf-titulo,
+.obr-body,
+.obr-acoes,
+.obr-assinatura { animation: obr-sobe 0.6s ease-out both; }
+/* O bloco do título + progresso entra SEM filter e com fill-mode
+   `backwards`, não `both`. Um ancestral com filter, ou com a opacidade e o
+   transform que a animação deixa aplicados no fim quando o fill é `both`,
+   isola o backdrop-filter dos filhos, e a bolinha pendente do progresso
+   para de desfocar o trilho atrás dela: a linha passava nítida por dentro
+   do 3. Com `backwards` o bloco só usa os valores da animação antes e
+   durante ela; terminada, não fica nada aplicado e o desfoque volta, como
+   na referência (que não anima este bloco). */
+.obr-head       { animation: obr-sobe-sem-filtro 0.6s ease-out 0.1s backwards; }
+.obr-body       { animation-delay: 0.2s; }
+.obr-acoes      { animation-delay: 0.3s; }
+.obr-assinatura { animation-delay: 0.4s; }
+@keyframes obr-sobe {
+    from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+@keyframes obr-sobe-sem-filtro {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+/* ── Passo atual em success ─────────────────────────────────────────────────
+   O passo atual, o que vai ser completado, é verde (--sc500) com o pulso
+   verde, no lugar do warning: o Grupo VIP na etapa 1 e a Agenda na etapa 2.
+   Os feitos ficam --bw. A página marca o passo atual com .is-success. */
+.obr-prog-step.is-success .obr-prog-dot {
+    background: var(--sc500);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+}
+.obr-prog-step.is-success.is-current .obr-prog-dot {
+    animation-name: obr-pulse-success;
+}
+@keyframes obr-pulse-success {
+    0%   { box-shadow: 0 0 0 0 var(--sc500-50),  0 0 0 0 var(--sc500-25); }
+    15%  { box-shadow: 0 0 0 0 var(--sc500-25),  0 0 0 0 var(--sc500-15); }
+    100% { box-shadow: 0 0 0 16px transparent,   0 0 0 32px transparent; }
+}
+/* CTA do WhatsApp em success. O DS não tem ênfase success no .btn, então
+   ele parte do [data-emphasis="high"] (texto --bb, degradê de 200% que anda
+   no hover) e troca só a rampa pela verde, como o CTA da
+   /ed/be-a-ba-ia-3/obrigado/. O [data-emphasis] no seletor vence o
+   componente sem !important. */
+.btn.obr-cta-success[data-emphasis] {
+    background-image: linear-gradient(90deg, var(--sc300), var(--sc500), var(--sc100));
+    box-shadow: var(--ring-25);
+}
+/* ── Responsivo ─────────────────────────────────────────────────────────── */
+@media (max-width: 864px) {
+    /* Regra do projeto: sem blur ANIMADO abaixo de 864. */
+    @keyframes obr-sobe {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+}
+@media (max-width: 576px) {
+    .obr { padding: 24px 16px 0; }
+    .obr-logo { width: 120px; margin-bottom: 16px; }
+    .bf-titulo { font-size: 32px; }
+    .obr-head { margin-top: 24px; gap: 16px; }
+    .obr-body { margin-top: 24px; }
+    /* Gaveta, como o .bf-rodape-cta da /ed/bf/ neste tier: encosta na base,
+       largura toda (a margem negativa come o padding de 16 da coluna) e raio
+       só em cima. */
+    .obr-acoes {
+        bottom: 0;
+        width: calc(100% + 32px);
+        margin: 16px -16px 0;
+        border-radius: 16px 16px 0 0;
+    }
+    /* Botão na largura toda no celular. */
+    .obr-acoes .btn { align-self: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bf-titulo,
+    .obr-head,
+    .obr-body,
+    .obr-acoes,
+    .obr-assinatura,
+    .obr-prog-step.is-current .obr-prog-dot,
+    .obr-prog-step.is-success.is-current .obr-prog-dot { animation: none; }
+}

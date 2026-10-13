@@ -26,7 +26,7 @@
     <!-- Pasta 3D + lightbox dos cursos e dos Business Cases, o mesmo
          componente da /ed/areas/ e da /ed/infinite-pass/oferta/. -->
     <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
-    <link rel="stylesheet" href="/ed/bf/dependencias/style.css?v=36">
+    <link rel="stylesheet" href="/ed/bf/dependencias/style.css?v=40">
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -139,18 +139,12 @@
      COMPARATIVO
      Título e lede da seção "Sua chance de levar mais, pelo menor preço!"
      da LP antiga; o corpo são os cards do comparativo "Como adquirir" da
-     /ed/formacoes/ (sem o bloco da conta, .conta-grid, que saiu), com duas
-     mudanças:
+     /ed/formacoes/ (sem o bloco da conta, .conta-grid, que saiu), com
+     caminhos absolutos (a origem usa "../", que quebraria aqui).
 
-       - caminhos absolutos (a origem usa "../", que quebraria aqui);
-       - o card da formação NASCE com a Formação 6 (Inteligência
-         Artificial e Automação) escolhida, em vez do "Escolher formação"
-         vazio da origem. O estado vem escrito no HTML (vale sem JS e não
-         pisca) e o script.js mantém a troca pelo dropdown e pelos ícones.
-
-     Textos da /ed/formacoes/. Preço da Completa é o da Black Friday:
-     R$ 497 (75% OFF), 12x 47. A formação avulsa mantém o preço da
-     origem.
+     A comparação é só da Xperiun Completa: à esquerda no preço cheio da
+     /ed/formacoes/ (12x 197), com um X sobre o card inteiro; à direita na
+     Black Friday, R$ 497 (75% OFF), 12x 47.
      ═══════════════════════════════════════════════════════════════════ -->
 <section class="sec-oferta" id="comparativo" aria-labelledby="bf-tit-comparativo">
     <div class="oferta-inner">
@@ -173,13 +167,13 @@
         <div class="bf-perfil of-perfil" role="radiogroup" aria-label="Escolha a oferta">
             <input class="of-perfil-input" type="radio" name="bf-oferta" id="bf-oferta-bf" value="bf" data-alvo="oferta-completa" checked>
             <label class="of-perfil-opcao" for="bf-oferta-bf">Black Friday</label>
-            <input class="of-perfil-input" type="radio" name="bf-oferta" id="bf-oferta-avulso" value="avulso" data-alvo="oferta-avulsa">
-            <label class="of-perfil-opcao" for="bf-oferta-avulso">Valor avulso</label>
+            <input class="of-perfil-input" type="radio" name="bf-oferta" id="bf-oferta-cheio" value="cheio" data-alvo="oferta-cheia">
+            <label class="of-perfil-opcao" for="bf-oferta-cheio">Preço cheio</label>
         </div>
 
         <div class="oferta-grid">
 
-            <!-- ORDEM: a oferta da Black Friday vem ANTES da formação avulsa na
+            <!-- ORDEM: a oferta da Black Friday vem ANTES do preço cheio na
                  marcação, apesar de aparecer à direita dela no desktop. Quem
                  decide a coluna acima de 864 é o grid-column de cada card, não a
                  ordem no HTML; abaixo de 864, onde os dois empilham, é a ordem
@@ -204,10 +198,12 @@
                         </p>
                     </div>
                     <div class="oferta-price-block">
-                        <!-- Ancoragem: o preço cheio riscado, ao lado do da oferta,
-                             na mesma estrutura (12× pequeno + valor) pra comparar. -->
+                        <!-- Ancoragem só no celular (≤864, ver o style.css): lá o card
+                             do preço cheio sai, e o 12× 197 com o X entra aqui, ao
+                             lado do 12× 47. No desktop ela some, porque o card do
+                             preço cheio está ao lado. O X é o mesmo SVG do card. -->
                         <div class="oferta-price-linha">
-                            <span class="oferta-price oferta-price-de"><span class="multi">12×</span><s class="value">197</s></span>
+                            <span class="oferta-price oferta-price-de"><span class="multi">12×</span><s class="value">197<svg class="oferta-x oferta-x--preco" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><line x1="0" y1="0" x2="100" y2="100"/><line x1="100" y1="0" x2="0" y2="100"/></svg></s></span>
                             <span class="oferta-price"><span class="multi">12×</span><span class="value">47</span></span>
                         </div>
                         <span class="oferta-price-detail">no cartão ou R$ 497 /ano (75% OFF).</span>
@@ -234,33 +230,24 @@
                 </ul>
             </div>
 
-            <div class="oferta-card oferta-card--formacao oferta-card--f6" id="oferta-avulsa" style="--card-accent: rgba(50,100,255,0.15)">
-                <img class="oferta-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-autoia.webp" alt="">
+            <!-- A Xperiun Completa no PREÇO CHEIO, pra comparar com a mesma
+                 Completa na Black Friday ao lado. Preço e textos são os do card
+                 da Completa: 12× 197 no cartão ou R$ 1.997 à vista, e
+                 a lista é a mesma do card da oferta, linha a linha. Fica na
+                 coluna da esquerda pelo .oferta-card--formacao, tem o visual da
+                 Completa pelo .oferta-card--full e leva um X de 4px em --er500
+                 sobre o card inteiro (.oferta-x, decorativo). -->
+            <div class="oferta-card oferta-card--formacao oferta-card--full oferta-card--cheio" id="oferta-cheia">
+                <img class="oferta-card-img" src="/ed/site-dependencias/site-media/formacoes/bg/formacao-xperiun.webp" alt="">
                 <div class="oferta-card-top">
-                    <div class="oferta-icon-box" style="background: rgba(50,100,255,0.1)">
-                        <img class="oferta-icon" src="/ed/site-dependencias/site-media/formacoes/icones/Automa%C3%A7%C3%A3o%20%26%20IA.svg" alt="">
+                    <div class="oferta-bf-marca">
+                        <div class="oferta-icon-box">
+                            <svg width="48" height="48" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z" fill="url(#oferta-cheio-grad)"/><defs><linearGradient id="oferta-cheio-grad" x1="42.11" y1="757.899" x2="757.9" y2="42.109" gradientUnits="userSpaceOnUse"><stop stop-color="#9600ff"/><stop offset="1" stop-color="#4b00ff"/></linearGradient></defs></svg>
+                        </div>
                     </div>
                     <div class="oferta-price-block">
-                        <span class="oferta-price"><span class="multi">12×</span><span class="value">97</span></span>
-                        <span class="oferta-price-detail">no cartão ou R$ 997 /ano.</span>
-                    </div>
-                    <div class="dropdown-group">
-                        <div class="dropdown">
-                            <span class="dropdown-value">Inteligência Artificial e Automação</span>
-                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
-                        </div>
-                        <ul class="dropdown-options dropdown-options-detached">
-                            <li class="dropdown-option" data-target="f1">Power BI Básico ao Intermediário</li>
-                            <li class="dropdown-option" data-target="f2">Power BI Intermediário ao Avançado</li>
-                            <li class="dropdown-option" data-target="f3">Microsoft Fabric</li>
-                            <li class="dropdown-option" data-target="f4">Banco de Dados &amp; SQL</li>
-                            <li class="dropdown-option" data-target="f5">Python &amp; Data Science</li>
-                            <li class="dropdown-option" data-target="f6">Inteligência Artificial e Automação</li>
-                            <li class="dropdown-option" data-target="f7">Carreira &amp; Negócios</li>
-                            <!-- A Completa no preço cheio, pra comparar com a oferta
-                                 da Black Friday ao lado (script.js, aplica). -->
-                            <li class="dropdown-option" data-target="completa">Xperiun Completo</li>
-                        </ul>
+                        <span class="oferta-price"><span class="multi">12×</span><span class="value">197</span></span>
+                        <span class="oferta-price-detail">no cartão ou R$ 1.997 à vista.</span>
                     </div>
                     <div class="oferta-divider"></div>
                     <div class="oferta-completa-icons">
@@ -273,25 +260,21 @@
                         <img class="oferta-completa-icon oferta-completa-icon--f7" src="/ed/site-dependencias/site-media/formacoes/icones/Carreira%20%26%20Neg%C3%B3cios.svg" alt="" loading="lazy">
                     </div>
                 </div>
-                <!-- Os itens são o que as seções de Formações e de Extras logo
-                     abaixo apresentam (as mesmas da /ed/infinite-pass/oferta/),
-                     na mesma ordem do card da Completa, pra comparar linha a
-                     linha. A avulsa tem o primeiro, trocado pela formação
-                     escolhida, e a certificação, que nela é por competência
-                     (o reconhecimento do MEC é da Completa); o resto fica na
-                     lista apagado (.is-disabled), como o que a Completa tem a
-                     mais. -->
                 <ul class="oferta-checks">
-                    <!-- A formação escolhida, acesa: é o que a avulsa inclui. Nome e
-                         carga (os mesmos números dos cards de Formações abaixo)
-                         são reescritos pelo script.js quando a formação muda. -->
-                    <li class="oferta-check oferta-check--formacao"><span class="oferta-check-nome">Inteligência Artificial e Automação</span><span class="oferta-check-meta">19 cursos, ~89h de conteúdo</span></li>
-                    <li class="oferta-check oferta-check--extra is-disabled"><span class="oferta-check-nome">Comunidade Ativa</span><span class="oferta-check-meta">Fórum Xperiun e Discord Xperiun</span></li>
-                    <li class="oferta-check oferta-check--extra is-disabled"><span class="oferta-check-nome">Marketplace &amp; Portfólio Integrado</span><span class="oferta-check-meta">Seu portfólio onde empresas procuram profissionais de dados</span></li>
-                    <li class="oferta-check oferta-check--cert"><span class="oferta-check-nome">Certificações Reconhecidas</span><span class="oferta-check-meta">Certificação por competência</span></li>
-                    <li class="oferta-check oferta-check--extra is-disabled"><span class="oferta-check-nome">MCP</span><span class="oferta-check-meta">Integrações de IA e MCP da plataforma</span></li>
-                    <li class="oferta-check oferta-check--extra is-disabled"><span class="oferta-check-nome">Business Cases por área</span><span class="oferta-check-meta">RH, Logística, Vendas, Financeiro e outras áreas</span></li>
+                    <li class="oferta-check"><span class="oferta-check-nome">7 Formações por Competência</span><span class="oferta-check-meta">Power BI, Microsoft Fabric, SQL, Python, IA e Carreira</span></li>
+                    <li class="oferta-check"><span class="oferta-check-nome">Comunidade Ativa</span><span class="oferta-check-meta">Fórum Xperiun e Discord Xperiun</span></li>
+                    <li class="oferta-check"><span class="oferta-check-nome">Marketplace &amp; Portfólio Integrado</span><span class="oferta-check-meta">Seu portfólio onde empresas procuram profissionais de dados</span></li>
+                    <li class="oferta-check"><span class="oferta-check-nome">Certificações Reconhecidas</span><span class="oferta-check-meta oferta-check-meta--mec">Formação Completa reconhecida pelo MEC</span></li>
+                    <li class="oferta-check"><span class="oferta-check-nome">MCP</span><span class="oferta-check-meta">Integrações de IA e MCP da plataforma</span></li>
+                    <li class="oferta-check"><span class="oferta-check-nome">Business Cases por área</span><span class="oferta-check-meta">RH, Logística, Vendas, Financeiro e outras áreas</span></li>
                 </ul>
+                <!-- O X sobre a oferta: duas linhas num SVG que estica com o
+                     card (preserveAspectRatio="none"), com espessura fixa de
+                     4px (non-scaling-stroke) e ponta reta (butt). -->
+                <svg class="oferta-x" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                    <line x1="0" y1="0" x2="100" y2="100"/>
+                    <line x1="100" y1="0" x2="0" y2="100"/>
+                </svg>
             </div>
 
         </div>
@@ -1150,7 +1133,7 @@
 
 <!-- Popup, comparativo, entradas, pastas, tags, carrossel dos extras e
      diagrama do marketplace. -->
-<script src="/ed/bf/dependencias/script.js?v=13"></script>
+<script src="/ed/bf/dependencias/script.js?v=14"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

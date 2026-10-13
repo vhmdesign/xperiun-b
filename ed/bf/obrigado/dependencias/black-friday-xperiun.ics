@@ -1,0 +1,24 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Xperiun//Black Friday 2026//PT-BR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:black-friday-2026@xperiun.com
+DTSTAMP:20261014T000000Z
+DTSTART:20261106T030000Z
+DTEND:20261106T040000Z
+SUMMARY:Black Friday Xperiun: até 75% de desconto
+DESCRIPTION:Hoje é a Black Friday da Xperiun: a maior oferta do ano\, com 
+ até 75% de desconto. As melhores condições costumam durar poucos minuto
+ s.\n\nO link da oferta sai primeiro no Grupo VIP do WhatsApp:\nhttps://snd
+ flw.com/i/vxnZAFYtXc1ckro46CAi
+LOCATION:https://xperiun.com/ed/bf/
+URL:https://xperiun.com/ed/bf/
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:A Black Friday da Xperiun começa em 30 minutos
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+END:VCALENDAR

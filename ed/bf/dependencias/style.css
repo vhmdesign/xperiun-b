@@ -658,45 +658,6 @@ a.bf-btn:focus-visible {
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-/* Ancoragem da oferta: o preço cheio ao lado do da Black Friday, na
-   mesma estrutura dele, alinhados pela base. */
-.oferta-price-linha {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 8px 24px;
-}
-/* O valor em --h2 700 (menor que os 64px da oferta, que segue sendo o
-   protagonista), apagado em --bw-50 e marcado com um X de duas linhas
-   de 4px em --er500 por cima. Só o valor leva o X; o "12×" fica limpo. */
-/* Seletor (0,4,0) de propósito: o `.oferta-card--bf .oferta-price .value`
-   (0,3,0), mais abaixo no bloco da oferta, pinta o valor com o gradiente
-   warning e preenchimento transparente, e com especificidade igual ele
-   venceria por vir depois. */
-.oferta-card--bf .oferta-price.oferta-price-de .value {
-    font: var(--h2);
-    font-weight: 700;
-    background: none;
-    -webkit-text-fill-color: var(--bw-50);
-    color: var(--bw-50);
-    /* O <s> traz o line-through do navegador; o X substitui ele. */
-    text-decoration: none;
-    position: relative;
-}
-/* O X: dois gradientes nos cantos opostos. Com ângulo de canto ("to top
-   right"), a linha de 50% do gradiente passa exatamente pelos outros dois
-   cantos, e a espessura medida ao longo dele é a espessura real do traço:
-   50% ± 2px dá uma linha de 4px de canto a canto, em qualquer proporção
-   da caixa. */
-.oferta-card--bf .oferta-price.oferta-price-de .value::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-        linear-gradient(to top right, transparent calc(50% - 2px), var(--er500) calc(50% - 2px), var(--er500) calc(50% + 2px), transparent calc(50% + 2px)),
-        linear-gradient(to bottom right, transparent calc(50% - 2px), var(--er500) calc(50% - 2px), var(--er500) calc(50% + 2px), transparent calc(50% + 2px));
-}
 .oferta-price-detail {
     font: var(--p-s);
     color: var(--bw-50);
@@ -2795,3 +2756,86 @@ button.bf-btn:focus-visible {
 button.bf-btn[disabled] { opacity: 0.25; pointer-events: none; }/* O .bf-btn (pílula dupla) é mais alto que o Cancelar do DS; sem isto o
    flex esticava o Cancelar até a altura dele. */
 #popup-form-bf-v3 .popup-form-actions { align-items: center; gap: 16px; }
+/* ══════════════════════════════════════════════════════════════════════
+   COMPARATIVO: COMPLETA NO PREÇO CHEIO x COMPLETA NA BLACK FRIDAY
+   O card da esquerda é a mesma Xperiun Completa, no preço cheio, e leva
+   um X sobre o card inteiro: duas linhas de 4px em --er500 de canto a
+   canto.
+   ══════════════════════════════════════════════════════════════════════ */
+/* O X: um SVG com duas linhas de canto a canto, 10% menor que o card (5%
+   de folga em cada lado), por cima do conteúdo (z-index 3) e sem pegar
+   clique. O SVG estica com o card (preserveAspectRatio="none"), e o
+   non-scaling-stroke mantém o traço em 4px reais em qualquer proporção;
+   o `butt` deixa as pontas retas, perpendiculares à linha.
+   Este bloco vem DEPOIS do `.oferta-card > :not(.oferta-card-img)` (que
+   dá position: relative a todo filho do card) e tem a mesma
+   especificidade, então é ele que vale. */
+.oferta-card > .oferta-x {
+    position: absolute;
+    inset: 5%;
+    width: 90%;
+    height: 90%;
+    z-index: 3;
+    pointer-events: none;
+    overflow: visible;
+}
+.oferta-x line {
+    stroke: var(--er500);
+    stroke-width: 4;
+    stroke-linecap: butt;
+    vector-effect: non-scaling-stroke;
+}
+/* O conteúdo da oferta riscada a meia opacidade; o X fica fora, com o
+   vermelho cheio por cima. */
+.oferta-card--cheio > :not(.oferta-x) { opacity: 0.5; }
+/* ══════════════════════════════════════════════════════════════════════
+   COMPARATIVO NO CELULAR (≤864): UM CARD SÓ
+   No celular sai o carrossel: some o seletor "Black Friday / Preço cheio"
+   (.bf-perfil) e some o card do preço cheio (#oferta-cheia). O card da
+   Black Friday ocupa a largura toda e ganha, ao lado do 12× 47, a
+   ancoragem 12× 197 com o mesmo X do card do preço cheio. No desktop a
+   ancoragem fica escondida, porque o preço cheio já está no card ao lado.
+   Vem no fim do arquivo pra vencer as regras do carrossel (mesma
+   especificidade, quem vem depois ganha).
+   ══════════════════════════════════════════════════════════════════════ */
+.oferta-price-linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 24px;
+}
+.oferta-price-de { display: none; }
+/* O 197 em --h2 700 (menor que o 47, que segue protagonista), apagado em
+   --bw-50. Seletor (0,4,0): o `.oferta-card--bf .oferta-price .value`
+   (0,3,0) pinta o valor com o degradê warning e preenchimento
+   transparente. O <s> traz o line-through do navegador; o X substitui. */
+.oferta-card--bf .oferta-price.oferta-price-de .value {
+    font: var(--h2);
+    font-weight: 700;
+    background: none;
+    -webkit-text-fill-color: var(--bw-50);
+    color: var(--bw-50);
+    text-decoration: none;
+    position: relative;
+}
+/* O X sobre o 197: o mesmo SVG (.oferta-x, linhas de 4px com ponta reta),
+   ocupando a caixa do número. */
+.oferta-x--preco {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+@media (max-width: 864px) {
+    .of-perfil.bf-perfil { display: none; }
+    #oferta-cheia { display: none; }
+    .oferta-grid {
+        overflow: visible;
+        margin: 0;
+        padding: 0;
+    }
+    .oferta-card--bf { flex: 1 1 100%; }
+    .oferta-price-de { display: inline-flex; }
+}
