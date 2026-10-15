@@ -2842,3 +2842,21 @@ button.bf-btn[disabled] { opacity: 0.25; pointer-events: none; }/* O .bf-btn (p�
     .oferta-card--bf { flex: 1 1 100%; }
     .oferta-price-de { display: inline-flex; }
 }
+/* ══════════════════════════════════════════════════════════════════════
+   SEM ROLAGEM HORIZONTAL NO CELULAR
+   O `html { overflow-x: clip }` do root.css não segura o transbordo no
+   Android: no <html> o overflow é repassado pra viewport, e o Chrome do
+   Android ignora esse corte no gesto e alarga a viewport de layout até o
+   conteúdo mais largo. Aqui o mais largo era o carrossel dos Extras, cuja
+   trilha não recorta de propósito (os cards vizinhos aparecem pra fora da
+   coluna): a viewport ia a 1560px e a página andava de lado.
+
+   - `.of-extras` corta na própria seção, que tem a largura da tela: o
+     vizinho continua aparecendo até a borda, como no desenho.
+   - `body` corta o resto (a folga de 64px dos .sec-title, que sozinha
+     alargava a viewport pra 438px).
+   `clip`, e não `hidden`: não cria contêiner de rolagem, então os sticky
+   (lateral das Formações, CTA fixo) seguem funcionando contra a tela.
+   ══════════════════════════════════════════════════════════════════════ */
+body { overflow-x: clip; }
+.of-extras { overflow-x: clip; }
