@@ -151,9 +151,11 @@ body::after {
 .cert-data-ano { grid-column: 1 / -1; }
 select.input { cursor: pointer; color-scheme: dark; }   /* seta e lista nativas no tom escuro */
 
-/* A lista rola por dentro quando o JS do DS aplica max-height (caso de não
-   caber nem abaixo nem acima do gatilho). O overflow-y: auto vem do root.css. */
-.dropdown-options { overscroll-behavior: contain; }
+/* A lista rola por dentro quando o JS aplica max-height (caso de não caber
+   inteira nem abaixo nem acima do gatilho). O .dropdown-options-detached do
+   root.css traz overflow: hidden, que anula o overflow-y: auto da lista: com
+   max-height, as opções de baixo ficavam cortadas sem rolagem. */
+.cert-form .dropdown-options { overflow-y: auto; overscroll-behavior: contain; }
 .cert-link-saida {
     resize: vertical;
     line-height: 1.5;

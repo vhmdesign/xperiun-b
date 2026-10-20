@@ -98,15 +98,24 @@
        invalidar o link) e o gatilho responde a teclado (Enter/Espaço/Esc). */
     var GAP_DD = 8;
 
-    /* Ancestral com overflow hidden que recorta a lista; sem nenhum, o viewport. */
-    function containerDe(group) {
+    /* Faixa vertical visível onde a lista pode abrir: o viewport, apertado pelo
+       ancestral que recorta (overflow hidden ou clip, como o .cert-page). O
+       rect do <html> NÃO serve de limite: ele tem a altura do documento todo,
+       então a lista "cabia" abaixo e saía da tela. */
+    function limitesDe(group) {
+        var topo = 0, base = window.innerHeight;
         var el = group.parentElement;
         while (el && el !== document.body) {
             var st = getComputedStyle(el);
-            if (st.overflow === 'hidden' || st.overflowY === 'hidden') return el;
+            if (/hidden|clip/.test(st.overflowY) || /hidden|clip/.test(st.overflow)) {
+                var r = el.getBoundingClientRect();
+                topo = Math.max(topo, r.top);
+                base = Math.min(base, r.bottom);
+                break;
+            }
             el = el.parentElement;
         }
-        return document.documentElement;
+        return { top: topo, bottom: base };
     }
 
     function montarDropdown(campo, opcoes, aoEscolher) {
@@ -122,8 +131,7 @@
         }).join('');
 
         function abrir() {
-            var container = containerDe(group);
-            var cRect = container.getBoundingClientRect();
+            var cRect = limitesDe(group);
             var gRect = group.getBoundingClientRect();
 
             /* Mede a altura da lista sem exibir. */
@@ -144,8 +152,9 @@
                 group.classList.add('is-open-up');
                 lista.style.maxHeight = '';
             } else {
-                group.classList.remove('is-open-up');
-                lista.style.maxHeight = Math.max(abaixo, 40) + 'px';
+                /* Não cabe inteira: abre pro lado com mais espaço, com scroll. */
+                group.classList.toggle('is-open-up', acima > abaixo);
+                lista.style.maxHeight = Math.max(Math.max(abaixo, acima), 40) + 'px';
             }
             group.classList.add('is-open');
             trigger.setAttribute('aria-expanded', 'true');
