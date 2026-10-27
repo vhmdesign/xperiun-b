@@ -899,7 +899,7 @@ main {
     translate: -50% 0;
     width: 1920px;
     aspect-ratio: 1920 / 880;
-    background: url("/ed/aisummit/dependencias/presencial/ais-presencial.webp") no-repeat center top / 100% auto;
+    background: url("/ed/aisummit/dependencias/presencial/ais-presencial.webp?v=98c2fbba") no-repeat center top / 100% auto;
     pointer-events: none;
 }
 @media (min-width: 1921px) {
@@ -1366,7 +1366,7 @@ main {
        côncavo com --pc200 nas laterais de baixo + degradê --pc200-10 de
        baixo pra cima), que o fundo --bb da seção esconderia. */
     background:
-        url("/ed/aisummit/dependencias/agenda/ais-agenda-palco.webp") no-repeat left bottom / min(100%, 1920px) auto,
+        url("/ed/aisummit/dependencias/agenda/ais-agenda-palco.webp?v=3927c75f") no-repeat left bottom / min(100%, 1920px) auto,
         radial-gradient(ellipse 150% 125% at 50% 0%, transparent 90%, var(--pc200) 100%),
         linear-gradient(to top, var(--pc200-10), transparent);
     /* O fundo da imagem é --bb opaco: lighten deixa o preto dela ceder à
