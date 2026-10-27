@@ -324,8 +324,6 @@ body {
 /* Botão (abre o popup). */
 .ais-btn {
     display: inline-flex;
-    /* é link (#garantir) no header e na barra */
-    text-decoration: none;
     align-items: center;
     justify-content: center;
     /* Medidas do .btn[data-size="m"] do DS. */
@@ -356,6 +354,15 @@ body {
     color: var(--bw);
     text-decoration: none;
     box-shadow: inset 0 0 0 100vmax var(--pc300);
+}
+/* Os do header e da barra são links (#garantir): o a:not(.btn) do root.css
+   (0,1,1, mais forte que .ais-btn) pintava o texto de --pc300 (ilegível
+   sobre o --pc400) e sublinhava no hover. Mesma força e depois dele, vence;
+   o hover --bb do header (.ais-hero-acao .ais-btn:hover) continua acima. */
+a.ais-btn,
+a.ais-btn:hover {
+    color: var(--bw);
+    text-decoration: none;
 }
 @media (prefers-reduced-motion: reduce) {
     .ais-btn { animation: none; }
