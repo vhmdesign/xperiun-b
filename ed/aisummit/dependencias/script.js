@@ -542,6 +542,7 @@ function ouvirMq(mq, fn) {
     if (!palco) return;
     var quadros = [].slice.call(sec.querySelectorAll('.ais-profs-quadro'));
     var nomes = [].slice.call(sec.querySelectorAll('.ais-profs-quem'));
+    var pontos = [].slice.call(sec.querySelectorAll('.ais-profs-pontos span'));
     var reduz = window.matchMedia('(prefers-reduced-motion: reduce)');
     var VARS = ['--ais-r4', '--ais-r3', '--ais-r2', '--ais-r1', '--ais-pf-desce', '--ais-pf-fotos', '--ais-pf-texto'];
     // [início, fim] de cada fase, em telas. Os níveis da raiz em fila: cada
@@ -565,6 +566,7 @@ function ouvirMq(mq, fn) {
             el.style.removeProperty('--ais-pf-dx');
             el.style.removeProperty('--ais-pf-dy');
         });
+        pontos.forEach(function (q) { q.style.removeProperty('--ais-pf-ponto'); });
     }
     function atualizar() {
         pendente = false;
@@ -613,6 +615,8 @@ function ouvirMq(mq, fn) {
             q.style.setProperty('--ais-pf-o', (op * aparece).toFixed(4));
             if (nomes[i]) {
                 nomes[i].style.setProperty('--ais-pf-q', (entra * (1 - sai)).toFixed(4));
+                // o quadrado dele no indicador acende junto com o nome
+                if (pontos[i]) pontos[i].style.setProperty('--ais-pf-ponto', (entra * (1 - sai)).toFixed(4));
                 nomes[i].style.setProperty('--ais-pf-dx', dx.toFixed(1) + 'px');
                 nomes[i].style.setProperty('--ais-pf-dy', dy.toFixed(1) + 'px');
             }

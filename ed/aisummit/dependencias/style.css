@@ -1192,6 +1192,26 @@ main {
     text-transform: uppercase;
     color: var(--bw);
 }
+/* Título e texto (a hgroup), no mesmo espaçamento do bloco. */
+.ais-profs-titulos {
+    display: flex;
+    flex-direction: column;
+    gap: inherit;
+}
+/* Indicador, como o .ais-agenda-pontos: um quadrado de 8 por palestrante,
+   4 entre eles, de --bw-25 a --bw (sem transparência) na proporção em que
+   o nome dele está na tela (--ais-pf-ponto = o --ais-pf-q do nome,
+   script.js). Só na sequência: sem ela fica só o 1º nome. */
+.ais-profs-pontos {
+    display: none;
+    gap: 4px;
+}
+.ais-profs.is-sequencia .ais-profs-pontos { display: flex; }
+.ais-profs-pontos span {
+    width: 8px;
+    height: 8px;
+    background: color-mix(in srgb, var(--bw) calc(var(--ais-pf-ponto, 0) * 100%), var(--bw-25));
+}
 .ais-profs-p {
     /* quebra do PDF: "Aprenda com quem vive o / mercado na prática diária" */
     max-width: 14em;
@@ -1544,8 +1564,9 @@ main {
     color: var(--bw);
 }
 .ais-agenda-nome { color: var(--pc200); }
-/* Foto: quadrado de 112 inclinado, o fundo do palco do palestrante com o
-   recorte dele por cima. Inclinação de 0 a 15deg e de volta, como o
+/* Foto: quadrado de 112 inclinado, com o recorte do palestrante (o PNG
+   transparente da seção de palestrantes, sem fundo), enquadrado do topo:
+   rosto e ombros. Inclinação de 0 a 15deg e de volta, como o
    número. */
 .ais-agenda-avatar {
     position: relative;
@@ -1562,6 +1583,11 @@ main {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 50% 0;
+    /* o recorte é de meio corpo: ampliado a partir do topo pra caber o
+       rosto e os ombros no quadrado */
+    scale: 1.7;
+    transform-origin: 50% 0;
 }
 
 @media (max-width: 1439px) {
