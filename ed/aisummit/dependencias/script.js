@@ -978,46 +978,53 @@ function ouvirMq(mq, fn) {
 })();
 
 /* ── Ticket da oferta pelo mouse ──
-   Com mouse (ponteiro fino, acima de 864, sem reduced motion) o ticket
-   ganha .is-mouse e o CSS lê --ais-tk-x/y (-1 a 1): a posição do ponteiro
-   na oferta em relação ao centro do ticket, em meias telas. Move o degradê
-   e inclina o ticket (skew de até 3.75deg em cada eixo). Fora da seção
-   volta ao centro. Sem mouse, o degradê anda sozinho (CSS). */
+   Com mouse (ponteiro fino, acima de 864, sem reduced motion) a moldura
+   do ticket ganha .is-mouse e o CSS lê --ais-tk-x/y (-1 a 1): a posição do
+   ponteiro na oferta em relação ao centro do ticket, em meias telas. Move
+   o degradê e inclina o ticket (skew de até 3.75deg em cada eixo). Fora da
+   seção volta ao centro. Sem mouse, o degradê anda sozinho (CSS).
+   O giro da flor (vídeo, abaixo) recebe o evento ais:giro (-1 a 1): o
+   quanto o ponteiro se afastou do ticket até a borda da tela daquele lado
+   (o ticket fica à direita, então cada lado tem a sua distância). */
 (function () {
     var sec = document.querySelector('.ais-oferta');
-    var ticket = sec && sec.querySelector('.ais-ticket');
-    if (!ticket) return;
+    var moldura = sec && sec.querySelector('.ais-ticket-moldura');
+    if (!moldura) return;
     var mouse = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 865px)');
     var reduz = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var x = 0, y = 0, pendente = false;
+    var x = 0, y = 0, g = 0, pendente = false;
     function lim(t) { return Math.min(1, Math.max(-1, t)); }
     function ligado() { return mouse.matches && !reduz.matches; }
     function pintar() {
         pendente = false;
-        ticket.style.setProperty('--ais-tk-x', x.toFixed(3));
-        ticket.style.setProperty('--ais-tk-y', y.toFixed(3));
+        moldura.style.setProperty('--ais-tk-x', x.toFixed(3));
+        moldura.style.setProperty('--ais-tk-y', y.toFixed(3));
+        moldura.dispatchEvent(new CustomEvent('ais:giro', { detail: g }));
     }
     function agendar() { if (!pendente) { pendente = true; requestAnimationFrame(pintar); } }
     function modo() {
         var on = ligado();
-        ticket.classList.toggle('is-mouse', on);
+        moldura.classList.toggle('is-mouse', on);
         if (!on) {
-            x = y = 0;
-            ticket.style.removeProperty('--ais-tk-x');
-            ticket.style.removeProperty('--ais-tk-y');
+            x = y = g = 0;
+            moldura.style.removeProperty('--ais-tk-x');
+            moldura.style.removeProperty('--ais-tk-y');
         }
     }
 
     sec.addEventListener('pointermove', function (e) {
         if (e.pointerType !== 'mouse' || !ligado()) return;
-        var r = ticket.getBoundingClientRect();
-        x = lim((e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2));
+        var r = moldura.getBoundingClientRect();
+        var cx = r.left + r.width / 2;
+        var dx = e.clientX - cx;
+        x = lim(dx / (window.innerWidth / 2));
         y = lim((e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2));
+        g = lim(dx > 0 ? dx / Math.max(1, window.innerWidth - cx) : dx / Math.max(1, cx));
         agendar();
     }, { passive: true });
     sec.addEventListener('pointerleave', function () {
         if (!ligado()) return;
-        x = y = 0;
+        x = y = g = 0;
         agendar();
     });
     ouvirMq(mouse, modo);
@@ -1225,27 +1232,81 @@ document.addEventListener('click', function (e) {
 
 /* ── Vídeo de fundo do ticket (a flor) ─────────────────────────────────
    preload="none" e o src no data-src: só carrega quando o ticket chega
-   perto da tela (512px antes), toca em loop enquanto está nela e pausa
-   fora. Com prefers-reduced-motion não toca (fica o poster). */
+   perto da tela (512px antes) e pausa fora. Com prefers-reduced-motion
+   não toca (fica o poster).
+   Sem mouse (celular, tablet) toca em loop, girando sozinha. Com mouse
+   (desktop) não toca: a flor gira com o ponteiro, pelo ais:giro (-1 a 1)
+   do ticket. Afastar pra direita anda do quadro 0 ao 24 (0s a 1s do loop),
+   pra esquerda volta do 0 ao -24 (5s a 4s). Usa o data-src-giro: esses
+   49 quadros (4s a 5s e 0s a 1s do loop, o 0 no meio, índice 24), todos
+   keyframes, pra buscar qualquer quadro na hora. Baixado inteiro num blob
+   (1,5MB): assim a busca não depende do servidor aceitar Range. Suavizado
+   a cada quadro. */
 (function () {
     var v = document.querySelector('.ais-ticket-video');
     if (!v) return;
+    var moldura = v.closest('.ais-ticket-moldura');
     var reduz = window.matchMedia('(prefers-reduced-motion: reduce)');
-    function carrega() {
-        if (!v.getAttribute('src') && v.dataset.src) { v.src = v.dataset.src; v.load(); }
+    var mouse = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 865px)');
+    var FPS = 24, MEIO = 24;
+    var visivel = !('IntersectionObserver' in window);
+    var alvo = MEIO, atual = MEIO, laco = 0, fonte = '', blobGiro = '';
+    function giro() { return mouse.matches && !!v.dataset.srcGiro && 'fetch' in window; }
+    function usar(src) {
+        v.src = src;
+        v.load();
+        atual = MEIO;
     }
-    function toca(sim) {
-        if (sim && !reduz.matches) {
-            carrega();
+    function carrega() {
+        var quer = giro() ? 'giro' : 'loop';
+        if (fonte === quer) return;
+        fonte = quer;
+        if (quer === 'loop') { if (v.dataset.src) usar(v.dataset.src); return; }
+        if (blobGiro) { usar(blobGiro); return; }
+        fetch(v.dataset.srcGiro).then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+            return r.blob();
+        }).then(function (b) {
+            blobGiro = URL.createObjectURL(b);
+            if (fonte === 'giro') usar(blobGiro);
+        }).catch(function () {
+            // sem o giro, fica o loop tocando
+            if (fonte === 'giro') { fonte = 'loop'; usar(v.dataset.src); v.play().catch(function () {}); }
+        });
+    }
+    function quadro() {
+        laco = 0;
+        if (!visivel || fonte !== 'giro' || reduz.matches) return;
+        atual += (alvo - atual) * 0.15;
+        if (Math.abs(alvo - atual) < 0.05) atual = alvo;
+        var t = (Math.round(atual) + 0.5) / FPS;
+        if (v.readyState >= 1 && !v.seeking && Math.abs(v.currentTime - t) > 0.001) v.currentTime = t;
+        // chegou no quadro: dorme até o próximo ais:giro
+        if (atual === alvo && v.readyState >= 1 && !v.seeking && Math.abs(v.currentTime - t) <= 0.001) return;
+        laco = requestAnimationFrame(quadro);
+    }
+    function acordar() { if (!laco) laco = requestAnimationFrame(quadro); }
+    function atualizar() {
+        if (!visivel || reduz.matches) { v.pause(); return; }
+        carrega();
+        if (fonte === 'giro') {
+            v.pause();
+            acordar();
+        } else {
             var pr = v.play();
             if (pr && pr.catch) pr.catch(function () {});
-        } else {
-            v.pause();
         }
     }
-    if (!('IntersectionObserver' in window)) { toca(true); return; }
-    new IntersectionObserver(function (e) { toca(e[0].isIntersecting); }, { rootMargin: '512px' }).observe(v);
-    ouvirMq(reduz, function () { if (reduz.matches) v.pause(); });
+    if (moldura) moldura.addEventListener('ais:giro', function (e) { alvo = MEIO + e.detail * MEIO; acordar(); });
+    // o blob chega depois: busca o quadro do meio assim que der
+    v.addEventListener('loadedmetadata', acordar);
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (e) { visivel = e[0].isIntersecting; atualizar(); }, { rootMargin: '512px' }).observe(v);
+    } else {
+        atualizar();
+    }
+    ouvirMq(reduz, atualizar);
+    ouvirMq(mouse, atualizar);
 })();
 
 /* ── FAQ ───────────────────────────────────────────────────────────────

@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
 
     <!-- ─── CSS específico desta página ──────────────────────── -->
-    <link rel="stylesheet" href="/ed/aisummit/dependencias/style.css?v=406">
+    <link rel="stylesheet" href="/ed/aisummit/dependencias/style.css?v=411">
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -578,17 +578,20 @@
                 </div>
             </div>
             <div class="ais-ticket-palco">
+            <div class="ais-ticket-moldura">
             <button class="ais-ticket" type="button" data-popup="popup-form-aisummit" aria-haspopup="dialog">
                 <span class="ais-ticket-topo">
                     <video class="ais-ticket-video" muted loop playsinline preload="none" aria-hidden="true"
                            poster="/ed/aisummit/dependencias/oferta/ais-ticket-flor-poster.webp?v=524349a4"
-                           data-src="/ed/aisummit/dependencias/oferta/ais-ticket-flor.mp4?v=e6aacd3d"></video>
-                    <img class="ais-ticket-logo" src="/ed/aisummit/dependencias/marca/ais-logotipo-animado.svg?v=2ab9968f"
+                           data-src="/ed/aisummit/dependencias/oferta/ais-ticket-flor.mp4?v=e6aacd3d"
+                           data-src-giro="/ed/aisummit/dependencias/oferta/ais-ticket-flor-giro.mp4?v=d63009ba"></video>
+                    <img class="ais-ticket-logo" src="/ed/aisummit/dependencias/marca/ais-logotipo.svg?v=b6415e28"
                          alt="" width="874" height="622" decoding="async">
                     <span class="ais-ticket-barras" aria-hidden="true"></span>
                 </span>
                 <span class="ais-ticket-base">Garantir vaga<svg class="ais-ticket-seta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75" aria-hidden="true" focusable="false"><path d="M55 0c11.05 0 20 8.95 20 20v55H65V17.07L24.04 58.03l-7.07-7.07L57.93 10H0V0z"/></svg></span>
             </button>
+            </div>
             </div>
         </div>
     </div>
@@ -721,6 +724,19 @@
 </main>
 
 <!-- ═══════════════════════════════════════════════════════════════════
+     RODAPÉ
+     Só o logotipo animado (o símbolo com as raízes que vira o lockup),
+     centralizado. Lazy: a animação começa quando o rodapé chega perto da
+     tela, no lockup inteiro.
+     ═══════════════════════════════════════════════════════════════════ -->
+<footer class="ais-rodape">
+    <div class="ais-rodape-inner">
+        <img class="ais-rodape-logo" src="/ed/aisummit/dependencias/marca/ais-logotipo-animado.svg?v=2c671bbf"
+             alt="Xperiun AI Summit" width="874" height="622" loading="lazy" decoding="async">
+    </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════
      CTA FIXA NO RODAPÉ
      "Vagas", a barra e a % preenchida (só "XX%"), e o botão. A % vem do
      data-preenchido (0 a 100): o script.js escreve o número (2 dígitos) e
@@ -741,7 +757,7 @@
     </div>
 </div>
 
-<!-- Sem menu e sem footer, como a /ed/bf/: página de conversão. -->
+<!-- Sem menu, como a /ed/bf/: página de conversão. -->
 
 <!-- Botão flutuante de WhatsApp (o .wa-float da /ed/aichampion/): fixo no
      canto de cima à direita, pra tirar dúvidas com um consultor. -->
@@ -761,7 +777,7 @@
 
 <!-- Script da página: carrossel do header, sequências de scroll, vídeos,
      mapa, popup, FAQ e barra fixa. -->
-<script src="/ed/aisummit/dependencias/script.js?v=152"></script>
+<script src="/ed/aisummit/dependencias/script.js?v=154"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

@@ -1331,6 +1331,7 @@ main {
     .ais-profs-cabeca,
     .ais-profs-quem { grid-column: 1 / -1; }
     .ais-profs-cabeca { grid-row: 1; gap: 8px; }
+    .ais-profs-pontos { align-self: flex-end; }
     .ais-profs-quem   { grid-row: 3; }
     .ais-profs-titulo { font-size: 1.25rem; }
     .ais-profs-p,
@@ -1923,8 +1924,9 @@ main {
    Largura: a coluna, limitada pela altura que sobra entre as metades do
    título (ticket = 1,425 x a largura).
    O .ais-ticket-palco é o item do grid e leva a entrada (opacity e
-   translateX, --ais-of-ticket); o transform do ticket fica livre pra
-   inclinação pelo mouse (script.js). */
+   translateX, --ais-of-ticket); dentro dele a .ais-ticket-moldura leva a
+   inclinação pelo mouse (script.js) e a estrela do canto, fora da máscara
+   do ticket. */
 .ais-ticket-palco {
     grid-column: 7 / span 3;
     grid-row: 1 / -1;
@@ -1936,9 +1938,49 @@ main {
     opacity: var(--ais-of-ticket, 1);
     transform: translateX(calc((1 - var(--ais-of-ticket, 1)) * 64px));
 }
-.ais-ticket {
-    /* a largura numa variável, pro picote (mask, abaixo) medir por ela */
+/* A largura numa variável (na moldura, herdada pelo ticket), pro picote
+   (mask, abaixo) e a estrela medirem por ela. */
+.ais-ticket-moldura {
     --ais-tk-w: min(100cqi, max(240px, calc((100svh - 96px - (100vw - 32px) * 0.103) / 1.425)));
+    position: relative;
+    isolation: isolate;
+    display: flex;
+}
+/* Com mouse (.is-mouse) a posição do ponteiro vem em --ais-tk-x/y (-1 a 1,
+   script.js): skew de até 3.75deg em cada eixo, o ticket "vira" pro lado
+   do ponteiro, com a estrela junto. */
+.ais-ticket-moldura.is-mouse {
+    transform: skew(calc(var(--ais-tk-y, 0) * -3.75deg), calc(var(--ais-tk-x, 0) * -3.75deg));
+    transition: transform 200ms ease-out;
+}
+/* Estrela no canto de cima à esquerda, como a do botão da barra, na frente
+   do ticket: --pc200, e no hover girando mais rápido. 70 no ticket de
+   400. O centro dela fica na metade do padding de cima do ticket
+   (0.16 / 2). */
+.ais-ticket-moldura::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: calc(var(--ais-tk-w) * 0.08);
+    left: 0;
+    width: calc(var(--ais-tk-w) * 0.175);
+    height: calc(var(--ais-tk-w) * 0.175);
+    translate: -50% -50%;
+    background-color: var(--pc200);
+    -webkit-mask: var(--ais-estrela) center / contain no-repeat;
+            mask: var(--ais-estrela) center / contain no-repeat;
+    pointer-events: none;
+    animation:
+        ais-estrela-gira 12s linear infinite,
+        ais-estrela-acelera 3s linear infinite paused;
+}
+.ais-ticket-moldura:hover::after {
+    animation-play-state: running, running;
+}
+@media (prefers-reduced-motion: reduce) {
+    .ais-ticket-moldura::after { animation: none; }
+}
+.ais-ticket {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1951,24 +1993,21 @@ main {
     overflow: hidden;
     color: var(--bb);
     text-decoration: none;
-    /* Degradê na diagonal, --pc400 nas pontas passando por --pc200 até o
-       brilho --pc100 no meio, em 200% (só metade aparece de cada vez). Sem
-       mouse ele anda sozinho (ais-onda, como o botão); com mouse
-       (.is-mouse) a posição vem do ponteiro (--ais-tk-x/y, -1 a 1,
-       script.js), junto com a inclinação: skew de até 3.75deg em cada
-       eixo, o ticket "vira" pro lado do ponteiro. */
+    /* Degradê na diagonal, --pc600 nas pontas passando por --pc400 e
+       --pc200 até o brilho --pc100 no meio, em 200% (só metade aparece de
+       cada vez). Sem mouse ele anda sozinho (ais-onda, como o botão); com
+       mouse (.is-mouse na moldura) a posição vem do ponteiro (--ais-tk-x/y). */
     background-image: linear-gradient(45deg,
-        var(--pc400), var(--pc200), var(--pc100), var(--pc200), var(--pc400));
+        var(--pc600), var(--pc400), var(--pc200), var(--pc100), var(--pc200), var(--pc400), var(--pc600));
     background-size: 200% 200%;
     animation: ais-onda 5s ease infinite;
 }
-.ais-ticket.is-mouse {
+.is-mouse .ais-ticket {
     animation: none;
     background-position:
         calc((var(--ais-tk-x, 0) + 1) * 50%)
         calc((var(--ais-tk-y, 0) + 1) * 50%);
-    transform: skew(calc(var(--ais-tk-y, 0) * -3.75deg), calc(var(--ais-tk-x, 0) * -3.75deg));
-    transition: transform 200ms ease-out, background-position 200ms ease-out;
+    transition: background-position 200ms ease-out;
 }
 .ais-ticket:hover {
     text-decoration: none;
@@ -1999,7 +2038,8 @@ main {
    recorte quadrado do centro do vídeo vertical, com uma camada --bb em
    screen gravada no próprio vídeo, então o preto dele é o --bb do ticket).
    Carrega e toca pelo script.js perto da tela; com reduced motion fica o
-   poster. O logo por cima. */
+   poster. Com mouse (desktop) não toca: o giro segue o ponteiro
+   (ais-ticket-flor-giro.mp4, script.js). O logo por cima. */
 .ais-ticket-video {
     position: absolute;
     inset: 0;
@@ -2013,7 +2053,7 @@ main {
    ponteiro (--ais-tk-x/y, os mesmos do skew), até 3cqi (12 no ticket de
    400), e fica um plano atrás da moldura. A escala de 1,1 dá a sobra pra
    borda dele nunca aparecer dentro do quadrado (18 de cada lado). */
-.ais-ticket.is-mouse .ais-ticket-video {
+.is-mouse .ais-ticket-video {
     transform:
         translate(calc(var(--ais-tk-x, 0) * -3cqi), calc(var(--ais-tk-y, 0) * -3cqi))
         scale(1.1);
@@ -2029,12 +2069,10 @@ main {
     background: linear-gradient(to top, var(--pc300-50), var(--bb-25));
     pointer-events: none;
 }
-/* Logotipo animado (ais-logotipo-animado.svg, cópia do
-   temp/ai-summit/logotipo-animado.svg em --bw, com o viewBox no recorte que
-   cobre o ciclo todo de 11,3s: o símbolo com as raízes grande encolhe e
-   vira o lockup). 83% porque o lockup inteiro ocupa 602 dos 874 do
-   recorte: fica com os 57% do logo anterior. O SVG respeita o reduced
-   motion sozinho (lockup parado). */
+/* Logotipo parado (ais-logotipo.svg: o ais-logotipo-animado.svg sem as
+   animações, só o lockup, no mesmo recorte de 874 x 622; o animado ficou
+   no rodapé). 83% porque o lockup ocupa 602 dos 874 do recorte: fica com
+   57% do quadrado. */
 .ais-ticket-logo {
     position: relative;
     z-index: 2;
@@ -2141,7 +2179,7 @@ main {
     .ais-oferta-vagas { grid-column: 1 / -1; }
     .ais-oferta-dado-tit { font: var(--h6); }
     .ais-oferta-preco { --ais-moeda: 1.125rem; }
-    .ais-ticket { --ais-tk-w: min(100cqi, 280px, max(200px, calc((100svh - 420px) / 1.425))); }
+    .ais-ticket-moldura { --ais-tk-w: min(100cqi, 280px, max(200px, calc((100svh - 420px) / 1.425))); }
 }
 @media (max-width: 576px) {
     .ais-oferta-inner { --cols: 4; --gap: 16px; }
@@ -2525,9 +2563,10 @@ main {
    e título no estilo dos da página (como os do cronograma). 256px
    embaixo: a barra fixa do CTA cobre o fim da página.
    ══════════════════════════════════════════════════════════════════════ */
+/* Embaixo sem padding: o respiro pra barra de vagas fica no rodapé. */
 .sec-faq {
     position: relative;
-    padding: 128px 0 256px;
+    padding: 128px 0 0;
     background: var(--bb);
 }
 .faq-inner {
@@ -2634,7 +2673,7 @@ main {
     .ais-faq-eyebrow { font: var(--label-s); }
 }
 @media (max-width: 576px) {
-    .sec-faq { padding: 96px 0 256px; }
+    .sec-faq { padding: 96px 0 0; }
     .faq-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; padding-bottom: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2642,6 +2681,46 @@ main {
     .faq-a-grid.is-open,
     .faq-a,
     .faq-a-grid.is-open .faq-a { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RODAPÉ
+   O logotipo animado (ais-logotipo-animado.svg, ciclo de 13,15s: o lockup
+   parado 4s, depois se desfaz no símbolo com as raízes e volta)
+   centralizado no grid, 4 colunas, sem respiro embaixo. O SVG respeita o
+   reduced motion sozinho (lockup parado).
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-rodape {
+    position: relative;
+    padding: 64px 0 0;
+    background: var(--bb);
+}
+.ais-rodape-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+.ais-rodape-logo {
+    grid-column: 4 / span 4;
+    display: block;
+    width: 100%;
+    height: auto;
+}
+@media (max-width: 1439px) {
+    .ais-rodape-inner { grid-template-columns: repeat(8, 1fr); }
+    .ais-rodape-logo { grid-column: 3 / span 4; }
+}
+@media (max-width: 864px) {
+    .ais-rodape-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    .ais-rodape-logo { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .ais-rodape { padding: 48px 0 0; }
+    .ais-rodape-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
