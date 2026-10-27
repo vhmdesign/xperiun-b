@@ -1564,9 +1564,8 @@ main {
     color: var(--bw);
 }
 .ais-agenda-nome { color: var(--pc200); }
-/* Foto: quadrado de 112 inclinado, com o recorte do palestrante (o PNG
-   transparente da seção de palestrantes, sem fundo), enquadrado do topo:
-   rosto e ombros. Inclinação de 0 a 15deg e de volta, como o
+/* Foto: quadrado de 112 inclinado, a foto da palestra (agenda/), sem a
+   camada de fundo do palco por trás. Inclinação de 0 a 15deg e de volta, como o
    número. */
 .ais-agenda-avatar {
     position: relative;
@@ -1583,11 +1582,6 @@ main {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 0;
-    /* o recorte é de meio corpo: ampliado a partir do topo pra caber o
-       rosto e os ombros no quadrado */
-    scale: 1.7;
-    transform-origin: 50% 0;
 }
 
 @media (max-width: 1439px) {
