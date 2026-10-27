@@ -189,7 +189,16 @@ function ouvirMq(mq, fn) {
    (~1,5 MB). O vídeo só carrega depois do load da página, pra não disputar
    banda com CSS, fontes e imagens. A versão acompanha a tela: se a janela
    cruzar 864 depois de aberta, o arquivo é trocado (sem repetir a entrada:
-   ver comMetadados no efeito de scroll). */
+   ver comMetadados no efeito de scroll).
+   Melhor qualidade: depois que esse vídeo carregou, se a conexão não é
+   lenta nem está em economia de dados, baixa inteira a versão HQ da mesma
+   largura (data-src-hq / data-src-mobile-hq: o mesmo corte, só quadros-
+   chave, ~4x menos erro), em AV1 quando o navegador diz que decodifica liso
+   e sem gastar bateria (MediaCapabilities) e em H.264 nos outros. Só com
+   ela inteira na memória (blob) o efeito de scroll troca: um 2º vídeo
+   entra por baixo do atual no mesmo quadro e só então o atual sai
+   (ais:video-hq / ais:video-trocado). Sem suporte, rede ruim ou erro,
+   fica o vídeo normal. Com prefers-reduced-motion, nada disso. */
 (function () {
     var video = document.querySelector('.ais-hero-video');
     if (!video) return;
@@ -209,11 +218,64 @@ function ouvirMq(mq, fn) {
             video.src = src;
             video.load();
         }
+        melhorar(m);
     }
     function carregar() {
         carregado = true;
         aplicar();
     }
+
+    var hq = {};      // URL da versão HQ -> blob já baixado
+    var pedido = 0;   // a largura mudou: anula download e troca anteriores
+    function podeHq() {
+        if (parado) return false;
+        var c = navigator.connection;
+        return !(c && (c.saveData || /2g|3g/.test(c.effectiveType || '')));
+    }
+    function escolher(m) {
+        var h264 = video.getAttribute(m ? 'data-src-mobile-hq' : 'data-src-hq');
+        var av1 = video.getAttribute(m ? 'data-src-mobile-hq-av1' : 'data-src-hq-av1');
+        var tipo = 'video/mp4; codecs="av01.0.05M.08"';
+        var mc = navigator.mediaCapabilities;
+        if (!av1 || !mc || !mc.decodingInfo || !video.canPlayType(tipo)) return Promise.resolve(h264);
+        return mc.decodingInfo({ type: 'file', video: {
+            contentType: tipo, width: m ? 1284 : 1926, height: m ? 320 : 480,
+            bitrate: m ? 4000000 : 6000000, framerate: 24
+        } }).then(function (r) {
+            return r.supported && r.smooth && r.powerEfficient ? av1 : h264;
+        }, function () { return h264; });
+    }
+    function melhorar(m) {
+        var n = ++pedido;
+        if (!podeHq() || !window.fetch || !window.URL) return;
+        // espera o vídeo normal pintar (não disputa banda com ele)
+        var base = video;
+        var ir = function () {
+            if (n !== pedido) return;
+            escolher(m).then(function (url) {
+                if (!url || n !== pedido) return null;
+                if (hq[url]) return hq[url];
+                return fetch(url).then(function (r) {
+                    if (!r.ok) throw new Error(r.status);
+                    return r.blob();
+                }).then(function (b) { return (hq[url] = URL.createObjectURL(b)); });
+            }).then(function (obj) {
+                if (!obj || n !== pedido) return;
+                var novo = video.cloneNode(false);
+                novo.muted = true;
+                novo.src = obj;
+                novo.addEventListener('loadeddata', function () {
+                    if (n !== pedido) return;
+                    document.dispatchEvent(new CustomEvent('ais:video-hq', { detail: novo }));
+                }, { once: true });
+                novo.load();
+            }).catch(function () {});
+        };
+        if (base.readyState >= 2) ir();
+        else base.addEventListener('loadeddata', ir, { once: true });
+    }
+    // depois da troca, as próximas trocas de largura valem pro vídeo novo
+    document.addEventListener('ais:video-trocado', function (e) { video = e.detail; });
 
     aplicar();
     ouvirMq(mq, aplicar);
@@ -360,6 +422,41 @@ function ouvirMq(mq, fn) {
     function lacoEntrada() {
         atualizar();
         if (emEntrada) requestAnimationFrame(lacoEntrada);
+        else if (trocaPendente) trocar();
+    }
+
+    // Versão de melhor qualidade (vídeo do header: versão e carregamento):
+    // o novo entra por baixo do atual, vai pro mesmo quadro e só então o
+    // atual sai, sem piscar. Se chegar durante a entrada, espera ela acabar.
+    var trocaPendente = null;
+    document.addEventListener('ais:video-hq', function (e) {
+        trocaPendente = e.detail;
+        if (!emEntrada) trocar();
+    });
+    function trocar() {
+        var novo = trocaPendente;
+        trocaPendente = null;
+        if (!novo || !video.parentNode) return;
+        var antigo = video;
+        novo.style.cssText = antigo.style.cssText;
+        antigo.parentNode.insertBefore(novo, antigo);
+        function pronto() {
+            if (antigo.parentNode) antigo.parentNode.removeChild(antigo);
+            video = novo;
+            duracao = novo.duration || duracao;
+            video.addEventListener('loadedmetadata', comMetadados);
+            tempoAtual = -1;
+            atualizar();
+            document.dispatchEvent(new CustomEvent('ais:video-trocado', { detail: novo }));
+        }
+        function buscar() {
+            novo.pause();
+            novo.addEventListener('seeked', pronto, { once: true });
+            novo.currentTime = Math.max(0, tempoAtual);
+        }
+        // iOS só pinta quadros buscados depois de tocar uma vez
+        var r = novo.play();
+        if (r && r.then) r.then(buscar, buscar); else buscar();
     }
     // iOS só pinta quadros buscados depois de o vídeo ter tocado uma vez:
     // toca e pausa na hora (muted, então é permitido).
@@ -1038,7 +1135,8 @@ function ouvirMq(mq, fn) {
                     pitchWithRotate: false,
                     touchPitch: false,
                     cooperativeGestures: true,
-                    attributionControl: { compact: true },
+                    // sem o controle de atribuição (pedido): nem o "i" no canto
+                    attributionControl: false,
                     locale: {
                         'CooperativeGesturesHandler.WindowsHelpText': 'Use Ctrl + rolagem para dar zoom no mapa',
                         'CooperativeGesturesHandler.MacHelpText': 'Use ⌘ + rolagem para dar zoom no mapa',
@@ -1059,12 +1157,6 @@ function ouvirMq(mq, fn) {
                     '<use class="ais-pino-forma" href="#ais-simbolo"/>' +
                     '<use class="ais-pino-cintila" href="#ais-simbolo"/></svg>';
                 new window.maplibregl.Marker({ element: marca, anchor: 'bottom', offset: [0, 7] }).setLngLat([lng, lat]).addTo(mapa);
-                // Atribuição compacta fechada (o "i" abre); o MapLibre abre
-                // ela sozinha quando o mapa é largo.
-                mapa.on('load', function () {
-                    var a = el.querySelector('.maplibregl-ctrl-attrib');
-                    if (a) a.classList.remove('maplibregl-compact-show');
-                });
                 mapa.on('error', function (e) {
                     // erro de tile solto não derruba o mapa; só falha geral do estilo
                     if (e && e.error && /style/i.test(String(e.error.message || ''))) fallback();

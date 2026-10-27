@@ -2044,20 +2044,23 @@ main {
 }
 /* Código de barras: o .pre-cta-barras de /ed/pre-mba-fpa/ (barra 8, vão
    8, barra 4, vão 4, num repeating-linear-gradient de período 24, 32 de
-   altura), em --bw-50, a 16 da esquerda e da base do quadrado e cortado
-   pela direita, como no oferta.pdf. */
+   altura), em --bw-50, a 16 da esquerda, da direita e da base do
+   quadrado. Os 84cqi de largura (92 do quadrado - 2 x 4) cabem exatos 14
+   períodos de 6cqi; o vão de 4 de cada período fica dividido em 2 no
+   começo e 2 no fim, então as duas pontas ficam iguais (18 da borda). */
 .ais-ticket-barras {
     position: absolute;
     z-index: 2;
     left: 4cqi;
-    right: 0;
+    right: 4cqi;
     bottom: 4cqi;
     height: 8cqi;
-    background-image: repeating-linear-gradient(90deg,
-        var(--bw-50) 0 2cqi,
-        transparent 2cqi 4cqi,
-        var(--bw-50) 4cqi 5cqi,
-        transparent 5cqi 6cqi);
+    background: linear-gradient(90deg,
+        transparent 0 0.5cqi,
+        var(--bw-50) 0.5cqi 2.5cqi,
+        transparent 2.5cqi 4.5cqi,
+        var(--bw-50) 4.5cqi 5.5cqi,
+        transparent 5.5cqi) 0 0 / 6cqi 100% round no-repeat;
     pointer-events: none;
 }
 .ais-ticket-base {
@@ -2253,8 +2256,7 @@ main {
    com os tokens da página pelo script.js: terra --bw, ruas em --ln e --pc,
    água --pc200, parques --pc100, rótulos --bb. O embed do Google não deixa
    estilizar sem a API com chave, e por fora (filtros) o contraste não
-   chegava. Pino em círculo --pc500 cintilando e o botão "Abrir no
-   Google Maps" por cima, pra rota. Sem WebGL ou sem rede, o script.js põe
+   chegava. Pino em círculo --pc500 cintilando. Sem WebGL ou sem rede, o script.js põe
    o embed do Google no lugar (.ais-mapa-frame). */
 .ais-mapa {
     grid-column: 7 / span 3;
@@ -2306,6 +2308,19 @@ main {
     aspect-ratio: 400 / 528;
     background: var(--ln100);
 }
+/* Crédito dos dados do mapa (a licença do OpenStreetMap pede ele à vista),
+   discreto no canto de baixo à esquerda, sem link. */
+.ais-mapa-credito {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    z-index: 2;
+    padding: 2px 6px;
+    font: var(--p-xs);
+    color: var(--bb-75);
+    background: var(--bw-75);
+    pointer-events: none;
+}
 .ais-mapa-gl,
 .ais-mapa-frame {
     position: absolute;
@@ -2349,36 +2364,13 @@ main {
 @media (prefers-reduced-motion: reduce) {
     .ais-pino-cintila { animation: none; opacity: 0; }
 }
-/* "Abrir no Google Maps": botão --bb sobre o mapa claro, no canto de cima. */
-a.ais-mapa-google {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 2;
-    padding: 8px 12px;
-    font: var(--label-s);
-    color: var(--bw);
-    background: var(--bb);
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-}
-a.ais-mapa-google:hover {
-    color: var(--bw);
-    background: var(--pc500);
-    text-decoration: none;
-}
-/* Controles do MapLibre (zoom e atribuição) na cara da página: sem radius
+/* Controles do MapLibre (zoom) na cara da página: sem radius
    e sem sombra, em --bb sobre o --bw. */
 .ais-mapa-gl .maplibregl-ctrl-group {
     background: var(--bw);
     box-shadow: inset 0 0 0 2px var(--bb-10);
 }
 .ais-mapa-gl .maplibregl-ctrl-group button + button { border-top: 2px solid var(--bb-10); }
-.ais-mapa-gl .maplibregl-ctrl-attrib {
-    font: var(--p-xs);
-    background: var(--bw-75);
-}
-.ais-mapa-gl .maplibregl-ctrl-attrib a { color: var(--bb); }
 .ais-mapa-gl .maplibregl-cooperative-gesture-screen {
     font: var(--p);
     background: var(--bb-75);

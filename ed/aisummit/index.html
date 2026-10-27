@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
 
     <!-- ─── CSS específico desta página ──────────────────────── -->
-    <link rel="stylesheet" href="/ed/aisummit/dependencias/style.css?v=404">
+    <link rel="stylesheet" href="/ed/aisummit/dependencias/style.css?v=406">
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -71,12 +71,18 @@
          quadro (script.js). -->
     <!-- Sem src/poster no HTML: o script.js escolhe a versão pela largura
          (até 864: 964x240, ~580 KB; acima: 1926x480, ~1,5 MB), põe o
-         poster na hora e só carrega o vídeo depois do load da página. -->
+         poster na hora e só carrega o vídeo depois do load da página.
+         Depois, se o navegador e a rede permitem, troca pela versão HQ
+         (data-src-*-hq: 1284x320 e 1926x480, AV1 ou H.264). -->
     <video class="ais-hero-video"
            data-src="/ed/aisummit/dependencias/header/aisummit-header-bg.mp4?v=c7430ed9"
            data-poster="/ed/aisummit/dependencias/header/aisummit-header-bg-poster.webp?v=546f1b69"
            data-src-mobile="/ed/aisummit/dependencias/header/aisummit-header-bg-mobile.mp4?v=f0eb0b2f"
            data-poster-mobile="/ed/aisummit/dependencias/header/aisummit-header-bg-poster-mobile.webp?v=0d42a976"
+           data-src-hq="/ed/aisummit/dependencias/header/aisummit-header-bg-hq.mp4?v=6064b24f"
+           data-src-hq-av1="/ed/aisummit/dependencias/header/aisummit-header-bg-hq-av1.mp4?v=ea02ce8c"
+           data-src-mobile-hq="/ed/aisummit/dependencias/header/aisummit-header-bg-mobile-hq.mp4?v=ce0afc45"
+           data-src-mobile-hq-av1="/ed/aisummit/dependencias/header/aisummit-header-bg-mobile-hq-av1.mp4?v=586af1e4"
            width="1926" height="480" muted playsinline preload="auto" aria-hidden="true"></video>
 
     <!-- Brilho "canoa" da /ed/aichampion/ (canoa-bottom): fixo na tela,
@@ -590,19 +596,19 @@
 </div>
 
 <!-- Próxima seção: o quadrado da oferta se recolhe e este cresce no lugar
-     (script.js). Por enquanto só data e local (vieram da oferta). -->
+     (script.js). Local, data e o mapa. -->
 <section class="ais-proxima" id="local" aria-labelledby="ais-tit-local">
     <div class="ais-proxima-cartao">
         <div class="ais-proxima-inner">
             <div class="ais-proxima-info">
                 <h2 class="ais-proxima-titulo" id="ais-tit-local">Local do Evento</h2>
                 <div class="ais-oferta-dado">
-                    <p class="ais-oferta-dado-tit">Sábado, <time datetime="2027-03-06">06/03/2027</time></p>
-                    <p class="ais-oferta-dado-sub">Das <time class="ais-oferta-hora" datetime="10:00">10:00</time> às <time class="ais-oferta-hora" datetime="17:00">17:00</time></p>
-                </div>
-                <div class="ais-oferta-dado">
                     <p class="ais-oferta-dado-tit">Florianópolis / SC</p>
                     <p class="ais-oferta-dado-sub">Avenida Luiz Boiteux Piazza, 1302<br>Cachoeira do Bom Jesus<br>Sapiens Parque</p>
+                </div>
+                <div class="ais-oferta-dado">
+                    <p class="ais-oferta-dado-tit">Sábado, <time datetime="2027-03-06">06/03/2027</time></p>
+                    <p class="ais-oferta-dado-sub">Das <time class="ais-oferta-hora" datetime="10:00">10:00</time> às <time class="ais-oferta-hora" datetime="17:00">17:00</time></p>
                 </div>
             </div>
             <div class="ais-mapa">
@@ -613,7 +619,7 @@
                 <div class="ais-mapa-moldura">
                     <div class="ais-mapa-gl" role="region" aria-label="Mapa: Avenida Luiz Boiteux Piazza, 1302, Cachoeira do Bom Jesus, Sapiens Parque, Florianópolis / SC"
                          data-lng="-48.4405416" data-lat="-27.4306658"></div>
-                    <a class="ais-mapa-google" href="https://www.google.com/maps/search/?api=1&amp;query=Avenida+Luiz+Boiteux+Piazza%2C+1302%2C+Cachoeira+do+Bom+Jesus%2C+Florian%C3%B3polis+-+SC" target="_blank" rel="noopener">Abrir no Google Maps</a>
+                    <span class="ais-mapa-credito">© OpenStreetMap</span>
                     <noscript>
                         <iframe class="ais-mapa-frame"
                                 src="https://www.google.com/maps?q=Avenida+Luiz+Boiteux+Piazza,+1302,+Cachoeira+do+Bom+Jesus,+Florian%C3%B3polis+-+SC&amp;output=embed"
@@ -755,7 +761,7 @@
 
 <!-- Script da página: carrossel do header, sequências de scroll, vídeos,
      mapa, popup, FAQ e barra fixa. -->
-<script src="/ed/aisummit/dependencias/script.js?v=151"></script>
+<script src="/ed/aisummit/dependencias/script.js?v=152"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>
