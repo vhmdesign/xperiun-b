@@ -1,0 +1,355 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   AI Summit, página de obrigado (pós-compra).
+
+   Estrutura portada da /ed/be-a-ba-ia-3/obrigado/ (título + progresso de 3
+   fases + CTA que abre a pesquisa num popup), com a identidade da
+   /ed/aisummit/ no lugar da do Bê-a-Bá:
+     - Syne no lugar da Poppins (pelos tokens, como na página principal);
+     - sem border-radius em nada (regra da campanha): as bolinhas do
+       progresso viram quadrados;
+     - título em 900 caixa alta, como os títulos da página, sem gradiente;
+     - progresso com a linha da fase feita em --bw e a fase atual em
+       success (--sc500), como o botão da pesquisa;
+     - a canoa da página principal no fundo, no lugar do brilho, da
+       textura ASCII e do grão da referência (identidade do Bê-a-Bá), e
+       quadradinhos --pc300 na lista.
+
+   Tokens: todos do root.css. Nenhuma cor escrita à mão.
+
+   Sem grid de colunas: é uma coluna de leitura centrada (864px), o mesmo
+   arranjo da página de referência, então não se aplica o container de
+   1440/1152 do DS, que vale para layouts em grid.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* As mesmas redefinições da página principal: todo `font: var(--xxx)` do
+   DS sai em Syne 400. */
+:root {
+    --font-family: "Syne", sans-serif;
+    --h1: 400 clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem)/1.25 var(--font-family);
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+}
+
+body {
+    margin: 0;
+    background: var(--bb);
+    color: var(--bw);
+}
+
+img { max-width: 100%; }
+
+/* ══ Coluna central ════════════════════════════════════════════════════════ */
+.obr {
+    position: relative;
+    isolation: isolate;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;       /* mobile: dvh evita o bug do 100vh atrás da UI */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Brilho de fundo: a canoa da página principal (.canoa-bottom da
+   /ed/aisummit/, que veio da /ed/aichampion/): radial côncavo centrado no
+   topo (o miolo transparente "morde" pra baixo e a luz --pc200 sobe pelas
+   laterais, só nos últimos 10%) + degradê --pc200-10 de baixo pra cima.
+   Fixo na tela, atrás do conteúdo. */
+.canoa-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 150% 125% at 50% 0%,
+            transparent 90%,
+            var(--pc200) 100%),
+        linear-gradient(to top, var(--pc200-10), transparent);
+}
+
+/* Arquivo em 244 x 84, exibido em 244 (240 no celular). */
+.obr-logo {
+    width: 244px;
+    height: auto;
+    display: block;
+}
+
+/* ── Título + progresso ─────────────────────────────────────────────────── */
+.obr-head {
+    width: 100%;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+/* Como os títulos da página (900 pedido, renderiza 800, caixa alta). */
+.obr-title {
+    margin: 0;
+    font: 900 clamp(2rem, 1.5rem + 1.39vw, 2.75rem)/1.25 var(--font-family);
+    text-transform: uppercase;
+    color: var(--bw);
+}
+.obr-destaque { color: var(--pc200); }
+
+/* ── Progresso (3 fases) ────────────────────────────────────────────────────
+   Trilho + barra preenchida (--bw) até a fase atual. Quadrados: --bw
+   (feito), success (--sc500, com pulso, número em --bb pra ler sobre o
+   verde claro) na atual, translúcido (pendente). Grid de 3 colunas com o
+   label em fluxo, então os três ficam alinhados. */
+.obr-prog {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.obr-prog::before,
+.obr-prog::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 14px;               /* centro vertical do quadrado de 32px */
+    height: 4px;
+}
+.obr-prog::before {          /* trilho: centro da 1ª col -> centro da 3ª col */
+    left: 16.6667%;
+    width: 66.6667%;
+    background: var(--bw-25);
+}
+.obr-prog::after {           /* preenchido até a fase atual (a do meio) */
+    left: 16.6667%;
+    width: 33.3333%;
+    background: var(--bw);
+}
+.obr-prog-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.obr-prog-dot {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--label-s);
+    line-height: 1;
+    color: var(--bw);
+    background: var(--bw-25);            /* pendente: translúcido */
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+}
+.obr-prog-step.is-done .obr-prog-dot {   /* feito: --bw */
+    background: var(--bw);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+}
+.obr-prog-step.is-current .obr-prog-dot { /* atual: success + pulso (2 anéis) */
+    background: var(--sc500);
+    color: var(--bb);
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    animation: obr-pulse 1.5s ease-out infinite;
+}
+@keyframes obr-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--sc500-50),  0 0 0 0 var(--sc500-25); }
+    15%  { box-shadow: 0 0 0 0 var(--sc500-25),  0 0 0 0 var(--sc500-15); }
+    100% { box-shadow: 0 0 0 16px transparent,   0 0 0 32px transparent; }
+}
+.obr-prog-label {
+    font: var(--label-s);
+    color: var(--bw-50);
+    white-space: nowrap;
+}
+.obr-prog-step.is-done .obr-prog-label,
+.obr-prog-step.is-current .obr-prog-label { color: var(--bw); }
+
+/* ── Corpo ──────────────────────────────────────────────────────────────── */
+.obr-body {
+    width: 100%;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+.obr-body p {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+.obr-body .obr-hl { color: var(--bw); }
+
+/* Lista com o marcador da identidade do AI Summit: um quadradinho de 8px
+   em --pc300 (como os do picote do ticket), no lugar do traço borrado em
+   degradê da referência, que é da identidade do Bê-a-Bá. */
+.obr-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 24px;      /* espaço do quadradinho, que é absoluto em left: 0 */
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+.obr-list li {
+    position: relative;
+    display: block;
+    font: var(--p);
+    color: var(--bw-75);
+}
+.obr-list li::after {
+    content: "";
+    position: absolute;
+    top: calc(0.75rem - 4px);   /* centro da primeira linha do item */
+    left: -24px;
+    width: 8px;
+    height: 8px;
+    background: var(--pc300);
+}
+
+/* ── CTA (abre o popup da pesquisa) ─────────────────────────────────────────
+   Medidas do .btn[data-size="m"] do DS, em success: fundo --sc500 (a cor
+   do semântico success do DS) com o texto em --bb pra ler sobre o verde
+   claro; no hover clareia pro --sc300. */
+.obr-cta {
+    margin-top: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border: 0;
+    font: var(--btn);
+    color: var(--bb);
+    text-transform: uppercase;
+    cursor: pointer;
+    background: var(--sc500);
+    transition: background-color 0.3s ease;
+}
+.obr-cta:hover { background: var(--sc300); }
+
+/* ── Popup da pesquisa (Typeform inline, desliza da direita) ────────────────
+   Coluna: barra do botão "Sair" (espaço reservado) em cima, form embaixo.
+   Assim o botão nunca é coberto pelo form, mesmo em telas baixas. */
+.obr-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background: var(--bb-75);
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.obr-popup.is-open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+.obr-popup-bar {
+    position: relative;
+    z-index: 2;                 /* sempre acima do iframe -> botão clicável */
+    flex: none;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+/* "Sair": o subtle do DS (fundo translúcido + anel), sem radius. */
+.obr-popup-exit {
+    padding: 12px 24px;
+    border: 0;
+    font: var(--btn);
+    color: var(--bw);
+    background: var(--bw-10);
+    box-shadow: var(--ring-25);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.obr-popup-exit:hover { background: var(--bw-25); }
+.obr-popup-inner {
+    position: relative;
+    z-index: 1;                 /* contexto próprio: o iframe fica contido aqui */
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+}
+.obr-popup-inner .obr-tf {
+    width: 100%;
+    height: 100%;
+}
+
+/* Indicador de carregamento do Typeform (some quando o iframe carrega) */
+.obr-popup-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 2;                 /* por cima do iframe enquanto carrega */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--bb);
+    transition: opacity 0.3s ease;
+}
+.obr-popup-loading.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+/* Spinner: o anel da referência (cauda em conic-gradient até --pc300),
+   girando. Círculo feito pela máscara radial, que recorta o miolo e
+   também o lado de fora do anel: o border-radius está zerado na página
+   inteira (regra da campanha). */
+.obr-spinner {
+    width: 44px;
+    height: 44px;
+    background: conic-gradient(from 0deg, transparent 0%, var(--pc300));
+    -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 66%, #000 98%, transparent 100%);
+            mask: radial-gradient(closest-side, transparent 64%, #000 66%, #000 98%, transparent 100%);
+    animation: obr-spin 0.8s linear infinite;
+}
+@keyframes obr-spin { to { transform: rotate(360deg); } }
+.obr-loading-text {
+    font: var(--label);
+    color: var(--bw-50);
+}
+
+/* ── Responsivo ─────────────────────────────────────────────────────────── */
+@media (max-width: 576px) {
+    .obr-logo { width: 240px; }
+    .obr-head { margin-top: 48px; }
+    .obr-body { margin-top: 48px; }
+    .obr-cta  { width: 100%; }
+    .obr-popup { padding: 12px; gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .obr-prog-step.is-current .obr-prog-dot { animation: none; }
+    .obr-spinner { animation-duration: 1.5s; }
+    .obr-popup,
+    .obr-popup.is-open { transform: none; transition: opacity 0.2s ease; }
+}

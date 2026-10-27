@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-10-22">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <title>Inscrição confirmada | AI Summit | Xperiun</title>
+    <meta name="description" content="Sua vaga no Xperiun AI Summit está garantida. Responda a pesquisa rápida e libere o acesso ao grupo oficial do evento.">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/ed/aisummit/obrigado/dependencias/style.css?v=3">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     OBRIGADO (pós-compra) do AI Summit
+     Estrutura da /ed/be-a-ba-ia-3/obrigado/ (título + progresso de 3
+     fases + CTA que abre a pesquisa num popup), com a identidade da
+     /ed/aisummit/: Syne, sem radius, títulos em 900 caixa alta e o --pc300
+     como cor de avanço. Sem menu e sem footer, como a página principal.
+     ═══════════════════════════════════════════════════════════════════ -->
+<!-- Brilho "canoa" da página principal (canoa-bottom): fixo na tela, a luz
+     --pc200 sobe pelas bordas de baixo. -->
+<div class="canoa-bottom" aria-hidden="true"></div>
+
+<main class="obr">
+    <img class="obr-logo" src="/ed/aisummit/dependencias/marca/aisummit-logo.webp" width="244" height="84" alt="Xperiun AI Summit" fetchpriority="high" decoding="async">
+
+    <div class="obr-head">
+        <h1 class="obr-title">Sua vaga está <span class="obr-destaque">garantida</span></h1>
+
+        <!-- Progresso: 3 fases (Pagamento = feito, Pesquisa = atual, Grupo VIP
+             = pendente, liberado no fim da pesquisa) -->
+        <ol class="obr-prog" aria-label="Progresso da inscrição">
+            <li class="obr-prog-step is-done">
+                <span class="obr-prog-dot">1</span>
+                <span class="obr-prog-label">Pagamento</span>
+            </li>
+            <li class="obr-prog-step is-current" aria-current="step">
+                <span class="obr-prog-dot">2</span>
+                <span class="obr-prog-label">Pesquisa</span>
+            </li>
+            <li class="obr-prog-step">
+                <span class="obr-prog-dot">3</span>
+                <span class="obr-prog-label">Grupo VIP</span>
+            </li>
+        </ol>
+    </div>
+
+    <div class="obr-body">
+        <p>Pagamento confirmado! Você está dentro do Xperiun AI Summit, sábado, 6 de março de 2027, das 10h às 17h, em Florianópolis.</p>
+        <p class="obr-hl">Falta um passo. Preparamos uma pesquisa rápida, leva menos de 3 minutos, e é ela que libera o link do grupo oficial do evento.</p>
+        <p>No grupo você vai receber:</p>
+        <ul class="obr-list">
+            <li>Todos os avisos e orientações para o dia do evento</li>
+            <li>As indicações de hotéis parceiros e de deslocamento para quem vem de fora</li>
+            <li>Conteúdos de aquecimento para chegar pronto</li>
+        </ul>
+    </div>
+
+    <button class="obr-cta" type="button" id="obr-open">Responder Pesquisa</button>
+</main>
+
+<!-- Popup com a pesquisa (Typeform inline), desliza da direita.
+     data-tf-id = ID da pesquisa do AI Summit no Typeform: o script.js põe
+     ele no data-tf-live e carrega o embed.js do Typeform. -->
+<div class="obr-popup" id="obr-popup" aria-hidden="true">
+    <div class="obr-popup-bar">
+        <button class="obr-popup-exit" type="button" id="obr-close">Sair</button>
+    </div>
+    <div class="obr-popup-inner">
+        <div class="obr-popup-loading" role="status">
+            <span class="obr-spinner" aria-hidden="true"></span>
+            <span class="obr-loading-text">Carregando pesquisa...</span>
+        </div>
+        <div class="obr-tf" data-tf-id="01M5HG2B0HJRYCJFTRRQG08EYW"></div>
+    </div>
+</div>
+
+<script src="/ed/aisummit/obrigado/dependencias/script.js?v=2"></script>
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

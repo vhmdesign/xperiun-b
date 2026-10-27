@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-10-16">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <title>AI Summit, Xperiun</title>
+    <meta name="description" content="Xperiun AI Summit, presencial em Florianópolis: um dia de prática e cases reais para dominar IA, Agentes, Power BI e Fabric e virar referência no mercado.">
+
+    <!-- ─── Preview de compartilhamento (WhatsApp, LinkedIn) ───── -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Xperiun">
+    <meta property="og:url" content="https://xperiun.com/ed/aisummit/">
+    <meta property="og:title" content="Xperiun AI Summit | Florianópolis, 06/03/2027">
+    <meta property="og:description" content="Um dia presencial de prática e cases reais para dominar IA, Agentes, Power BI e Fabric e virar referência no mercado.">
+    <meta property="og:image" content="https://xperiun.com/ed/aisummit/dependencias/marca/aisummit-og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <link rel="stylesheet" href="/ed/aisummit/dependencias/style.css?v=398">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HEADER
+     Layout do temp/ai-summit/ref/layout.pdf (canvas 1920), no grid Wide do DS:
+
+       - logo:        1 / span 2
+       - texto:       1 / span 5   (título e lede)
+       - mídia:       7 / -1       (cards span 2, o 3º sangra pra direita)
+       - data:        1 / span 3
+       - local:       4 / span 3   (layout-b.pdf)
+       - botão:       9 / span 2   (encostado no fim do grid, layout-b.pdf)
+
+     A mídia ocupa as linhas do logo e do texto e alinha embaixo com a
+     lede, como no layout.
+     ═══════════════════════════════════════════════════════════════════ -->
+<header class="ais-hero" id="topo">
+
+    <!-- Fundo do topo: aisummmit-header_bg.mp4 cortado em y 420 a 900
+         (1926x480), espelhado na horizontal, com #00000A em screen (o preto
+         vira o --bb do fundo) e invertido no tempo (as raízes se recolhem),
+         tudo no próprio arquivo. H.264 sem áudio, todo quadro é keyframe
+         pra busca ser instantânea. Não toca sozinho: o scroll escolhe o
+         quadro (script.js). -->
+    <!-- Sem src/poster no HTML: o script.js escolhe a versão pela largura
+         (até 864: 964x240, ~580 KB; acima: 1926x480, ~1,5 MB), põe o
+         poster na hora e só carrega o vídeo depois do load da página. -->
+    <video class="ais-hero-video"
+           data-src="/ed/aisummit/dependencias/header/aisummit-header-bg.mp4?v=4"
+           data-poster="/ed/aisummit/dependencias/header/aisummit-header-bg-poster.webp?v=4"
+           data-src-mobile="/ed/aisummit/dependencias/header/aisummit-header-bg-mobile.mp4?v=1"
+           data-poster-mobile="/ed/aisummit/dependencias/header/aisummit-header-bg-poster-mobile.webp?v=1"
+           width="1926" height="480" muted playsinline preload="auto" aria-hidden="true"></video>
+
+    <!-- Brilho "canoa" da /ed/aichampion/ (canoa-bottom): fixo na tela,
+         a luz --pc300 sobe pelas bordas de baixo. Fica a página inteira. -->
+    <div class="canoa-bottom" aria-hidden="true"></div>
+
+    <div class="ais-hero-inner">
+
+        <img class="ais-logo" src="/ed/aisummit/dependencias/marca/aisummit-logo.webp"
+             alt="Xperiun AI Summit" width="244" height="84" decoding="async">
+
+        <div class="ais-hero-texto">
+            <h1 class="ais-titulo">
+                <span class="ais-titulo-linha">Lidere <span class="ais-titulo-destaque">a era da IA</span> em</span>
+                <span class="ais-titulo-linha">Dados e Negócios</span>
+            </h1>
+            <p class="ais-lede">Um dia de prática e cases reais para dominar IA, Agentes, Power BI e Fabric e virar referência no mercado.</p>
+        </div>
+
+        <!-- Carrossel vertical em cascata (script.js): os cards ficam
+             parados e cada um sobe pra próxima foto, um depois do outro, sem
+             parar. As fotos abaixo são a lista: o script remonta os cards.
+             Fotos 4:5 em dependencias/header/ (ais-hero-midia-img1 a 6). -->
+        <div class="ais-hero-midia" aria-hidden="true">
+            <div class="ais-midia-trilha">
+                <div class="ais-midia-card"><img class="ais-midia-foto" src="/ed/aisummit/dependencias/header/ais-hero-midia-img1.webp" alt="" width="256" height="320" decoding="async"></div>
+                <div class="ais-midia-card"><img class="ais-midia-foto" src="/ed/aisummit/dependencias/header/ais-hero-midia-img2.webp" alt="" width="256" height="320" decoding="async"></div>
+                <div class="ais-midia-card"><img class="ais-midia-foto" src="/ed/aisummit/dependencias/header/ais-hero-midia-img3.webp" alt="" width="256" height="320" decoding="async"></div>
+                <div class="ais-midia-card"><img class="ais-midia-foto" src="/ed/aisummit/dependencias/header/ais-hero-midia-img4.webp" alt="" width="256" height="320" decoding="async"></div>
+                <div class="ais-midia-card"><img class="ais-midia-foto" src="/ed/aisummit/dependencias/header/ais-hero-midia-img5.webp" alt="" width="256" height="320" decoding="async"></div>
+                <div class="ais-midia-card"><img class="ais-midia-foto" src="/ed/aisummit/dependencias/header/ais-hero-midia-img6.webp" alt="" width="256" height="320" decoding="async"></div>
+            </div>
+        </div>
+
+        <p class="ais-hero-data">
+            <time class="ais-data" datetime="2027-03-06">06/03/2027</time>
+            <span class="ais-horario">Das <time class="ais-hora" datetime="10:00">10:00</time> às <time class="ais-hora" datetime="17:00">17:00</time></span>
+        </p>
+
+        <!-- Formato e cidade (layout-b.pdf): no lugar das tags que ficavam
+             acima do título, na linha da data, coluna 4. -->
+        <p class="ais-hero-local">
+            <span class="ais-local"><span class="ais-local-encontro">Evento </span>Presencial</span>
+            <span class="ais-cidade">Florianópolis</span>
+        </p>
+
+        <div class="ais-hero-acao">
+            <a class="ais-btn" href="#garantir">Garantir minha vaga</a>
+        </div>
+
+        <a class="ais-saber-mais" href="#conteudo"><span class="ic-scroll-hint" aria-hidden="true"><span class="ic-scroll-tri"></span></span>Saber mais...</a>
+
+    </div>
+
+</header>
+
+<main id="conteudo">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TEMAS (temp/ai-summit/ref/sec02.pdf)
+     Título e texto lado a lado, e os 4 temas do evento em cards 2 x 2:
+
+       - título:  1 / span 5
+       - texto:   6 / span 5
+       - cards:   span 5 + span 5 (420 de altura, conteúdo embaixo; o
+                  topo fica livre pra arte de cada tema)
+     ═══════════════════════════════════════════════════════════════════ -->
+<!-- Trilho do reveal: a .ais-presencial sobe por cima da .ais-temas no
+     scroll (o mesmo da .pilares-profs sobre a .sec-projetos em
+     /ed/formacoes/). -->
+<div class="ais-temas-trilho">
+<section class="ais-temas" id="temas" aria-labelledby="ais-tit-temas">
+    <div class="ais-temas-inner">
+
+        <hgroup class="ais-temas-cabeca">
+            <p class="ais-temas-eyebrow">Dashboard não basta!</p>
+            <h2 class="ais-temas-titulo" id="ais-tit-temas">O mercado quer o profissional de dados da era da IA</h2>
+        </hgroup>
+
+        <div class="ais-temas-texto">
+            <p>IA, Agentes e Microsoft Fabric subiram a régua. Quem une <span class="ais-destaque">técnica, IA, visão de negócio e autoridade</span> chega ao topo.</p>
+            <p>O <span class="ais-destaque">Xperiun AI Summit Floripa</span> é o seu divisor de águas: um dia presencial com quem está na linha de frente.</p>
+        </div>
+
+        <!-- Cada card tem a animação do tema no topo, em vídeo (gravada das
+             páginas de edição em temp/ai-summit/animacoes), tocando só com o
+             card na tela. Decorativas (aria-hidden). -->
+        <ul class="ais-temas-cards">
+            <li class="ais-tema">
+                <!-- Animação em vídeo (gravada de temp/ai-summit/animacoes/1-prompting-zoom,
+                     que segue sendo a fonte pra editar). O script.js escolhe o
+                     tamanho (688 ou 1376) e o formato (AV1 ou H.264), carrega
+                     perto da tela e só toca visível. -->
+                <div class="ais-video" data-video="1-prompting" aria-hidden="true">
+                    <video muted loop playsinline disablepictureinpicture preload="none" width="688" height="388" poster="/ed/aisummit/dependencias/temas/1-prompting-688.webp"></video>
+                </div>
+                <div class="ais-tema-texto">
+                    <h3 class="ais-tema-titulo">IA em Produção</h3>
+                    <p class="ais-tema-p">A stack com agentes de IA que sai da POC e funciona em projetos enterprise.</p>
+                </div>
+            </li>
+            <li class="ais-tema">
+                <!-- Animação em vídeo (gravada de temp/ai-summit/animacoes/2-insights-zoom,
+                     que segue sendo a fonte pra editar). O script.js escolhe o
+                     tamanho (688 ou 1376) e o formato (AV1 ou H.264), carrega
+                     perto da tela e só toca visível. -->
+                <div class="ais-video" data-video="2-insights" aria-hidden="true">
+                    <video muted loop playsinline disablepictureinpicture preload="none" width="688" height="388" poster="/ed/aisummit/dependencias/temas/2-insights-688.webp"></video>
+                </div>
+                <div class="ais-tema-texto">
+                    <h3 class="ais-tema-titulo">Análise Orientada a Insights</h3>
+                    <p class="ais-tema-p">Dashboards com IA que investigam problemas e revelam oportunidades nos dados.</p>
+                </div>
+            </li>
+            <li class="ais-tema">
+                <!-- Animação em vídeo (gravada de temp/ai-summit/animacoes/3-fabric-zoom,
+                     que segue sendo a fonte pra editar). O script.js escolhe o
+                     tamanho (688 ou 1376) e o formato (AV1 ou H.264), carrega
+                     perto da tela e só toca visível. -->
+                <div class="ais-video" data-video="3-fabric" aria-hidden="true">
+                    <video muted loop playsinline disablepictureinpicture preload="none" width="688" height="388" poster="/ed/aisummit/dependencias/temas/3-fabric-688.webp"></video>
+                </div>
+                <div class="ais-tema-texto">
+                    <h3 class="ais-tema-titulo">Engenharia de Dados &amp; Fabric</h3>
+                    <p class="ais-tema-p">Microsoft Fabric como plataforma unificada de Dados e IA.</p>
+                </div>
+            </li>
+            <li class="ais-tema">
+                <!-- Animação em vídeo (gravada de temp/ai-summit/animacoes/4-carreira-zoom,
+                     que segue sendo a fonte pra editar). O script.js escolhe o
+                     tamanho (688 ou 1376) e o formato (AV1 ou H.264), carrega
+                     perto da tela e só toca visível. -->
+                <div class="ais-video" data-video="4-carreira" aria-hidden="true">
+                    <video muted loop playsinline disablepictureinpicture preload="none" width="688" height="388" poster="/ed/aisummit/dependencias/temas/4-carreira-688.webp"></video>
+                </div>
+                <div class="ais-tema-texto">
+                    <h3 class="ais-tema-titulo">Marca Pessoal &amp; Carreira</h3>
+                    <p class="ais-tema-p">IA para seus projetos de dados serem lidos por quem decide no LinkedIn.</p>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     AGORA TAMBÉM NO PRESENCIAL
+     Layout do temp/ai-summit/ref/Frame 45.pdf: fundo --bw, conteúdo nas
+     colunas 1 a 5 (logo escuro, eyebrow, título e texto) e, embaixo, o
+     mosaico de fotos (quadrados de reserva por enquanto).
+     ═══════════════════════════════════════════════════════════════════ -->
+<!-- Trilho do reveal: os palestrantes sobem por cima do fim da
+     .ais-presencial (o mesmo dos temas, um nível abaixo). -->
+<div class="ais-presencial-trilho">
+<section class="ais-presencial" id="presencial" aria-labelledby="ais-tit-presencial">
+    <div class="ais-presencial-inner">
+        <div class="ais-presencial-texto">
+            <img class="ais-presencial-logo" src="/ed/aisummit/dependencias/marca/aisummit-logo-escuro.webp"
+                 alt="Xperiun AI Summit" width="244" height="84" loading="lazy" decoding="async">
+            <hgroup class="ais-presencial-cabeca">
+                <p class="ais-presencial-eyebrow">Agora também no presencial</p>
+                <h2 class="ais-presencial-titulo" id="ais-tit-presencial">Conectando a comunidade de Dados e IA da Xperiun</h2>
+            </hgroup>
+            <p class="ais-presencial-p">A Xperiun nasceu no presencial, reunindo profissionais, líderes e especialistas em eventos ao vivo. Hoje, com mais de 35 mil alunos no ecossistema, estamos de volta aos palcos para uma experiência imersiva, conectando quem transforma dados em decisões de impacto real.</p>
+        </div>
+        <!-- Mosaico de fotos: duas colunas coladas, a da esquerda meio
+             quadrado abaixo. Fotos em dependencias/palestrantes/
+             (ais-presencial-img01 a 04 nos quadrados de 704; a 05, larga, na
+             última, que cresce até a largura toda). -->
+        <div class="ais-presencial-mosaico" aria-hidden="true">
+            <div class="ais-presencial-coluna ais-presencial-coluna--esq">
+                <!-- Par (até 864: faixa horizontal que anda pra esquerda no scroll). -->
+                <div class="ais-presencial-par ais-presencial-par--esq"><div class="ais-presencial-faixa">
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img01.webp" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img02.webp" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
+                </div></div>
+            </div>
+            <div class="ais-presencial-coluna ais-presencial-coluna--dir">
+                <!-- Par (até 864: anda pra direita, no sentido contrário). -->
+                <div class="ais-presencial-par ais-presencial-par--dir"><div class="ais-presencial-faixa">
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img03.webp" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img04.webp" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
+                </div></div>
+                <!-- Última: acima de 864 cresce até a largura toda do mosaico,
+                     presa no canto de baixo à direita, enquanto passa a pista. -->
+                <div class="ais-presencial-foto ais-presencial-foto--final"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img05.webp" alt="" width="1440" height="810" loading="lazy" decoding="async"></div>
+                <div class="ais-presencial-pista"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PALESTRANTES
+     Layout de palestrantes-01/02/03.pdf (canvas 1920): a seção (fundo de
+     transparente a --bw) sobe por cima do fim da .ais-presencial e fica presa; o painel
+     --pc400 a 16 das bordas (como o .ais-oferta-cartao no fim). No meio,
+     a raiz (logo-evolucao-fase4) que se recolhe com o scroll até sobrar só
+     o símbolo (01); o símbolo desce meia altura e vira janela das fotos do
+     Leo, com o título e o texto chegando pelos lados (02); as fotos sobem e
+     o Leo sai por cima do símbolo (03). Sequência no script.js.
+     Depois do Leo, cada palestrante sobe por cima do anterior enquanto ele
+     esmaece (Sayuri, Alison e Iago). A versão anterior (os quatro lado a
+     lado em sequência) está em temp/ai-summit/backup-palestrantes-sequencia/.
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="ais-profs" id="palestrantes" aria-labelledby="ais-tit-profs">
+    <div class="ais-profs-palco">
+        <div class="ais-profs-inner">
+            <hgroup class="ais-profs-cabeca">
+                <h2 class="ais-profs-titulo" id="ais-tit-profs">Palestrantes</h2>
+                <p class="ais-profs-p">Aprenda com quem vive o mercado na prática diária</p>
+            </hgroup>
+            <!-- Um <article> por palestrante, no mesmo lugar (um sai, o outro entra). -->
+            <article class="ais-profs-quem">
+                <h3 class="ais-profs-nome">Leo Karpinski</h3>
+                <p class="ais-profs-desc">CEO e fundador da Xperiun, autor da Imersão, com +35 mil alunos no ecossistema.</p>
+            </article>
+            <article class="ais-profs-quem">
+                <h3 class="ais-profs-nome">Sayuri Valente</h3>
+                <p class="ais-profs-desc">Especialista em Análise de Dados e Inteligência de Negócios.</p>
+            </article>
+            <article class="ais-profs-quem">
+                <h3 class="ais-profs-nome">Alison Pezzott</h3>
+                <p class="ais-profs-desc">Especialista em Engenharia de Dados e Soluções em Nuvem.</p>
+            </article>
+            <article class="ais-profs-quem">
+                <h3 class="ais-profs-nome">Iago Braz</h3>
+                <p class="ais-profs-desc">Especialista em IA Aplicada a Analytics e Estratégia de Marca Pessoal.</p>
+            </article>
+        </div>
+        <!-- Caixa do símbolo (560x320 do viewBox): a raiz passa dela pelos
+             lados; as fotos usam o símbolo como máscara. -->
+        <div class="ais-profs-simbolo" aria-hidden="true">
+            <svg class="ais-profs-raiz" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 640" focusable="false">
+              <mask id="ais-profs-cortes" maskUnits="userSpaceOnUse" x="-40" y="-40" width="960" height="720">
+                <rect x="-40" y="-40" width="960" height="720" fill="#fff"/>
+                <g fill="#000">
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 100% 100%" d="M139.57 312.71L125.57 312.71L139.57 298.71Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 50% 0%" d="M147.87 332.73L137.97 342.63L157.76 342.63Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 100% 50%" d="M307.26 492.13L297.37 482.24L297.37 502.02Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 0% 0%" d="M327.29 500.43L341.29 500.43L327.29 514.43Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 100% 0%" d="M552.71 500.43L552.71 514.42L538.71 500.43Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 0% 50%" d="M572.73 492.14L582.63 482.24L582.63 502.03Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 50% 0%" d="M732.13 332.73L722.24 342.63L742.03 342.63Z"/>
+                  <path class="c3" style="transform-box: fill-box; transform-origin: 0% 100%" d="M740.43 312.71L740.43 298.71L754.43 312.71Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 49.9% 0%" d="M56.36 101.1L62.73 107.47L50 107.47Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 50.1% 0%" d="M56.36 222.53L49.99 228.89L62.72 228.89Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 50% 100%" d="M56.36 177.47L50 171.11L62.72 171.11Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 0% 50%" d="M89.39 68.07L95.75 61.71L95.75 74.43Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 100% 100%" d="M152.79 455.34L143.81 455.34L152.79 446.36Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 0% 0%" d="M184.65 487.21L193.64 487.21L184.65 496.2Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 100% 49.9%" d="M417.47 583.64L411.11 577.28L411.11 590.01Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 0% 49.9%" d="M462.52 583.63L468.89 577.27L468.89 590Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 100% 0%" d="M695.34 487.2L695.34 496.19L686.35 487.2Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 50% 100%" d="M823.64 177.48L817.27 171.11L830.01 171.11Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 0% 100%" d="M727.2 455.35L727.2 446.35L736.2 455.35Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 100% 50%" d="M790.61 68.08L784.25 74.44L784.25 61.72Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 50% 0%" d="M823.64 101.11L817.28 107.47L830 107.47Z"/>
+                  <path class="c4" style="transform-box: fill-box; transform-origin: 50% 0%" d="M823.64 222.53L817.28 228.89L830 228.89Z"/>
+                </g>
+              </mask>
+              <g mask="url(#ais-profs-cortes)">
+              <g stroke="currentColor" fill="none">
+                <g stroke-width="40">
+                  <path class="g1" pathLength="1" d="M174.15 185.86L117.58 129.3"/>
+                  <path class="g1" pathLength="1" d="M174.14 214.15L117.57 270.72"/>
+                  <path class="g1" pathLength="1" d="M242.01 377.99H162.01"/>
+                  <path class="g1" pathLength="1" d="M262.01 397.99V477.99"/>
+                  <path class="g1" pathLength="1" d="M425.86 465.85L369.29 522.42"/>
+                  <path class="g1" pathLength="1" d="M454.14 465.86L510.71 522.42"/>
+                  <path class="g1" pathLength="1" d="M617.99 397.99V477.99"/>
+                  <path class="g1" pathLength="1" d="M637.99 377.99H717.99"/>
+                  <path class="g1" pathLength="1" d="M705.85 214.14L762.42 270.71"/>
+                  <path class="g1" pathLength="1" d="M705.86 185.86L762.43 129.29"/>
+                </g>
+                <g stroke-width="20">
+                  <path class="g2" pathLength="1" d="M127.58 129.29V89.29"/>
+                  <path class="g2" pathLength="1" d="M117.57 139.29H77.57"/>
+                  <path class="g2" pathLength="1" d="M117.57 260.71H77.57"/>
+                  <path class="g2" pathLength="1" d="M127.57 270.71V310.71"/>
+                  <path class="g2" pathLength="1" d="M169.08 370.92L140.8 342.64"/>
+                  <path class="g2" pathLength="1" d="M169.08 385.06L140.8 413.35"/>
+                  <path class="g2" pathLength="1" d="M254.94 470.92L226.66 499.2"/>
+                  <path class="g2" pathLength="1" d="M269.07 470.92L297.36 499.2"/>
+                  <path class="g2" pathLength="1" d="M369.29 512.43H329.29"/>
+                  <path class="g2" pathLength="1" d="M379.29 522.43V562.43"/>
+                  <path class="g2" pathLength="1" d="M500.71 522.43V562.43"/>
+                  <path class="g2" pathLength="1" d="M510.71 512.43H550.71"/>
+                  <path class="g2" pathLength="1" d="M610.92 470.92L582.64 499.21"/>
+                  <path class="g2" pathLength="1" d="M625.06 470.92L653.34 499.21"/>
+                  <path class="g2" pathLength="1" d="M710.92 385.06L739.2 413.34"/>
+                  <path class="g2" pathLength="1" d="M710.92 370.92L739.21 342.63"/>
+                  <path class="g2" pathLength="1" d="M752.43 270.71V310.71"/>
+                  <path class="g2" pathLength="1" d="M762.43 260.71H802.43"/>
+                  <path class="g2" pathLength="1" d="M762.43 139.29H802.43"/>
+                  <path class="g2" pathLength="1" d="M752.42 129.29V89.29"/>
+                </g>
+                <g stroke-width="10">
+                  <path class="g3" pathLength="1" d="M124.04 307.17L95.75 335.45"/>
+                  <path class="g3" pathLength="1" d="M81.11 264.24L52.82 292.53"/>
+                  <path class="g3" pathLength="1" d="M81.11 257.18L52.82 228.89"/>
+                  <path class="g3" pathLength="1" d="M382.82 558.9L411.11 587.18"/>
+                  <path class="g3" pathLength="1" d="M375.75 558.89L347.47 587.18"/>
+                  <path class="g3" pathLength="1" d="M332.82 515.97L304.54 544.25"/>
+                  <path class="g3" pathLength="1" d="M292.36 499.21V539.21"/>
+                  <path class="g3" pathLength="1" d="M231.66 499.21V539.21"/>
+                  <path class="g3" pathLength="1" d="M226.65 494.21H186.65"/>
+                  <path class="g3" pathLength="1" d="M145.79 413.34V453.34"/>
+                  <path class="g3" pathLength="1" d="M140.8 408.34H100.8"/>
+                  <path class="g3" pathLength="1" d="M140.79 347.63H100.79"/>
+                  <path class="g3" pathLength="1" d="M81.11 142.82L52.83 171.1"/>
+                  <path class="g3" pathLength="1" d="M81.11 135.75L52.82 107.46"/>
+                  <path class="g3" pathLength="1" d="M124.04 92.82L95.75 64.53"/>
+                  <path class="g3" pathLength="1" d="M131.11 92.82L159.39 64.54"/>
+                  <path class="g3" pathLength="1" d="M755.96 307.18L784.24 335.47"/>
+                  <path class="g3" pathLength="1" d="M798.89 264.25L827.17 292.53"/>
+                  <path class="g3" pathLength="1" d="M798.89 257.18L827.17 228.9"/>
+                  <path class="g3" pathLength="1" d="M497.17 558.89L468.89 587.17"/>
+                  <path class="g3" pathLength="1" d="M504.25 558.88L532.53 587.17"/>
+                  <path class="g3" pathLength="1" d="M547.18 515.96L575.46 544.25"/>
+                  <path class="g3" pathLength="1" d="M587.63 499.2V539.2"/>
+                  <path class="g3" pathLength="1" d="M648.35 499.2V539.2"/>
+                  <path class="g3" pathLength="1" d="M653.34 494.2H693.34"/>
+                  <path class="g3" pathLength="1" d="M734.2 413.35V453.35"/>
+                  <path class="g3" pathLength="1" d="M739.21 408.35H779.21"/>
+                  <path class="g3" pathLength="1" d="M739.2 347.64H779.2"/>
+                  <path class="g3" pathLength="1" d="M798.89 142.83L827.18 171.12"/>
+                  <path class="g3" pathLength="1" d="M798.89 135.76L827.18 107.47"/>
+                  <path class="g3" pathLength="1" d="M755.96 92.83L784.25 64.55"/>
+                  <path class="g3" pathLength="1" d="M748.89 92.83L720.61 64.54"/>
+                </g>
+                <g stroke-width="5">
+                  <path class="g4" pathLength="1" d="M102.57 410.11L74.28 438.39"/>
+                  <path class="g4" pathLength="1" d="M102.56 406.59L74.28 378.3"/>
+                  <path class="g4" pathLength="1" d="M144.03 451.58L115.75 479.86"/>
+                  <path class="g4" pathLength="1" d="M188.42 495.97L160.14 524.26"/>
+                  <path class="g4" pathLength="1" d="M233.42 537.43L261.7 565.72"/>
+                  <path class="g4" pathLength="1" d="M229.89 537.44L201.61 565.72"/>
+                  <path class="g4" pathLength="1" d="M349.97 587.17V627.17"/>
+                  <path class="g4" pathLength="1" d="M347.47 584.67H307.47"/>
+                  <path class="g4" pathLength="1" d="M408.61 587.17V627.17"/>
+                  <path class="g4" pathLength="1" d="M52.82 231.4H12.82"/>
+                  <path class="g4" pathLength="1" d="M55.33 292.53V332.53"/>
+                  <path class="g4" pathLength="1" d="M52.82 290.04H12.82"/>
+                  <path class="g4" pathLength="1" d="M52.83 109.97H12.83"/>
+                  <path class="g4" pathLength="1" d="M52.83 168.61H12.83"/>
+                  <path class="g4" pathLength="1" d="M156.89 64.54V24.54"/>
+                  <path class="g4" pathLength="1" d="M159.39 67.04H199.39"/>
+                  <path class="g4" pathLength="1" d="M98.25 64.54V24.54"/>
+                  <path class="g4" pathLength="1" d="M777.44 410.11L805.72 438.4"/>
+                  <path class="g4" pathLength="1" d="M777.44 406.57L805.72 378.29"/>
+                  <path class="g4" pathLength="1" d="M735.97 451.58L764.25 479.87"/>
+                  <path class="g4" pathLength="1" d="M691.58 495.97L719.86 524.25"/>
+                  <path class="g4" pathLength="1" d="M646.58 537.44L618.29 565.72"/>
+                  <path class="g4" pathLength="1" d="M650.12 537.43L678.4 565.72"/>
+                  <path class="g4" pathLength="1" d="M530.03 587.18V627.18"/>
+                  <path class="g4" pathLength="1" d="M532.54 584.68H572.54"/>
+                  <path class="g4" pathLength="1" d="M471.39 587.18V627.18"/>
+                  <path class="g4" pathLength="1" d="M827.17 231.39H867.17"/>
+                  <path class="g4" pathLength="1" d="M824.68 292.53V332.53"/>
+                  <path class="g4" pathLength="1" d="M827.17 290.03H867.17"/>
+                  <path class="g4" pathLength="1" d="M827.18 109.96H867.18"/>
+                  <path class="g4" pathLength="1" d="M827.18 168.6H867.18"/>
+                  <path class="g4" pathLength="1" d="M723.1 64.54V24.54"/>
+                  <path class="g4" pathLength="1" d="M720.61 67.04H680.61"/>
+                  <path class="g4" pathLength="1" d="M781.74 64.54V24.54"/>
+                </g>
+              </g>
+              <path fill="currentColor" d="M720,160h-160c-47.8,0-90.68,20.98-120,54.21-29.32-33.23-72.2-54.21-120-54.21h0s-160,0-160,0v80h183.43s-129.71,129.71-129.71,129.71l56.57,56.57,129.71-129.71v183.43h80v-183.43l129.71,129.71,56.57-56.57-129.71-129.71h183.43s0-80,0-80Z"/>
+              </g>
+            </svg>
+            <!-- Um quadro por palestrante (fundo + recorte, as duas fotos no
+                 mesmo enquadramento 7:8), na ordem da sequência. -->
+            <div class="ais-profs-quadro">
+                <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-leo-bg.webp" alt="" width="700" height="800" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-leo.webp" alt="" width="700" height="800" loading="lazy" decoding="async"></div>
+            </div>
+            <div class="ais-profs-quadro">
+                <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-sayuri-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-sayuri.webp" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+            </div>
+            <div class="ais-profs-quadro">
+                <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-alison-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-alison.webp" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+            </div>
+            <div class="ais-profs-quadro">
+                <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago.webp" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+</div>
+
+<!-- Trilho do cronograma + oferta: acima de 864 o cronograma fica preso
+     (base na base da tela) e a oferta sobe por cima dele (script.js). -->
+<div class="ais-agenda-trilho">
+<!-- ═══════════════════════════════════════════════════════════════════
+     CRONOGRAMA DO EVENTO
+     Layout do agenda.pdf (canvas 1920): à esquerda (colunas 1 a 3) título
+     e texto, presos; à direita (colunas 4 a 10) as palestras uma embaixo da
+     outra numa faixa da grade de linhas que fica parada (palco preso) e
+     funciona como uma janela, com as palestras rolando dentro dela: número grande inclinado atrás
+     do título, descrição e, à direita, "Com" + nome + foto num quadrado
+     inclinado. Sem JS, com reduced motion ou até 864, empilhadas.
+     A versão anterior (cards com contorno) está em
+     temp/ai-summit/backup-cronograma-cards/.
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="ais-agenda" id="programacao" aria-labelledby="ais-tit-agenda">
+    <div class="ais-agenda-arte" aria-hidden="true"><div class="ais-agenda-arte-fixa"></div></div>
+    <div class="ais-agenda-palco">
+    <div class="ais-agenda-inner">
+        <div class="ais-agenda-lead">
+            <h2 class="ais-agenda-h2" id="ais-tit-agenda">Agenda do evento</h2>
+            <p class="ais-agenda-p">Aprenda, aplique e conecte-se: confira tudo o que vai acontecer ao longo do nosso dia de Summit.</p>
+            <!-- Um quadrado por palestra; acende na proporção em que a
+                 palestra dele está na faixa (script.js). -->
+            <div class="ais-agenda-pontos" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="ais-agenda-faixa">
+        <ol class="ais-agenda-cards">
+            <li class="ais-agenda-card">
+                <span class="ais-agenda-num" aria-hidden="true">01</span>
+                <h3 class="ais-agenda-titulo">Engenharia da atenção</h3>
+                <p class="ais-agenda-desc">Como usar IA para ser lido por quem decide no LinkedIn, tratando a rede como um sistema de recomendação. Com demonstração ao vivo.</p>
+                <p class="ais-agenda-quem"><span>Com <span class="ais-agenda-nome">Iago Braz</span></span><span class="ais-agenda-avatar" aria-hidden="true"><img class="ais-agenda-avatar-bg" src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"><img src="/ed/aisummit/dependencias/agenda/aisummit-agenda-iago.webp" alt="" width="400" height="400" loading="lazy" decoding="async"></span></p>
+            </li>
+            <li class="ais-agenda-card">
+                <span class="ais-agenda-num" aria-hidden="true">02</span>
+                <h3 class="ais-agenda-titulo">Do dashboard ao insight</h3>
+                <p class="ais-agenda-desc">Inteligência Artificial aplicada à análise de dados: dashboards inteligentes que encontram oportunidades escondidas e viram decisões de negócio.</p>
+                <p class="ais-agenda-quem"><span>Com <span class="ais-agenda-nome">Sayuri Valente</span></span><span class="ais-agenda-avatar" aria-hidden="true"><img class="ais-agenda-avatar-bg" src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-sayuri-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"><img src="/ed/aisummit/dependencias/agenda/aisummit-agenda-sayuri.webp" alt="" width="400" height="400" loading="lazy" decoding="async"></span></p>
+            </li>
+            <li class="ais-agenda-card ais-agenda-card--destaque">
+                <span class="ais-agenda-num" aria-hidden="true">03</span>
+                <h3 class="ais-agenda-titulo">Desafio prático</h3>
+                <p class="ais-agenda-desc">Dinâmica integrada para conectar os participantes: em times, eles resolvem ao vivo problemas reais de negócio usando Dados e IA.</p>
+                <p class="ais-agenda-quem"><span>Com <span class="ais-agenda-nome">Leo Karpinski</span></span><span class="ais-agenda-avatar" aria-hidden="true"><img class="ais-agenda-avatar-bg" src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-leo-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"><img src="/ed/aisummit/dependencias/agenda/aisummit-agenda-leo.webp" alt="" width="400" height="400" loading="lazy" decoding="async"></span></p>
+            </li>
+            <li class="ais-agenda-card">
+                <span class="ais-agenda-num" aria-hidden="true">04</span>
+                <h3 class="ais-agenda-titulo">Muito além do dashboard</h3>
+                <p class="ais-agenda-desc">Microsoft Fabric como plataforma unificada de Dados e IA: OneLake, Lakehouse e Power BI num só ecossistema, conectado aos agentes.</p>
+                <p class="ais-agenda-quem"><span>Com <span class="ais-agenda-nome">Alison Pezzott</span></span><span class="ais-agenda-avatar" aria-hidden="true"><img class="ais-agenda-avatar-bg" src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-alison-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"><img src="/ed/aisummit/dependencias/agenda/aisummit-agenda-alison.webp" alt="" width="400" height="400" loading="lazy" decoding="async"></span></p>
+            </li>
+            <li class="ais-agenda-card">
+                <span class="ais-agenda-num" aria-hidden="true">05</span>
+                <h3 class="ais-agenda-titulo">Da POC à produção</h3>
+                <p class="ais-agenda-desc">A stack de desenvolvimento com IA em projetos enterprise: agentes, orquestração e a segurança que a TI exige, e a versão mínima para começar amanhã.</p>
+                <p class="ais-agenda-quem"><span>Com <span class="ais-agenda-nome">Iago Braz</span></span><span class="ais-agenda-avatar" aria-hidden="true"><img class="ais-agenda-avatar-bg" src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago-bg.webp" alt="" width="490" height="560" loading="lazy" decoding="async"><img src="/ed/aisummit/dependencias/agenda/aisummit-agenda-iago.webp" alt="" width="400" height="400" loading="lazy" decoding="async"></span></p>
+            </li>
+        </ol>
+        </div>
+    </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     OFERTA (INGRESSO)
+     Layout de temp/ai-summit/ref/inicio.pdf (só o título: "Garanta" em cima,
+     à esquerda, e "seu lugar" embaixo, à direita) e fim.pdf (as duas
+     linhas abrem até as bordas do painel e aparecem as infos e o ticket).
+     A versão anterior (ticket que se forma) está em
+     temp/ai-summit/backup-oferta-ticket-forma/.
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="ais-oferta" id="ingresso" aria-labelledby="ais-tit-oferta">
+    <!-- Destino dos botões "Garantir vaga" do header e da barra fixa: o
+         ponto do scroll em que preço, itens e ticket já estão na tela (a
+         posição com .is-forma está no style.css). -->
+    <span class="ais-oferta-alvo" id="garantir" aria-hidden="true"></span>
+    <div class="ais-oferta-cartao">
+        <h2 class="ais-oferta-titulo" id="ais-tit-oferta">
+            <span class="ais-oferta-linha ais-oferta-linha--a">Garanta</span>
+            <span class="ais-oferta-linha ais-oferta-linha--b">seu lugar</span>
+        </h2>
+        <div class="ais-oferta-inner">
+            <div class="ais-oferta-info">
+                <ul class="ais-oferta-inclui">
+                    <li>Acesso às 4 palestras<br>+ Desafio prático</li>
+                    <li>Material de apoio +<br>gravação das palestras</li>
+                    <li>Certificado Oficial do Xperiun AI Summit</li>
+                    <li>Happy Hour de networking ao final do evento</li>
+                </ul>
+                <div class="ais-oferta-valores">
+                    <p class="ais-oferta-dado-tit ais-oferta-preco"><span>R$</span><span class="ais-oferta-valor">497</span></p>
+                    <p class="ais-oferta-dado-sub ais-oferta-parcela">ou até 12x no cartão</p>
+                    <p class="ais-oferta-dado-sub ais-oferta-vagas">Vagas limitadas à capacidade da sala (300 participantes).</p>
+                </div>
+            </div>
+            <div class="ais-ticket-palco">
+            <button class="ais-ticket" type="button" data-popup="popup-form-aisummit" aria-haspopup="dialog">
+                <span class="ais-ticket-topo">
+                    <video class="ais-ticket-video" muted loop playsinline preload="none" aria-hidden="true"
+                           poster="/ed/aisummit/dependencias/oferta/ais-ticket-flor-poster.webp"
+                           data-src="/ed/aisummit/dependencias/oferta/ais-ticket-flor.mp4"></video>
+                    <img class="ais-ticket-logo" src="/ed/aisummit/dependencias/marca/ais-logotipo-animado.svg"
+                         alt="" width="874" height="622" decoding="async">
+                    <span class="ais-ticket-barras" aria-hidden="true"></span>
+                </span>
+                <span class="ais-ticket-base">Garantir vaga<svg class="ais-ticket-seta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75" aria-hidden="true" focusable="false"><path d="M55 0c11.05 0 20 8.95 20 20v55H65V17.07L24.04 58.03l-7.07-7.07L57.93 10H0V0z"/></svg></span>
+            </button>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- Próxima seção: o quadrado da oferta se recolhe e este cresce no lugar
+     (script.js). Por enquanto só data e local (vieram da oferta). -->
+<section class="ais-proxima" id="local" aria-labelledby="ais-tit-local">
+    <div class="ais-proxima-cartao">
+        <div class="ais-proxima-inner">
+            <div class="ais-proxima-info">
+                <h2 class="ais-proxima-titulo" id="ais-tit-local">Local do Evento</h2>
+                <div class="ais-oferta-dado">
+                    <p class="ais-oferta-dado-tit">Sábado, <time datetime="2027-03-06">06/03/2027</time></p>
+                    <p class="ais-oferta-dado-sub">Das <time class="ais-oferta-hora" datetime="10:00">10:00</time> às <time class="ais-oferta-hora" datetime="17:00">17:00</time></p>
+                </div>
+                <div class="ais-oferta-dado">
+                    <p class="ais-oferta-dado-tit">Florianópolis / SC</p>
+                    <p class="ais-oferta-dado-sub">Avenida Luiz Boiteux Piazza, 1302<br>Cachoeira do Bom Jesus<br>Sapiens Parque</p>
+                </div>
+            </div>
+            <div class="ais-mapa">
+                <!-- Mapa vetorial (MapLibre + OpenFreeMap, sem chave) com as
+                     cores da página, montado pelo script.js perto da tela.
+                     Sem WebGL, sem rede ou sem JS: o embed do Google Maps
+                     (o do <noscript> e o que o script.js injeta na falha). -->
+                <div class="ais-mapa-moldura">
+                    <div class="ais-mapa-gl" role="region" aria-label="Mapa: Avenida Luiz Boiteux Piazza, 1302, Cachoeira do Bom Jesus, Sapiens Parque, Florianópolis / SC"
+                         data-lng="-48.4405416" data-lat="-27.4306658"></div>
+                    <a class="ais-mapa-google" href="https://www.google.com/maps/search/?api=1&amp;query=Avenida+Luiz+Boiteux+Piazza%2C+1302%2C+Cachoeira+do+Bom+Jesus%2C+Florian%C3%B3polis+-+SC" target="_blank" rel="noopener">Abrir no Google Maps</a>
+                    <noscript>
+                        <iframe class="ais-mapa-frame"
+                                src="https://www.google.com/maps?q=Avenida+Luiz+Boiteux+Piazza,+1302,+Cachoeira+do+Bom+Jesus,+Florian%C3%B3polis+-+SC&amp;output=embed"
+                                title="Mapa: Avenida Luiz Boiteux Piazza, 1302, Cachoeira do Bom Jesus, Sapiens Parque, Florianópolis / SC"
+                                loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                    </noscript>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FAQ
+     Perguntas e respostas do ref (temp/ai-summit/ref/OpcaoD.dc.html); no
+     lugar do "[ENDEREÇO AQUI]" da 1ª resposta, o endereço do Local do
+     Evento. Componente da /ed/bf/ (que veio da home e da /ed/formacoes/):
+     eyebrow + título no grid e a lista FORA do .faq-inner, com as linhas
+     atravessando a tela e o conteúdo alinhado ao container de 1440. Abre
+     e fecha animado pelo grid 0fr → 1fr (script.js).
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec-faq" id="faq" aria-labelledby="ais-tit-faq">
+    <div class="faq-inner">
+        <hgroup class="faq-header">
+            <p class="ais-faq-eyebrow">FAQ</p>
+            <h2 class="ais-faq-titulo" id="ais-tit-faq">Perguntas frequentes</h2>
+        </hgroup>
+    </div>
+    <div class="faq-grid">
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Onde e quando será o evento?</span>
+                <span class="material-symbols-outlined faq-q-icon" aria-hidden="true">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">O evento será presencial na Avenida Luiz Boiteux Piazza, 1302, Cachoeira do Bom Jesus (Sapiens Parque), Florianópolis/SC, no sábado, 06 de março de 2027, das 10h às 17h, seguido de um Happy Hour de networking.</p>
+                </div>
+            </div>
+        </details>
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">O almoço está incluso?</span>
+                <span class="material-symbols-outlined faq-q-icon" aria-hidden="true">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Não. Haverá uma pausa das 13h às 14h15 para o almoço, e enviaremos indicações de restaurantes próximos ao Sapiens Parque.</p>
+                </div>
+            </div>
+        </details>
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Preciso ter experiência prévia com Power BI ou IA para participar?</span>
+                <span class="material-symbols-outlined faq-q-icon" aria-hidden="true">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Não precisa ser especialista. O Summit é para quem já trabalha com dados ou usa Power BI e Excel no dia a dia, do júnior ao sênior, e também para profissionais de finanças, controladoria, comercial e outras áreas que usam dados. As palestras são práticas, com aplicação direta no trabalho.</p>
+                </div>
+            </div>
+        </details>
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Posso levar outra pessoa comigo?</span>
+                <span class="material-symbols-outlined faq-q-icon" aria-hidden="true">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Sim. Na página de pagamento você pode adicionar um ingresso extra com valor especial e levar quem quiser: um colega de trabalho, um amigo ou alguém da família. Cada participante recebe o próprio ingresso, que é pessoal e intransferível.</p>
+                </div>
+            </div>
+        </details>
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Haverá emissão de certificado?</span>
+                <span class="material-symbols-outlined faq-q-icon" aria-hidden="true">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Sim. Todos os participantes do evento presencial receberão o Certificado Oficial do Xperiun AI Summit.</p>
+                </div>
+            </div>
+        </details>
+        <details class="faq-row">
+            <summary class="faq-q">
+                <span class="faq-q-text">Para quem vem de fora de Florianópolis, haverá suporte de hospedagem?</span>
+                <span class="material-symbols-outlined faq-q-icon" aria-hidden="true">add</span>
+            </summary>
+            <div class="faq-a-grid">
+                <div class="faq-a-wrap">
+                    <p class="faq-a">Sim. As passagens e a hospedagem não estão incluídas no valor do ingresso, mas enviaremos aos inscritos indicações de hotéis parceiros e opções de deslocamento na região.</p>
+                </div>
+            </div>
+        </details>
+    </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CTA FIXA NO RODAPÉ
+     "Vagas", a barra e a % preenchida (só "XX%"), e o botão. A % vem do
+     data-preenchido (0 a 100): o script.js escreve o número (2 dígitos) e
+     a largura da barra. Vazio, fica "00%" e a barra zerada (número a
+     definir).
+     Aparece fora do header e da oferta (que já têm o botão / o ticket).
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="ais-barra-cta" data-preenchido="17" aria-hidden="true">
+    <div class="ais-barra-inner">
+        <div class="ais-barra-vagas">
+            <span class="ais-barra-rotulo">Vagas</span>
+            <span class="ais-barra-trilho" role="progressbar" aria-label="Vagas preenchidas" aria-valuemin="0" aria-valuemax="100">
+                <span class="ais-barra-fill"></span>
+            </span>
+            <span class="ais-barra-pct"><span class="ais-barra-num">00</span>%</span>
+        </div>
+        <a class="ais-btn ais-barra-btn" href="#garantir" tabindex="-1">Garantir vaga</a>
+    </div>
+</div>
+
+<!-- Sem menu e sem footer, como a /ed/bf/: página de conversão. -->
+
+<!-- Botão flutuante de WhatsApp (o .wa-float da /ed/aichampion/): fixo no
+     canto de cima à direita, pra tirar dúvidas com um consultor. -->
+<a class="btn wa-float" data-size="m" data-icon href="https://api.whatsapp.com/send?phone=554831974984&amp;text=Ol%C3%A1!%20Tenho%20interesse%20no%20Xperiun%20AI%20Summit%20e%20queria%20tirar%20algumas%20d%C3%BAvidas%20antes%20de%20garantir%20minha%20vaga." target="_blank" rel="noopener" aria-label="Tirar dúvidas no WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill="none" d="M0 0h24v24H0z"></path><path d="M7.25361 18.4944L7.97834 18.917C9.18909 19.623 10.5651 20 12.001 20C16.4193 20 20.001 16.4183 20.001 12C20.001 7.58172 16.4193 4 12.001 4C7.5827 4 4.00098 7.58172 4.00098 12C4.00098 13.4363 4.37821 14.8128 5.08466 16.0238L5.50704 16.7478L4.85355 19.1494L7.25361 18.4944ZM2.00516 22L3.35712 17.0315C2.49494 15.5536 2.00098 13.8345 2.00098 12C2.00098 6.47715 6.47813 2 12.001 2C17.5238 2 22.001 6.47715 22.001 12C22.001 17.5228 17.5238 22 12.001 22C10.1671 22 8.44851 21.5064 6.97086 20.6447L2.00516 22ZM8.39232 7.30833C8.5262 7.29892 8.66053 7.29748 8.79459 7.30402C8.84875 7.30758 8.90265 7.31384 8.95659 7.32007C9.11585 7.33846 9.29098 7.43545 9.34986 7.56894C9.64818 8.24536 9.93764 8.92565 10.2182 9.60963C10.2801 9.76062 10.2428 9.95633 10.125 10.1457C10.0652 10.2428 9.97128 10.379 9.86248 10.5183C9.74939 10.663 9.50599 10.9291 9.50599 10.9291C9.50599 10.9291 9.40738 11.0473 9.44455 11.1944C9.45903 11.25 9.50521 11.331 9.54708 11.3991C9.57027 11.4368 9.5918 11.4705 9.60577 11.4938C9.86169 11.9211 10.2057 12.3543 10.6259 12.7616C10.7463 12.8783 10.8631 12.9974 10.9887 13.108C11.457 13.5209 11.9868 13.8583 12.559 14.1082L12.5641 14.1105C12.6486 14.1469 12.692 14.1668 12.8157 14.2193C12.8781 14.2457 12.9419 14.2685 13.0074 14.2858C13.0311 14.292 13.0554 14.2955 13.0798 14.2972C13.2415 14.3069 13.335 14.2032 13.3749 14.1555C14.0984 13.279 14.1646 13.2218 14.1696 13.2222V13.2238C14.2647 13.1236 14.4142 13.0888 14.5476 13.097C14.6085 13.1007 14.6691 13.1124 14.7245 13.1377C15.2563 13.3803 16.1258 13.7587 16.1258 13.7587L16.7073 14.0201C16.8047 14.0671 16.8936 14.1778 16.8979 14.2854C16.9005 14.3523 16.9077 14.4603 16.8838 14.6579C16.8525 14.9166 16.7738 15.2281 16.6956 15.3913C16.6406 15.5058 16.5694 15.6074 16.4866 15.6934C16.3743 15.81 16.2909 15.8808 16.1559 15.9814C16.0737 16.0426 16.0311 16.0714 16.0311 16.0714C15.8922 16.159 15.8139 16.2028 15.6484 16.2909C15.391 16.428 15.1066 16.5068 14.8153 16.5218C14.6296 16.5313 14.4444 16.5447 14.2589 16.5347C14.2507 16.5342 13.6907 16.4482 13.6907 16.4482C12.2688 16.0742 10.9538 15.3736 9.85034 14.402C9.62473 14.2034 9.4155 13.9885 9.20194 13.7759C8.31288 12.8908 7.63982 11.9364 7.23169 11.0336C7.03043 10.5884 6.90299 10.1116 6.90098 9.62098C6.89729 9.01405 7.09599 8.4232 7.46569 7.94186C7.53857 7.84697 7.60774 7.74855 7.72709 7.63586C7.85348 7.51651 7.93392 7.45244 8.02057 7.40811C8.13607 7.34902 8.26293 7.31742 8.39232 7.30833Z"></path></svg>
+    <span class="menu-perfil-notif" aria-hidden="true"><span class="material-symbols-outlined">notifications</span></span>
+</a>
+
+<!-- Popup de inscrição (form 520 da ActiveCampaign): o ticket da oferta
+     (data-popup="popup-form-aisummit") abre (script.js). Os outros botões
+     "Garantir vaga" levam até a oferta. -->
+<div data-popup-form="aisummit"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=9"></script>
+
+<!-- Smooth scroll global (links âncora com behavior: smooth) -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Script da página: carrossel do header, sequências de scroll, vídeos,
+     mapa, popup, FAQ e barra fixa. -->
+<script src="/ed/aisummit/dependencias/script.js?v=149"></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

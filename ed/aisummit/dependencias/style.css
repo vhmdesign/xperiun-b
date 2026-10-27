@@ -1,0 +1,2800 @@
+/* ══════════════════════════════════════════════════════════════════════
+   AI SUMMIT
+   Regras da campanha, que valem pra página inteira:
+
+     1. Sem border-radius. Nada herda o radius do DS (.btn, etc.). As
+        animações dos temas são vídeos (o radius de dentro delas está na
+        imagem). Exceções pedidas: a imagem do ticket e o popup de
+        inscrição.
+     2. Sem gradiente nos títulos (nada de .grad-text / --text-gradient-*).
+     3. Fonte padrão Syne, no lugar da Poppins.
+     4. Títulos e textos em weight 400. Peso diferente só quando pedido
+        (pedido até agora: .ais-titulo em 900).
+
+   As regras 3 e 4 entram pelos tokens: redefinindo --font-family e os
+   --h* aqui, todo `font: var(--xxx)` do DS já sai em Syne 400.
+   ══════════════════════════════════════════════════════════════════════ */
+:root {
+    --font-family: "Syne", sans-serif;
+
+    --h1: 400 clamp(2.25rem, 1.58rem + 1.85vw, 3.25rem)/1.25 var(--font-family);
+    --h2: 400 clamp(2rem, 1.5rem + 1.39vw, 2.75rem)/1.25 var(--font-family);
+    --h3: 400 clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem)/1.25 var(--font-family);
+    --h6: 400 1.125rem/1.25 var(--font-family);
+}
+
+/* !important porque os componentes do DS declaram o radius com
+   especificidade maior que um seletor universal. Exceção pedida: o popup
+   de inscrição (.popup-form, de site-popups/) segue o radius do DS. */
+:not(.popup-form, .popup-form *),
+:not(.popup-form, .popup-form *)::before,
+:not(.popup-form, .popup-form *)::after {
+    border-radius: 0 !important;
+}
+
+/* Abaixo de 864 todo P L da página vira P (pelo token, vale pra todos;
+   o .ais-temas-texto, que usa --label-l, tem a regra dele na seção). */
+@media (max-width: 864px) {
+    :root { --p-l: var(--p); }
+}
+
+body {
+    background: var(--bb);
+    /* Corta a rolagem horizontal sem virar container de rolagem: com
+       hidden, o body passava a rolar sozinho e o sticky do reveal (temas ->
+       presencial) parava de prender. No Safari antigo, que não tem clip,
+       quem segura são as próprias seções (header e temas cortam o que
+       sangra). */
+    overflow-x: clip;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HEADER
+   Medidas do layout.pdf (canvas 1920): logo a 144 do topo, 144 entre o
+   logo e o texto e entre o texto e a data, cards 4:5 em span 2.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-hero {
+    position: relative;
+    /* Só na horizontal (o carrossel sangra pra direita). Na vertical
+       não: no efeito de scroll o conteúdo fica preso na tela e passaria
+       da borda de baixo do header. */
+    overflow-x: clip;
+    /* Contexto de empilhamento próprio: o carrossel (z-index -1) fica
+       atrás de tudo do header, mas não some atrás do fundo da página. */
+    isolation: isolate;
+}
+
+.ais-hero-inner {
+    /* Trilhas em variáveis: a largura dos cards refaz a conta de
+       `span 2` com elas (ver .ais-midia-card). */
+    --cols: 10;
+    --gap: 32px;
+    container-type: inline-size;
+    width: 100%;
+    max-width: 1440px;
+    /* Altura mínima da tela no próprio grid: com ela as linhas fr
+       dividem a sobra da viewport (sem ela, crescem junto com os cards).
+       Topo: 144 do layout no canvas 1080 (13.33%), menor em telas baixas. */
+    min-height: 100vh;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: clamp(32px, 13.33svh, 144px) 16px 32px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: var(--gap);
+    /* Espaço vertical flexível: as linhas pares são espaçadoras em fr,
+       nas proporções do layout (logo→texto 140, texto→data 144,
+       data→"Saber mais" 249), com mínimo. Assim tudo cabe na tela visível.
+         1 logo, 2 espaço, 3 texto, 4 espaço, 5 data/botão, 6 espaço,
+         7 saber mais */
+    grid-template-rows:
+        auto minmax(32px, 140fr)
+        auto minmax(32px, 144fr)
+        auto minmax(32px, 249fr)
+        auto;
+    row-gap: 0;
+}
+
+/* ── Vídeo de fundo ──────────────────────────────────────────────────── */
+/* No topo, 100% da largura da tela em qualquer viewport, atrás de tudo
+   (inclusive do carrossel, que é -1). Sem máscara: o preto do arquivo já
+   é o --bb (#00000A, screen aplicado no vídeo). */
+.ais-hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -2;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+}
+
+/* ── Brilho de fundo: canoa ────────────────────────────────────────── */
+/* Canoa-bottom da /ed/aichampion/ com as cores nos tokens: radial côncavo
+   centrado no topo (o miolo transparente "morde" pra baixo e a luz --pc200
+   sobe pelas laterais, só nos últimos 10%) + degradê --pc200-10 de baixo pra
+   cima. Fixo na
+   tela, atrás do conteúdo e por cima do vídeo: fica a página inteira. */
+.canoa-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 150% 125% at 50% 0%,
+            transparent 90%,
+            var(--pc200) 100%),
+        linear-gradient(to top, var(--pc200-10), transparent);
+}
+
+/* ── Logo ───────────────────────────────────────────────────────────── */
+.ais-logo {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+    width: 244px;
+    max-width: 100%;
+    height: auto;
+    margin-top: 64px;
+}
+
+/* ── Texto ──────────────────────────────────────────────────────────── */
+.ais-hero-texto {
+    grid-column: 1 / span 5;
+    grid-row: 3;
+    align-self: end;
+    /* Container do título: o tamanho dele acompanha a largura do bloco. */
+    container-type: inline-size;
+}
+
+.ais-titulo {
+    /* A Syne vai até 800 (fonts.css): pedindo 900, o browser usa a 800,
+       a mais pesada que existe.
+       Layout: 36px/45px, e a 1ª linha mede ~690px, o span 5 inteiro
+       (688). Por isso 5.2cqi: com a coluna mais estreita o título encolhe
+       junto e as duas linhas do layout continuam inteiras. */
+    font: 900 clamp(1.5rem, 5.2cqi, 2.25rem)/1.25 var(--font-family);
+    color: var(--bw);
+    text-transform: uppercase;
+}
+.ais-titulo-linha {
+    display: block;
+}
+.ais-titulo-destaque {
+    color: var(--pc100);
+}
+
+.ais-lede {
+    max-width: 544px;
+    margin-top: 16px;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+
+/* ── Mídia ──────────────────────────────────────────────────────────── */
+/* Ocupa as linhas do logo e do texto e alinha embaixo com a lede. A
+   trilha é mais larga que a coluna: o 3º card sangra pra fora do
+   container e o .ais-hero corta na borda da tela. */
+.ais-hero-midia {
+    grid-column: 7 / -1;
+    grid-row: 1 / 4;
+    position: relative;
+    /* Atrás de todos os elementos do header: os cards andam pra
+       esquerda por baixo do título e do botão. */
+    z-index: -1;
+    pointer-events: none;
+    /* Sem isso a trilha (mais larga que a coluna) alarga o grid todo. */
+    min-width: 0;
+}
+/* Absoluta, ancorada embaixo: a altura dos cards não entra no cálculo
+   das linhas, senão infla os espaçadores fr e o header passa da tela. */
+.ais-midia-trilha {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    gap: var(--gap);
+    /* Linhas do grid (header.pdf): até onde as verticais sobem acima das
+       fotos e quanto descem abaixo delas sumindo. */
+    --ais-linha-acima: 100vh;
+    --ais-linha-abaixo: 40vh;
+}
+/* Linhas horizontais do grid: 2px --bw-10 no topo e na base das fotos, de
+   ponta a ponta da tela (o .ais-hero corta o excesso com overflow-x).
+   Atrás das fotos. */
+.ais-midia-trilha::before,
+.ais-midia-trilha::after {
+    content: "";
+    position: absolute;
+    left: -100vw;
+    right: -100vw;
+    z-index: -1;
+    height: 2px;
+    background: var(--bw-10);
+}
+.ais-midia-trilha::before { top: -1px; }
+.ais-midia-trilha::after  { bottom: -1px; }
+/* Linhas verticais do grid: 2px nas duas bordas de cada foto, do alto da
+   página até abaixo das fotos; --bw-10 até a base das fotos e daí some até
+   transparente. Atrás das fotos. */
+.ais-midia-card {
+    position: relative;
+}
+.ais-midia-card::before,
+.ais-midia-card::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--ais-linha-acima) * -1);
+    bottom: calc(var(--ais-linha-abaixo) * -1);
+    z-index: -1;
+    width: 2px;
+    background: linear-gradient(to bottom,
+        var(--bw-10) calc(100% - var(--ais-linha-abaixo)),
+        transparent);
+}
+.ais-midia-card::before { left: -1px; }
+.ais-midia-card::after  { right: -1px; }
+/* Cada card é um rolo de caça-níquel (script.js): a pilha dentro dele é
+   uma tira de fotos coladas, sem vão. São --ais-n fotos: a anterior, a da
+   vez e as que passam no giro até a próxima. Parada, mostra a da vez (a
+   2ª da tira). */
+.ais-midia-card {
+    /* span 2 = 2 colunas + 1 gap */
+    flex: 0 0 calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) * 2 + var(--gap));
+}
+.ais-midia-janela {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+}
+.ais-midia-pilha {
+    display: flex;
+    flex-direction: column;
+    transform: translateY(calc(-100% / var(--ais-n, 1)));
+}
+/* Giro de caça-níquel: o rolo puxa um pouco pra baixo (24px, como a
+   alavanca), dispara e freia até parar exatamente na próxima foto, sem
+   passar do ponto. --ais-passos é quantas fotos o rolo corre (script.js,
+   hoje 1: só a da vez sai e a próxima entra). Os rolos disparam juntos e
+   os da direita duram mais (--ais-dur), então param um depois do outro,
+   da esquerda pra direita. Só keywords de easing, uma por trecho. */
+.ais-midia-pilha.is-girando {
+    animation: ais-midia-roleta var(--ais-dur, 1s) both;
+}
+@keyframes ais-midia-roleta {
+    0%   { transform: translateY(calc(-100% / var(--ais-n)));                                animation-timing-function: ease-in-out; }
+    18%  { transform: translateY(calc(-100% / var(--ais-n) + 24px));                         animation-timing-function: ease-in-out; }
+    100% { transform: translateY(calc(-100% * (var(--ais-passos) + 1) / var(--ais-n))); }
+}
+.ais-midia-trilha.is-pausado .ais-midia-pilha {
+    animation-play-state: paused;
+}
+/* Foto ocupando a janela inteira (4:5, recorte central), nas cores
+   originais. */
+.ais-midia-foto {
+    display: block;
+    flex: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background-color: var(--dn700);
+}
+
+/* ── Data, local e botão (layout-b.pdf) ─────────────────────────────────
+   Data na coluna 1, "Evento Presencial" + cidade na coluna 4, os dois
+   em 32px; botão nas colunas 9 e 10, encostado no fim do grid. */
+.ais-hero-data,
+.ais-hero-local {
+    grid-row: 5;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.ais-hero-data  { grid-column: 1 / span 3; gap: 0; }
+.ais-hero-local { grid-column: 4 / span 3; }
+.ais-data,
+.ais-local {
+    font: 400 2rem/1.25 var(--font-family);
+    color: var(--bw);
+}
+.ais-cidade {
+    font: var(--label);
+    color: var(--bw-75);
+}
+.ais-horario {
+    font: var(--label-s);
+    color: var(--bw-75);
+}
+.ais-hora {
+    font-size: 1.125rem;
+}
+
+.ais-hero-acao {
+    grid-column: 9 / span 2;
+    grid-row: 5;
+    align-self: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Botão (abre o popup). */
+.ais-btn {
+    display: inline-flex;
+    /* é link (#garantir) no header e na barra */
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    /* Medidas do .btn[data-size="m"] do DS. */
+    padding: 12px 24px;
+    font: var(--btn);
+    color: var(--bw);
+    text-transform: uppercase;
+    /* Quando o texto quebra em duas linhas, as linhas ficam centralizadas. */
+    text-align: center;
+    /* Degradê em onda (ais-onda, no bloco da oferta, a mesma animação do
+       .btn.of-cta-onda de /ed/infinite-pass/oferta/): --pc400 com um
+       brilho --pc100 passando. */
+    background-image: linear-gradient(90deg,
+        var(--pc400), var(--pc100), var(--pc400), var(--pc400));
+    background-size: 600% 600%;
+    animation: ais-onda 5s ease infinite;
+    /* Sem isolation: a estrela do header (::after, z-index -1) fica atrás
+       do botão inteiro. */
+    position: relative;
+    /* Hover: uma camada --pc300 por cima do degradê aparece (trocar o
+       background mataria o degradê que está animando). É um inset shadow
+       do tamanho do botão: fica entre o fundo e o texto sem precisar de
+       pseudo-elemento. */
+    box-shadow: inset 0 0 0 100vmax transparent;
+    transition: box-shadow 0.3s ease, color 0.3s ease;
+}
+.ais-btn:hover {
+    color: var(--bw);
+    text-decoration: none;
+    box-shadow: inset 0 0 0 100vmax var(--pc300);
+}
+@media (prefers-reduced-motion: reduce) {
+    .ais-btn { animation: none; }
+}
+/* Botão do header: estrela com o centro no canto de cima à esquerda,
+   girando sem parar, atrás do botão. O SVG é máscara e a cor vem do
+   background-color: --pc300, --bw no hover. 70px: os traços de 10
+   unidades do viewBox 140 ficam com 5px.
+   Giro em duas animações somadas: a lenta (rotate, 12s) sempre roda; a
+   extra (transform, 3s) fica pausada e só roda no hover. Pausar e retomar
+   não muda o ângulo, então a estrela acelera e desacelera sem pular (trocar
+   a duração de uma animação só faria ela saltar de posição). */
+:root {
+    /* Estrela do AI Summit (máscara): botão do header e barra de vagas. */
+    --ais-estrela: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Cpath d='M140 65H82.07l40.96-40.96-7.07-7.07L75 57.93V0H65v57.93L24.04 16.97l-7.07 7.07L57.93 65H0v10h57.93l-40.96 40.96 7.07 7.07L65 82.07V140h10V82.07l40.96 40.96 7.07-7.07L82.07 75H140z'/%3E%3C/svg%3E");
+    /* A mesma estrela com os braços mais grossos: número do desafio no
+       cronograma. */
+    --ais-estrela-grossa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Cpath d='M140 80V60H94.14l32.43-32.43-14.14-14.14L80 45.86V0H60v45.86L27.57 13.43 13.43 27.57 45.86 60H0v20h45.86l-32.43 32.43 14.14 14.14L60 94.14V140h20V94.14l32.43 32.43 14.14-14.14L94.14 80z'/%3E%3C/svg%3E");
+}
+.ais-hero-acao .ais-btn::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 70px;
+    height: 70px;
+    translate: -50% -50%;
+    background-color: var(--pc300);
+    -webkit-mask: var(--ais-estrela) center / contain no-repeat;
+            mask: var(--ais-estrela) center / contain no-repeat;
+    pointer-events: none;
+    transition: background-color 0.3s ease;
+    animation:
+        ais-estrela-gira 12s linear infinite,
+        ais-estrela-acelera 3s linear infinite paused;
+}
+.ais-hero-acao .ais-btn:hover::after {
+    background-color: var(--bw);
+    animation-play-state: running, running;
+}
+@keyframes ais-estrela-gira {
+    to { rotate: 360deg; }
+}
+@keyframes ais-estrela-acelera {
+    to { transform: rotate(360deg); }
+}
+/* Hover do botão do header: --bw com texto --bb (o da barra de vagas
+   segue no --pc300). */
+.ais-hero-acao .ais-btn:hover {
+    color: var(--bb);
+    box-shadow: inset 0 0 0 100vmax var(--bw);
+}
+@media (prefers-reduced-motion: reduce) {
+    .ais-hero-acao .ais-btn::after,
+    .ais-hero-acao .ais-btn:hover::after { animation: none; }
+}
+
+/* ── Saber mais ─────────────────────────────────────────────────────── */
+a.ais-saber-mais {
+    grid-column: 1 / -1;
+    grid-row: 7;
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font: var(--p);
+    color: var(--bw);
+}
+a.ais-saber-mais:hover {
+    color: var(--bw-75);
+    text-decoration: none;
+}
+
+/* Indicador de scroll à esquerda do "Saber mais": porte do .ic-scroll-hint
+   da /ed/aichampion/ (lá absoluto e centralizado; aqui em linha, então a
+   keyframe não tem o translateX(-50%)). */
+.ic-scroll-hint {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--bw-5);
+    animation: ic-scroll-cue 1.6s ease-in-out infinite;
+}
+/* triângulo apontando pra baixo: 12px de largura, 8px de altura */
+.ic-scroll-tri {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--bw-50);
+}
+@keyframes ic-scroll-cue {
+    0%   { transform: translateY(-8px); opacity: 0; }
+    50%  { opacity: 1; }
+    100% { transform: translateY(8px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ic-scroll-hint { animation: none; }
+}
+
+/* ── Breakpoints ────────────────────────────────────────────────────── */
+@media (max-width: 1439px) {
+    .ais-hero-inner { --cols: 8; }
+    .ais-hero-texto { grid-column: 1 / span 5; }
+    .ais-hero-midia { grid-column: 6 / -1; }
+    .ais-hero-data  { grid-column: 1 / span 3; }
+    .ais-hero-local { grid-column: 4 / span 3; }
+    .ais-hero-acao  { grid-column: 7 / span 2; }
+}
+@media (max-width: 864px) {
+    .ais-hero-inner { --cols: 6; --gap: 24px; padding-top: 96px; grid-template-rows: none; align-content: start; row-gap: 64px; }
+    .ais-logo       { width: 183px; margin-top: 64px; }
+    .ais-hero-texto,
+    .ais-hero-midia,
+    .ais-hero-acao,
+    a.ais-saber-mais { grid-column: 1 / -1; grid-row: auto; }
+    /* Data e local seguem lado a lado, com a fonte bem menor. */
+    .ais-hero-data  { grid-column: 1 / span 3; grid-row: auto; align-self: start; }
+    .ais-hero-local { grid-column: 4 / span 3; grid-row: auto; align-self: start; }
+    .ais-data,
+    .ais-local      { font: 400 1.25rem/1.25 var(--font-family); }
+    .ais-cidade     { font: var(--label-s); }
+    /* Só "Presencial" aqui ("Evento" sai pra caber ao lado da data). */
+    .ais-local-encontro { display: none; }
+    .ais-hora       { font-size: 1rem; }
+    /* Estática: as linhas do grid se apoiam no .ais-hero-midia, que tem a
+       mesma caixa. Empilhado, acima das fotos vêm o texto e o botão: as
+       verticais começam na linha de cima e só descem, sumindo. */
+    .ais-midia-trilha { position: static; --ais-linha-acima: 0px; --ais-linha-abaixo: 64px; }
+    /* Empilhado, o carrossel vem depois do botão. */
+    .ais-hero-midia  { order: 1; }
+    a.ais-saber-mais { order: 2; }
+    .ais-hero-acao  { justify-content: flex-start; margin-top: -32px; }
+    .ais-hero-video { min-height: 120px; object-fit: cover; }
+}
+@media (max-width: 576px) {
+    .ais-hero-inner { --cols: 4; --gap: 16px; padding-top: 64px; row-gap: 48px; }
+    /* As duas linhas do layout não cabem aqui: o título corre junto pra
+       não deixar o "EM" sozinho. */
+    .ais-titulo-linha { display: inline; }
+    .ais-hero-data  { grid-column: 1 / span 2; }
+    .ais-hero-local { grid-column: 3 / span 2; }
+    .ais-hero-acao  { margin-top: -16px; }
+    .ais-btn       { width: 100%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TEMAS
+   Medidas do sec02.pdf (canvas 1920): título 36/45 e texto 18/22.5 lado
+   a lado, 64 até os cards, cards 420 de altura com 32 entre eles,
+   padding 64 e conteúdo embaixo (título 24 + texto 18/27).
+   Destaque: o PDF usa #FFE29D, que não é token do DS; aqui é o --sg300,
+   o dourado da campanha (botão e horário do header).
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-temas {
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 128px 0 256px;
+    /* Os cards entram vindo de 160px dos lados (efeito de scroll): corta o
+       que passa, senão a página ganha rolagem horizontal. hidden antes,
+       clip depois (quem suporta fica com clip, que não vira scroll). */
+    overflow-x: hidden;
+    overflow-x: clip;
+}
+.ais-temas-inner {
+    --cols: 10;
+    --gap: 32px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: var(--gap);
+    row-gap: 64px;
+}
+
+.ais-temas-cabeca {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+/* Eyebrow: --label em --pc100 (sem caixa alta), com o espaçamento de
+   0.5em do .sec-eyebrow do site. */
+.ais-temas-eyebrow {
+    font: var(--label);
+    letter-spacing: 0.5em;
+    color: var(--pc100);
+}
+/* Título em caixa alta, 900 pedido (renderiza 800, o maior peso da Syne
+   self-hosted). */
+.ais-temas-titulo {
+    font: var(--h3);
+    font-weight: 900;
+    /* 1.25rem (20px) até 576px, 1.75rem (28px) a partir de 1440px, linear
+       entre os dois: (28 - 20) / (1440 - 576) = 0.9259vw; 20 - 0.9259% de
+       576 = 14.667px = 0.9167rem. */
+    font-size: clamp(1.25rem, 0.9167rem + 0.9259vw, 1.75rem);
+    max-width: 18ch;
+    text-transform: uppercase;
+    color: var(--bw);
+}
+
+.ais-temas-texto {
+    grid-column: 6 / span 5;
+    /* Alinhado pela base com o título (lado a lado, acima de 864). */
+    align-self: end;
+}
+.ais-temas-texto p {
+    font: var(--label-l);
+    color: var(--bw-75);
+}
+/* Uma linha em branco entre os parágrafos, como no layout. */
+.ais-temas-texto p + p {
+    margin-top: 0.75rem;
+}
+.ais-destaque {
+    /* --pc100, a cor do eyebrow da seção. */
+    color: var(--pc100);
+}
+
+/* Mesmas colunas e gap do pai: os cards caem em span 5 + span 5. */
+.ais-temas-cards {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    /* Cards colados (sem gap), dentro da grade de linhas abaixo. */
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    /* Linhas iguais: a grade sabe onde cai cada divisa (--ais-linhas
+       linhas de cards, cada uma 100% / --ais-linhas da altura). */
+    grid-auto-rows: 1fr;
+    --ais-linhas: 2;
+    position: relative;
+}
+/* Grade de linhas dos cards, 2px --bw-15, parada: os cards deslizam pra
+   dentro dela no efeito de scroll, então nenhum card fica sem lado nem sem
+   base no caminho, e cada divisa é uma linha só (não soma 4px onde dois
+   cards se encostam).
+     ::before horizontais: topo de cada linha de cards + base da última,
+       de ponta a ponta da tela (a .ais-temas corta com overflow-x);
+     ::after verticais: bordas da esquerda e da direita e a divisa entre
+       as duas colunas, só na altura dos cards. */
+.ais-temas-cards::before,
+.ais-temas-cards::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+.ais-temas-cards::before {
+    left: -100vw;
+    right: -100vw;
+    background:
+        repeating-linear-gradient(to bottom,
+            var(--bw-15) 0 2px,
+            transparent 2px calc(100% / var(--ais-linhas))),
+        linear-gradient(var(--bw-15), var(--bw-15)) bottom / 100% 2px no-repeat;
+}
+.ais-temas-cards::after {
+    left: 0;
+    right: 0;
+    background:
+        linear-gradient(var(--bw-15), var(--bw-15)) left / 2px 100% no-repeat,
+        linear-gradient(var(--bw-15), var(--bw-15)) center / 2px 100% no-repeat,
+        linear-gradient(var(--bw-15), var(--bw-15)) right / 2px 100% no-repeat;
+}
+.ais-tema {
+    grid-column: span 5;
+    min-height: 420px;
+    margin: 0;
+    /* Arte no topo (32 das bordas) e texto embaixo, a 64 das bordas como
+       no layout (32 do card + 32 do .ais-tema-texto). */
+    padding: 32px 32px 64px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.ais-tema-texto {
+    padding: 0 32px;
+}
+.ais-tema-titulo {
+    font: var(--h4);
+    /* 900 pedido (como o .ais-titulo): a Syne self-hosted vai até 800, que
+       é o que renderiza. 1.125rem; 1rem abaixo de 864. */
+    font-weight: 900;
+    font-size: 1.125rem;
+    color: var(--pc100);
+}
+@media (max-width: 864px) {
+    .ais-tema-titulo { font-size: 1rem; }
+}
+.ais-tema-p {
+    margin-top: 16px;
+    /* Duas linhas reservadas: com texto de uma linha, o título fica na
+       mesma altura do card vizinho. */
+    min-height: 3em;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+
+@media (max-width: 1439px) {
+    .ais-temas-inner { --cols: 8; }
+    .ais-temas-cabeca { grid-column: 1 / span 4; }
+    .ais-temas-texto  { grid-column: 5 / span 4; }
+    .ais-tema         { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .ais-temas        { padding: 96px 0 256px; }
+    .ais-temas-inner  { --cols: 6; --gap: 24px; row-gap: 32px; }
+    .ais-temas-cabeca,
+    .ais-temas-texto,
+    .ais-tema         { grid-column: 1 / -1; }
+    .ais-temas-eyebrow { font: var(--label-s); }
+    .ais-temas-cards  { margin-top: 32px; gap: 0; }
+    .ais-tema         { min-height: 0; padding: 24px 24px 48px; gap: 24px; }
+    /* Uma coluna: 4 linhas de cards e sem a divisa do meio. */
+    .ais-temas-cards  { --ais-linhas: 4; }
+    .ais-temas-cards::after {
+        background:
+            linear-gradient(var(--bw-15), var(--bw-15)) left / 2px 100% no-repeat,
+            linear-gradient(var(--bw-15), var(--bw-15)) right / 2px 100% no-repeat;
+    }
+    .ais-tema-texto   { padding: 0 24px; }
+    .ais-tema-p       { min-height: 0; }
+    /* Texto com cara de P L (18px, entrelinha do layout): aqui vira P. */
+    .ais-temas-texto p { font: var(--p); }
+}
+@media (max-width: 576px) {
+    .ais-temas-inner  { --cols: 4; --gap: 16px; }
+    .ais-tema         { padding: 16px 16px 32px; }
+    .ais-tema-texto   { padding: 0 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   EFEITO DE SCROLL DO HEADER (script.js liga com .ais-fx no <html>)
+   --ais-p (no .ais-hero) vai de 0 a 1 conforme o header sai da tela:
+     - vídeo fixo na tela, o scroll escolhe o quadro (as raízes se
+       recolhem até o fundo preto, sem opacity);
+     - itens da esquerda vão pra esquerda e esmaecem, o carrossel vai pra
+       direita e esmaece, o "Saber mais" esmaece primeiro;
+   --ais-q (na .ais-temas) vai de 0 a 1 conforme a seção entra: o
+   conteúdo sobe e aparece.
+   Sem o .ais-fx (prefers-reduced-motion ou sem JS) nada disso se aplica:
+   o vídeo fica parado no topo, no 1º quadro.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* O conteúdo depois do header passa por cima do vídeo fixo. */
+main {
+    position: relative;
+    z-index: 1;
+}
+
+/* Sem opacity: o último quadro do vídeo já é o #00000A do fundo, ele
+   some pelas próprias raízes se recolhendo. */
+.ais-fx .ais-hero-video {
+    position: fixed;
+    /* Entrada de cima pra baixo e saída de baixo pra cima, 100% da altura
+       dele (--ais-v, script.js). Até o vídeo carregar fica todo acima. */
+    transform: translateY(calc(var(--ais-v, 1) * -100%));
+}
+
+/* Até 864: item a item pela posição de cada um (--ais-fm, script.js),
+   esmaece e vai pro lado (esquerda pra esquerda, carrossel pra direita;
+   o "Saber mais", centralizado, só esmaece, como no desktop).
+   Sem prender e sem blur (blur animado é proibido abaixo de 864). */
+@media (max-width: 864px) {
+    .ais-fx .ais-logo,
+    .ais-fx .ais-hero-texto,
+    .ais-fx .ais-hero-data,
+    .ais-fx .ais-hero-local,
+    .ais-fx .ais-hero-acao,
+    .ais-fx .ais-hero-midia,
+    .ais-fx a.ais-saber-mais {
+        opacity: calc(1 - var(--ais-fm, 0));
+        will-change: transform, opacity;
+    }
+    .ais-fx .ais-logo,
+    .ais-fx .ais-hero-texto,
+    .ais-fx .ais-hero-data,
+    .ais-fx .ais-hero-local,
+    .ais-fx .ais-hero-acao {
+        transform: translateX(calc(var(--ais-fm, 0) * -48px));
+    }
+    .ais-fx .ais-hero-midia {
+        transform: translateX(calc(var(--ais-fm, 0) * 48px));
+    }
+}
+
+/* Só acima de 864: abaixo o header é mais alto que a tela, e prender e
+   apagar o conteúdo esconderia o botão e o carrossel antes de a pessoa
+   chegar neles (lá vale o bloco acima). */
+@media (min-width: 865px) {
+    /* O conteúdo não sobe: --ais-y (= o quanto rolou, até o fim do
+       efeito) compensa o scroll e só sobram os translates pros lados. */
+    .ais-fx .ais-hero-inner {
+        transform: translateY(var(--ais-y, 0px));
+    }
+
+    /* --ais-f é a saída de cada item (0 a 1): opacity chega a 0 e o blur
+       a 8px juntos. Quanto mais baixo o item, antes a seção que sobe
+       chega nele, então some mais cedo pra não se sobrepor ao texto dela. */
+    .ais-fx .ais-logo,
+    .ais-fx .ais-hero-midia  { --ais-f: var(--ais-p, 0); }
+    .ais-fx .ais-hero-texto  { --ais-f: min(1, var(--ais-p, 0) * 1.25); }
+    .ais-fx .ais-hero-data,
+    .ais-fx .ais-hero-local,
+    .ais-fx .ais-hero-acao   { --ais-f: min(1, var(--ais-p, 0) * 2); }
+    .ais-fx a.ais-saber-mais { --ais-f: min(1, var(--ais-p, 0) * 3); }
+
+    .ais-fx .ais-logo,
+    .ais-fx .ais-hero-texto,
+    .ais-fx .ais-hero-data,
+    .ais-fx .ais-hero-local,
+    .ais-fx .ais-hero-acao,
+    .ais-fx .ais-hero-midia,
+    .ais-fx a.ais-saber-mais {
+        opacity: calc(1 - var(--ais-f));
+        filter: blur(calc(var(--ais-f) * 8px));
+        will-change: transform, opacity, filter;
+    }
+
+    /* Aparelho fraco (.ais-leve, script.js): sem o blur, só opacity e
+       translate. */
+    .ais-leve.ais-fx .ais-logo,
+    .ais-leve.ais-fx .ais-hero-texto,
+    .ais-leve.ais-fx .ais-hero-data,
+    .ais-leve.ais-fx .ais-hero-local,
+    .ais-leve.ais-fx .ais-hero-acao,
+    .ais-leve.ais-fx .ais-hero-midia,
+    .ais-leve.ais-fx a.ais-saber-mais {
+        filter: none;
+        will-change: transform, opacity;
+    }
+
+    /* Esquerda vai pra esquerda; o carrossel e o botão (colunas 9 e 10,
+       no lado direito) vão pra direita. */
+    .ais-fx .ais-logo,
+    .ais-fx .ais-hero-texto,
+    .ais-fx .ais-hero-data,
+    .ais-fx .ais-hero-local {
+        transform: translateX(calc(var(--ais-p, 0) * -160px));
+    }
+    .ais-fx .ais-hero-acao,
+    .ais-fx .ais-hero-midia {
+        transform: translateX(calc(var(--ais-p, 0) * 160px));
+    }
+}
+
+/* Cards dos temas: a coluna da esquerda (ímpares) entra da esquerda, a
+   da direita (pares) entra da direita, junto com a opacity. --ais-c é o
+   progresso de cada card (script.js). Empilhados (até 864) seguem a
+   mesma alternância. */
+.ais-fx .ais-tema {
+    opacity: var(--ais-c, 1);
+    will-change: transform, opacity;
+}
+.ais-fx .ais-tema:nth-child(odd) {
+    transform: translateX(calc((1 - var(--ais-c, 1)) * -160px));
+}
+.ais-fx .ais-tema:nth-child(even) {
+    transform: translateX(calc((1 - var(--ais-c, 1)) * 160px));
+}
+
+.ais-fx .ais-temas-inner {
+    transform: translateY(calc((1 - var(--ais-q, 1)) * 96px));
+    opacity: var(--ais-q, 1);
+    will-change: transform, opacity;
+}
+
+/* ── Reveal: a .ais-presencial sobe por cima da .ais-temas ───────────
+   O mesmo de /ed/formacoes/ (.pilares-profs sobre a .sec-projetos): a
+   .ais-temas é sticky com top NEGATIVO = 100vh - altura dela, ou seja, rola
+   normal até a base dela encostar na base da tela e ali fica presa; a
+   .ais-presencial (z 1, com fundo próprio) vem por cima. A altura real vem
+   do script.js em --ais-temas-altura (ResizeObserver + resize). */
+.ais-temas-trilho {
+    position: relative;
+}
+.ais-temas-trilho .ais-temas {
+    position: sticky;
+    top: calc(100vh - var(--ais-temas-altura, 100vh));
+    z-index: 0;
+}
+.ais-temas-trilho .ais-presencial-trilho {
+    position: relative;
+    z-index: 1;
+}
+/* E um nível abaixo: os palestrantes sobem por cima do fim da
+   .ais-presencial do mesmo jeito (ela presa pela base, altura real em
+   --ais-pres-altura, do script.js). */
+.ais-presencial-trilho .ais-presencial {
+    position: sticky;
+    top: calc(100vh - var(--ais-pres-altura, 100vh));
+    z-index: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   AGORA TAMBÉM NO PRESENCIAL (fundo --bw)
+   Medidas do temp/ai-summit/ref/Frame 45.pdf (1469 de largura, escala 1920):
+   logo de 244 a 64 do eyebrow, eyebrow a 8 do título, título a 32 do
+   texto. Conteúdo nas colunas 1 a 5 do grid Wide do DS e, embaixo, o
+   mosaico de fotos na largura toda.
+   Texto escuro (--bb) no fundo claro.
+   ══════════════════════════════════════════════════════════════════════ */
+/* Fundo --bw, fixo. Os quadros das fotos e o espaçador da coluna da
+   esquerda usam a mesma cor. */
+.ais-presencial {
+    --ais-presencial-fundo: var(--bw);
+    padding: 128px 0;
+    background: var(--ais-presencial-fundo);
+    color: var(--bb);
+}
+/* Arte de fundo no topo (ais-presencial.webp, 1920x880, fundo igual ao
+   --bw, os tubos saem pelas bordas de cima e da direita). Num ::before
+   atrás do conteúdo, com 1920 de largura (1440 abaixo de 1440 e 864 até
+   864), centralizada: em telas menores sobra igual dos dois lados, fora da
+   tela (cortado pelo overflow-x: clip do body, sem rolagem). Acima de 1920
+   fica com 1920, presa à direita. Sem gradiente nem máscara. */
+.ais-presencial::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% 0;
+    width: 1920px;
+    aspect-ratio: 1920 / 880;
+    background: url("/ed/aisummit/dependencias/presencial/ais-presencial.webp") no-repeat center top / 100% auto;
+    pointer-events: none;
+}
+@media (min-width: 1921px) {
+    .ais-presencial::before { left: auto; right: 0; translate: none; }
+}
+.ais-presencial-inner {
+    position: relative;
+    z-index: 1;
+    --cols: 10;
+    --gap: 32px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: var(--gap);
+}
+.ais-presencial-texto {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Fica preso na tela a 32 do topo (96 até 864) e o mosaico sobe por
+       cima dele. */
+    position: sticky;
+    top: 32px;
+    z-index: 0;
+    align-self: start;
+}
+/* O logo do topo em --bb (versão escura do aisummit-logo), mesmas larguras
+   do logo do header: 244, e 183 até 864. */
+.ais-presencial-logo {
+    display: block;
+    width: 244px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 64px;
+}
+.ais-presencial-cabeca {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ais-presencial-eyebrow {
+    font: var(--label);
+    letter-spacing: 0.5em;
+    color: var(--pc500);
+}
+/* 900 pedido (renderiza 800, o maior peso da Syne self-hosted).
+   1.5rem (24px) até 576px, 2.25rem (36px, o do frame) a partir de 1440px,
+   linear entre os dois: (36 - 24) / (1440 - 576) = 1.3889vw; 24 - 1.3889%
+   de 576 = 16px = 1rem. */
+.ais-presencial-titulo {
+    max-width: 20ch;
+    font: 900 clamp(1.5rem, 1rem + 1.3889vw, 2.25rem)/1.25 var(--font-family);
+    color: var(--bb);
+}
+.ais-presencial-p {
+    max-width: 616px;
+    margin-top: 32px;
+    font: var(--p-l);
+    color: var(--bb-75);
+}
+
+/* Mosaico (Frame 45): quadrados de 704 (metade do conteúdo de 1408), duas
+   colunas coladas que ocupam a largura toda; a da esquerda começa meio
+   quadrado abaixo (padding-top 50% = metade da largura da coluna). A
+   coluna da direita começa 256 abaixo do texto. Fotos com recorte central
+   (fillers temporários por enquanto). */
+.ais-presencial-mosaico {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / -1;
+    margin-top: 256px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+}
+.ais-presencial-coluna {
+    display: flex;
+    flex-direction: column;
+    /* 100cqi = largura da coluna (a altura fixa da foto que cresce). */
+    container-type: inline-size;
+}
+.ais-presencial-coluna--esq {
+    padding-top: 50%;
+}
+/* Fim da coluna da esquerda: meio quadro invisível (fundo da seção) pra
+   ela terminar junto com a da direita. Sem ele, o texto preso reaparecia
+   embaixo do último quadro da esquerda antes da seção acabar. */
+.ais-presencial-coluna--esq::after {
+    content: "";
+    padding-top: 50%;
+    background: var(--ais-presencial-fundo);
+}
+.ais-presencial-foto {
+    aspect-ratio: 1;
+    /* Fundo da seção: cobre o texto preso quando passa por cima dele. */
+    background: var(--ais-presencial-fundo);
+}
+/* Empilham no scroll: cada quadrado sobe até o topo da tela, para ali
+   (sticky) e o seguinte da mesma coluna vem por cima, todos colados no
+   topo (sem margem). */
+.ais-presencial-foto {
+    position: sticky;
+    top: 0;
+}
+/* Pares (só servem de faixa até 864): aqui não geram caixa, as fotos
+   seguem direto na coluna. */
+.ais-presencial-par,
+.ais-presencial-faixa {
+    display: contents;
+}
+/* Última foto (acima de 864): presa no topo, cresce pra esquerda até
+   a largura toda do mosaico enquanto a pista passa, com a altura fixa no
+   quadrado e o canto de baixo à direita parado. --cresce vai de 0 a 1
+   (script.js). A foto acompanha com recorte central. */
+.ais-presencial-foto--final {
+    --cresce: 0;
+    width: calc(100% * (1 + var(--cresce)));
+    margin-left: calc(-100% * var(--cresce));
+    aspect-ratio: auto;
+    height: 100cqi;
+}
+/* Pista: o trecho de scroll em que ela cresce (70% da tela; o script.js
+   alonga em telas altas, pra ela terminar antes da seção prender). */
+.ais-presencial-pista {
+    height: 70vh;
+}
+/* A foto ocupa o quadrado inteiro (recorte central). */
+.ais-presencial-foto img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 1439px) {
+    .ais-presencial::before { width: 1440px; }
+    .ais-presencial-inner { --cols: 8; }
+    .ais-presencial-texto { grid-column: 1 / span 4; }
+}
+@media (max-width: 864px) {
+    .ais-presencial       { padding: 196px 0 128px; }
+    .ais-presencial::before { width: 864px; }
+    .ais-presencial-inner { --cols: 6; --gap: 24px; }
+    .ais-presencial-texto { grid-column: 1 / -1; top: 16px; }
+    .ais-presencial-logo  { width: 183px; margin-bottom: 48px; }
+    /* Como o eyebrow da seção dos temas: label-s até 864. */
+    .ais-presencial-eyebrow { font: var(--label-s); }
+    .ais-presencial-p     { font: var(--p); }
+    /* Até 864: fotos na largura toda da tela (sem a margem de 16), uma
+       embaixo da outra. Cada par vira uma faixa de 2 fotos que anda na
+       horizontal com o scroll (script.js): a 1ª pra esquerda, a 2ª pra
+       direita; a última foto fica parada. Sem colunas, degraus nem pilha. */
+    .ais-presencial-mosaico { display: block; margin: 96px -16px 0; }
+    .ais-presencial-coluna { display: block; }
+    .ais-presencial-coluna--esq { padding-top: 0; }
+    .ais-presencial-coluna--esq::after { display: none; }
+    .ais-presencial-foto { position: static; }
+    .ais-presencial-par { display: block; overflow: hidden; }
+    .ais-presencial-faixa {
+        display: flex;
+        width: 200%;
+        will-change: transform;
+    }
+    .ais-presencial-faixa > .ais-presencial-foto { flex: 0 0 50%; }
+    .ais-presencial-foto--final { width: 100%; margin-left: 0; height: auto; aspect-ratio: 1; }
+    .ais-presencial-pista { display: none; }
+}
+@media (max-width: 576px) {
+    .ais-presencial-inner { --cols: 4; --gap: 16px; }
+    .ais-presencial-mosaico { margin-top: 64px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PALESTRANTES
+   Medidas de palestrantes-01/02/03.pdf (canvas 1920): seção com o fundo
+   transparente enquanto sobe (nos 16 em volta aparece a .ais-presencial
+   presa atrás) e indo a --bw depois de presa, com o painel --pc400 a 16
+   das bordas da tela (o mesmo do .ais-oferta-cartao no fim). No meio, o
+   símbolo de 490x280 (a caixa de 560x320 do viewBox da raiz); título 24 --bw em caixa alta e texto 18 nas colunas 1 a 3;
+   nome 18 e descrição 18 nas colunas 8 a 10, os dois blocos começando
+   48 acima do meio da tela.
+   Sequência (script.js liga .is-sequencia; o painel fica preso enquanto a
+   seção passa). Cada fase é uma variável de 0 a 1 na seção:
+     --ais-r4..--ais-r1: os níveis da raiz se recolhem, do mais fino ao
+       mais grosso (fase4 -> fase1, palestrantes-01.pdf);
+     --ais-pf-desce: o símbolo desce meia altura (topo no meio da tela);
+     --ais-pf-fotos: o branco do símbolo dá lugar às fotos do Leo;
+     --ais-pf-texto: título/texto da esquerda chegam pelos lados
+       (palestrantes-02.pdf).
+   E em cada palestrante (um .ais-profs-quadro e um .ais-profs-quem por
+   pessoa, na ordem da sequência):
+     --ais-pf-pos no quadro: onde as fotos estão, em alturas do símbolo:
+       1 = escondidas abaixo dele, 0 = topo da foto no topo do símbolo
+       (02), -1 = subidas, a pessoa saindo por cima (03);
+     --ais-pf-o no quadro: opacidade (o que sai esmaece no lugar);
+     --ais-pf-q, --ais-pf-dx e --ais-pf-dy no nome/descrição: opacidade
+       e deslocamento (o 1º chega pela direita; nas trocas, sobem).
+   Sem o script ou com reduced motion, o fim do Leo (03).
+   A versão anterior (os quatro em sequência) está em
+   temp/ai-summit/backup-palestrantes-sequencia/.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-profs {
+    /* Máscaras do símbolo (o mesmo desenho da raiz, viewBox 880x640):
+       só o símbolo, e o símbolo mais tudo acima da base da barra de cima
+       (onde o Leo aparece quando sobe). */
+    --ais-pf-simbolo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='160 160 560 320' preserveAspectRatio='none'%3E%3Cpath d='M720 160H560c-47.8 0-90.68 20.98-120 54.21C410.68 180.98 367.8 160 320 160H160v80h183.43L213.72 369.71l56.57 56.57L400 296.57V480h80V296.57l129.71 129.71 56.57-56.57L536.57 240H720z'/%3E%3C/svg%3E");
+    --ais-pf-pessoa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='160 -320 560 800' preserveAspectRatio='none'%3E%3Cpath d='M160 -320H720V240H160z'/%3E%3Cpath d='M720 160H560c-47.8 0-90.68 20.98-120 54.21C410.68 180.98 367.8 160 320 160H160v80h183.43L213.72 369.71l56.57 56.57L400 296.57V480h80V296.57l129.71 129.71 56.57-56.57L536.57 240H720z'/%3E%3C/svg%3E");
+    position: relative;
+    z-index: 1;
+    /* Transparente enquanto sobe; depois de presa no topo da tela vai a
+       --bw (--ais-pf-fundo, script.js). */
+    background: color-mix(in srgb, var(--bw) calc(var(--ais-pf-fundo, 1) * 100%), transparent);
+    color: var(--bw);
+}
+.ais-profs.is-sequencia {
+    /* 100 da tela + 660 de sequência (raiz 125; desce, fotos, texto e o
+       Leo subindo, juntos, 75; 30 parado; três trocas, Sayuri, Alison e
+       Iago, a cada 150, cada uma de 90; 40 parado no fim). */
+    height: 760svh;
+}
+.ais-profs-palco {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: clip;
+}
+.ais-profs.is-sequencia .ais-profs-palco {
+    position: sticky;
+    top: 0;
+}
+/* O painel --pc400, a 16 das bordas da tela; vai a --bb até o fim do
+   scroll da seção (--ais-pf-escuro, script.js). */
+.ais-profs-palco::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    background: color-mix(in srgb, var(--bb) calc(var(--ais-pf-escuro, 0) * 100%), var(--pc400));
+}
+/* Container Wide do DS por cima do painel; a 2ª linha começa 48 acima do
+   meio da tela. O conteúdo fica sempre a 16 da borda do painel (32 da
+   tela): o padding de 16 do container cresce até 32 quando a tela é mais
+   estreita que 1440 + 32. */
+.ais-profs-inner {
+    --cols: 10;
+    --gap: 32px;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 32px - (100vw - 1440px) / 2, 32px);
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: calc(50% - 48px) auto;
+    column-gap: var(--gap);
+    align-items: start;
+    pointer-events: none;
+}
+.ais-profs-cabeca,
+.ais-profs-quem {
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+}
+.ais-profs-cabeca {
+    grid-column: 1 / span 3;
+    gap: 16px;
+    opacity: var(--ais-pf-texto, 1);
+    transform: translateX(calc((1 - var(--ais-pf-texto, 1)) * -48px));
+}
+/* Os nomes ficam todos na mesma célula; opacidade e deslocamento vêm do
+   script.js (--ais-pf-q, --ais-pf-dx, --ais-pf-dy). Sem o script, só o
+   1º, no lugar. */
+.ais-profs-quem {
+    --ais-pf-q: 0;
+    grid-column: 8 / span 3;
+    gap: 8px;
+    opacity: var(--ais-pf-q);
+    transform: translate(var(--ais-pf-dx, 0px), var(--ais-pf-dy, 0px));
+}
+.ais-profs-cabeca + .ais-profs-quem { --ais-pf-q: 1; }
+/* 24 (o do PDF), 900 pedido (renderiza 800), caixa alta. */
+.ais-profs-titulo {
+    font: 900 1.5rem/1.25 var(--font-family);
+    text-transform: uppercase;
+    color: var(--bw);
+}
+.ais-profs-p {
+    /* quebra do PDF: "Aprenda com quem vive o / mercado na prática diária" */
+    max-width: 14em;
+    font: var(--p-l);
+    color: var(--bw);
+}
+/* 900 pedido (renderiza 800), como os outros nomes da página. */
+.ais-profs-nome {
+    font: 900 1.125rem/1.25 var(--font-family);
+    color: var(--bw);
+}
+.ais-profs-desc {
+    font: var(--p-l);
+    color: var(--bw);
+}
+
+/* Caixa do símbolo: 490 de largura no canvas de 1920 (25,5vw), no meio da
+   tela; desce meia altura (topo no meio) com --ais-pf-desce. */
+.ais-profs-simbolo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(490px, 25.5vw);
+    aspect-ratio: 560 / 320;
+    translate: -50% calc(-50% + var(--ais-pf-desce, 1) * 50%);
+}
+/* A raiz inteira (viewBox 880x640), com a caixa do símbolo (160 a 720 x
+   160 a 480) encaixada na .ais-profs-simbolo. O branco some quando as
+   fotos entram. */
+.ais-profs-raiz {
+    position: absolute;
+    left: -28.5714%;
+    top: -50%;
+    width: 157.1429%;
+    height: 200%;
+    overflow: visible;
+    color: var(--bw);
+    opacity: calc(1 - var(--ais-pf-fotos, 1));
+}
+/* Cada nível encolhe pra base só no comprimento (stroke-dashoffset 0 -> 1,
+   pathLength 1); a grossura fica a do nível o tempo todo (40/20/10/5, do
+   <g> de cada um). Os cantos aparados das junções voltam junto com o nível
+   que os provoca. */
+.ais-profs-raiz [class^="g"] { stroke-dasharray: 1; }
+.ais-profs-raiz .g1 { stroke-dashoffset: var(--ais-r1, 1); }
+.ais-profs-raiz .g2 { stroke-dashoffset: var(--ais-r2, 1); }
+.ais-profs-raiz .g3 { stroke-dashoffset: var(--ais-r3, 1); }
+.ais-profs-raiz .g4 { stroke-dashoffset: var(--ais-r4, 1); }
+.ais-profs-raiz .c3 { transform: scale(calc(1 - var(--ais-r3, 1))); }
+.ais-profs-raiz .c4 { transform: scale(calc(1 - var(--ais-r4, 1))); }
+
+/* Fotos (7:8, fundo e recorte no mesmo enquadramento): largura do
+   símbolo, topo no topo dele, deslocadas --ais-pf-pos alturas do símbolo
+   (metade da foto). O fundo aparece só dentro do símbolo; a pessoa
+   (recorte), dentro do símbolo e acima da base da barra de cima. Cada
+   quadro ocupa a caixa do símbolo; o seguinte fica por cima. Sem o
+   script, o 1º no fim (-1) e os outros escondidos embaixo (1). */
+.ais-profs-quadro {
+    --ais-pf-pos: 1;
+    position: absolute;
+    inset: 0;
+    opacity: var(--ais-pf-o, 1);
+}
+.ais-profs-raiz + .ais-profs-quadro { --ais-pf-pos: -1; }
+.ais-profs-fundo,
+.ais-profs-pessoa {
+    position: absolute;
+    left: 0;
+    right: 0;
+    opacity: var(--ais-pf-fotos, 1);
+    -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+}
+.ais-profs-fundo {
+    top: 0;
+    height: 100%;
+    -webkit-mask-image: var(--ais-pf-simbolo);
+            mask-image: var(--ais-pf-simbolo);
+}
+/* Caixa da pessoa: 1,5 altura do símbolo acima dele até a base (viewBox
+   da máscara de -320 a 480); a foto começa no topo do símbolo (60%). */
+.ais-profs-pessoa {
+    top: -150%;
+    height: 250%;
+    -webkit-mask-image: var(--ais-pf-pessoa);
+            mask-image: var(--ais-pf-pessoa);
+}
+.ais-profs-fundo img,
+.ais-profs-pessoa img {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: auto;
+    translate: 0 calc(var(--ais-pf-pos) * 50%);
+}
+.ais-profs-fundo img  { top: 0; }
+.ais-profs-pessoa img { top: 60%; }
+
+@media (max-width: 1439px) {
+    .ais-profs-inner { --cols: 8; }
+    .ais-profs-cabeca { grid-column: 1 / span 2; }
+    .ais-profs-quem   { grid-column: 7 / span 2; }
+    .ais-profs-simbolo { width: min(490px, 34vw); }
+}
+/* Até 864: título e texto em cima do painel, nome e descrição embaixo, o
+   símbolo no meio, maior. Embaixo, 112 de respiro: a barra de vagas fica
+   por cima do pé da tela. */
+@media (max-width: 864px) {
+    .ais-profs-inner {
+        --cols: 6;
+        --gap: 24px;
+        padding: 64px 32px 112px;
+        grid-template-rows: auto 1fr auto;
+    }
+    .ais-profs-cabeca,
+    .ais-profs-quem { grid-column: 1 / -1; }
+    .ais-profs-cabeca { grid-row: 1; gap: 8px; }
+    .ais-profs-quem   { grid-row: 3; }
+    .ais-profs-titulo { font-size: 1.25rem; }
+    .ais-profs-p,
+    .ais-profs-desc   { font: var(--p); }
+    .ais-profs-nome   { font-size: 1rem; }
+    .ais-profs-simbolo { width: min(490px, 56vw); }
+}
+@media (max-width: 576px) {
+    .ais-profs-inner { --cols: 4; --gap: 16px; padding: 48px 32px 112px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CRONOGRAMA DO EVENTO (fundo --bb)
+   Layout do agenda.pdf (canvas 1920; sem pixel perfect, ajustado ao grid
+   Wide do DS): grade de linhas 2px --bw-10 (verticais na borda esquerda
+   das palestras e na borda direita do container, da altura toda da seção;
+   horizontais de ponta a ponta da tela entre as palestras). Título 36 --bw
+   em caixa alta e texto 18 nas colunas 1 a 3, presos (sticky), 48 abaixo
+   da 1ª linha. Palestras nas colunas 4 a 10, cada uma numa faixa: número
+   200 --bw-15 inclinado atrás do título 18, descrição 18 e, à direita,
+   "Com" + nome --pc200 + foto num quadrado de 112 inclinado (o recorte do
+   palestrante sobre o fundo dele, os mesmos da seção Palestrantes).
+   A grade fica parada; só o conteúdo de cada faixa esmaece pra dentro
+   com o scroll (--ais-ag-o, script.js).
+   Até 864: título e texto em cima, palestras embaixo na largura toda.
+   A versão anterior (cards com contorno) está em
+   temp/ai-summit/backup-cronograma-cards/.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-agenda {
+    position: relative;
+    z-index: 1;
+    padding: 128px 0 400px;
+    background: var(--bb);
+    color: var(--bw);
+    /* Corta as linhas da grade, que passam da seção; clip não cria rolagem,
+       então o sticky do título segue funcionando. */
+    overflow: clip;
+}
+/* Arte: camada do tamanho da seção com um bloco de 100vh sticky dentro; a
+   imagem, na largura da tela até no máximo 1920, fica no pé desse bloco,
+   à esquerda: no canto de baixo à esquerda da tela. */
+.ais-agenda-arte {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.ais-agenda-arte-fixa {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    /* Arte por cima da canoa (o mesmo brilho do .canoa-bottom: radial
+       côncavo com --pc200 nas laterais de baixo + degradê --pc200-10 de
+       baixo pra cima), que o fundo --bb da seção esconderia. */
+    background:
+        url("/ed/aisummit/dependencias/agenda/ais-agenda-palco.webp") no-repeat left bottom / min(100%, 1920px) auto,
+        radial-gradient(ellipse 150% 125% at 50% 0%, transparent 90%, var(--pc200) 100%),
+        linear-gradient(to top, var(--pc200-10), transparent);
+    /* O fundo da imagem é --bb opaco: lighten deixa o preto dela ceder à
+       canoa (fica o mais claro dos dois) e os tubos seguem iguais. */
+    background-blend-mode: lighten, normal, normal;
+}
+.ais-agenda-inner {
+    --cols: 10;
+    --gap: 32px;
+    position: relative;
+    z-index: 1;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: var(--gap);
+    align-items: start;
+}
+.ais-agenda-lead {
+    grid-column: 1 / span 3;
+    position: sticky;
+    top: 80px;
+    padding-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+/* 900 pedido (renderiza 800), caixa alta. 2.25rem (36px, o do PDF) a
+   partir de 1440, 1.5rem até 576, linear entre os dois:
+   (36 - 24) / (1440 - 576) = 1.3889vw; 24 - 1.3889% de 576 = 16px. */
+.ais-agenda-h2 {
+    max-width: 12ch;
+    font: 900 clamp(1.5rem, 1rem + 1.3889vw, 2.25rem)/1.25 var(--font-family);
+    text-transform: uppercase;
+    color: var(--bw);
+}
+.ais-agenda-p {
+    max-width: 544px;
+    font: var(--p-l);
+    color: var(--bw);
+}
+/* Indicador: um quadrado de 8 por palestra, 4 entre eles, de --bw-25 a
+   --pc300 na proporção em que a palestra dele está na faixa
+   (--ais-ag-ponto, script.js; a cor acompanha o scroll). Só no palco
+   (.is-seq): sem ele as palestras estão todas à vista. */
+.ais-agenda-pontos {
+    display: none;
+    gap: 4px;
+}
+.ais-agenda.is-seq .ais-agenda-pontos { display: flex; }
+.ais-agenda-pontos span {
+    width: 8px;
+    height: 8px;
+    background: color-mix(in srgb, var(--pc300) calc(var(--ais-ag-ponto, 0) * 100%), var(--bw-25));
+}
+/* Faixa (a coluna das palestras): as verticais da grade (borda esquerda
+   e direita, passando da seção pra cima e pra baixo; a .ais-agenda corta)
+   e a horizontal de baixo da última palestra. */
+.ais-agenda-faixa {
+    grid-column: 4 / span 7;
+    position: relative;
+}
+.ais-agenda-cards {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+.ais-agenda-faixa::before {
+    content: "";
+    position: absolute;
+    top: -100vh;
+    bottom: -100vh;
+    left: -2px;
+    right: -2px;
+    background:
+        linear-gradient(var(--bw-10), var(--bw-10)) left / 2px 100% no-repeat,
+        linear-gradient(var(--bw-10), var(--bw-10)) right / 2px 100% no-repeat;
+    pointer-events: none;
+}
+.ais-agenda-faixa::after {
+    content: "";
+    position: absolute;
+    left: -100vw;
+    right: -100vw;
+    bottom: -2px;
+    height: 2px;
+    background: var(--bw-10);
+    pointer-events: none;
+}
+/* Cada palestra numa faixa; a linha de cima, de ponta a ponta da tela. */
+.ais-agenda-card {
+    --ais-ag-o: 1;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+    padding: 160px 144px 80px;
+}
+.ais-agenda-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100vw;
+    right: -100vw;
+    height: 2px;
+    background: var(--bw-10);
+}
+.ais-agenda-card > * { opacity: var(--ais-ag-o); }
+/* Número grande (900 pedido, renderiza 800) inclinado, atrás do título:
+   começa 64 à esquerda dele e sobe por cima. No scroll da faixa (.is-seq)
+   a inclinação vai de 0 a -15deg e volta a 0 (--ais-ag-r, script.js). */
+.ais-agenda-num {
+    position: absolute;
+    z-index: -1;
+    left: 80px;
+    top: 0px;
+    font: 900 12.5rem/1 var(--font-family);
+    color: var(--bw-15);
+    rotate: calc(var(--ais-ag-r, 1) * -15deg);
+    transform-origin: center;
+    user-select: none;
+}
+/* O desafio prático (entre as palestras): número em --pc200-25. */
+.ais-agenda-card--destaque .ais-agenda-num {
+    color: var(--pc200-25);
+}
+/* No "03", a estrela grossa (--pc200, a cor do SVG) com o centro na borda
+   esquerda do número, na metade da altura, girando sem parar. 0.35em: 70
+   no número de 200, e acompanha o número nos tamanhos menores. */
+.ais-agenda-card--destaque .ais-agenda-num::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0.35em;
+    height: 0.35em;
+    translate: -50% -50%;
+    background-color: var(--pc200);
+    -webkit-mask: var(--ais-estrela-grossa) center / contain no-repeat;
+            mask: var(--ais-estrela-grossa) center / contain no-repeat;
+    animation: ais-estrela-gira 12s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .ais-agenda-card--destaque .ais-agenda-num::before { animation: none; }
+}
+/* Mesmo estilo do .ais-tema-titulo, em --bw (h4, 900 pedido, 1.125rem;
+   1rem até 864). */
+.ais-agenda-titulo {
+    font: var(--h4);
+    font-weight: 900;
+    font-size: 1.125rem;
+    color: var(--bw);
+}
+.ais-agenda-desc {
+    max-width: 656px;
+    margin-top: 8px;
+    font: var(--p-l);
+    color: var(--bw);
+}
+/* "Com" + nome à direita, a foto no fim. */
+.ais-agenda-quem {
+    align-self: stretch;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 40px;
+    margin-top: 48px;
+    font: var(--p-l);
+    color: var(--bw);
+}
+.ais-agenda-nome { color: var(--pc200); }
+/* Foto: quadrado de 112 inclinado, o fundo do palco do palestrante com o
+   recorte dele por cima. Inclinação de 0 a 15deg e de volta, como o
+   número. */
+.ais-agenda-avatar {
+    position: relative;
+    width: 112px;
+    height: 112px;
+    flex-shrink: 0;
+    overflow: hidden;
+    rotate: calc(var(--ais-ag-r, 1) * 15deg);
+}
+.ais-agenda-avatar img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 1439px) {
+    .ais-agenda-inner { --cols: 8; }
+    .ais-agenda-lead  { grid-column: 1 / span 3; }
+    .ais-agenda-faixa { grid-column: 4 / span 5; }
+    .ais-agenda-card  { padding: 160px 64px 80px; }
+    .ais-agenda-num   { left: 16px; }
+}
+/* Até 864: título e texto em cima, palestras embaixo na largura toda, sem
+   prender. */
+@media (max-width: 864px) {
+    .ais-agenda       { padding: 96px 0 192px; }
+    /* A arte com 960 de largura fixa (cortada à direita pela tela). */
+    .ais-agenda-arte-fixa { background-size: 960px auto, auto, auto; }
+    .ais-agenda-inner { --cols: 6; --gap: 24px; row-gap: 48px; }
+    .ais-agenda-lead,
+    .ais-agenda-faixa { grid-column: 1 / -1; }
+    .ais-agenda-lead  { position: relative; top: auto; padding-top: 0; gap: 16px; }
+    .ais-agenda-card  { padding: 144px 32px 96px; }
+    .ais-agenda-num   { left: 16px; top: 0; font-size: 7.5rem; }
+    .ais-agenda-titulo { font-size: 1rem; }
+    .ais-agenda-desc,
+    .ais-agenda-quem  { font: var(--p); }
+    .ais-agenda-quem  { gap: 24px; margin-top: 32px; }
+    .ais-agenda-avatar { width: 80px; height: 80px; }
+}
+@media (max-width: 576px) {
+    .ais-agenda-inner { --cols: 4; --gap: 16px; }
+    .ais-agenda-card  { padding: 128px 16px 80px; }
+    .ais-agenda-num   { left: 8px; top: 24px; font-size: 6rem; }
+    .ais-agenda-avatar { width: 64px; height: 64px; }
+}
+
+/* Palco (.is-seq, script.js; sem reduced motion, acima de 864): a
+   seção vira um trilho com o palco de 100svh preso; a faixa da grade fica
+   parada no meio da tela e funciona como uma janela (a lista corta o que
+   passa dela): as palestras, todas na altura da maior, rolam dentro dela
+   na mesma velocidade do scroll da página (--ais-ag-y), esmaecendo ao
+   entrar e ao sair (--ais-ag-o) e inclinando o número e a foto só no meio
+   (--ais-ag-r, 0 na entrada e na saída). Altura do trilho: 100 da tela +
+   o caminho das palestras + 20 parado no fim (--ais-ag-trilho, script.js). */
+.ais-agenda.is-seq {
+    height: calc(100svh + var(--ais-ag-trilho, 340svh));
+    padding: 0;
+}
+.ais-agenda.is-seq .ais-agenda-palco {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 100vh;
+    height: 100svh;
+}
+.ais-agenda.is-seq .ais-agenda-inner {
+    height: 100%;
+    grid-template-rows: 1fr auto 1fr;
+}
+.ais-agenda.is-seq .ais-agenda-lead {
+    grid-row: 2;
+    position: static;
+}
+.ais-agenda.is-seq .ais-agenda-faixa { grid-row: 2; }
+/* A faixa: linha em cima e embaixo, de ponta a ponta da tela. */
+.ais-agenda.is-seq .ais-agenda-faixa::after {
+    top: -2px;
+    height: auto;
+    background:
+        linear-gradient(var(--bw-10), var(--bw-10)) top / 100% 2px no-repeat,
+        linear-gradient(var(--bw-10), var(--bw-10)) bottom / 100% 2px no-repeat;
+}
+/* A janela: todas as palestras na mesma célula (a altura é a da maior),
+   cada uma deslocada pelo script. */
+.ais-agenda.is-seq .ais-agenda-cards {
+    display: grid;
+    overflow: clip;
+}
+.ais-agenda.is-seq .ais-agenda-card {
+    grid-area: 1 / 1;
+    translate: 0 var(--ais-ag-y, 0px);
+}
+.ais-agenda.is-seq .ais-agenda-card::before { display: none; }
+@media (max-width: 864px) {
+    .ais-agenda.is-seq .ais-agenda-inner {
+        grid-template-rows: 1fr auto auto 1fr;
+        row-gap: 48px;
+    }
+    .ais-agenda.is-seq .ais-agenda-faixa { grid-row: 3; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   OFERTA (INGRESSO)
+   Layout de ref/inicio.pdf e ref/fim.pdf (canvas 1920; as medidas batem
+   com o grid Wide do DS: infos nas colunas 1-2 e 3-4, ticket nas 7 a 9).
+   O .ais-oferta-cartao é a tela (100svh) com o painel --bw a 16 das bordas
+   (::before). No painel: o título em duas linhas (Syne 800, --pc200;
+   "Garanta" na borda esquerda, "seu lugar" na direita) e, por cima dele, o
+   grid (container Wide do DS dentro do painel).
+   Com o scroll (.is-forma, script.js; a sequência está lá) o painel entra
+   como um quadrado por cima do cronograma, o título entra pelos lados
+   enquanto ele abre e fica no meio (inicio.pdf), as linhas abrem até ficarem cortadas ao meio pelas bordas
+   de cima e de baixo do painel e as infos e o ticket aparecem (fim.pdf).
+   Sem JS ou com reduced motion: direto o fim.pdf (os --ais-of-* valem 1).
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-oferta {
+    position: relative;
+    background: var(--bb);
+    color: var(--bb);
+}
+/* No mínimo a tela; cresce com o conteúdo quando ele não cabe (telas
+   baixas): o grid vai em fluxo, com o respiro de 16 do painel. */
+.ais-oferta-cartao {
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 16px;
+    box-sizing: border-box;
+    /* na troca, encolhe pro canto de cima à esquerda do painel (o script.js
+       desce a origem quando o cartão é mais alto que a tela) */
+    transform-origin: 16px 16px;
+}
+/* O painel claro, a 16 das bordas da tela (o mesmo respiro do container). */
+.ais-oferta-cartao::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    background: var(--bw);
+}
+/* Trilho (.is-forma): o cronograma fica preso quando a base dele chega à
+   base da tela (sticky com top = 100vh - altura dele, como os temas debaixo
+   do presencial; a altura vem do script.js em --ais-agenda-altura) e a
+   oferta começa por cima dele na mesma hora: a margem de -100svh sobrepõe
+   a primeira tela da oferta à última do cronograma, então o quadrado nasce
+   assim que o último card termina, sem uma tela de scroll morta subindo.
+   400svh = 100 da tela + 70 da entrada + 10 do título + 120 da abertura +
+   100 da troca pela próxima seção (os números do script.js), mais 2 vezes
+   o quanto o cartão passa da tela (--ais-of-extra, script.js): uma pra
+   rolar essa sobra depois da abertura e antes da troca, e outra porque o
+   cartão mais alto solta do sticky mais cedo. Atrás do
+   quadrado o cronograma esmaece em --bb enquanto ele abre
+   (--ais-oferta-fundo; na seção e não no cartão, que é recortado junto com
+   o quadrado). */
+.ais-agenda-trilho.is-forma { position: relative; }
+.ais-agenda-trilho.is-forma .ais-agenda {
+    position: sticky;
+    top: calc(100vh - var(--ais-agenda-altura, 100vh));
+    z-index: 0;
+}
+.ais-oferta.is-forma {
+    z-index: 2;
+    height: calc(400svh + var(--ais-of-extra, 0px) * 2);
+    margin-top: -100vh;
+    margin-top: -100svh;
+    background: color-mix(in srgb, var(--bb) calc(var(--ais-oferta-fundo, 0) * 100%), transparent);
+}
+/* Destino dos botões "Garantir vaga" (#garantir). Sem a sequência, o topo
+   da oferta; com ela, 176svh pra dentro do trilho: 70 + 10 da entrada e do
+   título + 80% dos 120 da abertura, quando o ticket já entrou. */
+.ais-oferta-alvo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+}
+.ais-oferta.is-forma .ais-oferta-alvo { top: 176svh; }
+.ais-oferta.is-forma .ais-oferta-cartao {
+    position: sticky;
+    top: 0;
+    will-change: transform, clip-path;
+}
+
+/* ── Título ──
+   Caixa = o painel (container de tamanho: cqi/cqh são do painel). As
+   linhas saem do meio (a de cima com a base no meio, a de baixo com o topo)
+   e vão até o meio delas ficar na borda do painel (--ais-of-abre, 0 a 1).
+   Com o cartão mais alto que a tela, o meio é o da tela (--ais-of-meio,
+   script.js), não o do painel. */
+.ais-oferta-titulo {
+    position: absolute;
+    inset: 16px;
+    margin: 0;
+    overflow: hidden;
+    container-type: size;
+    color: var(--pc200);
+    text-transform: uppercase;
+    pointer-events: none;
+}
+.ais-oferta-linha {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    /* "Garanta" com 68,7% da largura do painel, como no layout (na Syne
+       800 a palavra mede 8,32em). */
+    font: 800 8.25cqi/1.25 var(--font-family);
+}
+/* Entrada (--ais-of-entra, 0 a 1, enquanto o quadrado abre na
+   horizontal): "Garanta" vem de fora pela esquerda e "seu lugar" pela
+   direita (uma largura delas de deslocamento), sem opacity. */
+.ais-oferta-linha--a {
+    left: 0;
+    transform: translate(calc((1 - var(--ais-of-entra, 1)) * -100%), calc((var(--ais-of-meio, 50cqh) - 1.25em) * (1 - var(--ais-of-abre, 1)) - 0.625em * var(--ais-of-abre, 1)));
+}
+.ais-oferta-linha--b {
+    right: 0;
+    transform: translate(calc((1 - var(--ais-of-entra, 1)) * 100%), calc(var(--ais-of-meio, 50cqh) * (1 - var(--ais-of-abre, 1)) + (100cqh - 0.625em) * var(--ais-of-abre, 1)));
+}
+
+/* ── Grid ── container Wide do DS dentro do painel (a 1920 cai igual ao
+   layout; abaixo de 1440+32 as colunas encolhem com o painel). Em cima e
+   embaixo, o respiro das metades do título (meia linha dele, 5,16% da
+   largura do painel). */
+.ais-oferta-inner {
+    --cols: 10;
+    --gap: 32px;
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    width: 100%;
+    max-width: 1440px;
+    padding: calc((100vw - 32px) * 0.0516 + 16px) 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    /* Duas metades iguais: a divisa cai na linha do meio do painel
+       (.ais-oferta-cartao::after; o grid tem o mesmo inset do painel).
+       Quando o conteúdo não cabe, as duas crescem juntas (1fr com mínimo
+       auto) e a divisa continua no meio. */
+    grid-template-rows: 1fr 1fr;
+    column-gap: var(--gap);
+}
+/* Linha do meio (oferta.pdf): de ponta a ponta do painel, passando atrás
+   do ticket; abre da esquerda junto com as infos. */
+.ais-oferta-cartao::after {
+    content: "";
+    position: absolute;
+    top: calc(50% - 1px);
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: var(--bb-10);
+    transform: scaleX(var(--ais-of-info, 1));
+    transform-origin: left;
+    pointer-events: none;
+}
+
+/* ── Infos ── colunas 1 a 4, nas duas metades (subgrid nas linhas): os 4
+   itens em cima, terminando 32 acima da linha, e o preço embaixo,
+   começando 32 abaixo. */
+.ais-oferta-info {
+    grid-column: 1 / span 4;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+    /* entra da esquerda pra direita (o ticket, da direita pra esquerda) */
+    opacity: var(--ais-of-info, 1);
+    transform: translateX(calc((1 - var(--ais-of-info, 1)) * -64px));
+}
+.ais-oferta-dado {
+    display: flex;
+    flex-direction: column;
+    /* Alinhados embaixo: os dois blocos da linha têm a altura da linha (item
+       de grid estica), então o conteúdo do mais baixo desce até a base dela
+       (a nota das vagas fica na linha do "ou até 12x no cartão"). */
+    justify-content: flex-end;
+    gap: 8px;
+}
+/* No layout 32px, entre o --h3 (36 aqui) e o --h4: com o --h3
+   "Florianópolis / SC" quebra no span 2. */
+.ais-oferta-dado-tit {
+    margin: 0;
+    font: var(--h4);
+    color: var(--pc300);
+}
+.ais-oferta-dado-sub {
+    margin: 0;
+    font: var(--p);
+    color: var(--pc300);
+}
+.ais-oferta-hora { font: var(--p); }
+/* Metade de baixo: preço nas colunas 1 a 3, a parcela na 4 (embaixo,
+   na base do preço) e as vagas nas 1 e 2. */
+.ais-oferta-valores {
+    grid-row: 2;
+    align-self: start;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: var(--gap);
+    row-gap: 32px;
+    padding-top: 32px;
+}
+.ais-oferta-parcela {
+    grid-column: 4;
+    align-self: end;
+}
+.ais-oferta-vagas { grid-column: 1 / span 2; }
+/* Preço: o "R$" como os outros títulos (--h4; --h6 até 864) e o valor em
+   destaque, 900 pedido (a Syne vai até 800, que é o que renderiza, como no
+   .ais-titulo), 96px como no oferta.pdf, menor quando não cabe nas 3
+   colunas (cqi do próprio .ais-oferta-preco): "497" mede 3,39em e o "R$"
+   1,1em do tamanho dele (--ais-moeda), mais 8 de espaço. */
+.ais-oferta-dado { container-type: inline-size; }
+.ais-oferta-preco {
+    --ais-moeda: 1.5rem;
+    grid-column: 1 / span 3;
+    container-type: inline-size;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+}
+.ais-oferta-valor {
+    font: 900 min(6rem, calc((100cqi - var(--ais-moeda) * 1.1 - 8px) / 3.4))/1.25 var(--font-family);
+}
+.ais-oferta-inclui {
+    grid-row: 1;
+    align-self: end;
+    padding-bottom: 32px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    column-gap: var(--gap);
+    row-gap: 32px;
+    margin: 0;
+    padding: 0 0 32px;
+    list-style: none;
+    font: var(--p);
+    color: var(--bb);
+}
+.ais-oferta-inclui li { margin: 0; }
+
+/* ── Ticket ── (é o botão) Medidas do oferta.pdf (ticket de 400 x 570,
+   colunas 7 a 9): borda picotada em cima e embaixo (mask, abaixo), 64 de
+   cada lado; dentro, a 16 das laterais, o quadrado --bb de 368 com a flor,
+   o logo e o código de barras, e embaixo a faixa de 74 com "Garantir vaga"
+   e a seta. Em cqi nos filhos (do próprio ticket: 1cqi = 4px no de 400)
+   e em múltiplos de --ais-tk-w no ticket, pra acompanhar o tamanho dele.
+   Largura: a coluna, limitada pela altura que sobra entre as metades do
+   título (ticket = 1,425 x a largura).
+   O .ais-ticket-palco é o item do grid e leva a entrada (opacity e
+   translateX, --ais-of-ticket); o transform do ticket fica livre pra
+   inclinação pelo mouse (script.js). */
+.ais-ticket-palco {
+    grid-column: 7 / span 3;
+    grid-row: 1 / -1;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    /* container: o 100cqi do --ais-tk-w é a largura da coluna */
+    container-type: inline-size;
+    opacity: var(--ais-of-ticket, 1);
+    transform: translateX(calc((1 - var(--ais-of-ticket, 1)) * 64px));
+}
+.ais-ticket {
+    /* a largura numa variável, pro picote (mask, abaixo) medir por ela */
+    --ais-tk-w: min(100cqi, max(240px, calc((100svh - 96px - (100vw - 32px) * 0.103) / 1.425)));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: var(--ais-tk-w);
+    box-sizing: border-box;
+    /* só em cima e embaixo: o respiro dos lados fica nos filhos, pro cqi
+       deles ser da largura inteira */
+    padding: calc(var(--ais-tk-w) * 0.16) 0;
+    container-type: inline-size;
+    overflow: hidden;
+    color: var(--bb);
+    text-decoration: none;
+    /* Degradê na diagonal, --pc400 nas pontas passando por --pc200 até o
+       brilho --pc100 no meio, em 200% (só metade aparece de cada vez). Sem
+       mouse ele anda sozinho (ais-onda, como o botão); com mouse
+       (.is-mouse) a posição vem do ponteiro (--ais-tk-x/y, -1 a 1,
+       script.js), junto com a inclinação: skew de até 3.75deg em cada
+       eixo, o ticket "vira" pro lado do ponteiro. */
+    background-image: linear-gradient(45deg,
+        var(--pc400), var(--pc200), var(--pc100), var(--pc200), var(--pc400));
+    background-size: 200% 200%;
+    animation: ais-onda 5s ease infinite;
+}
+.ais-ticket.is-mouse {
+    animation: none;
+    background-position:
+        calc((var(--ais-tk-x, 0) + 1) * 50%)
+        calc((var(--ais-tk-y, 0) + 1) * 50%);
+    transform: skew(calc(var(--ais-tk-y, 0) * -3.75deg), calc(var(--ais-tk-x, 0) * -3.75deg));
+    transition: transform 200ms ease-out, background-position 200ms ease-out;
+}
+.ais-ticket:hover {
+    text-decoration: none;
+    color: var(--bb);
+}
+@media (prefers-reduced-motion: reduce) {
+    .ais-ticket { animation: none; }
+}
+@keyframes ais-onda {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.ais-ticket-topo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4cqi;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--bb);
+    /* 16 no ticket de 400, como no oferta.pdf. Exceção pedida à regra sem
+       radius da página (o !important vence o reset do topo do arquivo). */
+    border-radius: 4cqi !important;
+}
+/* Fundo do quadrado: a flor girando (ais-ticket-flor.mp4, 800x800, o
+   recorte quadrado do centro do vídeo vertical, com uma camada --bb em
+   screen gravada no próprio vídeo, então o preto dele é o --bb do ticket).
+   Carrega e toca pelo script.js perto da tela; com reduced motion fica o
+   poster. O logo por cima. */
+.ais-ticket-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+/* Parallax com o mouse (.is-mouse): o vídeo anda pro lado contrário do
+   ponteiro (--ais-tk-x/y, os mesmos do skew), até 3cqi (12 no ticket de
+   400), e fica um plano atrás da moldura. A escala de 1,1 dá a sobra pra
+   borda dele nunca aparecer dentro do quadrado (18 de cada lado). */
+.ais-ticket.is-mouse .ais-ticket-video {
+    transform:
+        translate(calc(var(--ais-tk-x, 0) * -3cqi), calc(var(--ais-tk-y, 0) * -3cqi))
+        scale(1.1);
+    transition: transform 200ms ease-out;
+}
+/* Scrim por cima do vídeo (embaixo do logo): de baixo pra cima, de
+   --pc300-50 a --bb-25. */
+.ais-ticket-topo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to top, var(--pc300-50), var(--bb-25));
+    pointer-events: none;
+}
+/* Logotipo animado (ais-logotipo-animado.svg, cópia do
+   temp/ai-summit/logotipo-animado.svg em --bw, com o viewBox no recorte que
+   cobre o ciclo todo de 11,3s: o símbolo com as raízes grande encolhe e
+   vira o lockup). 83% porque o lockup inteiro ocupa 602 dos 874 do
+   recorte: fica com os 57% do logo anterior. O SVG respeita o reduced
+   motion sozinho (lockup parado). */
+.ais-ticket-logo {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 83%;
+    height: auto;
+}
+/* Código de barras: o .pre-cta-barras de /ed/pre-mba-fpa/ (barra 8, vão
+   8, barra 4, vão 4, num repeating-linear-gradient de período 24, 32 de
+   altura), em --bw-50, a 16 da esquerda e da base do quadrado e cortado
+   pela direita, como no oferta.pdf. */
+.ais-ticket-barras {
+    position: absolute;
+    z-index: 2;
+    left: 4cqi;
+    right: 0;
+    bottom: 4cqi;
+    height: 8cqi;
+    background-image: repeating-linear-gradient(90deg,
+        var(--bw-50) 0 2cqi,
+        transparent 2cqi 4cqi,
+        var(--bw-50) 4cqi 5cqi,
+        transparent 5cqi 6cqi);
+    pointer-events: none;
+}
+.ais-ticket-base {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4cqi;
+    height: 18.5cqi;
+    padding: 0 8cqi;
+    /* 32px num ticket de 400, como no layout */
+    font: 400 8cqi/1.25 var(--font-family);
+    text-transform: uppercase;
+}
+/* Seta: SVG do layout (75 x 75), na cor do texto; 30 no ticket de 400. */
+.ais-ticket-seta {
+    flex: none;
+    display: block;
+    width: 7.5cqi;
+    height: 7.5cqi;
+    fill: currentColor;
+    transition: translate 200ms ease-out;
+}
+.ais-ticket:hover .ais-ticket-seta { translate: 1cqi -1cqi; }
+/* Borda picotada: os dois SVGs do layout (400 x 64, a ponta de cima e a
+   de baixo, com os dentes de 16 e o canto côncavo de raio 32) como
+   máscara, na largura do ticket, e um retângulo cheio no meio, com 2px
+   de sobra em cada emenda. */
+.ais-ticket {
+    -webkit-mask:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 64'%3E%3Cpath d='M368 0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0H96v8H80V0H64v8H48V0H32c0 17.67-14.33 32-32 32v32h400V32c-17.67 0-32-14.33-32-32'/%3E%3C/svg%3E") top / 100% auto no-repeat,
+        linear-gradient(#000 0 0) center / 100% calc(100% - var(--ais-tk-w) * 0.32 + 4px) no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 64'%3E%3Cpath d='M32 64h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16c0-17.67 14.33-32 32-32V0H0v32c17.67 0 32 14.33 32 32'/%3E%3C/svg%3E") bottom / 100% auto no-repeat;
+            mask:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 64'%3E%3Cpath d='M368 0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0h-16v8h-16V0H96v8H80V0H64v8H48V0H32c0 17.67-14.33 32-32 32v32h400V32c-17.67 0-32-14.33-32-32'/%3E%3C/svg%3E") top / 100% auto no-repeat,
+        linear-gradient(#000 0 0) center / 100% calc(100% - var(--ais-tk-w) * 0.32 + 4px) no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 64'%3E%3Cpath d='M32 64h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16v-8h16v8h16c0-17.67 14.33-32 32-32V0H0v32c17.67 0 32 14.33 32 32'/%3E%3C/svg%3E") bottom / 100% auto no-repeat;
+}
+
+@media (max-width: 1439px) {
+    .ais-oferta-inner { --cols: 8; }
+    .ais-ticket-palco { grid-column: 6 / span 3; }
+}
+/* Até 864: infos em cima e ticket embaixo, centralizados no painel, com
+   respiro pras metades do título em cima e embaixo; sem a linha do meio. */
+@media (max-width: 864px) {
+    .ais-oferta-inner {
+        --cols: 6;
+        --gap: 24px;
+        grid-template-rows: none;
+        align-content: center;
+        row-gap: 32px;
+    }
+    .ais-oferta-cartao::after { display: none; }
+    .ais-oferta-info,
+    .ais-ticket-palco {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+    .ais-oferta-info {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .ais-oferta-inclui {
+        align-self: stretch;
+        row-gap: 16px;
+        padding: 0;
+    }
+    .ais-oferta-valores {
+        align-self: stretch;
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 16px;
+        padding: 0;
+    }
+    /* preço na metade da esquerda, a parcela ao lado e as vagas embaixo */
+    .ais-oferta-preco { grid-column: 1; }
+    .ais-oferta-parcela { grid-column: 2; }
+    .ais-oferta-vagas { grid-column: 1 / -1; }
+    .ais-oferta-dado-tit { font: var(--h6); }
+    .ais-oferta-preco { --ais-moeda: 1.125rem; }
+    .ais-ticket { --ais-tk-w: min(100cqi, 280px, max(200px, calc((100svh - 420px) / 1.425))); }
+}
+@media (max-width: 576px) {
+    .ais-oferta-inner { --cols: 4; --gap: 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PRÓXIMA SEÇÃO (vazia por enquanto, só a transição)
+   Como o workflow da clipo.one, em todas as larguras (.is-troca, ligado
+   pelo script.js; com reduced motion, seção normal): ela sobe por cima
+   dos últimos 100svh da oferta (margem negativa) com o cartão preso; o
+   script.js encolhe o quadrado da oferta pro canto de cima à esquerda e
+   faz este crescer do canto de baixo à direita (os dois se encontram pela
+   quina) até a tela toda menos 16 de cada lado.
+   Como a oferta, o cartão tem no mínimo a tela e cresce com o conteúdo:
+   o que passar da tela (--ais-px-extra) rola normal depois da troca, e a
+   margem negativa soma a sobra da oferta (--ais-of-extra), que adianta o
+   começo da troca (os dois vêm do script.js).
+   Depois da troca, mais uma tela presa (mapa01.pdf -> mapa02.pdf): o mapa,
+   que cresceu como um quadrado no meio da tela, anda e vira o retângulo
+   no lugar dele (colunas 7 a 9), com 4 linhas --bw-15 de ponta a ponta do
+   painel acompanhando as bordas, e as infos entram da esquerda.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-proxima {
+    position: relative;
+    background: var(--bb);
+}
+.ais-proxima-cartao {
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 16px;
+    box-sizing: border-box;
+    transform-origin: 16px 16px;
+    /* as linhas do mapa vão de ponta a ponta: cortadas no painel (o
+       clip-path tira a moldura de 16; o overflow evita a rolagem lateral) */
+    overflow: clip;
+    clip-path: inset(16px);
+}
+.ais-proxima-cartao::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    background: var(--pc300);
+}
+.ais-proxima.is-troca {
+    z-index: 3;
+    /* 100 da troca + 100 do mapa e das infos + 100 da tela em que ela
+       fica presa, + as sobras (ver o topo do bloco) */
+    height: calc(300svh + var(--ais-px-extra, 0px));
+    margin-top: calc(-200svh - var(--ais-of-extra, 0px));
+    background: transparent;
+    /* enquanto o quadrado é pequeno, o botão da oferta continua clicável */
+    pointer-events: none;
+}
+.ais-proxima.is-troca .ais-proxima-cartao {
+    position: sticky;
+    top: 0;
+    will-change: transform;
+}
+.ais-proxima.is-troca.is-aberta .ais-proxima-cartao { pointer-events: auto; }
+
+/* Conteúdo (por enquanto data e local, que vieram da oferta): o mesmo
+   container Wide do DS dentro do painel que a oferta usa, e os mesmos
+   blocos (.ais-oferta-dado) nas colunas 1-2 e 3-4, em --bw sobre o
+   --pc300. */
+.ais-proxima-inner {
+    --cols: 10;
+    --gap: 32px;
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    width: 100%;
+    max-width: 1440px;
+    padding: 32px 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: var(--gap);
+    align-items: center;
+    align-content: center;
+}
+.ais-proxima-info {
+    grid-column: 1 / span 4;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--gap);
+    row-gap: 32px;
+    /* entra da esquerda pra direita depois do mapa (--ais-px-info, 0 a 1,
+       script.js), como as infos da oferta */
+    opacity: var(--ais-px-info, 1);
+    transform: translateX(calc((1 - var(--ais-px-info, 1)) * -64px));
+}
+/* Título: o mesmo do .ais-agenda-h2 (900 pedido, renderiza 800, caixa
+   alta, 40px a partir de 1440 e 24px até 576), em --bw, nas duas colunas. */
+.ais-proxima-titulo {
+    grid-column: 1 / -1;
+    margin: 0;
+    font: 900 clamp(1.5rem, 0.8333rem + 1.8519vw, 2.5rem)/1.25 var(--font-family);
+    text-transform: uppercase;
+    color: var(--bw);
+}
+.ais-proxima .ais-oferta-dado-tit,
+.ais-proxima .ais-oferta-dado-sub { color: var(--bw); }
+/* Mapa do local onde fica o ticket na oferta: mesmas colunas (7 a 9; 6 a 8
+   no grid de 8), mesma largura (a da coluna, limitada pela altura da tela)
+   e mesma proporção (400 x 528). Sem radius (regra da página). A moldura
+   dá o tamanho; o mapa enche ela.
+
+   É um mapa vetorial (MapLibre GL, self-hosted em dependencias/local/, com
+   os tiles da OpenFreeMap, que não pedem chave), com cada camada pintada
+   com os tokens da página pelo script.js: terra --bw, ruas em --ln e --pc,
+   água --pc200, parques --pc100, rótulos --bb. O embed do Google não deixa
+   estilizar sem a API com chave, e por fora (filtros) o contraste não
+   chegava. Pino em círculo --pc500 cintilando e o botão "Abrir no
+   Google Maps" por cima, pra rota. Sem WebGL ou sem rede, o script.js põe
+   o embed do Google no lugar (.ais-mapa-frame). */
+.ais-mapa {
+    grid-column: 7 / span 3;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    container-type: inline-size;
+}
+/* Quadrado -> retângulo (script.js, em px, no .ais-mapa): a moldura fica
+   no lugar e tamanho finais, deslocada (--ais-mp-tx/ty) e recortada
+   (--ais-mp-cx/cy) até o quadrado do lado menor no meio da tela; o
+   recorte não deforma o mapa. As linhas (::before as verticais, ::after
+   as horizontais, centradas nas bordas) seguem a parte visível dela
+   (--ais-mp-l/t/w/h); só com o script (.is-linhas). */
+.ais-mapa-moldura {
+    z-index: 1;
+    transform: translate(var(--ais-mp-tx, 0px), var(--ais-mp-ty, 0px));
+    clip-path: inset(var(--ais-mp-cy, 0px) var(--ais-mp-cx, 0px));
+}
+.ais-proxima.is-linhas .ais-mapa::before,
+.ais-proxima.is-linhas .ais-mapa::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+.ais-proxima.is-linhas .ais-mapa::before {
+    top: -300vh;
+    bottom: -300vh;
+    left: calc(var(--ais-mp-l, 0px) - 1px);
+    width: calc(var(--ais-mp-w, 0px) + 2px);
+    background:
+        linear-gradient(var(--bw-15), var(--bw-15)) left / 2px 100% no-repeat,
+        linear-gradient(var(--bw-15), var(--bw-15)) right / 2px 100% no-repeat;
+}
+.ais-proxima.is-linhas .ais-mapa::after {
+    left: -300vw;
+    right: -300vw;
+    top: calc(var(--ais-mp-t, 0px) - 1px);
+    height: calc(var(--ais-mp-h, 0px) + 2px);
+    background:
+        linear-gradient(var(--bw-15), var(--bw-15)) top / 100% 2px no-repeat,
+        linear-gradient(var(--bw-15), var(--bw-15)) bottom / 100% 2px no-repeat;
+}
+.ais-mapa-moldura {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    width: min(100cqi, max(240px, calc((100svh - 96px - (100vw - 32px) * 0.103) / 1.32)));
+    aspect-ratio: 400 / 528;
+    background: var(--ln100);
+}
+.ais-mapa-gl,
+.ais-mapa-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+/* Pino: símbolo do evento em --pc500 com contorno --bw em volta (o traço fica
+   por baixo do preenchimento, então só a metade de fora aparece, ~4px), com
+   a haste apontando o local (âncora na base). Cintila com uma cópia do
+   símbolo por cima do contorno, que cresce e some em laço (scale + opacity).
+   O .ais-mapa-marca é o elemento do marcador (o MapLibre põe o transform de
+   posição nele). */
+.ais-mapa-marca {
+    width: 72px;
+    height: 47px;
+}
+.ais-mapa-gl .ais-mapa-pino {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: var(--pc500);
+}
+.ais-pino-forma {
+    stroke: var(--bw);
+    stroke-width: 20px;
+    stroke-linejoin: miter;
+    paint-order: stroke;
+}
+.ais-pino-cintila {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ais-pino-cintila 1.6s ease-out infinite;
+}
+@keyframes ais-pino-cintila {
+    0%   { transform: scale(1);   opacity: 0.75; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ais-pino-cintila { animation: none; opacity: 0; }
+}
+/* "Abrir no Google Maps": botão --bb sobre o mapa claro, no canto de cima. */
+a.ais-mapa-google {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    padding: 8px 12px;
+    font: var(--label-s);
+    color: var(--bw);
+    background: var(--bb);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+a.ais-mapa-google:hover {
+    color: var(--bw);
+    background: var(--pc500);
+    text-decoration: none;
+}
+/* Controles do MapLibre (zoom e atribuição) na cara da página: sem radius
+   e sem sombra, em --bb sobre o --bw. */
+.ais-mapa-gl .maplibregl-ctrl-group {
+    background: var(--bw);
+    box-shadow: inset 0 0 0 2px var(--bb-10);
+}
+.ais-mapa-gl .maplibregl-ctrl-group button + button { border-top: 2px solid var(--bb-10); }
+.ais-mapa-gl .maplibregl-ctrl-attrib {
+    font: var(--p-xs);
+    background: var(--bw-75);
+}
+.ais-mapa-gl .maplibregl-ctrl-attrib a { color: var(--bb); }
+.ais-mapa-gl .maplibregl-cooperative-gesture-screen {
+    font: var(--p);
+    background: var(--bb-75);
+    color: var(--bw);
+}
+@media (max-width: 1439px) {
+    .ais-proxima-inner { --cols: 8; }
+    .ais-mapa { grid-column: 6 / span 3; }
+}
+@media (max-width: 864px) {
+    .ais-proxima-inner {
+        --cols: 6;
+        --gap: 24px;
+        row-gap: 32px;
+    }
+    .ais-proxima-info,
+    .ais-mapa { grid-column: 1 / -1; }
+    /* aqui o mapa deita (largura cheia, 4:3), cabendo embaixo das infos */
+    .ais-mapa-moldura {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        max-height: max(200px, calc(100svh - 280px));
+    }
+}
+@media (max-width: 576px) {
+    .ais-proxima-inner { --cols: 4; --gap: 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FILLERS DE IMAGEM
+   No lugar das fotos que ainda não chegaram (imagem do ticket; nos
+   avatares do cronograma, as iniciais): card com "Imagem" e a descrição
+   da foto, centralizados.
+   Escuro (--dn700, como os quadros do header) por padrão; --claro nas
+   seções de fundo claro.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-filler {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px;
+    text-align: center;
+    background: var(--dn700);
+    color: var(--bw-50);
+}
+.ais-filler--claro {
+    background: var(--ln300);
+    color: var(--bb-75);
+}
+.ais-filler-rotulo {
+    font: var(--label-s);
+    letter-spacing: 0.5em;
+}
+.ais-filler-desc {
+    max-width: 32ch;
+    font: var(--p);
+}
+/* ══════════════════════════════════════════════════════════════════════
+   ENTRADA DA PÁGINA
+   Os itens do header entram em sequência: os da esquerda vindo da
+   esquerda, o carrossel e o botão vindo da direita, o "Saber mais" subindo
+   por último e a luz de fundo acendendo junto. O vídeo entra pelo
+   script.js (as raízes crescem do fundo preto até o quadro do scroll).
+
+   Sem conflito com o efeito de scroll: a entrada anima a propriedade
+   `translate` (o scroll usa `transform`, e as duas se somam), e o fill é
+   `backwards`, então depois de terminar valem de novo a opacity e o filter
+   do scroll. O quadro final da keyframe é implícito: é o valor do próprio
+   elemento naquele momento.
+   Blur só acima de 864 (abaixo, blur animado é proibido): as keyframes
+   são redefinidas sem ele na media query.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+    .ais-logo,
+    .ais-titulo,
+    .ais-lede,
+    .ais-hero-data,
+    .ais-hero-local {
+        animation: ais-entra-esq 0.9s ease-out backwards;
+    }
+    .ais-hero-midia,
+    .ais-hero-acao {
+        animation: ais-entra-dir 0.9s ease-out backwards;
+    }
+    a.ais-saber-mais {
+        animation: ais-entra-sobe 0.9s ease-out backwards;
+    }
+    .canoa-bottom {
+        animation: ais-entra-luz 1.6s ease-out backwards;
+    }
+
+    .ais-logo          { animation-delay: 0.1s; }
+    .ais-titulo        { animation-delay: 0.25s; }
+    .ais-hero-midia    { animation-delay: 0.35s; }
+    .ais-lede          { animation-delay: 0.4s; }
+    .ais-hero-data     { animation-delay: 0.55s; }
+    .ais-hero-local    { animation-delay: 0.65s; }
+    .ais-hero-acao     { animation-delay: 0.75s; }
+    a.ais-saber-mais   { animation-delay: 1s; }
+}
+
+@keyframes ais-entra-esq  { from { opacity: 0; translate: -64px 0; filter: blur(8px); } }
+@keyframes ais-entra-dir  { from { opacity: 0; translate: 64px 0; filter: blur(8px); } }
+@keyframes ais-entra-sobe { from { opacity: 0; translate: 0 16px; } }
+@keyframes ais-entra-luz  { from { opacity: 0; } }
+
+@media (max-width: 864px) {
+    @keyframes ais-entra-esq { from { opacity: 0; translate: -64px 0; } }
+    @keyframes ais-entra-dir { from { opacity: 0; translate: 64px 0; } }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ANIMAÇÕES DOS TEMAS (VÍDEO)
+   Cada card tem o vídeo da animação (gravado quadro a quadro da versão com
+   câmera em temp/ai-summit/animacoes/*-zoom, que é a fonte pra editar):
+   688x388 no topo do card, dentro do padding dele, fundo --dn900 (o do quadro),
+   máscara de baixo pra cima e opacidade 0.75, aplicadas aqui por cima do
+   vídeo (o arquivo não tem máscara nem transparência).
+   Vídeo decodificado pelo hardware: sem layout, blur nem texto pra
+   calcular a cada quadro.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-video {
+    flex: none;
+    width: 100%;
+    aspect-ratio: 688 / 388;
+    overflow: hidden;
+    background: var(--dn900);
+    -webkit-mask-image: linear-gradient(to top, transparent, black);
+    mask-image: linear-gradient(to top, transparent, black);
+    opacity: 0.75;
+}
+.ais-video video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FAQ
+   Componente da /ed/bf/ (que veio da home e da /ed/formacoes/): eyebrow +
+   título no grid (span 5; span 4 no grid de 8; 1 / -1 no 6 e no 4) e a
+   lista FORA do .faq-inner, na largura da tela, com o conteúdo de cada
+   linha alinhado ao container de 1440 pelos anéis laterais de 2px
+   (--bw-10). Já com as duas correções do porte: .faq-a-wrap com min-width
+   0 (o 100% da home quebra o cap de 1440) e abertura em ease-out. Eyebrow
+   e título no estilo dos da página (como os do cronograma). 256px
+   embaixo: a barra fixa do CTA cobre o fim da página.
+   ══════════════════════════════════════════════════════════════════════ */
+.sec-faq {
+    position: relative;
+    padding: 128px 0 256px;
+    background: var(--bb);
+}
+.faq-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px 64px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 64px;
+}
+.faq-header {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ais-faq-eyebrow {
+    font: var(--label);
+    letter-spacing: 0.5em;
+    color: var(--pc200);
+}
+/* Como o título do cronograma (900 pedido, renderiza 800, caixa alta). */
+.ais-faq-titulo {
+    margin: 0;
+    font: 900 clamp(1.5rem, 0.8333rem + 1.8519vw, 2.5rem)/1.25 var(--font-family);
+    text-transform: uppercase;
+    color: var(--bw);
+}
+.faq-grid {
+    overflow: hidden;
+    box-shadow: inset 0 2px 0 0 var(--bw-10), inset 0 -2px 0 0 var(--bw-10);
+}
+.faq-row { padding: 0 16px; cursor: pointer; transition: background-color 0.2s ease; }
+.faq-row:hover { background-color: var(--bw-15); }
+.faq-row + .faq-row { box-shadow: inset 0 2px 0 0 var(--bw-10); }
+.faq-q {
+    list-style: none;
+    cursor: pointer;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q-text { font: var(--p); color: var(--bw); }
+.faq-q-icon { color: var(--bw-50); flex-shrink: 0; font-weight: 200; }
+/* Em duas etapas: abrindo, o grid expande e só depois a resposta esmaece
+   pra dentro (delay = a expansão); fechando, ao contrário, a resposta
+   some e depois o grid fecha. A transição que vale é a do estado de
+   destino, por isso os delays trocam de lado entre a base e o .is-open. */
+.faq-a-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    grid-template-columns: minmax(0, 1fr);
+    transition: grid-template-rows 0.45s ease-in-out 0.2s;
+    will-change: grid-template-rows;
+}
+.faq-a-grid.is-open {
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.45s ease-in-out;
+}
+.faq-a-wrap {
+    min-height: 0;
+    /* min-width 0 e NÃO 100%: o 100% passava do cap de 1440 (bug
+       conhecido do porte deste FAQ). */
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    max-width: 1440px;
+    margin: 0 auto;
+    /* sem padding embaixo: a caixa não fica menor que ele, e o grid ficava
+       parado nos 28 no começo da abertura e no fim do fechamento */
+    padding: 0 16px;
+    box-sizing: border-box;
+    box-shadow: inset 2px 0 0 0 var(--bw-10), inset -2px 0 0 0 var(--bw-10);
+}
+.faq-a {
+    font: var(--p);
+    color: var(--bw-75);
+    margin: 0;
+    padding-bottom: 28px;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+.faq-a-grid.is-open .faq-a {
+    opacity: 1;
+    transition: opacity 0.4s ease-out 0.45s;
+}
+
+@media (max-width: 1439px) {
+    .faq-inner { grid-template-columns: repeat(8, 1fr); }
+    .faq-header { grid-column: span 4; }
+}
+@media (max-width: 864px) {
+    .faq-inner { grid-template-columns: repeat(6, 1fr); column-gap: 24px; row-gap: 48px; padding-bottom: 48px; }
+    .faq-header { grid-column: 1 / -1; }
+    .ais-faq-eyebrow { font: var(--label-s); }
+}
+@media (max-width: 576px) {
+    .sec-faq { padding: 96px 0 256px; }
+    .faq-inner { grid-template-columns: repeat(4, 1fr); column-gap: 16px; row-gap: 32px; padding-bottom: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .faq-a-grid,
+    .faq-a-grid.is-open,
+    .faq-a,
+    .faq-a-grid.is-open .faq-a { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BOTÃO FLUTUANTE DE WHATSAPP
+   O .wa-float da /ed/aichampion/ (base .btn[data-size="m"][data-icon] do
+   root, cor success --sc500 -> --sc700, ícone em --sc900 e o badge com o
+   sino balançando), fixo colado no canto de CIMA à direita (lá é embaixo;
+   aqui embaixo fica a barra de vagas), com o badge no canto de baixo à
+   esquerda (o de cima à direita está colado na borda da tela). Sem radius,
+   regra da campanha: botão e badge quadrados.
+   ══════════════════════════════════════════════════════════════════════ */
+.wa-float {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 600;
+    background: linear-gradient(135deg, var(--sc500), var(--sc700));
+    color: var(--sc900);   /* fill do SVG (currentColor): verde escuro sobre o gradiente success */
+    overflow: visible;     /* o badge vaza pra fora do botão */
+}
+.wa-float svg { display: block; width: 32px; height: 32px; }
+/* sem o sublinhado e a troca de cor do a:not(.btn):hover do root.css */
+.wa-float:hover { color: var(--sc900); text-decoration: none; }
+.wa-float .menu-perfil-notif {
+    position: absolute;
+    bottom: -6px;
+    left: -6px;
+    width: 24px;
+    height: 24px;
+    background: var(--er500-50);
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+.wa-float .menu-perfil-notif .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--bw);
+    transform-origin: top center;
+    animation: ais-sino-balanca 2.5s ease infinite;
+}
+@keyframes ais-sino-balanca {
+    0%   { transform: rotate(0); }
+    6%   { transform: rotate(15deg); }
+    12%  { transform: rotate(-11.25deg); }
+    18%  { transform: rotate(7.5deg); }
+    24%  { transform: rotate(-3.75deg); }
+    30%  { transform: rotate(0); }
+    100% { transform: rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .wa-float .menu-perfil-notif .material-symbols-outlined { animation: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CTA FIXA NO RODAPÉ
+   Cartão flutuante --bw, de até 836px, centralizado a 8px do fundo (e das
+   laterais, quando a tela é mais estreita): "Vagas" (texto normal), a
+   barra de progresso (--bb-10 com o preenchimento --pc300) e a %
+   ("XX%"), e o botão (.ais-btn liso em --pc400, sem o degradê em onda).
+   É um componente flutuante, não um bloco de layout: infos e botão lado
+   a lado em flex, sem o grid da página.
+   A estrela do botão do header gira atrás do canto de cima à direita do
+   botão (::after z -1 do botão: fica na pilha do cartão, que é fixed +
+   z-index, por cima do fundo dele e atrás do botão).
+   A % vem do data-preenchido (script.js põe --ais-vagas e o número).
+   Aparece (.is-visivel, sobe de baixo) fora do header e da oferta, que já
+   têm o botão e o ticket.
+   ══════════════════════════════════════════════════════════════════════ */
+.ais-barra-cta {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    z-index: 50;
+    max-width: 836px;
+    margin: 0 auto;
+    background: var(--bw);
+    transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom)));
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s linear 0.3s;
+}
+.ais-barra-cta.is-visivel {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.3s ease, visibility 0s;
+}
+.ais-barra-btn::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    width: 70px;
+    height: 70px;
+    translate: 50% -50%;
+    /* a cor do botão: --pc400, e --pc200 no hover, no mesmo tempo */
+    background-color: var(--pc400);
+    transition: background-color 0.3s ease;
+    -webkit-mask: var(--ais-estrela) center / contain no-repeat;
+            mask: var(--ais-estrela) center / contain no-repeat;
+    pointer-events: none;
+    /* No hover gira mais rápido, como a estrela do botão do header: o giro
+       extra (3s) fica pausado e só roda no hover, então ela acelera e
+       desacelera sem pular de posição. */
+    animation:
+        ais-estrela-gira 12s linear infinite,
+        ais-estrela-acelera 3s linear infinite paused;
+}
+.ais-barra-btn:hover::after {
+    background-color: var(--pc200);
+    animation-play-state: running, running;
+}
+.ais-barra-inner {
+    padding: 4px 4px 4px 16px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.ais-barra-vagas {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+/* "Vagas" em texto normal, igual à % (sem caixa alta nem espaçamento). */
+.ais-barra-rotulo {
+    font: var(--p);
+    color: var(--bb);
+}
+.ais-barra-trilho {
+    flex: 1;
+    height: 8px;
+    overflow: hidden;
+    background: var(--bb-10);
+}
+.ais-barra-fill {
+    display: block;
+    width: calc(var(--ais-vagas, 0) * 1%);
+    height: 100%;
+    background: var(--pc300);
+}
+.ais-barra-pct {
+    font: var(--p);
+    color: var(--bb);
+    white-space: nowrap;
+}
+/* Liso em --pc400 (sem o degradê em onda do .ais-btn); no hover, --pc200
+   (a camada do .ais-btn, na cor daqui). */
+.ais-barra-btn {
+    flex: none;
+    /* o .ais-btn do header vira 100% de largura até 576 */
+    width: auto;
+    background: var(--pc400);
+    animation: none;
+}
+.ais-barra-btn:hover { box-shadow: inset 0 0 0 100vmax var(--pc200); }
+@media (prefers-reduced-motion: reduce) {
+    .ais-barra-cta,
+    .ais-barra-cta.is-visivel { transition: none; }
+    .ais-barra-btn::after { animation: none; }
+}
+/* Até 864: "Vagas", a barra e a % continuam na horizontal, mais juntos;
+   o botão à direita. */
+@media (max-width: 864px) {
+    .ais-barra-inner { gap: 16px; padding: 4px 4px 4px 16px; }
+    .ais-barra-vagas { gap: 8px; }
+}
+/* Até 576: texto e botão menores, e o respiro de 4 em volta. */
+@media (max-width: 576px) {
+    .ais-barra-inner  { padding: 4px; }
+    .ais-barra-rotulo,
+    .ais-barra-pct    { font: var(--p-s); }
+    .ais-barra-btn   { padding: 12px 16px; }
+}

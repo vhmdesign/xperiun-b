@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Summit, Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Popup da /ed/aisummit/, form 520 na ActiveCampaign. Os valores de u, f,
+     or e dos field[N] escondidos são os do embed oficial do form 520
+     (karpinskileonardo.activehosted.com/f/embed.php?id=520). O redirect
+     depois do envio, se houver, é configurado na própria AC (o form.js
+     executa o que o proc.php devolver).
+     Acento --pc300 (100, 100, 255) e o logo do AI Summit no cabeçalho
+     (caminho absoluto: o form-include.js só reescreve os relativos). -->
+<div class="popup-form" id="popup-form-aisummit" style="--popup-accent-rgb: 100, 100, 255;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <img src="/ed/aisummit/dependencias/marca/aisummit-logo.webp" alt="Xperiun AI Summit" width="244" height="84" style="height: 40px; width: auto; display: block;">
+            </div>
+            <p class="popup-form-label">Preencha seus dados pra garantir sua vaga:</p>
+            <form
+                class="popup-form-form _form _form_520 _inline-form _dark"
+                id="_form_520_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <input type="hidden" name="u" value="6AD9CB18B3FE6">
+                <input type="hidden" name="f" value="520">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <input type="hidden" name="or" value="791bde6b-8d45-4303-b541-845a59973791">
+
+                <input type="hidden" name="field[2]" value="">
+                <input type="hidden" name="field[3]" value="">
+                <input type="hidden" name="field[4]" value="">
+                <input type="hidden" name="field[5]" value="">
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="seu@email.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_520_submit">Garantir vaga</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Tudo certo! Recebemos seus dados.</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>
