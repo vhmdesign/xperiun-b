@@ -1135,11 +1135,12 @@ main {
     top: 0;
 }
 /* O painel --pc400, a 16 das bordas da tela; vai a --bb até o fim do
-   scroll da seção (--ais-pf-escuro, script.js). */
+   scroll da seção (--ais-pf-escuro, script.js). A margem de 16 some do 1º
+   ao último palestrante (--ais-pf-borda, 0 a 1, script.js). */
 .ais-profs-palco::before {
     content: "";
     position: absolute;
-    inset: 16px;
+    inset: calc((1 - var(--ais-pf-borda, 0)) * 16px);
     background: color-mix(in srgb, var(--bb) calc(var(--ais-pf-escuro, 0) * 100%), var(--pc400));
 }
 /* Container Wide do DS por cima do painel; a 2ª linha começa 48 acima do
@@ -1445,9 +1446,8 @@ main {
     height: 8px;
     background: color-mix(in srgb, var(--pc300) calc(var(--ais-ag-ponto, 0) * 100%), var(--bw-25));
 }
-/* Faixa (a coluna das palestras): as verticais da grade (borda esquerda
-   e direita, passando da seção pra cima e pra baixo; a .ais-agenda corta)
-   e a horizontal de baixo da última palestra. */
+/* Faixa (a coluna das palestras) e a horizontal de baixo da última
+   palestra. */
 .ais-agenda-faixa {
     grid-column: 4 / span 7;
     position: relative;
@@ -1459,16 +1459,24 @@ main {
     display: flex;
     flex-direction: column;
 }
-.ais-agenda-faixa::before {
+/* As verticais da grade (borda esquerda e direita da faixa, nas mesmas
+   colunas dela): começam no topo da seção, de transparente até --bw-10
+   em --ais-ag-v (o padding de cima, onde fica a 1ª linha horizontal), e
+   passam do pé dela (a .ais-agenda corta). */
+.ais-agenda-inner::before {
+    --ais-ag-v: 128px;
     content: "";
     position: absolute;
-    top: -100vh;
+    grid-column: 4 / -1;
+    top: calc(var(--ais-ag-v) * -1);
     bottom: -100vh;
     left: -2px;
     right: -2px;
     background:
         linear-gradient(var(--bw-10), var(--bw-10)) left / 2px 100% no-repeat,
         linear-gradient(var(--bw-10), var(--bw-10)) right / 2px 100% no-repeat;
+    -webkit-mask-image: linear-gradient(transparent, #000 var(--ais-ag-v));
+            mask-image: linear-gradient(transparent, #000 var(--ais-ag-v));
     pointer-events: none;
 }
 .ais-agenda-faixa::after {
@@ -1600,7 +1608,9 @@ main {
     .ais-agenda-arte-fixa { background-size: 960px auto, auto, auto; }
     .ais-agenda-inner { --cols: 6; --gap: 24px; row-gap: 48px; }
     .ais-agenda-lead,
-    .ais-agenda-faixa { grid-column: 1 / -1; }
+    .ais-agenda-faixa,
+    .ais-agenda-inner::before { grid-column: 1 / -1; }
+    .ais-agenda-inner::before { --ais-ag-v: 96px; }
     .ais-agenda-lead  { position: relative; top: auto; padding-top: 0; gap: 16px; }
     .ais-agenda-card  { padding: 144px 32px 96px; }
     .ais-agenda-num   { left: 16px; top: 0; font-size: 7.5rem; }
@@ -1645,6 +1655,9 @@ main {
     position: static;
 }
 .ais-agenda.is-seq .ais-agenda-faixa { grid-row: 2; }
+/* Sem padding na seção: as verticais começam no topo do palco e chegam a
+   --bw-10 em 128. */
+.ais-agenda.is-seq .ais-agenda-inner::before { top: 0; }
 /* A faixa: linha em cima e embaixo, de ponta a ponta da tela. */
 .ais-agenda.is-seq .ais-agenda-faixa::after {
     top: -2px;

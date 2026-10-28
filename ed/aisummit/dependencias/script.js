@@ -655,7 +655,7 @@ function ouvirMq(mq, fn) {
     function suave(t) { t = lim(t); return t * t * (3 - 2 * t); }
     function fase(p, a, b) { return suave((p - a) / (b - a)); }
     function limpar() {
-        VARS.concat('--ais-pf-fundo', '--ais-pf-escuro').forEach(function (n) { sec.style.removeProperty(n); });
+        VARS.concat('--ais-pf-fundo', '--ais-pf-escuro', '--ais-pf-borda').forEach(function (n) { sec.style.removeProperty(n); });
         quadros.concat(nomes).forEach(function (el) {
             el.style.removeProperty('--ais-pf-pos');
             el.style.removeProperty('--ais-pf-o');
@@ -678,6 +678,10 @@ function ouvirMq(mq, fn) {
         sec.style.setProperty('--ais-pf-fundo', lim(p / 0.3).toFixed(4));
         // painel: --pc400 a --bb, linear, de presa até o fim do scroll dela
         sec.style.setProperty('--ais-pf-escuro', lim(p / (sec.offsetHeight / vh - 1)).toFixed(4));
+        // margem do painel: 16 a 0, linear, do 1º palestrante subindo até o
+        // último terminar de chegar
+        var fimTrocas = TROCA + (quadros.length - 2) * PASSO + 0.9;
+        sec.style.setProperty('--ais-pf-borda', lim((p - SOBE[0]) / (fimTrocas - SOBE[0])).toFixed(4));
         VARS.forEach(function (n, i) {
             sec.style.setProperty(n, fase(p, FASES[i][0], FASES[i][1]).toFixed(4));
         });
