@@ -1114,8 +1114,9 @@ main {
     position: relative;
     z-index: 1;
     /* Transparente enquanto sobe; depois de presa no topo da tela vai a
-       --bw (--ais-pf-fundo, script.js). */
-    background: color-mix(in srgb, var(--bw) calc(var(--ais-pf-fundo, 1) * 100%), transparent);
+       --bw (--ais-pf-fundo, script.js) e, do 1º ao último palestrante, de
+       --bw a --bb (--ais-pf-bb, script.js). */
+    background: color-mix(in srgb, color-mix(in srgb, var(--bb) calc(var(--ais-pf-bb, 0) * 100%), var(--bw)) calc(var(--ais-pf-fundo, 1) * 100%), transparent);
     color: var(--bw);
 }
 .ais-profs.is-sequencia {
@@ -1135,12 +1136,11 @@ main {
     top: 0;
 }
 /* O painel --pc400, a 16 das bordas da tela; vai a --bb até o fim do
-   scroll da seção (--ais-pf-escuro, script.js). A margem de 16 some do 1º
-   ao último palestrante (--ais-pf-borda, 0 a 1, script.js). */
+   scroll da seção (--ais-pf-escuro, script.js). */
 .ais-profs-palco::before {
     content: "";
     position: absolute;
-    inset: calc((1 - var(--ais-pf-borda, 0)) * 16px);
+    inset: 16px;
     background: color-mix(in srgb, var(--bb) calc(var(--ais-pf-escuro, 0) * 100%), var(--pc400));
 }
 /* Container Wide do DS por cima do painel; a 2ª linha começa 48 acima do
