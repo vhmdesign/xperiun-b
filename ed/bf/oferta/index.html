@@ -12,12 +12,66 @@
     <meta name="xperiun-build" content="2026-11-03">
 
     <!-- ─── Título e SEO ─────────────────────────────────────── -->
-    <!-- noindex: é a página da compra, com o preço da Black Friday, e quem
-         deve aparecer na busca é a /ed/bf/. Antes do dia 6 ela também não
-         pode vazar o preço que o Grupo VIP recebe primeiro. -->
-    <title>Oferta, Black Friday, Xperiun</title>
-    <meta name="description" content="Black Friday Xperiun: o Xperiun Completo com 75% OFF, 12x 47 no cartão ou R$ 497 à vista, e ainda um ano grátis.">
-    <meta name="robots" content="noindex, nofollow">
+    <!-- Indexável, e com dois cuidados:
+
+           1. SEM O PREÇO no título, na descrição, no preview e nos dados
+              estruturados. É o que o Google mostra no resultado, e o "12x
+              47" e o "R$ 497" são as condições que o Grupo VIP recebe
+              primeiro. Fica o "75% OFF", que a /ed/bf/ já torna público.
+           2. UMA BUSCA DIFERENTE da /ed/bf/: lá é "black friday xperiun";
+              aqui é a oferta e o Xperiun Completo. As duas não disputam o
+              mesmo resultado, e a trilha de navegação (JSON-LD abaixo) diz
+              ao Google que esta página vive DENTRO da /ed/bf/. -->
+    <title>Oferta Black Friday Xperiun: Xperiun Completo com 75% OFF</title>
+    <meta name="description" content="Oferta Black Friday Xperiun: o Xperiun Completo com 75% OFF e um ano grátis, com todas as Formações de Dados, IA e Power BI. Vagas limitadas.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://xperiun.com/ed/bf/oferta/">
+
+    <!-- ─── Preview de compartilhamento (WhatsApp, LinkedIn) ───── -->
+    <!-- bf-og.jpg é a mesma imagem da /ed/bf/ (o header, sem preço),
+         copiada pra esta pasta. -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Xperiun">
+    <meta property="og:url" content="https://xperiun.com/ed/bf/oferta/">
+    <meta property="og:title" content="Oferta Black Friday Xperiun | Xperiun Completo com 75% OFF">
+    <meta property="og:description" content="O maior desconto da história da Xperiun: o Xperiun Completo com 75% OFF e um ano grátis. Vagas limitadas.">
+    <meta property="og:image" content="https://xperiun.com/ed/bf/oferta/dependencias/bf-og.jpg?v=681d0172">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Black Friday Xperiun, até 75% OFF">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Dados estruturados: a página como parte do site da Xperiun e a
+         trilha Xperiun > Black Friday > Oferta, que o Google pode mostrar
+         no lugar da URL e que amarra esta página à /ed/bf/. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebPage",
+                "name": "Oferta Black Friday Xperiun",
+                "url": "https://xperiun.com/ed/bf/oferta/",
+                "inLanguage": "pt-BR",
+                "description": "Oferta Black Friday Xperiun: o Xperiun Completo com 75% OFF e um ano grátis, com todas as Formações de Dados, IA e Power BI.",
+                "primaryImageOfPage": "https://xperiun.com/ed/bf/oferta/dependencias/bf-og.jpg?v=681d0172",
+                "isPartOf": { "@type": "WebSite", "name": "Xperiun", "url": "https://xperiun.com/" },
+                "publisher": { "@type": "Organization", "name": "Xperiun", "url": "https://xperiun.com/", "logo": "https://xperiun.com/logo.png" },
+                "breadcrumb": { "@id": "https://xperiun.com/ed/bf/oferta/#trilha" }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://xperiun.com/ed/bf/oferta/#trilha",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Xperiun", "item": "https://xperiun.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Black Friday", "item": "https://xperiun.com/ed/bf/" },
+                    { "@type": "ListItem", "position": 3, "name": "Oferta", "item": "https://xperiun.com/ed/bf/oferta/" }
+                ]
+            }
+        ]
+    }
+    </script>
 
     <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
     <link rel="icon" type="image/svg+xml" href="/ed/bf/oferta/dependencias/marca-simbolo.svg">
