@@ -12,8 +12,13 @@
     <meta name="xperiun-build" content="2026-10-16">
 
     <!-- ─── Título e SEO ─────────────────────────────────────── -->
-    <title>AI Summit, Xperiun</title>
-    <meta name="description" content="Xperiun AI Summit, presencial em Florianópolis: um dia de prática e cases reais para dominar IA, Agentes, Power BI e Fabric e virar referência no mercado.">
+    <!-- Título com a busca de marca ("xperiun ai summit") no começo, o ano e
+         a cidade, abaixo de 60 caracteres; descrição abaixo de 155, pra não
+         ser cortada no Google. -->
+    <title>Xperiun AI Summit 2027 | IA e Dados em Florianópolis</title>
+    <meta name="description" content="Xperiun AI Summit, 6 de março de 2027 em Florianópolis: um dia presencial de prática e cases reais em IA, Agentes, Power BI e Microsoft Fabric.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://xperiun.com/ed/aisummit/">
 
     <!-- ─── Preview de compartilhamento (WhatsApp, LinkedIn) ───── -->
     <meta property="og:type" content="website">
@@ -24,8 +29,97 @@
     <meta property="og:image" content="https://xperiun.com/ed/aisummit/dependencias/marca/aisummit-og.jpg?v=05fb83e1">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Xperiun AI Summit, evento presencial em Florianópolis, 6 de março de 2027">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Dados estruturados (schema.org), com o mesmo texto da página:
+         - Event: data, horário (Florianópolis, UTC-3), local, preço,
+           capacidade e palestrantes, pro resultado de evento do Google;
+         - FAQPage: as perguntas e respostas do FAQ, iguais às da página
+           (se mudar uma, mudar a outra);
+         - WebPage: a página como parte do site da Xperiun. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Event",
+                "@id": "https://xperiun.com/ed/aisummit/#evento",
+                "name": "Xperiun AI Summit 2027",
+                "description": "Um dia presencial de prática e cases reais para dominar IA, Agentes, Power BI e Microsoft Fabric e virar referência no mercado de Dados.",
+                "url": "https://xperiun.com/ed/aisummit/",
+                "startDate": "2027-03-06T10:00:00-03:00",
+                "endDate": "2027-03-06T17:00:00-03:00",
+                "eventStatus": "https://schema.org/EventScheduled",
+                "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                "inLanguage": "pt-BR",
+                "maximumAttendeeCapacity": 300,
+                "image": [
+                    "https://xperiun.com/ed/aisummit/dependencias/marca/aisummit-og.jpg?v=05fb83e1",
+                    "https://xperiun.com/ed/aisummit/dependencias/presencial/ais-presencial-img05.webp?v=01fa4482"
+                ],
+                "location": {
+                    "@type": "Place",
+                    "name": "Sapiens Parque",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": "Avenida Luiz Boiteux Piazza, 1302, Cachoeira do Bom Jesus",
+                        "addressLocality": "Florianópolis",
+                        "addressRegion": "SC",
+                        "addressCountry": "BR"
+                    },
+                    "geo": { "@type": "GeoCoordinates", "latitude": -27.4306658, "longitude": -48.4405416 }
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "name": "Ingresso Xperiun AI Summit",
+                    "price": "497.00",
+                    "priceCurrency": "BRL",
+                    "availability": "https://schema.org/InStock",
+                    "url": "https://xperiun.com/ed/aisummit/"
+                },
+                "organizer": { "@id": "https://xperiun.com/#organizacao" },
+                "performer": [
+                    { "@type": "Person", "name": "Leo Karpinski", "description": "CEO e fundador da Xperiun, autor da Imersão, com +35 mil alunos no ecossistema." },
+                    { "@type": "Person", "name": "Sayuri Valente", "description": "Especialista em Análise de Dados e Inteligência de Negócios." },
+                    { "@type": "Person", "name": "Alison Pezzott", "description": "Especialista em Engenharia de Dados e Soluções em Nuvem." },
+                    { "@type": "Person", "name": "Iago Braz", "description": "Especialista em IA Aplicada a Analytics e Estratégia de Marca Pessoal." }
+                ]
+            },
+            {
+                "@type": "Organization",
+                "@id": "https://xperiun.com/#organizacao",
+                "name": "Xperiun",
+                "url": "https://xperiun.com/",
+                "logo": "https://xperiun.com/logo.png"
+            },
+            {
+                "@type": "WebPage",
+                "@id": "https://xperiun.com/ed/aisummit/",
+                "url": "https://xperiun.com/ed/aisummit/",
+                "name": "Xperiun AI Summit 2027 | IA e Dados em Florianópolis",
+                "inLanguage": "pt-BR",
+                "primaryImageOfPage": "https://xperiun.com/ed/aisummit/dependencias/marca/aisummit-og.jpg?v=05fb83e1",
+                "about": { "@id": "https://xperiun.com/ed/aisummit/#evento" },
+                "isPartOf": { "@type": "WebSite", "name": "Xperiun", "url": "https://xperiun.com/" },
+                "publisher": { "@id": "https://xperiun.com/#organizacao" }
+            },
+            {
+                "@type": "FAQPage",
+                "@id": "https://xperiun.com/ed/aisummit/#faq",
+                "mainEntity": [
+                    { "@type": "Question", "name": "Onde e quando será o evento?", "acceptedAnswer": { "@type": "Answer", "text": "O evento será presencial na Avenida Luiz Boiteux Piazza, 1302, Cachoeira do Bom Jesus (Sapiens Parque), Florianópolis/SC, no sábado, 06 de março de 2027, das 10h às 17h, seguido de um Happy Hour de networking." } },
+                    { "@type": "Question", "name": "O almoço está incluso?", "acceptedAnswer": { "@type": "Answer", "text": "Não. Haverá uma pausa das 13h às 14h15 para o almoço, e enviaremos indicações de restaurantes próximos ao Sapiens Parque." } },
+                    { "@type": "Question", "name": "Preciso ter experiência prévia com Power BI ou IA para participar?", "acceptedAnswer": { "@type": "Answer", "text": "Não precisa ser especialista. O Summit é para quem já trabalha com dados ou usa Power BI e Excel no dia a dia, do júnior ao sênior, e também para profissionais de finanças, controladoria, comercial e outras áreas que usam dados. As palestras são práticas, com aplicação direta no trabalho." } },
+                    { "@type": "Question", "name": "Posso levar outra pessoa comigo?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Na página de pagamento você pode adicionar um ingresso extra com valor especial e levar quem quiser: um colega de trabalho, um amigo ou alguém da família. Cada participante recebe o próprio ingresso, que é pessoal e intransferível." } },
+                    { "@type": "Question", "name": "Haverá emissão de certificado?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Todos os participantes do evento presencial receberão o Certificado Oficial do Xperiun AI Summit." } },
+                    { "@type": "Question", "name": "Para quem vem de fora de Florianópolis, haverá suporte de hospedagem?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. As passagens e a hospedagem não estão incluídas no valor do ingresso, mas enviaremos aos inscritos indicações de hotéis parceiros e opções de deslocamento na região." } }
+                ]
+            }
+        ]
+    }
+    </script>
 
     <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
@@ -257,19 +351,19 @@
             <div class="ais-presencial-coluna ais-presencial-coluna--esq">
                 <!-- Par (até 864: faixa horizontal que anda pra esquerda no scroll). -->
                 <div class="ais-presencial-par ais-presencial-par--esq"><div class="ais-presencial-faixa">
-                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img01.webp?v=790492cf" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
-                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img02.webp?v=90ab7a2d" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img01.webp?v=790492cf" alt="Participantes com crachá no credenciamento de um evento presencial da Xperiun" width="704" height="704" loading="lazy" decoding="async"></div>
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img02.webp?v=90ab7a2d" alt="Palestrante circulando entre os participantes de um evento presencial da Xperiun" width="704" height="704" loading="lazy" decoding="async"></div>
                 </div></div>
             </div>
             <div class="ais-presencial-coluna ais-presencial-coluna--dir">
                 <!-- Par (até 864: anda pra direita, no sentido contrário). -->
                 <div class="ais-presencial-par ais-presencial-par--dir"><div class="ais-presencial-faixa">
-                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img03.webp?v=3e5c7be9" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
-                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img04.webp?v=f217686e" alt="" width="704" height="704" loading="lazy" decoding="async"></div>
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img03.webp?v=3e5c7be9" alt="Participante fazendo uma pergunta ao microfone em um evento presencial da Xperiun" width="704" height="704" loading="lazy" decoding="async"></div>
+                    <div class="ais-presencial-foto"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img04.webp?v=f217686e" alt="Palestrantes se cumprimentando no palco de um evento presencial da Xperiun" width="704" height="704" loading="lazy" decoding="async"></div>
                 </div></div>
                 <!-- Última: acima de 864 cresce até a largura toda do mosaico,
                      presa no canto de baixo à direita, enquanto passa a pista. -->
-                <div class="ais-presencial-foto ais-presencial-foto--final"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img05.webp?v=01fa4482" alt="" width="1440" height="810" loading="lazy" decoding="async"></div>
+                <div class="ais-presencial-foto ais-presencial-foto--final"><img src="/ed/aisummit/dependencias/presencial/ais-presencial-img05.webp?v=01fa4482" alt="Público reunido em um evento presencial da Xperiun" width="1440" height="810" loading="lazy" decoding="async"></div>
                 <div class="ais-presencial-pista"></div>
             </div>
         </div>
@@ -463,19 +557,19 @@
                  mesmo enquadramento 7:8), na ordem da sequência. -->
             <div class="ais-profs-quadro">
                 <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-leo-bg.webp?v=3b5ac64a" alt="" width="700" height="800" loading="lazy" decoding="async"></div>
-                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-leo.webp?v=f58c2344" alt="" width="700" height="800" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-leo.webp?v=f58c2344" alt="Leo Karpinski, palestrante do Xperiun AI Summit" width="700" height="800" loading="lazy" decoding="async"></div>
             </div>
             <div class="ais-profs-quadro">
                 <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-sayuri-bg.webp?v=44537260" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
-                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-sayuri.webp?v=256a7148" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-sayuri.webp?v=256a7148" alt="Sayuri Valente, palestrante do Xperiun AI Summit" width="490" height="560" loading="lazy" decoding="async"></div>
             </div>
             <div class="ais-profs-quadro">
                 <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-alison-bg.webp?v=820383c6" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
-                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-alison.webp?v=2b2b1298" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-alison.webp?v=2b2b1298" alt="Alison Pezzott, palestrante do Xperiun AI Summit" width="490" height="560" loading="lazy" decoding="async"></div>
             </div>
             <div class="ais-profs-quadro">
                 <div class="ais-profs-fundo"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago-bg.webp?v=c61ea849" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
-                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago.webp?v=5e426e9f" alt="" width="490" height="560" loading="lazy" decoding="async"></div>
+                <div class="ais-profs-pessoa"><img src="/ed/aisummit/dependencias/palestrantes/aisummit-palestrante-iago.webp?v=5e426e9f" alt="Iago Braz, palestrante do Xperiun AI Summit" width="490" height="560" loading="lazy" decoding="async"></div>
             </div>
         </div>
     </div>
