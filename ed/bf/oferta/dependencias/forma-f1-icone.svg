@@ -1,0 +1,9 @@
+<svg width="260" height="260" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M260 180L210 230V40H220L260 80V180ZM160 50L110 0.21L100 0V260H110L160 210V50ZM50 120L10 80H0L0.2 180L50 230V120Z" fill="url(#grad-pbi-basico)"/>
+<defs>
+<linearGradient id="grad-pbi-basico" x1="37.5" y1="217.5" x2="222.5" y2="32.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#BE9696"/>
+<stop offset="1" stop-color="#C3AA73"/>
+</linearGradient>
+</defs>
+</svg>

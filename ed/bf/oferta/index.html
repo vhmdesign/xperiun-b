@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ─── Meta básicos ─────────────────────────────────────── -->
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-11-03">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <!-- noindex: é a página da compra, com o preço da Black Friday, e quem
+         deve aparecer na busca é a /ed/bf/. Antes do dia 6 ela também não
+         pode vazar o preço que o Grupo VIP recebe primeiro. -->
+    <title>Oferta, Black Friday, Xperiun</title>
+    <meta name="description" content="Black Friday Xperiun: o Xperiun Completo com 75% OFF, 12x 47 no cartão ou R$ 497 à vista, e ainda um ano grátis.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/ed/bf/oferta/dependencias/marca-simbolo.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+
+    <!-- ─── CSS específico desta página ──────────────────────── -->
+    <!-- Pasta 3D + lightbox dos cursos, o mesmo componente que /ed/areas/
+         e /ed/bf/ usam nos cards de formação. Diferente da oferta do
+         Infinite Pass, esta página NÃO carrega o style.css da LP de lá: o
+         hero é o de /ed/bf/, e o que ainda valia daquele arquivo mora no
+         style.css desta pasta. -->
+    <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
+    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=20">
+
+    <!-- Relógio da página e o estado ANTES DA ABERTURA. Inline e no <head>
+         de propósito: a decisão "timer ou oferta" precisa estar tomada
+         antes do primeiro paint, senão a oferta piscaria na tela antes de
+         o timer assumir. Ele só põe uma classe no <html>; quem esconde e
+         mostra é o style.css.
+
+         O relógio aceita o teste pela URL (sempre horário de Brasília):
+           ?agora=2026-11-05T20:00   antes da abertura: só o timer
+           ?agora=2026-11-10T12:00   depois: a oferta, no dia 10
+         Todo o resto da página pergunta as horas a window.XpOferta.agora,
+         então o teste vale pra tudo de uma vez. Sem JS a classe não entra
+         e a página mostra a oferta. -->
+    <script>
+    (function () {
+        var ABERTURA = Date.parse('2026-11-06T00:00:00-03:00');
+        var desvio = 0, alvo = NaN;
+        var pedido = new URLSearchParams(location.search).get('agora');
+        if (pedido) {
+            var t = pedido.trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(t)) t += 'T00:00';
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(t)) t += ':00';
+            if (!/(Z|[+-]\d{2}:\d{2})$/.test(t)) t += '-03:00';
+            alvo = Date.parse(t);
+            if (!isNaN(alvo)) desvio = alvo - Date.now();
+        }
+        window.XpOferta = {
+            ABERTURA: ABERTURA,
+            pedido: pedido,
+            simulado: isNaN(alvo) ? null : alvo,
+            agora: function () { return Date.now() + desvio; }
+        };
+        if (window.XpOferta.agora() < ABERTURA) document.documentElement.classList.add('bf-antes');
+    })();
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ANTES DA ABERTURA: SÓ O TIMER
+
+     Até 06/11 00:00 (Brasília) a página é só esta contagem regressiva: o
+     <main> e o CTA fixo ficam escondidos pela classe .bf-antes do <html>,
+     que o script do <head> põe. Na hora da abertura o script.js recarrega
+     a página, e ela volta sem a classe, já como oferta.
+
+     Sem JS a classe não entra e esta seção não aparece, então os "00"
+     daqui só seguram a largura até o primeiro tique do script. -->
+<section class="bf-espera" aria-label="Contagem para a abertura da Black Friday">
+    <img class="bf-espera-logo" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
+         alt="Xperiun" width="160" height="48" decoding="async">
+    <div class="bf-espera-timer" role="timer" data-alvo-espera>
+        <span class="bf-espera-item"><span class="bf-espera-num" data-un="d">00</span><span class="bf-espera-un">dias</span></span>
+        <span class="bf-espera-item"><span class="bf-espera-num" data-un="h">00</span><span class="bf-espera-un">horas</span></span>
+        <span class="bf-espera-item"><span class="bf-espera-num" data-un="m">00</span><span class="bf-espera-un">minutos</span></span>
+        <span class="bf-espera-item"><span class="bf-espera-num" data-un="s">00</span><span class="bf-espera-un">segundos</span></span>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TOPO. Uma linha do grid Wide do DS partida em dois: as 3 primeiras
+     colunas levam o ticket e as 7 últimas o .bf-hero de /ed/bf/.
+
+     ORDEM: faixas, hero, ticket, conta. As faixas vêm primeiro pra
+     pintarem embaixo de tudo (ver o style.css). O hero vem ANTES do ticket
+     apesar de aparecer à direita dele: acima de 864 quem decide a posição
+     é o `grid-column`, e abaixo, onde tudo empilha, a leitura fica hero,
+     ticket, conta. Foi assim, e não com `order`, pra a ordem de leitura e
+     de tabulação seguir o que se vê.
+     ═══════════════════════════════════════════════════════════════════ -->
+<main>
+<div class="of-topo">
+    <div class="of-topo-inner">
+
+        <!-- As três faixas de /ed/bf/: a nítida embaixo e duas giradas e
+             desfocadas atrás, que fazem a luz diagonal do fundo. Cada uma
+             traz a frase em DOIS grupos idênticos e anda um grupo por volta,
+             então o laço não tem emenda. Só a nítida é lida, e só o primeiro
+             grupo dela; o resto é desenho. -->
+        <div class="bf-faixas">
+            <div class="bf-faixa bf-faixa--fundo" aria-hidden="true">
+                <div class="bf-faixa-trilha">
+                    <ul class="bf-faixa-grupo"><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li></ul>
+                    <ul class="bf-faixa-grupo"><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li></ul>
+                </div>
+            </div>
+            <div class="bf-faixa bf-faixa--meio" aria-hidden="true">
+                <div class="bf-faixa-trilha">
+                    <ul class="bf-faixa-grupo"><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li></ul>
+                    <ul class="bf-faixa-grupo"><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li></ul>
+                </div>
+            </div>
+            <div class="bf-faixa bf-faixa--frente">
+                <div class="bf-faixa-trilha">
+                    <ul class="bf-faixa-grupo"><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li></ul>
+                    <ul class="bf-faixa-grupo" aria-hidden="true"><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li><li><span class="bf-900">75%</span> de desconto para estudar na Xperiun</li></ul>
+                </div>
+            </div>
+        </div>
+
+        <header class="bf-hero" id="topo">
+            <img class="bf-hero-logo" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
+                 alt="Xperiun" width="160" height="48" decoding="async">
+
+            <div class="bf-hero-inner">
+
+                <div class="bf-lockup">
+                    <h1 class="bf-titulo">
+                        <span class="bf-titulo-linha bf-titulo-linha--black">Black</span>
+                        <span class="bf-titulo-linha bf-titulo-linha--friday">Friday</span>
+                    </h1>
+                    <!-- Selo decorativo: o desconto já está escrito nas faixas. -->
+                    <span class="bf-selo" aria-hidden="true"></span>
+                </div>
+
+                <!-- O prazo numa tag de status do DS (L, warning, a cor da
+                     oferta na página) e a promessa em P L. Em /ed/bf/ a tag
+                     traz a data e a frase diz que o desconto "está chegando";
+                     aqui a pessoa já está no dia, então a tag diz "Somente
+                     hoje". Às 00:00 de 07/11 (Brasília) o script troca pro
+                     texto do `data-depois`, "Últimas vagas". -->
+                <div class="bf-hero-chamada">
+                    <span class="tag-status bf-hero-data" data-size="l" data-semantic="warning"><time datetime="2026-11-06" data-depois="Últimas vagas">Somente hoje</time></span>
+                    <p class="bf-hero-lede-l">O maior desconto da história da Xperiun chegou. <span class="bf-hero-chamada-destaque">Prepare-se para dominar Dados, IA e Negócios.</span></p>
+                </div>
+
+                <!-- No lugar do convite pro Grupo VIP de /ed/bf/: aqui a pessoa
+                     já está na compra, então a lede é a própria oferta. -->
+                <p class="sec-lede bf-hero-lede">O Xperiun Completo com 75% OFF: 12x 47 no cartão ou R$ 497 à vista, e ainda um ano grátis.</p>
+
+                <!-- O par de botões da origem. O "Garantir" só aparece abaixo
+                     de 864: acima disso o ticket está ao lado, com o mesmo CTA.
+                     O "Saber mais" leva pra seção da conta (o
+                     scroll-suave.js global cuida da rolagem). -->
+                <div class="bf-hero-acoes">
+                    <a class="bf-btn" href="#" data-abre-form><span>GARANTIR MINHA VAGA</span></a>
+                    <a class="btn" data-size="m" data-emphasis="neutral" href="#como-funciona">Saber mais</a>
+                </div>
+
+            </div>
+        </header>
+
+        <div class="of-topo-lateral">
+            <!-- Ticket inteiro (metade de cima, serrilha e canhoto). O
+                 .of-ticket é quem gruda na rolagem; o -fx é a caixa que
+                 inclina no hover. No lugar do foil holográfico da oferta
+                 do Infinite Pass, que travava a rolagem, há um brilho leve
+                 só em CSS. -->
+            <div class="of-ticket">
+            <div class="of-ticket-fx">
+            <div class="of-lateral-card">
+
+                <!-- Faixa de imagem, em `cover`: decorativa, então é um
+                     background e fica fora da árvore de acessibilidade. -->
+                <div class="of-lateral-filler" aria-hidden="true"></div>
+
+                <div class="of-lateral-corpo">
+
+                    <!-- Vagas, no lugar do lote da origem. A barra é de
+                         efeito: o script tira a porcentagem do relógio, pelo
+                         cronograma de 06/11 a 23/11 que mora na tabela FASES
+                         do script.js (horário de Brasília). O que está escrito
+                         aqui é o estado da abertura, 0%, que é o que fica na
+                         tela se o script falhar. -->
+                    <div class="of-vagas" data-vagas>
+                        <div class="of-vagas-topo">
+                            <span class="of-vagas-titulo">Vagas</span>
+                            <span class="of-vagas-texto">0% das vagas preenchidas</span>
+                        </div>
+                        <div class="of-vagas-trilho" role="progressbar"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                             aria-label="Vagas preenchidas">
+                            <!-- a porcentagem é dado, então mora no HTML junto do
+                                 aria-valuenow, e não no CSS -->
+                            <div class="of-vagas-barra" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Plano e preço andam juntos. Sem toggle de perfil: a
+                         Black Friday tem uma oferta só, e os valores são fixos. -->
+                    <div class="of-valor">
+
+                        <div class="of-plano">
+                            <span class="of-plano-nome">Xperiun Completo</span>
+                            <!-- Os 2 anos e o desconto em tags de aviso, juntos à
+                                 direita: no meio do nome, em texto, o "2 anos"
+                                 sumia. -->
+                            <span class="of-plano-tags">
+                                <span class="tag-status" data-size="s" data-semantic="warning">2 anos</span>
+                                <span class="tag-status" data-size="s" data-semantic="warning">75% OFF</span>
+                            </span>
+                        </div>
+
+                        <!-- O preço de antes, riscado, em cima do de agora, e o
+                             à vista embaixo, os três no mesmo <p> pra herdarem o
+                             centramento do bloco. -->
+                        <p class="of-preco">
+                            <span class="of-preco-de">de 12x 197</span>
+                            <span class="of-preco-wrap">
+                                <span class="of-preco-prefixo">12x</span>
+                                <span class="of-preco-valor">47</span>
+                            </span>
+                            <span class="of-preco-avista">ou R$ 497 à vista</span>
+                        </p>
+
+                        <!-- Prova social: os cinco círculos nascem vazios de
+                             propósito, as fotos são sorteadas pelo script a cada
+                             carga. Irmão do <p> do preço, e não filho: <div>
+                             dentro de <p> não é HTML válido. -->
+                        <div class="of-prova">
+                            <div class="of-prova-pilha">
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                            </div>
+                            <p class="of-prova-texto">+35 mil alunos</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Linha tracejada de fecho, FORA do card: é o que faz o --dn800
+                 aparecer contra o preto da página. Decorativa. -->
+            <div class="of-lateral-divisor" aria-hidden="true"></div>
+
+            <!-- Canhoto do ticket. O CORPO INTEIRO é o link: clicar em
+                 qualquer lugar daqui leva à compra, e continua sendo UM
+                 controle de verdade (foca pelo teclado, funciona com Enter).
+                 O botão é só a aparência, num <span>.
+
+                 Ele abre o popup do form desta página (form-bf-oferta.html),
+                 como todo botão de compra com `data-abre-form`. -->
+            <div class="of-lateral-stub">
+                <a class="of-lateral-stub-corpo" href="#" data-abre-form>
+                    <span class="bf-btn of-stub-cta"><span>GARANTIR MINHA VAGA</span></span>
+                    <!-- O ano a mais, em verde, no lugar da linha de bônus da
+                         origem: não é bônus, é parte da oferta. -->
+                    <span class="of-stub-bonus">+ 1 ano grátis no Xperiun Completo</span>
+                    <!-- Código de barras ilustrativo: desenho, não dado. -->
+                    <span class="of-stub-barras" aria-hidden="true"></span>
+                </a>
+            </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             SEÇÃO 1: A CONTA DA BLACK FRIDAY
+
+             No lugar do slider de anos da oferta do Infinite Pass. Os dois
+             cards da origem ficam, com outro conteúdo: o da esquerda põe o
+             preço normal de um ano de Xperiun Completo contra o da Black
+             Friday; o da direita, o ano grátis que vem junto.
+
+             Os números são fixos, sem script. O "R$ 1.500 a menos" é a conta
+             dos dois à vista (1.997 - 497).
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="of-conta" id="como-funciona" aria-labelledby="of-tit-conta">
+            <div class="of-conta-inner">
+
+                <h2 class="sec-title of-conta-titulo" id="of-tit-conta">Na Black Friday, o Xperiun Completo sai com 75% OFF e ainda vem com um ano grátis</h2>
+
+                <div class="of-conta-cards">
+
+                <div class="of-card-conta">
+                    <h3 class="of-card-conta-titulo">Quanto custa um ano de Xperiun Completo</h3>
+
+                    <div class="of-linha of-linha--caro">
+                        <div class="of-linha-lado">
+                            <span class="of-linha-nome">Preço normal</span>
+                        </div>
+                        <div class="of-linha-lado of-linha-lado--dir">
+                            <span class="of-linha-valor">12x 197</span>
+                            <span class="of-linha-parcela">ou R$ 1.997 à vista</span>
+                        </div>
+                    </div>
+
+                    <div class="of-linha of-linha--barato">
+                        <div class="of-linha-lado">
+                            <span class="of-linha-nome">Black Friday</span>
+                            <span class="of-linha-sub">75% OFF</span>
+                        </div>
+                        <div class="of-linha-lado of-linha-lado--dir">
+                            <span class="of-linha-valor">12x 47</span>
+                            <span class="of-linha-parcela">ou R$ 497 à vista</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="of-card-ganho">
+                    <h3 class="of-card-ganho-titulo">E você ainda ganha</h3>
+                    <p class="of-ganho-valor">+1 ano grátis</p>
+                    <p class="of-ganho-texto">Um ano inteiro a mais de acesso ao Xperiun Completo, com todas as formações, nesta Black Friday.</p>
+                    <p class="of-ganho-nota">De R$ 1.997 por R$ 497 à vista: R$ 1.500 a menos no primeiro ano.</p>
+                </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SEÇÃO 2: AS FORMAÇÕES
+
+     Mesma partição do topo: 3 colunas de lateral fixa (título + tags) e 7
+     de conteúdo. O grid é PRÓPRIO desta seção, e não o do topo, porque lá
+     a lateral do ticket já atravessa as duas fileiras existentes.
+
+     Os cards vêm de /ed/formacoes/ sem mudança de conteúdo. O que mudou:
+       - as TAGS substituem a .formacoes-nav da origem, que era uma lista
+         vertical de botões grandes;
+       - caminhos absolutos, como manda o projeto (a origem usa relativos
+         de "../", que quebrariam a partir desta pasta);
+       - ids prefixados com "of-" pra não colidirem com nada da página.
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="of-forma" id="formacoes" aria-labelledby="of-tit-formacoes">
+    <div class="of-forma-inner">
+
+        <div class="of-forma-lateral">
+            <div class="of-forma-fixo">
+                <h2 class="sec-title of-forma-titulo" id="of-tit-formacoes">Todas as Formações da Plataforma Xperiun, com 75% OFF na Black Friday</h2>
+                <!-- Uma tag por formação, na cor dela. Clicar rola até o card
+                     correspondente; a tag da formação em cena acende sozinha. -->
+                <div class="of-forma-tags">
+                    <button class="tag of-forma-tag of-forma-tag--f1" type="button" data-size="m" data-color="dark" data-alvo="of-f1">Power BI Básico ao Intermediário</button>
+                    <button class="tag of-forma-tag of-forma-tag--f2" type="button" data-size="m" data-color="dark" data-alvo="of-f2">Power BI Intermediário ao Avançado</button>
+                    <button class="tag of-forma-tag of-forma-tag--f3" type="button" data-size="m" data-color="dark" data-alvo="of-f3">Microsoft Fabric</button>
+                    <button class="tag of-forma-tag of-forma-tag--f4" type="button" data-size="m" data-color="dark" data-alvo="of-f4">Banco de Dados &amp; SQL</button>
+                    <button class="tag of-forma-tag of-forma-tag--f5" type="button" data-size="m" data-color="dark" data-alvo="of-f5">Python &amp; Data Science</button>
+                    <button class="tag of-forma-tag of-forma-tag--f6" type="button" data-size="m" data-color="dark" data-alvo="of-f6">Inteligência Artificial e Automação</button>
+                    <button class="tag of-forma-tag of-forma-tag--f7" type="button" data-size="m" data-color="dark" data-alvo="of-f7">Carreira &amp; Negócios</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="of-forma-cards">
+                <article class="of-forma-card motion" id="of-f1">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f1-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f1-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 1</span>
+                                    <h3 class="of-forma-card-titulo">Power BI Básico ao Intermediário</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Do Excel ao primeiro dashboard usado pelo chefe em reunião, em 4 a 8 semanas.</p>
+                                <div class="of-forma-card-tags">
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~38h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">8 cursos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f1"></div>
+                    </div>
+                </article>
+
+                <article class="of-forma-card motion" id="of-f2">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f2-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f2-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 2</span>
+                                    <h3 class="of-forma-card-titulo">Power BI Intermediário ao Avançado</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Do dashboard bonito ao dashboard que decide o negócio. DAX sênior, modelagem real, governança corporativa.</p>
+                                <div class="of-forma-card-tags">
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~103h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">9 cursos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f2"></div>
+                    </div>
+                </article>
+
+                <article class="of-forma-card motion" id="of-f3">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f3-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f3-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 3</span>
+                                    <h3 class="of-forma-card-titulo">Microsoft Fabric</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Saia na frente em uma stack que vai virar padrão. Quem domina primeiro define os próximos 3 anos da carreira.</p>
+                                <div class="of-forma-card-tags">
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~53h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">3 cursos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f3"></div>
+                    </div>
+                </article>
+
+                <article class="of-forma-card motion" id="of-f4">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f4-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f4-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 4</span>
+                                    <h3 class="of-forma-card-titulo">Banco de Dados &amp; SQL</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Pare de depender do TI. Consultas direto no banco corporativo e Data Warehouse profissional.</p>
+                                <div class="of-forma-card-tags">
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~57h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">3 cursos + bônus</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f4"></div>
+                    </div>
+                </article>
+
+                <article class="of-forma-card motion" id="of-f5">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f5-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f5-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 5</span>
+                                    <h3 class="of-forma-card-titulo">Python &amp; Data Science</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Automatize relatórios, conecte APIs, aplique ML em perguntas reais, processe big data com Spark.</p>
+                                <div class="of-forma-card-tags">
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~58h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">7 cursos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f5"></div>
+                    </div>
+                </article>
+
+                <article class="of-forma-card motion" id="of-f6">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f6-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f6-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 6</span>
+                                    <h3 class="of-forma-card-titulo">Inteligência Artificial e Automação</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Dobre sua produtividade. Agentes de IA, N8N, Power Automate e Power Apps saindo do operacional repetitivo.</p>
+                                <div class="of-forma-card-tags">
+                                    <!-- Números vindos do catálogo (dados.js), NÃO da
+                                         /ed/formacoes/, que ainda traz "~51h / 8 cursos"
+                                         aqui. É o catálogo que enche a pasta 3D ao lado,
+                                         e a f6 agora tem lá os 19 cursos somando 89h:
+                                         copiar a origem deixaria o card discordando da
+                                         própria pasta, no mesmo cartão. -->
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~89h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">19 cursos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f6"></div>
+                    </div>
+                </article>
+
+                <article class="of-forma-card motion" id="of-f7">
+                    <img class="of-forma-card-img" src="/ed/bf/oferta/dependencias/forma-f7-arte.webp" width="512" height="512" alt="" loading="lazy" decoding="async">
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <img src="/ed/bf/oferta/dependencias/forma-f7-icone.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                            <div class="of-card-coluna">
+                                <div class="of-forma-card-titulo-grupo">
+                                    <span class="of-forma-card-label">Formação 7</span>
+                                    <h3 class="of-forma-card-titulo">Carreira &amp; Negócios</h3>
+                                </div>
+                                <p class="of-forma-card-desc">Técnica é metade. Posicione carreira, prospecte clientes, entenda FP&amp;A, vire quem é consultado antes da decisão.</p>
+                                <div class="of-forma-card-tags">
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">~31h</span>
+                                    <span class="tag-status" data-size="m" data-semantic="neutral">6 cursos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pasta 3D com os cursos desta formação, montada pelo
+                             XpFolder (/ed/areas/pasta.js). Clicar abre o
+                             lightbox com nav e dots. O data-f usa a chave do
+                             catálogo (f1..f7), que é diferente do id do card
+                             (of-f1..of-f7), usado pelas tags. -->
+                        <div class="of-forma-pasta" data-f="f7"></div>
+                    </div>
+                </article>
+        </div>
+
+    </div>
+</section>
+
+<!-- ======================================================================
+     EXTRAS
+     Mesma silhueta da seção de Formações (lateral de 3 + conteúdo de 7),
+     mas a coluna da direita é um CARROSSEL: os oito conteúdos vivem lado a
+     lado numa trilha que rola na horizontal, um por vez, com um pedaço do
+     próximo aparecendo pra dizer que há mais.
+
+     As tags não trocam painel nem rolam a página: elas rolam a trilha. E a
+     trilha também responde ao arraste, à roda e ao teclado, porque é um
+     scroller nativo (overflow-x + scroll-snap), não um transform.
+
+     Por isso as tags são botões e não abas: com todos os slides presentes e
+     alcançáveis pela rolagem, o papel de `tab`/`tabpanel` descreveria uma
+     coisa que não acontece (um painel por vez, os outros escondidos).
+
+     Quatro slides ainda estão VAZIOS, esperando conteúdo.
+     ====================================================================== -->
+<section class="of-extras" id="extras" aria-labelledby="of-tit-extras">
+    <div class="of-extras-inner">
+
+        <div class="of-extras-lateral">
+            <div class="of-extras-fixo">
+                <h2 class="sec-title of-extras-titulo" id="of-tit-extras">Tudo mais que vem junto na Black Friday</h2>
+                <div class="of-extras-tags">
+                    <button class="tag of-extras-tag is-active" type="button" data-size="m" data-color="dark" data-alvo="of-ex-1">Comunidade ativa</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-2">Marketplace &amp; portfólio</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-3">Certificações Reconhecidas</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-4">MCP</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-5">Casos reais de RH</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-6">Casos reais de Logística</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-7">Casos reais de Venda</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-8">Casos reais de Financeiro</button>
+                    <button class="tag of-extras-tag" type="button" data-size="m" data-color="dark" data-alvo="of-ex-9">Casos reais diversos</button>
+                </div>
+
+                <!-- Segunda via de navegação do carrossel, ao lado das tags: as
+                     setas andam de um slide pro vizinho. Mesmo botão do lightbox
+                     das pastas (btn lb-nav), pra a página não ter dois desenhos
+                     de seta. -->
+                <div class="of-extras-nav">
+                    <button class="btn lb-nav" type="button" data-size="m" data-icon data-emphasis="subtle"
+                            data-passo="-1" aria-label="Conteúdo anterior">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button class="btn lb-nav" type="button" data-size="m" data-icon data-emphasis="subtle"
+                            data-passo="1" aria-label="Próximo conteúdo">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="of-extras-cards" role="group" aria-label="Carrossel de conteúdos" tabindex="0">
+            <div class="of-extras-card" id="of-ex-1">
+                <div class="of-card">
+                    <div class="of-card-midia of-card-midia--esteira">
+                        <!-- Esteira de logos portada do .of-esteira de
+                             /ed/temp/marketplace.html. Duas fileiras correndo em sentidos
+                             opostos, com o box da comunidade parado na frente.
+
+                             Os retratos são os mesmos personagens do .ganhos-panel de
+                             /cp/data-squads/. A escolha foi sorteada uma vez e vive
+                             aqui: as onze posições (o box do meio e cinco por fileira)
+                             são pessoas distintas. Chegou a ser um sorteio por carga,
+                             em JS, e voltou pra marcação: variar a cada visita não
+                             acrescenta nada e custava um bloco de script.
+
+                             Cada fileira traz os cinco logos QUATRO vezes, e a animação anda
+                             UM CONJUNTO por volta. Como as cópias são idênticas, o salto de
+                             volta cai num quadro igual ao que estava na tela e o laço não tem
+                             emenda. As cópias são decorativas e levam `aria-hidden`, senão um
+                             leitor de tela anunciaria vinte empresas onde há cinco.
+
+                             Quatro cópias, e não duas, por COBERTURA: a trilha precisa medir a
+                             janela mais um conjunto. Duas davam 680px de metade numa janela de
+                             966, e no fim de cada ciclo sobrava vazio à direita. O CSS tem a
+                             conta inteira.
+
+                             O espaço entre os boxes é `margin-right`, e não `gap`: o passo da
+                             animação conta esse espaço como parte do box, e `gap` não entra
+                             nessa conta, porque o último de cada cópia não teria o seu. -->
+                        <div class="of-esteira">
+                            <div class="of-esteira-janela">
+                                <div class="of-esteira-trilha of-esteira-trilha--esq">
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-01.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/retrato-diego.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-09.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-03.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-05.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-01.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/retrato-diego.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-09.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-03.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-05.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-01.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/retrato-diego.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-09.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-03.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-05.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-01.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/retrato-diego.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-09.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-03.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-05.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                </div>
+                            </div>
+                            <div class="of-esteira-janela">
+                                <div class="of-esteira-trilha of-esteira-trilha--dir">
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-07.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-06.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-08.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-02.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-04.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-07.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-06.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-08.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-02.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-04.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-07.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-06.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-08.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-02.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-04.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-07.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-06.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-08.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-02.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/comunidade-04.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                </div>
+                            </div>
+                            <div class="of-esteira-centro">
+                                <div class="of-esteira-centro-interno">
+                                    <img src="/ed/bf/oferta/dependencias/retrato-bruno.webp" alt="" loading="lazy" decoding="async" width="256" height="256">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <h3 class="of-card-titulo">Comunidade Ativa</h3>
+                                </div>
+                                <p class="of-card-desc">Acesso aos dois canais de comunicação para que você possa tirar dúvidas, interagir com a comunidade e aprofundar seus conhecimentos em análise de dados: o Fórum Xperiun e o Discord Xperiun.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="of-extras-card" id="of-ex-2">
+                <div class="of-card">
+                    <div class="of-card-midia of-card-midia--rede">
+                        <!-- Diagrama portado do .of-rede de /ed/temp/marketplace.html:
+                             hub no centro, quatro nodes nos cantos e conectores ligando os
+                             dois. Os NODES e a ANIMAÇÃO, porém, vêm do .ds-squad-stage de
+                             /cp/data-squads/: no lugar do quadrado de 64px entra a ficha de
+                             profissional (retrato, cargo e nome), e no lugar dos cometas entram
+                             as partículas que percorrem o traço.
+
+                             Trocar a animação implicou trocar também o DESENHO do conector. No
+                             marketplace ele é um degrau de SVG fixo em CSS, calculado pra um
+                             palco de 320px de altura; no data-squads é uma bézier que o script
+                             mede e redesenha, e as partículas correm exatamente por cima dela.
+                             Como partícula e traço são a mesma coisa, veio o par. De quebra, o
+                             diagrama passou a caber em qualquer altura, que é o que permite ele
+                             morar nos 240px da mídia do card sem geometria remendada.
+
+                             O SVG e a camada de partículas nascem vazios: quem os preenche é o
+                             script, que só então sabe onde cada ficha caiu. -->
+                        <div class="of-rede">
+                            <!-- Quatro fichas a mais, uma em cada meio de borda, desfocadas e
+                                 quase apagadas. Elas não dizem nada: são textura, e existem pra
+                                 o diagrama sugerir que continua pra fora do card em vez de
+                                 terminar nas quatro fichas legíveis. Mesma ideia do .ds-ghost
+                                 de /cp/data-squads/.
+
+                                 Vêm ANTES do <svg> na marcação pra pintarem atrás dos
+                                 conectores, das partículas e das fichas de verdade, sem
+                                 precisar de z-index. E o bloco dos conectores as ignora pela
+                                 classe `--fantasma`: não levam nó, senão o traço delas
+                                 competiria com os dois ramos que já vão do hub pras bordas.
+
+                                 São as cinco pessoas do data-squads que NÃO estão nas fichas
+                                 legíveis, menos uma: repetir alguém em cena entregaria que é a
+                                 mesma ficha borrada. -->
+                            <div class="of-rede-ficha of-rede-ficha--fantasma of-rede-ficha--cl" aria-hidden="true">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-diego.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Analista de BI</span>
+                                    <span class="of-rede-ficha-nome">Diego Martins</span>
+                                </div>
+                            </div>
+                            <div class="of-rede-ficha of-rede-ficha--fantasma of-rede-ficha--cr" aria-hidden="true">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-larissa.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Analista de BI</span>
+                                    <span class="of-rede-ficha-nome">Larissa Nunes</span>
+                                </div>
+                            </div>
+
+                            <div class="of-rede-ficha of-rede-ficha--fantasma of-rede-ficha--ct" aria-hidden="true">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-thiago.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Engenheiro de Dados</span>
+                                    <span class="of-rede-ficha-nome">Thiago Ramos</span>
+                                </div>
+                            </div>
+                            <div class="of-rede-ficha of-rede-ficha--fantasma of-rede-ficha--cb" aria-hidden="true">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-marcelo.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Gestor de Projetos</span>
+                                    <span class="of-rede-ficha-nome">Marcelo Andrade</span>
+                                </div>
+                            </div>
+
+                            <svg class="of-rede-conectores" aria-hidden="true"></svg>
+                            <div class="of-rede-ficha of-rede-ficha--tl">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-rafael.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Cientista de Dados</span>
+                                    <span class="of-rede-ficha-nome">Rafael Souza</span>
+                                </div>
+                            </div>
+                            <div class="of-rede-ficha of-rede-ficha--bl">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-juliana.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Analista de BI</span>
+                                    <span class="of-rede-ficha-nome">Juliana Costa</span>
+                                </div>
+                            </div>
+                            <div class="of-rede-ficha of-rede-ficha--tr">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-camila.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Especialista em IA</span>
+                                    <span class="of-rede-ficha-nome">Camila Ferreira</span>
+                                </div>
+                            </div>
+                            <div class="of-rede-ficha of-rede-ficha--br">
+                                <span class="of-rede-ficha-retrato"><img src="/ed/bf/oferta/dependencias/retrato-bruno.webp" alt="" loading="lazy" decoding="async" width="256" height="256"></span>
+                                <div class="of-rede-ficha-info">
+                                    <span class="of-rede-ficha-cargo">Engenheiro de Dados</span>
+                                    <span class="of-rede-ficha-nome">Bruno Oliveira</span>
+                                </div>
+                            </div>
+                            <div class="of-rede-hub">
+                                <div class="of-rede-nucleo">
+                                    <div class="of-rede-icone"><svg width="48" height="48" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ecoHubGrad" x1="42.11" y1="757.899" x2="757.9" y2="42.109" gradientUnits="userSpaceOnUse"><stop stop-color="var(--pc400)"></stop><stop offset="1" stop-color="var(--pc400)" stop-opacity="0.5"></stop></linearGradient></defs><path d="M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z" fill="url(#ecoHubGrad)"></path></svg></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <h3 class="of-card-titulo">Marketplace de Profissionais &amp; Portfólio Integrado</h3>
+                                </div>
+                                <p class="of-card-desc">Exclusivo para alunos: seu portfólio fica publicado no Marketplace Xperiun, onde empresas procuram profissionais de dados por habilidade e experiência.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="of-extras-card" id="of-ex-3">
+                <div class="of-card">
+                    <div class="of-card-midia of-card-midia--selos">
+                                <!-- Os sete selos de certificação correndo em esteira. Mesma
+                                     máquina do marquee do card da Comunidade (.of-esteira,
+                                     .of-esteira-janela, o passo de um conjunto), com outros números: uma
+                                     fileira só, caixa de 192px e sete itens por conjunto.
+
+                                     Duas cópias bastam aqui, e não quatro: a trilha precisa medir a
+                                     janela mais um conjunto, e um conjunto de sete selos de 192 já
+                                     passa da largura do card sozinho.
+
+                                     A primeira cópia leva o `alt` de cada certificação; as outras vão
+                                     de `aria-hidden`, senão a lista seria lida duas vezes. -->
+                                <div class="of-esteira of-esteira--selos">
+                                    <div class="of-esteira-janela">
+                                        <div class="of-esteira-trilha of-esteira-trilha--esq">
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f1.webp" alt="Power BI Data Analyst" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f2.webp" alt="Advanced Power BI Analyst" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f3.webp" alt="Microsoft Fabric Data Engineer" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f4.webp" alt="SQL &amp; Database Analyst" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f5.webp" alt="Python Data Scientist" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f6.webp" alt="AI &amp; Automation Expert" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f7.webp" alt="Data Business Professional" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f1.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f2.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f3.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f4.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f5.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f6.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                    <span class="of-esteira-item" aria-hidden="true"><img class="of-esteira-img" src="/ed/bf/oferta/dependencias/selo-f7.webp" alt="" loading="lazy" decoding="async" width="384" height="384"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <h3 class="of-card-titulo">Certificações Reconhecidas</h3>
+                                </div>
+                                <p class="of-card-desc">Credenciais para comprovar seu conhecimento profissional.</p>
+
+                                <!-- Nota do MEC e o selo do e-Mec, lado a lado. Aqui
+                                     havia o .mba-bridge-card inteiro, a casca clara com
+                                     o selo do MEC dentro. Ficou só a cabeça dele, que é
+                                     ícone mais rótulo, e ela desceu pra dentro da coluna
+                                     de texto, no lugar de ser um bloco à direita do
+                                     corpo do card. -->
+                                <div class="of-extras-mec">
+                                    <p class="of-extras-nota">Formação Completa reconhecida pelo MEC</p>
+                                    <div class="of-emec">
+                                        <img class="of-emec-icone" src="/ed/bf/oferta/dependencias/emec.svg" alt="" width="24" height="28" loading="lazy" decoding="async">
+                                        <span class="of-emec-rotulo">e-Mec</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="of-extras-card" id="of-ex-4">
+                <div class="of-card">
+                    <div class="of-card-midia">
+                        <!-- Cópia do gains-card-media-01 da /ed/pre-vitalicio/, renomeada
+                             pelo uso. A cópia existe porque o deploy publica
+                             `ed/bf/oferta/**` inteiro: o que mora aqui
+                             chega junto, e apontar pra pasta de outra página
+                             deixaria a imagem à mercê do que aquele caminho fizer
+                             depois. O nome mudou porque a /ed/aichampion/ tem um
+                             arquivo DIFERENTE com o mesmo nome, e os dois vivem
+                             agora na mesma pasta. -->
+                        <img src="/ed/bf/oferta/dependencias/midia-mcp.webp" alt="" loading="lazy" decoding="async" width="960" height="540">
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <h3 class="of-card-titulo">MCP</h3>
+                                </div>
+                                <p class="of-card-desc">Acesso a soluções integradas da plataforma (como nossas integrações de IA e MCP).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="of-extras-card" id="of-ex-5">
+                <div class="of-card">
+                    <div class="of-card-midia">
+                        <img src="/ed/bf/oferta/dependencias/caso-rh.webp" alt="" loading="lazy" decoding="async" width="960" height="540">
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <span class="of-card-label">Área</span>
+                                    <h3 class="of-card-titulo">Recursos Humanos</h3>
+                                </div>
+                                <p class="of-card-desc">Dos números soltos de pessoas ao painel de turnover, headcount e absenteísmo que sustenta decisão.</p>
+                                <p class="of-card-kpis">Turnover, Headcount, Absenteísmo, Tempo médio de contratação, Desempenho por área, Evolução do quadro...</p>
+                            </div>
+                        </div>
+                        <!-- Slot do CTA. Vazio na marcação de propósito: quem monta o
+                             botão é o script, a partir do AREAS de
+                             /ed/areas/dados-areas.js, porque o rótulo carrega a
+                             contagem de Business Cases e ela não pode ser digitada
+                             aqui sem passar a divergir do catálogo. Sem JS não
+                             nasce botão, em vez de nascer um botão morto. -->
+                        <div class="of-extras-cta" data-area="arh"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="of-extras-card" id="of-ex-6">
+                <div class="of-card">
+                    <div class="of-card-midia">
+                        <img src="/ed/bf/oferta/dependencias/caso-logistica.webp" alt="" loading="lazy" decoding="async" width="960" height="540">
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <span class="of-card-label">Área</span>
+                                    <h3 class="of-card-titulo">Logística</h3>
+                                </div>
+                                <p class="of-card-desc">Do achismo na operação ao painel que mostra ruptura, OTIF e custo logístico em tempo real.</p>
+                                <p class="of-card-kpis">Entregas no prazo, OTIF, Giro de estoque, Ruptura, Custo logístico, Tempo médio de entrega, Nível de serviço...</p>
+                            </div>
+                        </div>
+                        <!-- Slot do CTA. Vazio na marcação de propósito: quem monta o
+                             botão é o script, a partir do AREAS de
+                             /ed/areas/dados-areas.js, porque o rótulo carrega a
+                             contagem de Business Cases e ela não pode ser digitada
+                             aqui sem passar a divergir do catálogo. Sem JS não
+                             nasce botão, em vez de nascer um botão morto. -->
+                        <div class="of-extras-cta" data-area="al"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="of-extras-card" id="of-ex-7">
+                <div class="of-card">
+                    <div class="of-card-midia">
+                        <img src="/ed/bf/oferta/dependencias/caso-vendas.webp" alt="" loading="lazy" decoding="async" width="960" height="540">
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <span class="of-card-label">Área</span>
+                                    <h3 class="of-card-titulo">Vendas</h3>
+                                </div>
+                                <p class="of-card-desc">Da planilha de meta ao painel de faturamento, ticket médio e ranking que o time olha todo dia.</p>
+                                <p class="of-card-kpis">Faturamento, Meta vs Realizado, Ticket médio, Ranking de vendedores, Volume por produto, Crescimento mês a mês...</p>
+                            </div>
+                        </div>
+                        <!-- Slot do CTA. Vazio na marcação de propósito: quem monta o
+                             botão é o script, a partir do AREAS de
+                             /ed/areas/dados-areas.js, porque o rótulo carrega a
+                             contagem de Business Cases e ela não pode ser digitada
+                             aqui sem passar a divergir do catálogo. Sem JS não
+                             nasce botão, em vez de nascer um botão morto. -->
+                        <div class="of-extras-cta" data-area="av"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="of-extras-card" id="of-ex-8">
+                <div class="of-card">
+                    <div class="of-card-midia">
+                        <img src="/ed/bf/oferta/dependencias/caso-financeiro.webp" alt="" loading="lazy" decoding="async" width="960" height="540">
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <span class="of-card-label">Área</span>
+                                    <h3 class="of-card-titulo">Financeiro</h3>
+                                </div>
+                                <p class="of-card-desc">Do fechamento no Excel ao DRE, fluxo de caixa e margem vivos num dashboard que a diretoria abre sozinha.</p>
+                                <p class="of-card-kpis">Fluxo de caixa, DRE, Margem, EBITDA, Orçado vs Realizado, Contas a pagar e receber, Análise vertical e horizontal...</p>
+                            </div>
+                        </div>
+                        <!-- Slot do CTA. Vazio na marcação de propósito: quem monta o
+                             botão é o script, a partir do AREAS de
+                             /ed/areas/dados-areas.js, porque o rótulo carrega a
+                             contagem de Business Cases e ela não pode ser digitada
+                             aqui sem passar a divergir do catálogo. Sem JS não
+                             nasce botão, em vez de nascer um botão morto. -->
+                        <div class="of-extras-cta" data-area="af"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Acervo. O cartao "Outras Areas" de /ed/areas/, em texto.
+                 La a midia dele e um marquee animado de capas de Business
+                 Case; aqui entra uma capa so, o Dashboard de Compras, que e
+                 uma das que rodam naquele marquee. O destino do botao e o da
+                 origem. -->
+            <div class="of-extras-card" id="of-ex-9">
+                <div class="of-card">
+                    <div class="of-card-midia">
+                        <img src="/ed/bf/oferta/dependencias/caso-diversos.webp" alt="" loading="lazy" decoding="async" width="960" height="540">
+                    </div>
+                    <div class="of-card-corpo">
+                        <div class="of-card-colunas">
+                            <div class="of-card-coluna">
+                                <div class="of-card-titulo-grupo">
+                                    <span class="of-card-label">Acervo completo</span>
+                                    <h3 class="of-card-titulo">Outras Áreas</h3>
+                                </div>
+                                <p class="of-card-desc">Tenha acesso a todo nosso acervo de Business Cases disponíveis , cursos práticos de análise de dados aplicados em cenários reais do mercado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     TICKET + FAQ + DEPOIMENTOS
+
+     Mesma partitura do topo: o ticket nas 3 primeiras colunas, o conteúdo
+     nas 7 últimas. O ticket é uma CÓPIA do de cima.
+
+     Na oferta do Infinite Pass esta seção abria com "o que você leva e o
+     que você perde se esperar" (os três lotes e os quatro bônus). Aqui não
+     há lote nem bônus, e o bloco saiu inteiro: o FAQ passa a abrir a
+     seção, e o ticket, sticky, acompanha a rolagem dele e dos depoimentos.
+     ══════════════════════════════════════════════════════════════════════ -->
+<section class="of-leva" id="leva" aria-label="Dúvidas e depoimentos">
+    <div class="of-leva-inner">
+
+        <div class="of-leva-lateral">
+            <!-- Ticket inteiro (metade de cima, serrilha e canhoto). O
+                 .of-ticket é quem gruda na rolagem; o -fx é a caixa que
+                 inclina no hover. No lugar do foil holográfico da oferta
+                 do Infinite Pass, que travava a rolagem, há um brilho leve
+                 só em CSS. -->
+            <div class="of-ticket">
+            <div class="of-ticket-fx">
+            <div class="of-lateral-card">
+
+                <!-- Faixa de imagem, em `cover`: decorativa, então é um
+                     background e fica fora da árvore de acessibilidade. -->
+                <div class="of-lateral-filler" aria-hidden="true"></div>
+
+                <div class="of-lateral-corpo">
+
+                    <!-- Vagas, no lugar do lote da origem. A barra é de
+                         efeito: o script tira a porcentagem do relógio, pelo
+                         cronograma de 06/11 a 23/11 que mora na tabela FASES
+                         do script.js (horário de Brasília). O que está escrito
+                         aqui é o estado da abertura, 0%, que é o que fica na
+                         tela se o script falhar. -->
+                    <div class="of-vagas" data-vagas>
+                        <div class="of-vagas-topo">
+                            <span class="of-vagas-titulo">Vagas</span>
+                            <span class="of-vagas-texto">0% das vagas preenchidas</span>
+                        </div>
+                        <div class="of-vagas-trilho" role="progressbar"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                             aria-label="Vagas preenchidas">
+                            <!-- a porcentagem é dado, então mora no HTML junto do
+                                 aria-valuenow, e não no CSS -->
+                            <div class="of-vagas-barra" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Plano e preço andam juntos. Sem toggle de perfil: a
+                         Black Friday tem uma oferta só, e os valores são fixos. -->
+                    <div class="of-valor">
+
+                        <div class="of-plano">
+                            <span class="of-plano-nome">Xperiun Completo</span>
+                            <!-- Os 2 anos e o desconto em tags de aviso, juntos à
+                                 direita: no meio do nome, em texto, o "2 anos"
+                                 sumia. -->
+                            <span class="of-plano-tags">
+                                <span class="tag-status" data-size="s" data-semantic="warning">2 anos</span>
+                                <span class="tag-status" data-size="s" data-semantic="warning">75% OFF</span>
+                            </span>
+                        </div>
+
+                        <!-- O preço de antes, riscado, em cima do de agora, e o
+                             à vista embaixo, os três no mesmo <p> pra herdarem o
+                             centramento do bloco. -->
+                        <p class="of-preco">
+                            <span class="of-preco-de">de 12x 197</span>
+                            <span class="of-preco-wrap">
+                                <span class="of-preco-prefixo">12x</span>
+                                <span class="of-preco-valor">47</span>
+                            </span>
+                            <span class="of-preco-avista">ou R$ 497 à vista</span>
+                        </p>
+
+                        <!-- Prova social: os cinco círculos nascem vazios de
+                             propósito, as fotos são sorteadas pelo script a cada
+                             carga. Irmão do <p> do preço, e não filho: <div>
+                             dentro de <p> não é HTML válido. -->
+                        <div class="of-prova">
+                            <div class="of-prova-pilha">
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                                <div class="of-prova-retrato"></div>
+                            </div>
+                            <p class="of-prova-texto">+35 mil alunos</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Linha tracejada de fecho, FORA do card: é o que faz o --dn800
+                 aparecer contra o preto da página. Decorativa. -->
+            <div class="of-lateral-divisor" aria-hidden="true"></div>
+
+            <!-- Canhoto do ticket. O CORPO INTEIRO é o link: clicar em
+                 qualquer lugar daqui leva à compra, e continua sendo UM
+                 controle de verdade (foca pelo teclado, funciona com Enter).
+                 O botão é só a aparência, num <span>.
+
+                 Ele abre o popup do form desta página (form-bf-oferta.html),
+                 como todo botão de compra com `data-abre-form`. -->
+            <div class="of-lateral-stub">
+                <a class="of-lateral-stub-corpo" href="#" data-abre-form>
+                    <span class="bf-btn of-stub-cta"><span>GARANTIR MINHA VAGA</span></span>
+                    <!-- O ano a mais, em verde, no lugar da linha de bônus da
+                         origem: não é bônus, é parte da oferta. -->
+                    <span class="of-stub-bonus">+ 1 ano grátis no Xperiun Completo</span>
+                    <!-- Código de barras ilustrativo: desenho, não dado. -->
+                    <span class="of-stub-barras" aria-hidden="true"></span>
+                </a>
+            </div>
+            </div>
+            </div>
+        </div>
+
+        <section class="of-faq-conteudo" id="faq" aria-labelledby="of-tit-faq">
+            <h2 class="sec-title of-faq-titulo" id="of-tit-faq">Pergunte como você perguntaria no WhatsApp</h2>
+
+            <div class="of-faq-painel">
+
+                <!-- `aria-live` porque o conteúdo troca no mesmo lugar: sem ele,
+                     quem usa leitor de tela clicaria no chip e não seria avisado
+                     de nada. -->
+                <div class="of-faq-chat" aria-live="polite">
+                    <div class="of-faq-linha">
+                        <span class="of-faq-avatar of-faq-avatar--marca">
+                            <img src="/ed/bf/oferta/dependencias/marca-simbolo.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                        </span>
+                        <div class="of-faq-balao">
+                            <span class="of-faq-quem">Xperiun</span>
+                            <p class="of-faq-texto">Olá, qual é a sua dúvida sobre a Black Friday? 😄</p>
+                        </div>
+                    </div>
+                    <div class="of-faq-linha of-faq-linha--eu">
+                        <div class="of-faq-avatar of-faq-avatar--eu" aria-hidden="true"></div>
+                        <div class="of-faq-balao">
+                            <span class="of-faq-quem">Você</span>
+                            <p class="of-faq-texto" data-faq-pergunta>Até quando vai esse preço de Black Friday?</p>
+                        </div>
+                    </div>
+                    <div class="of-faq-linha">
+                        <span class="of-faq-avatar of-faq-avatar--marca">
+                            <img src="/ed/bf/oferta/dependencias/marca-simbolo.svg" width="48" height="48" alt="" loading="lazy" decoding="async">
+                        </span>
+                        <div class="of-faq-balao">
+                            <span class="of-faq-quem">Xperiun</span>
+                            <p class="of-faq-texto" data-faq-resposta>Esta condição de 75% OFF é exclusiva para o dia de hoje (06 de novembro) ou enquanto durarem os lotes promocionais de servidores</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="of-faq-chips" role="group" aria-label="Perguntas frequentes">
+                        <button class="tag of-faq-chip is-active" type="button" data-size="m" data-color="dark" data-faq="1" aria-pressed="true">Até quando vai esse preço de Black Friday?</button>
+                        <button class="tag of-faq-chip" type="button" data-size="m" data-color="dark" data-faq="2" aria-pressed="false">Como funciona o acesso à plataforma?</button>
+                        <button class="tag of-faq-chip" type="button" data-size="m" data-color="dark" data-faq="3" aria-pressed="false">O que está incluso neste preço da Black Friday?</button>
+                        <button class="tag of-faq-chip" type="button" data-size="m" data-color="dark" data-faq="4" aria-pressed="false">O plano tem garantia?</button>
+                        <button class="tag of-faq-chip" type="button" data-size="m" data-color="dark" data-faq="5" aria-pressed="false">Posso parcelar no cartão?</button>
+                </div>
+
+                <!-- As respostas moram aqui, no HTML, e não dentro do script: é o
+                     que faz elas existirem na página mesmo sem JS. O balão acima
+                     recebe uma cópia do texto. -->
+                <div class="of-faq-fonte" hidden>
+                    <p data-faq="1">Esta condição de 75% OFF é exclusiva para o dia de hoje (06 de novembro) ou enquanto durarem os lotes promocionais de servidores</p>
+                    <p data-faq="2">Assim que o pagamento for aprovado, você recebe os dados de acesso no seu e-mail e já pode começar a estudar.</p>
+                    <p data-faq="3">1 ano de acesso a Plataforma da Xperiun e a todos os novos conteúdos que forem atualizados durante o seu período de acesso.</p>
+                    <p data-faq="4">Sim! Você tem 7 dias de garantia incondicional. Se entrar, olhar a plataforma e sentir que não é para você, basta pedir o reembolso com um clique e devolvemos 100% do seu dinheiro.</p>
+                    <p data-faq="5">Sim, em até 12 vezes no cartão de crédito.</p>
+                </div>
+
+            </div>
+
+            <!-- Corte entre os chips e o rodapé. -->
+            <div class="of-faq-divisor" aria-hidden="true"></div>
+
+            <div class="of-faq-rodape">
+                <p class="of-faq-sobrou">Sobrou alguma dúvida que não está aqui?</p>
+                <a class="btn" data-size="m" data-emphasis="medium"
+                   href="https://api.whatsapp.com/send?phone=554831974984"
+                   target="_blank" rel="noopener">Falar com o time no WhatsApp</a>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             DEPOIMENTOS
+
+             O .sec-depos da home, na TERCEIRA fileira deste mesmo grid.
+             Divide o ticket com as duas de cima: a lateral atravessa as
+             três (grid-row 1 / -1) e o ticket, sticky, acompanha a rolagem
+             das três de ponta a ponta.
+
+             Aqui ele vive em 7 colunas, não na largura da tela, e é por
+             isso que os tamanhos mudaram: dois cards visíveis em vez de
+             três, e a tipografia de dentro deles um degrau abaixo. O
+             carrossel em si é o mesmo, incluindo o giro infinito por cópia.
+
+             O bloco dos logos de empregadores (.of-depos-empresas) ficou de
+             fora: ele é outra seção, com título próprio, e esta página já
+             mostra logos de empresa na esteira do card da Comunidade.
+             ══════════════════════════════════════════════════════════════ -->
+        <section class="of-depos-conteudo" aria-labelledby="of-tit-depoimentos">
+
+            <div class="of-depos-cabecalho">
+                <div class="of-depos-cabecalho-esq">
+                    <div class="of-prova">
+                        <div class="of-prova-pilha">
+                            <div class="of-prova-retrato"></div>
+                            <div class="of-prova-retrato"></div>
+                            <div class="of-prova-retrato"></div>
+                            <div class="of-prova-retrato"></div>
+                            <div class="of-prova-retrato"></div>
+                        </div>
+                        <p class="of-prova-texto">+35 mil alunos</p>
+                    </div>
+                    <h2 class="of-depos-titulo sec-title" id="of-tit-depoimentos">Quem aprendeu na Xperiun está dizendo</h2>
+                    <div class="of-depos-estrelas">
+                        <div class="of-depos-estrelas-pilha">
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                            <span class="material-symbols-outlined">star</span>
+                        </div>
+                        <p class="of-depos-nota">Avaliação média 4,9 estrelas</p>
+                    </div>
+                </div>
+                <div class="of-depos-nav">
+                    <button class="btn" data-size="m" data-icon data-emphasis="subtle" id="of-depos-anterior" aria-label="Anterior">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button class="btn" data-size="m" data-icon data-emphasis="subtle" id="of-depos-proximo" aria-label="Próximo">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- A trilha é um scroller nativo, ao contrário do carrossel dos
+                 extras: aqui o arrasto é a rolagem horizontal do próprio
+                 navegador, e as setas só empurram um passo. O giro infinito
+                 vem de cópias que o script põe antes e depois. -->
+            <div class="of-depos-janela">
+                <div class="of-depos-trilha" id="of-depos-trilha-id">
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="rfp3nnEuQic"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-edson.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Edson</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="5fjerKKTGGs"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-eduardo.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Eduardo</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="vfbwoyCyv9Y"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-claudio.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Cláudio</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="9xt3-AQcH80"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-cleiton.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Cleiton</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="bPFL_QZYiwg"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-daniel.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Daniel</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="kHV7Tqnv1nY"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-vinicius.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Vinícius</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="fwOgSvKf5fA"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-gabriel.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Gabriel</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="CkKg8x9ADC4"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-ezequiel.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Ezequiel</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="Jdi6xmjSqPc"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-louiz.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Louiz</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="i_OWt-A5kDg"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-pedro.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Pedro</p></div></div></div></div>
+                <div class="of-depos-card"><div class="of-depos-video" data-vid="FPi0RUmpmb8"><img class="of-depos-capa" src="/ed/bf/oferta/dependencias/depoimento-vitoria.webp" alt="" loading="lazy" decoding="async" width="564" height="318"><div class="of-depos-info"><button class="of-depos-play" aria-label="Reproduzir" tabindex="-1"><span class="material-symbols-outlined">play_arrow</span></button><div class="of-depos-info-texto"><p class="of-depos-info-rotulo">Assistir depoimento de:</p><p class="of-depos-info-nome">Vitória</p></div></div></div></div>
+                </div>
+            </div>
+
+            <!-- Empregadores. É o .of-depos-empresas da home, fechando o bloco
+                 de depoimentos: os vídeos dizem quem aprendeu, a grade diz
+                 onde essa gente foi parar.
+
+                 Lá a grade ocupa a largura da tela em 6 colunas; aqui vive nas
+                 mesmas 7 colunas do resto e fica em 4, que é o que deixa cada
+                 logo com espaço de sobra em vez de 162px.
+
+                 Os doze foram sorteados uma vez, da mesma lista de vinte que a
+                 home usa, e vivem aqui. Na home eles giram sozinhos num
+                 intervalo; aqui não, porque a página inteira já resolveu que
+                 sorteio é coisa de escrever uma vez. -->
+            <section class="of-depos-empresas" aria-labelledby="of-tit-empresas">
+                <div class="of-depos-empresas-cabecalho">
+                    <h2 class="of-depos-empresas-titulo sec-title" id="of-tit-empresas">Quem já é Incomparável trabalha aqui</h2>
+                </div>
+                <div class="of-depos-logos-id" id="of-depos-logos-id">
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                    <div class="of-depos-logo"><img alt="" loading="lazy" decoding="async"></div>
+                </div>
+            </section>
+
+        </section>
+
+    </div>
+</section>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CTA FIXO
+
+     O .bf-rodape-cta de /ed/bf/: o resumo da oferta à esquerda e, à
+     direita, o botão com a contagem embaixo. Lá a contagem é o tempo até
+     a abertura; aqui é a de vagas, e o nome do plano leva o "2 anos".
+
+     Só aparece quando NENHUM dos tickets está na tela. A contagem é um
+     `.of-vagas` com a mesma marca `data-vagas` dos tickets, e o script
+     escreve o mesmo número em todos, então o daqui anda junto com o das
+     barras.
+     Nasce escondida (aria-hidden + visibility no CSS).
+     ══════════════════════════════════════════════════════════════════════ -->
+<aside class="bf-rodape-cta" id="bf-rodape-cta" aria-label="Oferta Black Friday" aria-hidden="true">
+    <div class="bf-rodape-info">
+        <!-- O "2 anos" numa tag de aviso do DS, e não no meio do nome: em
+             --label-s e --bw-75, como o resto da linha, ele sumia. -->
+        <span class="bf-rodape-plano">
+            <span class="bf-rodape-nome">Xperiun Completo</span>
+            <span class="tag-status" data-size="m" data-semantic="warning">2 anos</span>
+        </span>
+        <span class="bf-rodape-preco">
+            <span class="bf-rodape-multi">12×</span>
+            <span class="bf-rodape-valor">47</span>
+            <span class="bf-rodape-off">75% OFF</span>
+        </span>
+    </div>
+    <div class="bf-rodape-acao">
+        <a class="bf-btn bf-btn--rodape" href="#" data-abre-form><span>GARANTIR MINHA VAGA</span></a>
+        <!-- Contagem e barra num .of-vagas, o mesmo bloco dos tickets: o
+             script escreve o número e a largura da barra nos dois. -->
+        <div class="of-vagas bf-rodape-vagas" data-vagas>
+            <span class="bf-contagem">
+                <span class="bf-contagem-num of-vagas-num">0%</span>
+                <span class="bf-contagem-un">das vagas</span>
+            </span>
+            <div class="of-vagas-trilho" role="progressbar"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                 aria-label="Vagas preenchidas">
+                <div class="of-vagas-barra" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- Sem menu e sem footer, a mesma decisão da /ed/infinite-pass/oferta/:
+     a página é de conversão, e qualquer saída pro resto do site é
+     vazamento. O aviso legal continua nas meta tags do <head> e no
+     fingerprint no fim deste arquivo. -->
+
+<!-- Popup do form desta página (form-bf-oferta.html), aberto por todo
+     botão de compra com `data-abre-form`. O form ainda NÃO existe na
+     ActiveCampaign: ver o comentário do topo daquele arquivo. -->
+<div data-popup-form="bf-oferta"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=3"></script>
+
+<!-- Smooth scroll global (links âncora com behavior: smooth) -->
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Revela os elementos .motion ao entrarem na tela, ligando .is-revealed.
+     É o que dispara a animação da arte dos cards de formação. -->
+<script src="/ed/motion-cards.js"></script>
+
+<!-- Catálogo de cursos por formação e de Business Cases por área, os
+     mesmos que /ed/areas/ e /ed/bf/ leem. -->
+<script src="/ed/site-dependencias/dados-cursos.js?v=1"></script>
+<script src="/ed/areas/dados-areas.js?v=1"></script>
+<!-- XpFolder: monta a pasta 3D e abre o lightbox dos cursos. -->
+<script src="/ed/areas/pasta.js?v=1"></script>
+
+<!-- Foil do ticket, pastas, carrosséis, FAQ, vagas e CTA flutuante. -->
+<script src="/ed/bf/oferta/dependencias/script.js?v=12"></script>
+
+<!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

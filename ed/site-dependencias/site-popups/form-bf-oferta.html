@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fragmento de popup, carregado pelo form-include.js: não é página, fica fora da busca e do sitemap. -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>Black Friday, oferta - Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Popup da página de OFERTA da Black Friday (/ed/bf/oferta/). É o
+     irmão do form-bf-v3.html, que atende a /ed/bf/: mesma cara (acento em
+     warning, o --wr500 em 255 255 0, símbolo + BLACK FRIDAY em miniatura e
+     o botão amarelo da campanha), outro momento. Lá a pessoa entra no Grupo
+     VIP; aqui ela já está garantindo a vaga da oferta.
+
+     ⚠️ AINDA SEM FORM NA ACTIVECAMPAIGN. O form não existe lá, então os
+     números que identificam ele estão VAZIOS de propósito, e enviar agora
+     não chega a lugar nenhum (a AC recusa sem u/f). Quando o form for
+     criado, preencher, a partir do embed oficial (AC > Forms > o form >
+     Integrate > HTML):
+       - u e f: o número do form;
+       - or: o UUID de origem;
+       - os campos de rastreamento: copiar os hidden "field[N]" do embed
+         (no form 407 da /ed/bf/ são field[2/3/4/5/207/208]; os deste form
+         podem ser outros);
+       - trocar "bfoferta" pelo número nos ids `_form_bfoferta_` e
+         `_form_bfoferta_submit` e na classe `_form_bfoferta`: a resposta
+         da AC chama o sucesso pelo número (`_form_<N>_`), e é por ele que o
+         form.js acha este form.
+     O redirect depois do envio é configurado NA AC, não aqui.
+
+     O lockup (.bf-titulo--mini) e o botão (.bf-btn) são estilizados pelo
+     style.css da /ed/bf/oferta/, que é a página que carrega este popup: o
+     form-include.js só aproveita o .popup-form daqui, e um <style> neste
+     arquivo seria descartado. Aberto sozinho, este arquivo mostra os dois
+     sem estilo. -->
+<div class="popup-form" id="popup-form-bf-oferta" style="--popup-accent-rgb: 255, 255, 0;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <div class="popup-form-icon-box">
+                    <svg class="popup-form-icon" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M386.73 433.999c9 27.48-10.54 74.02-49.89 113.37l-84.21 84.21C159.62 724.599 46.51 762.299 0 715.789l252.63-252.63c39.35-39.35 85.89-58.9 113.37-49.89l-155.48 176.21zm160.64-265.58-84.21 84.21c-39.35 39.35-58.9 85.89-49.89 113.37l176.21-155.48L434 386.729c27.48 9 74.02-10.54 113.37-49.89L800 84.209c-46.51-46.51-159.62-8.81-252.63 84.21m-378.95-84.21c-46.5 46.51-27.65 140.76 42.11 210.52l42.09 42.1c39.46 39.46 86.15 59 113.59 49.81l-71.49-91.92 91.92 71.49c9.19-27.45-10.35-74.13-49.81-113.59h-.01zm463.16 631.58c46.5-46.51 27.65-140.76-42.11-210.52l-42.09-42.1c-39.46-39.46-86.15-59-113.59-49.81l71.49 91.92-91.92-71.49c-9.19 27.45 10.35 74.13 49.81 113.59h.01l168.41 168.42z" fill="url(#popup-bf-oferta-grad)"/>
+                        <defs>
+                            <linearGradient id="popup-bf-oferta-grad" x1="42.11" y1="757.899" x2="757.9" y2="42.109" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#9600ff"/>
+                                <stop offset="1" stop-color="#4b00ff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <!-- Miniatura do lockup do topo da página. <p>, e não <h*>: é
+                     marca, não título. -->
+                <p class="bf-titulo bf-titulo--mini" aria-label="Black Friday">
+                    <span class="bf-titulo-linha bf-titulo-linha--black">Black</span>
+                    <span class="bf-titulo-linha bf-titulo-linha--friday">Friday</span>
+                </p>
+            </div>
+            <div class="popup-form-eyebrow">
+                <span class="tag-status" data-semantic="warning" data-size="m">Xperiun Completo, 2 anos com 75% OFF</span>
+            </div>
+            <p class="popup-form-label">Preencha seus dados para garantir sua vaga na Black Friday:</p>
+            <form
+                class="popup-form-form _form _form_bfoferta _inline-form _dark"
+                id="_form_bfoferta_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <!-- TODO AC: número do form em u e f (ver o comentário do topo) -->
+                <input type="hidden" name="u" value="">
+                <input type="hidden" name="f" value="">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <!-- TODO AC: UUID de origem do form -->
+                <input type="hidden" name="or" value="">
+
+                <!-- TODO AC: campos de rastreamento (hidden field[N]) do embed do form -->
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="you@domain.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <!-- Envio no botão amarelo da página. O form.js acha o botão
+                     pelo id terminado em `_submit` e o cancelar pela classe
+                     `.popup-form-cancel`, então trocar o visual não muda nada
+                     no envio. -->
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
+                    <button type="submit" class="bf-btn bf-btn--form" id="_form_bfoferta_submit"><span>GARANTIR MINHA VAGA</span></button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Pronto, recebemos seus dados. Em instantes você recebe as orientações por email.</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>
