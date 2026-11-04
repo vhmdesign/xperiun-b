@@ -1088,7 +1088,8 @@ main {
    Sequência (script.js liga .is-sequencia; o painel fica preso enquanto a
    seção passa). Cada fase é uma variável de 0 a 1 na seção:
      --ais-r4..--ais-r1: os níveis da raiz se recolhem, do mais fino ao
-       mais grosso (fase4 -> fase1, palestrantes-01.pdf);
+       mais grosso (fase4 -> fase1, palestrantes-01.pdf); o script.js usa
+       os mesmos valores pra redesenhar os galhos (raiz.js);
      --ais-pf-desce: o símbolo desce meia altura (topo no meio da tela);
      --ais-pf-fotos: o branco do símbolo dá lugar às fotos do Leo;
      --ais-pf-texto: título/texto da esquerda chegam pelos lados
@@ -1252,17 +1253,9 @@ main {
     color: var(--bw);
     opacity: calc(1 - var(--ais-pf-fotos, 1));
 }
-/* Cada nível encolhe pra base só no comprimento (stroke-dashoffset 0 -> 1,
-   pathLength 1); a grossura fica a do nível o tempo todo (40/20/10/5, do
-   <g> de cada um). Os cantos aparados das junções voltam junto com o nível
-   que os provoca. */
-.ais-profs-raiz [class^="g"] { stroke-dasharray: 1; }
-.ais-profs-raiz .g1 { stroke-dashoffset: var(--ais-r1, 1); }
-.ais-profs-raiz .g2 { stroke-dashoffset: var(--ais-r2, 1); }
-.ais-profs-raiz .g3 { stroke-dashoffset: var(--ais-r3, 1); }
-.ais-profs-raiz .g4 { stroke-dashoffset: var(--ais-r4, 1); }
-.ais-profs-raiz .c3 { transform: scale(calc(1 - var(--ais-r3, 1))); }
-.ais-profs-raiz .c4 { transform: scale(calc(1 - var(--ais-r4, 1))); }
+/* Os galhos são polígonos que o script.js redesenha com o scroll (raiz.js,
+   crescimento orgânico: cada nível volta pra dentro da ponta do pai na
+   ordem inversa da que nasce). */
 
 /* Fotos (7:8, fundo e recorte no mesmo enquadramento): largura do
    símbolo, topo no topo dele, deslocadas --ais-pf-pos alturas do símbolo

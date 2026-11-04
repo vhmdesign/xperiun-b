@@ -642,6 +642,21 @@ function ouvirMq(mq, fn) {
     var pontos = [].slice.call(sec.querySelectorAll('.ais-profs-pontos span'));
     var reduz = window.matchMedia('(prefers-reduced-motion: reduce)');
     var VARS = ['--ais-r4', '--ais-r3', '--ais-r2', '--ais-r1', '--ais-pf-desce', '--ais-pf-fotos', '--ais-pf-texto'];
+    // Raiz: os galhos são os polígonos de raiz.js (crescimento orgânico; a fase g recolhe com --ais-r(g+1)).
+    // Os dados são a metade esquerda; o 2º grupo do SVG é o espelho e recebe as mesmas formas.
+    var R = window.Raiz, RD = window.RAIZ_DADOS, galhos = [];
+    var grupos = sec.querySelectorAll('.ais-profs-galhos > g');
+    if (R && RD && grupos.length === 2) {
+        for (var gi = 0; gi < 2; gi++) {
+            for (var k = 0; k < RD.segs.length; k++) {
+                var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                grupos[gi].appendChild(el);
+                galhos.push(el);
+            }
+        }
+    }
+    // prog[g]: 1 = nível inteiro, 0 = recolhido; sem a sequência, tudo recolhido (fica só o símbolo)
+    function raiz(prog) { if (galhos.length) R.atualiza(galhos, RD, prog); }
     // [início, fim] de cada fase, em telas. Os níveis da raiz em fila: cada
     // um só começa quando o filho (o mais fino, preso na ponta dele)
     // terminou de recolher. Logo que acaba, o símbolo desce e, ao mesmo
@@ -669,7 +684,7 @@ function ouvirMq(mq, fn) {
         pendente = false;
         var seq = !reduz.matches;
         sec.classList.toggle('is-sequencia', seq);
-        if (!seq) { limpar(); return; }
+        if (!seq) { limpar(); raiz([0, 0, 0, 0]); return; }
         var vh = palco.offsetHeight;
         var p = -sec.getBoundingClientRect().top / vh;
         // fundo: transparente enquanto ela sobe; só depois de presa (topo
@@ -685,6 +700,8 @@ function ouvirMq(mq, fn) {
         VARS.forEach(function (n, i) {
             sec.style.setProperty(n, fase(p, FASES[i][0], FASES[i][1]).toFixed(4));
         });
+        // VARS[0..3] = --ais-r4..--ais-r1 (recolhimento do nível 4 ao 1)
+        raiz([3, 2, 1, 0].map(function (i) { return 1 - fase(p, FASES[i][0], FASES[i][1]); }));
         // Palestrantes: posição das fotos (1 embaixo, 0 no topo do símbolo,
         // -1 saindo por cima) e o nome (opacidade e deslocamento: o 1º chega
         // pela direita; nas trocas, os nomes sobem, o que sai esmaecendo e o
