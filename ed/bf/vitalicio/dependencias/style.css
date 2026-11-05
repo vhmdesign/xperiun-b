@@ -155,14 +155,18 @@ body {
 
 /* Vídeo 16:9 o maior possível: a largura é a menor entre a da linha e a
    altura livre da tela (100dvh menos marca, texto, valor, aviso, botões e gaps)
-   convertida em 16/9. Assim os botões aparecem sem rolar. */
+   convertida em 16/9. Assim os botões aparecem sem rolar.
+   Piso de 560px (ou a largura toda, se for menor): em tela baixa, como o
+   celular deitado, a conta dava zero ou negativo e o vídeo sumia; aí a
+   página rola. Telas de computador baixas usam o layout lado a lado (no
+   fim do arquivo). */
 .vit-video {
     grid-column: 1 / -1;
     justify-self: center;
     position: relative;
     width: 100%;
-    width: min(100%, calc((100vh - 536px) * 16 / 9));
-    width: min(100%, calc((100dvh - 536px) * 16 / 9));
+    width: clamp(min(100%, 560px), calc((100vh - 536px) * 16 / 9), 100%);
+    width: clamp(min(100%, 560px), calc((100dvh - 536px) * 16 / 9), 100%);
     aspect-ratio: 16 / 9;
     overflow: hidden;
     background: var(--dn900);
@@ -313,4 +317,41 @@ a.bf-btn:focus-visible {
     /* Empilhados, na largura toda, com a compra em cima. */
     .vit-cta-row { flex-direction: column; align-items: stretch; width: 100%; }
     .vit-cta-alt { order: 0; }
+}
+
+/* ── Tela de computador baixa: vídeo à esquerda, texto e compra à direita ──
+   Empilhado, o vídeo divide a altura com o texto e o bloco da compra, e
+   num notebook (1366x768, 1440x900) ficava com uns 400 a 650px de largura.
+   Lado a lado ele usa a altura quase toda: 7 das 10 colunas (5 das 8 em
+   ≤1439), com o texto em cima e a compra embaixo nas 3 colunas da direita.
+   A compra continua escondida até 4s depois do clique, só que agora entra
+   ao lado do vídeo, sem mexer nele. Fica depois das media do grid porque
+   sobrescreve os spans delas. Só na /ed/bf/vitalicio/ (.vit--video): o
+   obrigado usa este arquivo e não tem vídeo. */
+@media (min-width: 865px) and (max-height: 960px) {
+    .vit--video .vit-grid { align-items: start; }
+    .vit--video .vit-video {
+        grid-column: 1 / span 7;
+        grid-row: 1 / span 2;
+        align-self: center;
+        width: 100%;
+        /* 168 = marca (96) + respiro de baixo da seção (56) + 16 de folga */
+        width: min(100%, calc((100vh - 168px) * 16 / 9));
+        width: min(100%, calc((100dvh - 168px) * 16 / 9));
+    }
+    .vit--video .vit-sub,
+    .vit--video .vit-cta-wrap {
+        grid-column: 8 / span 3;
+        text-align: left;
+    }
+    .vit--video .vit-sub { grid-row: 1; align-self: end; }
+    .vit--video .vit-cta-wrap { grid-row: 2; align-items: stretch; }
+    .vit--video .vit-preco { align-items: flex-start; text-align: left; }
+    .vit--video .vit-cta-row { flex-direction: column; align-items: stretch; }
+    .vit--video .vit-cta-alt { order: 0; }
+}
+@media (min-width: 865px) and (max-width: 1439px) and (max-height: 960px) {
+    .vit--video .vit-video { grid-column: 1 / span 5; }
+    .vit--video .vit-sub,
+    .vit--video .vit-cta-wrap { grid-column: 6 / span 3; }
 }
