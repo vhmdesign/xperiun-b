@@ -52,6 +52,12 @@ body {
     height: 48px;
     margin: 24px 0;
 }
+/* Lockup do Infinite Pass (só na /ed/bf/vitalicio/), como no AI Champion. */
+.vit-brand-ip {
+    height: 48px;
+    width: auto;
+    display: block;
+}
 .vit-brand-div {
     width: 2px;
     height: 48px;
@@ -148,15 +154,15 @@ body {
 .vit-sub p { margin: 0; }
 
 /* Vídeo 16:9 o maior possível: a largura é a menor entre a da linha e a
-   altura livre da tela (100dvh menos marca, texto, aviso, botões e gaps)
+   altura livre da tela (100dvh menos marca, texto, valor, aviso, botões e gaps)
    convertida em 16/9. Assim os botões aparecem sem rolar. */
 .vit-video {
     grid-column: 1 / -1;
     justify-self: center;
     position: relative;
     width: 100%;
-    width: min(100%, calc((100vh - 432px) * 16 / 9));
-    width: min(100%, calc((100dvh - 432px) * 16 / 9));
+    width: min(100%, calc((100vh - 536px) * 16 / 9));
+    width: min(100%, calc((100dvh - 536px) * 16 / 9));
     aspect-ratio: 16 / 9;
     overflow: hidden;
     background: var(--dn900);
@@ -187,6 +193,26 @@ body {
 }
 /* A saída de baixa ênfase fica à esquerda, como no AI Champion. */
 .vit-cta-alt { order: -1; }
+
+/* Valor a mais do vitalício: o número grande em warning (a cor da oferta)
+   e o rótulo embaixo. */
+.vit-preco {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+.vit-preco-valor {
+    font: var(--h1-horizontal);
+    font-weight: 400;
+    color: var(--wr500);
+}
+.vit-preco-rotulo {
+    font: var(--p);
+    color: var(--bw-75);
+}
 
 /* Aviso honesto da compra em 1 clique: tag "Atenção" em cima do texto. */
 .vit-oneclick-note {
@@ -264,6 +290,7 @@ a.bf-btn:focus-visible {
     .vit-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
     .vit-brand { gap: 12px; height: 40px; }
     .vit-brand-div { height: 40px; }
+    .vit-brand-ip { height: 40px; }
     .vit-brand-xp { height: 24px; }
     .bf-titulo { font-size: 26px; }
     .vit { padding: 0 0 40px; }
