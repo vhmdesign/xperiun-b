@@ -631,7 +631,7 @@
     /* Rede, caso o script do <head> não tenha rodado: relógio de verdade. */
     if (!window.XpOferta || !window.XpOferta.agora) {
         window.XpOferta = {
-            ABERTURA: Date.parse('2026-11-06T00:00:00-03:00'),
+            ABERTURA: Date.parse('2026-11-06T08:00:00-03:00'),
             simulado: null,
             agora: function () { return Date.now(); }
         };
@@ -670,7 +670,7 @@
     function abre() {
         if (X.simulado !== null) {
             var url = new URL(location.href);
-            url.searchParams.set('agora', '2026-11-06T00:00');
+            url.searchParams.set('agora', '2026-11-06T08:00');
             location.replace(url.toString());
         } else {
             location.reload();
@@ -705,9 +705,10 @@
    com o -03:00 escrito no próprio carimbo, pra a conta não depender do
    fuso de quem visita:
 
-     06/11 00:00 a 06/11 23:59   de 48% a 97%
-     07/11 00:00 a 13/11 23:59   de 56% a 97%
-     14/11 00:00 a 23/11 23:59   de 56% a 99%
+     06/11 08:00 a 06/11 23:59   de 56% a 97%   (a abertura: o timer
+                                                termina às 08:00)
+     07/11 00:00 a 09/11 23:59   de 56% a 97%
+     10/11 00:00 a 23/11 23:59   de 56% a 99%
 
    Dentro de cada fase a subida é LINEAR: o mesmo tanto por hora, do
    começo ao fim. A origem usava 1-(1-t)^2, que sobe rápido no começo e
@@ -738,9 +739,9 @@
     'use strict';
 
     var FASES = [
-        { inicio: '2026-11-06T00:00:00-03:00', fim: '2026-11-06T23:59:00-03:00', de: 48, ate: 97 },
-        { inicio: '2026-11-07T00:00:00-03:00', fim: '2026-11-13T23:59:00-03:00', de: 56, ate: 97 },
-        { inicio: '2026-11-14T00:00:00-03:00', fim: '2026-11-23T23:59:00-03:00', de: 56, ate: 99 }
+        { inicio: '2026-11-06T08:00:00-03:00', fim: '2026-11-06T23:59:00-03:00', de: 56, ate: 97 },
+        { inicio: '2026-11-07T00:00:00-03:00', fim: '2026-11-09T23:59:00-03:00', de: 56, ate: 97 },
+        { inicio: '2026-11-10T00:00:00-03:00', fim: '2026-11-23T23:59:00-03:00', de: 56, ate: 99 }
     ].map(function (f) {
         return { inicio: Date.parse(f.inicio), fim: Date.parse(f.fim), de: f.de, ate: f.ate };
     });

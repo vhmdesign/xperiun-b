@@ -5,9 +5,9 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 UID:black-friday-2026@xperiun.com
-DTSTAMP:20261016T000000Z
-DTSTART:20261106T030000Z
-DTEND:20261106T040000Z
+DTSTAMP:20261105T000000Z
+DTSTART:20261106T110000Z
+DTEND:20261106T120000Z
 SUMMARY:Black Friday Xperiun: até 75% de desconto
 DESCRIPTION:Hoje é a Black Friday da Xperiun: a maior oferta do ano\, com 
  até 75% de desconto. As melhores condições costumam durar poucos minuto

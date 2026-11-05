@@ -1117,7 +1117,7 @@ function iniciaParado() {
 /* ══════════════════════════════════════════════════════════════════════
    Contagem no CTA fixo (porte da v2 da /ed/bf/ (já removida)).
 
-   Dias, horas e minutos até o data-alvo (06/11/2026, 00h de Brasília,
+   Dias, horas e minutos até o data-alvo (06/11/2026, 08h de Brasília,
    com o fuso escrito na data pra valer em qualquer relógio). A precisão
    é de minuto, então 15s de intervalo bastam. Passado o alvo, para em
    00 00 00.

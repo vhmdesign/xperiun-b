@@ -3553,7 +3553,7 @@ button.bf-btn[disabled] { opacity: 0.25; pointer-events: none; }
 /* ======================================================================
    ANTES DA ABERTURA: SÓ O TIMER
 
-   Até 06/11 00:00 (Brasília) o script do <head> põe .bf-antes no <html>,
+   Até 06/11 08:00 (Brasília) o script do <head> põe .bf-antes no <html>,
    e a página inteira vira esta contagem: o <main> e o CTA fixo somem, e a
    .bf-espera ocupa a tela. Sem a classe (depois da abertura, ou sem JS) a
    seção não existe na tela e a oferta aparece normal.
