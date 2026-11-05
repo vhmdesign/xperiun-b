@@ -18,20 +18,11 @@
      o botão amarelo da campanha), outro momento. Lá a pessoa entra no Grupo
      VIP; aqui ela já está garantindo a vaga da oferta.
 
-     ⚠️ AINDA SEM FORM NA ACTIVECAMPAIGN. O form não existe lá, então os
-     números que identificam ele estão VAZIOS de propósito, e enviar agora
-     não chega a lugar nenhum (a AC recusa sem u/f). Quando o form for
-     criado, preencher, a partir do embed oficial (AC > Forms > o form >
-     Integrate > HTML):
-       - u e f: o número do form;
-       - or: o UUID de origem;
-       - os campos de rastreamento: copiar os hidden "field[N]" do embed
-         (no form 407 da /ed/bf/ são field[2/3/4/5/207/208]; os deste form
-         podem ser outros);
-       - trocar "bfoferta" pelo número nos ids `_form_bfoferta_` e
-         `_form_bfoferta_submit` e na classe `_form_bfoferta`: a resposta
-         da AC chama o sucesso pelo número (`_form_<N>_`), e é por ele que o
-         form.js acha este form.
+     Form 522 na ActiveCampaign: u/f e os ids `_form_522_` e
+     `_form_522_submit` levam o número, porque a resposta da AC chama o
+     sucesso por ele e é assim que o form.js acha este form. Os field[2..5]
+     são os de UTM, preenchidos pelo form.js. O `or` (UUID de origem) está
+     vazio, como na maioria dos forms desta pasta.
      O redirect depois do envio é configurado NA AC, não aqui.
 
      O lockup (.bf-titulo--mini) e o botão (.bf-btn) são estilizados pelo
@@ -67,24 +58,26 @@
             </div>
             <p class="popup-form-label">Preencha seus dados para garantir sua vaga na Black Friday:</p>
             <form
-                class="popup-form-form _form _form_bfoferta _inline-form _dark"
-                id="_form_bfoferta_"
+                class="popup-form-form _form _form_522 _inline-form _dark"
+                id="_form_522_"
                 method="POST"
                 action="https://karpinskileonardo.activehosted.com/proc.php"
                 novalidate
             >
-                <!-- TODO AC: número do form em u e f (ver o comentário do topo) -->
-                <input type="hidden" name="u" value="">
-                <input type="hidden" name="f" value="">
+                <input type="hidden" name="u" value="522">
+                <input type="hidden" name="f" value="522">
                 <input type="hidden" name="s">
                 <input type="hidden" name="c" value="0">
                 <input type="hidden" name="m" value="0">
                 <input type="hidden" name="act" value="sub">
                 <input type="hidden" name="v" value="2">
-                <!-- TODO AC: UUID de origem do form -->
                 <input type="hidden" name="or" value="">
 
-                <!-- TODO AC: campos de rastreamento (hidden field[N]) do embed do form -->
+                <!-- UTMs: o form.js preenche a partir da URL da página. -->
+                <input type="hidden" name="field[2]" value="">
+                <input type="hidden" name="field[3]" value="">
+                <input type="hidden" name="field[4]" value="">
+                <input type="hidden" name="field[5]" value="">
 
                 <div class="input-group">
                     <span class="input-label">Nome</span>
@@ -110,7 +103,7 @@
                      no envio. -->
                 <div class="popup-form-actions">
                     <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Cancelar</button>
-                    <button type="submit" class="bf-btn bf-btn--form" id="_form_bfoferta_submit"><span>GARANTIR MINHA VAGA</span></button>
+                    <button type="submit" class="bf-btn bf-btn--form" id="_form_522_submit"><span>GARANTIR MINHA VAGA</span></button>
                 </div>
             </form>
             <p class="popup-form-success" hidden>Pronto, recebemos seus dados. Em instantes você recebe as orientações por email.</p>
