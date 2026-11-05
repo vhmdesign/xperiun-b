@@ -1283,6 +1283,13 @@ a.of-lateral-stub-corpo:hover {
     gap: 16px;
     margin-bottom: 32px;
 }
+/* As duas tags lado a lado: o prazo e, nas fases 1 e 2, o +1 ano bônus. */
+.bf-hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
 /* A promessa, em warning: a cor da oferta na página. */
 .bf-hero-chamada-destaque { color: var(--wr500); }
 .bf-hero-lede-l {
@@ -3653,3 +3660,20 @@ html.bf-antes .bf-espera {
 .of-parado *::after {
     animation-play-state: paused;
 }
+
+/* ======================================================================
+   +1 ANO BÔNUS: SÓ NAS FASES 1 E 2
+
+   Na fase 3 (a partir de 10/11 00:00, Brasília) não há o ano a mais. O
+   script do <head> põe .bf-sem-bonus no <html> antes da pintura, e o
+   script.js põe na virada pra quem está com a página aberta. A copy que
+   muda vem nas duas versões, marcadas:
+     .so-com-bonus   fases 1 e 2 (some na 3)
+     .so-sem-bonus   fase 3 (some na 1 e na 2)
+   Sem JS fica a versão com bônus. O `html` no seletor sobe a
+   especificidade acima da das tags do DS (.tag-status[data-*]), que
+   também declaram display. Vale também pro popup do form, que é injetado
+   nesta página.
+   ====================================================================== */
+html.bf-sem-bonus .so-com-bonus,
+html:not(.bf-sem-bonus) .so-sem-bonus { display: none; }

@@ -15,14 +15,16 @@
 
     <!-- ─── Título e SEO ─────────────────────────────────────── -->
     <title>Compra confirmada | Black Friday | Xperiun</title>
-    <meta name="description" content="Sua compra do Xperiun Completo na Black Friday está confirmada, com 2 anos de acesso e a opção de torná-lo vitalício.">
+    <meta name="description" content="Sua compra do Xperiun Completo na Black Friday está confirmada, com a opção de tornar o acesso vitalício.">
 
     <!-- ─── Favicon + CSS global (não mexer) ─────────────────── -->
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
 
     <!-- ─── CSS do upsell do vitalício (compartilhado) ───────── -->
-    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=4">
+    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=5">
+    <!-- Fase 3 da BF (10/11 em diante): sem o +1 ano bônus, o plano comprado é de 1 ano. -->
+    <script>if (Date.now() >= Date.parse('2026-11-10T00:00:00-03:00')) document.documentElement.classList.add('bf-sem-bonus');</script>
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -63,7 +65,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- RASCUNHO de copy (confirmar antes de publicar) -->
         <h1 class="vit-title">Compra <span class="vit-em">confirmada</span></h1>
         <div class="vit-sub">
-            <p>Você garantiu o Xperiun Completo com 75% OFF na Black Friday, com 2 anos de acesso a todas as formações da plataforma.</p>
+            <p>Você garantiu o Xperiun Completo com 75% OFF na Black Friday, com <span class="so-com-bonus">2 anos</span><span class="so-sem-bonus">1 ano</span> de acesso a todas as formações da plataforma.</p>
             <p>Mas dados e IA mudam rápido.</p>
             <p>Quem trata isso como habilidade central mantém o acesso <span class="vit-em">para sempre</span>.</p>
         </div>

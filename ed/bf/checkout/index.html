@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-11-05">
+    <title>Redirecionando | Black Friday | Xperiun</title>
+    <meta name="description" content="Estamos levando você para o pagamento da oferta da Black Friday da Xperiun.">
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <!-- Glow, marca e lockup BLACK FRIDAY: o CSS do funil pós-compra da BF
+         (o mesmo da /ed/bf/oferta/obrigado/). Por cima, o desta página. -->
+    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=5">
+    <link rel="stylesheet" href="/ed/bf/checkout/dependencias/style.css?v=1">
+    <!-- Sem JS o navegador vai direto pro checkout, sem os parâmetros. -->
+    <noscript><meta http-equiv="refresh" content="0;url=https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26"></noscript>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!--
+     PÁGINA DE PASSAGEM DO CHECKOUT DA BLACK FRIDAY (/ed/bf/checkout/)
+
+     Baseada na /ed/infinite-pass/checkout/. A AC redireciona o form 522
+     (popup da /ed/bf/oferta/) pra cá, e o script manda a pessoa pro
+     checkout da oferta repassando email, nome, telefone e UTMs:
+       https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26
+
+     Diferente da do Infinite Pass, aqui não há consulta de aluno: a BF tem
+     um link só, então não existe /api pra decidir o destino.
+-->
+<div class="vit-glow" aria-hidden="true"></div>
+
+<main class="bfc">
+
+    <div class="vit-brand">
+        <p class="bf-titulo" aria-label="Black Friday">
+            <span class="bf-titulo-linha bf-titulo-linha--black">Black</span>
+            <span class="bf-titulo-linha bf-titulo-linha--friday">Friday</span>
+        </p>
+        <span class="vit-brand-div" aria-hidden="true"></span>
+        <img class="vit-brand-xp" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
+             alt="Xperiun" width="107" height="32" fetchpriority="high" decoding="async">
+    </div>
+
+    <h1 class="bfc-title">Dados recebidos, estamos <span class="vit-em">garantindo sua oferta</span></h1>
+
+    <!-- role="status" pro leitor de tela anunciar a espera; o spinner é
+         decorativo e fica fora da árvore de acessibilidade. -->
+    <p class="bfc-redirect" role="status">Em instantes você vai para o pagamento.</p>
+
+    <span class="bfc-spinner" aria-hidden="true"></span>
+
+    <!-- Saída manual. Nasce no link puro e o script põe os parâmetros nele
+         logo na carga, pra quem clicar antes do redirect não perder nome,
+         telefone nem UTM. -->
+    <a class="link bfc-fallback" data-color="blue" data-fallback href="https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26">Não foi redirecionado? Aperte aqui!</a>
+
+</main>
+
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+<script src="/ed/bf/checkout/dependencias/script.js?v=1"></script>
+
+<!-- © 2026 Xperiun. Conteúdo protegido por direitos autorais. Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

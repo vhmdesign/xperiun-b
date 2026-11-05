@@ -1,0 +1,71 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   /ed/bf/checkout/: página de passagem pro checkout da Black Friday.
+
+   Vem DEPOIS de /ed/bf/vitalicio/dependencias/style.css, que já traz a
+   Syne na página, o fundo, o glow do topo, a marca (.vit-brand) com o
+   lockup BLACK FRIDAY e o destaque .vit-em (--wr500). Daqui sai só a tela
+   de espera: a coluna centrada, o título, o aviso, o spinner e o link de
+   saída, como na /ed/infinite-pass/checkout/.
+
+   Tokens: todos do root.css. Nenhuma cor escrita à mão.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.bfc {
+    position: relative;
+    z-index: 1;
+    max-width: 864px;
+    margin: 0 auto;
+    min-height: 100vh;        /* fallback */
+    min-height: 100dvh;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.bfc-title {
+    margin: 48px 0 0;
+    font: var(--h3-horizontal);
+    font-weight: 400;
+    color: var(--bw);
+}
+
+.bfc-redirect {
+    margin: 32px 0 0;
+    max-width: 44ch;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+
+/* Spinner: o mesmo anel de conic-gradient da /ed/infinite-pass/checkout/,
+   em warning, a cor da oferta na /ed/bf/. Indeterminado de propósito. */
+.bfc-spinner {
+    width: 44px;
+    height: 44px;
+    margin-top: 32px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, var(--wr500));
+    -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+            mask: radial-gradient(closest-side, transparent 64%, #000 66%);
+    animation: bfc-spin 0.8s linear infinite;
+}
+@keyframes bfc-spin { to { transform: rotate(360deg); } }
+
+/* Saída manual: o `.link` do DS. Duas classes pra o sublinhado ganhar do
+   `a:not(.btn) { text-decoration: none }` do root.css por especificidade
+   (mesma solução da /ed/infinite-pass/checkout/). */
+.link.bfc-fallback {
+    margin-top: 32px;
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .bfc-title { margin-top: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bfc-spinner { animation-duration: 2.4s; }
+}

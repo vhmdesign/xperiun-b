@@ -23,7 +23,7 @@
               mesmo resultado, e a trilha de navegação (JSON-LD abaixo) diz
               ao Google que esta página vive DENTRO da /ed/bf/. -->
     <title>Oferta Black Friday Xperiun: Xperiun Completo com 75% OFF</title>
-    <meta name="description" content="Oferta Black Friday Xperiun: o Xperiun Completo com 75% OFF e um ano grátis, com todas as Formações de Dados, IA e Power BI. Vagas limitadas.">
+    <meta name="description" content="Oferta Black Friday Xperiun: o Xperiun Completo com 75% OFF, com todas as Formações de Dados, IA e Power BI. Vagas limitadas.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://xperiun.com/ed/bf/oferta/">
 
@@ -34,7 +34,7 @@
     <meta property="og:site_name" content="Xperiun">
     <meta property="og:url" content="https://xperiun.com/ed/bf/oferta/">
     <meta property="og:title" content="Oferta Black Friday Xperiun | Xperiun Completo com 75% OFF">
-    <meta property="og:description" content="O maior desconto da história da Xperiun: o Xperiun Completo com 75% OFF e um ano grátis. Vagas limitadas.">
+    <meta property="og:description" content="O maior desconto da história da Xperiun: o Xperiun Completo com 75% OFF. Vagas limitadas.">
     <meta property="og:image" content="https://xperiun.com/ed/bf/oferta/dependencias/bf-og.jpg?v=681d0172">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -54,7 +54,7 @@
                 "name": "Oferta Black Friday Xperiun",
                 "url": "https://xperiun.com/ed/bf/oferta/",
                 "inLanguage": "pt-BR",
-                "description": "Oferta Black Friday Xperiun: o Xperiun Completo com 75% OFF e um ano grátis, com todas as Formações de Dados, IA e Power BI.",
+                "description": "Oferta Black Friday Xperiun: o Xperiun Completo com 75% OFF, com todas as Formações de Dados, IA e Power BI.",
                 "primaryImageOfPage": "https://xperiun.com/ed/bf/oferta/dependencias/bf-og.jpg?v=681d0172",
                 "isPartOf": { "@type": "WebSite", "name": "Xperiun", "url": "https://xperiun.com/" },
                 "publisher": { "@type": "Organization", "name": "Xperiun", "url": "https://xperiun.com/", "logo": "https://xperiun.com/logo.png" },
@@ -84,7 +84,7 @@
          hero é o de /ed/bf/, e o que ainda valia daquele arquivo mora no
          style.css desta pasta. -->
     <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
-    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=20">
+    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=21">
 
     <!-- Relógio da página e o estado ANTES DA ABERTURA. Inline e no <head>
          de propósito: a decisão "timer ou oferta" precisa estar tomada
@@ -101,6 +101,10 @@
     <script>
     (function () {
         var ABERTURA = Date.parse('2026-11-06T08:00:00-03:00');
+        /* Fim do +1 ano bônus: o começo da fase 3 (a mesma data da tabela
+           FASES do script.js). A partir daí o <html> leva .bf-sem-bonus e o
+           CSS troca toda a copy marcada com .so-com-bonus / .so-sem-bonus. */
+        var FIM_BONUS = Date.parse('2026-11-10T00:00:00-03:00');
         var desvio = 0, alvo = NaN;
         var pedido = new URLSearchParams(location.search).get('agora');
         if (pedido) {
@@ -113,11 +117,13 @@
         }
         window.XpOferta = {
             ABERTURA: ABERTURA,
+            FIM_BONUS: FIM_BONUS,
             pedido: pedido,
             simulado: isNaN(alvo) ? null : alvo,
             agora: function () { return Date.now() + desvio; }
         };
         if (window.XpOferta.agora() < ABERTURA) document.documentElement.classList.add('bf-antes');
+        if (window.XpOferta.agora() >= FIM_BONUS) document.documentElement.classList.add('bf-sem-bonus');
     })();
     </script>
 
@@ -216,15 +222,20 @@
                      traz a data e a frase diz que o desconto "está chegando";
                      aqui a pessoa já está no dia, então a tag diz "Somente
                      hoje". Às 00:00 de 07/11 (Brasília) o script troca pro
-                     texto do `data-depois`, "Últimas vagas". -->
+                     texto do `data-depois`, "Últimas vagas". Ao lado, nas
+                     fases 1 e 2, a tag do +1 ano bônus, em success (o verde
+                     do ano a mais no ticket); na fase 3 ela some. -->
                 <div class="bf-hero-chamada">
-                    <span class="tag-status bf-hero-data" data-size="l" data-semantic="warning"><time datetime="2026-11-06" data-depois="Últimas vagas">Somente hoje</time></span>
+                    <span class="bf-hero-tags">
+                        <span class="tag-status bf-hero-data" data-size="l" data-semantic="warning"><time datetime="2026-11-06" data-depois="Últimas vagas">Somente hoje</time></span>
+                        <span class="tag-status so-com-bonus" data-size="l" data-semantic="success">+1 ano bônus</span>
+                    </span>
                     <p class="bf-hero-lede-l">O maior desconto da história da Xperiun chegou. <span class="bf-hero-chamada-destaque">Prepare-se para dominar Dados, IA e Negócios.</span></p>
                 </div>
 
                 <!-- No lugar do convite pro Grupo VIP de /ed/bf/: aqui a pessoa
                      já está na compra, então a lede é a própria oferta. -->
-                <p class="sec-lede bf-hero-lede">O Xperiun Completo com 75% OFF: 12x 47 no cartão ou R$ 497 à vista, e ainda um ano grátis.</p>
+                <p class="sec-lede bf-hero-lede">O Xperiun Completo com 75% OFF: 12x 47 no cartão ou R$ 497 à vista<span class="so-com-bonus">, e ainda um ano grátis</span>.</p>
 
                 <!-- O par de botões da origem. O "Garantir" só aparece abaixo
                      de 864: acima disso o ticket está ao lado, com o mesmo CTA.
@@ -280,11 +291,11 @@
 
                         <div class="of-plano">
                             <span class="of-plano-nome">Xperiun Completo</span>
-                            <!-- Os 2 anos e o desconto em tags de aviso, juntos à
+                            <!-- Os 2 anos (1 ano na fase 3, sem o bônus) e o desconto em tags de aviso, juntos à
                                  direita: no meio do nome, em texto, o "2 anos"
                                  sumia. -->
                             <span class="of-plano-tags">
-                                <span class="tag-status" data-size="s" data-semantic="warning">2 anos</span>
+                                <span class="tag-status" data-size="s" data-semantic="warning"><span class="so-com-bonus">2 anos</span><span class="so-sem-bonus">1 ano</span></span>
                                 <span class="tag-status" data-size="s" data-semantic="warning">75% OFF</span>
                             </span>
                         </div>
@@ -336,8 +347,8 @@
                 <a class="of-lateral-stub-corpo" href="#" data-abre-form>
                     <span class="bf-btn of-stub-cta"><span>GARANTIR MINHA VAGA</span></span>
                     <!-- O ano a mais, em verde, no lugar da linha de bônus da
-                         origem: não é bônus, é parte da oferta. -->
-                    <span class="of-stub-bonus">+ 1 ano grátis no Xperiun Completo</span>
+                         origem. Só nas fases 1 e 2: na fase 3 não há o ano a mais. -->
+                    <span class="of-stub-bonus so-com-bonus">+ 1 ano grátis no Xperiun Completo</span>
                     <!-- Código de barras ilustrativo: desenho, não dado. -->
                     <span class="of-stub-barras" aria-hidden="true"></span>
                 </a>
@@ -352,7 +363,8 @@
              No lugar do slider de anos da oferta do Infinite Pass. Os dois
              cards da origem ficam, com outro conteúdo: o da esquerda põe o
              preço normal de um ano de Xperiun Completo contra o da Black
-             Friday; o da direita, o ano grátis que vem junto.
+             Friday; o da direita, o ano grátis que vem junto (fases 1 e 2) ou,
+             na fase 3, que não tem o bônus, a economia em reais.
 
              Os números são fixos, sem script. O "R$ 1.500 a menos" é a conta
              dos dois à vista (1.997 - 497).
@@ -360,7 +372,7 @@
         <section class="of-conta" id="como-funciona" aria-labelledby="of-tit-conta">
             <div class="of-conta-inner">
 
-                <h2 class="sec-title of-conta-titulo" id="of-tit-conta">Na Black Friday, o Xperiun Completo sai com 75% OFF e ainda vem com um ano grátis</h2>
+                <h2 class="sec-title of-conta-titulo" id="of-tit-conta">Na Black Friday, o Xperiun Completo sai com 75% OFF<span class="so-com-bonus"> e ainda vem com um ano grátis</span></h2>
 
                 <div class="of-conta-cards">
 
@@ -391,10 +403,15 @@
                 </div>
 
                 <div class="of-card-ganho">
-                    <h3 class="of-card-ganho-titulo">E você ainda ganha</h3>
-                    <p class="of-ganho-valor">+1 ano grátis</p>
-                    <p class="of-ganho-texto">Um ano inteiro a mais de acesso ao Xperiun Completo, com todas as formações, nesta Black Friday.</p>
-                    <p class="of-ganho-nota">De R$ 1.997 por R$ 497 à vista: R$ 1.500 a menos no primeiro ano.</p>
+                    <h3 class="of-card-ganho-titulo so-com-bonus">E você ainda ganha</h3>
+                    <p class="of-ganho-valor so-com-bonus">+1 ano grátis</p>
+                    <p class="of-ganho-texto so-com-bonus">Um ano inteiro a mais de acesso ao Xperiun Completo, com todas as formações, nesta Black Friday.</p>
+                    <p class="of-ganho-nota so-com-bonus">De R$ 1.997 por R$ 497 à vista: R$ 1.500 a menos no primeiro ano.</p>
+                    <!-- Fase 3: sem o ano a mais, o card mostra a economia. -->
+                    <h3 class="of-card-ganho-titulo so-sem-bonus">E você economiza</h3>
+                    <p class="of-ganho-valor so-sem-bonus">R$ 1.500</p>
+                    <p class="of-ganho-texto so-sem-bonus">Um ano inteiro de Xperiun Completo, com todas as formações, por 75% menos nesta Black Friday.</p>
+                    <p class="of-ganho-nota so-sem-bonus">De R$ 1.997 por R$ 497 à vista.</p>
                 </div>
 
                 </div>
@@ -1171,11 +1188,11 @@
 
                         <div class="of-plano">
                             <span class="of-plano-nome">Xperiun Completo</span>
-                            <!-- Os 2 anos e o desconto em tags de aviso, juntos à
+                            <!-- Os 2 anos (1 ano na fase 3, sem o bônus) e o desconto em tags de aviso, juntos à
                                  direita: no meio do nome, em texto, o "2 anos"
                                  sumia. -->
                             <span class="of-plano-tags">
-                                <span class="tag-status" data-size="s" data-semantic="warning">2 anos</span>
+                                <span class="tag-status" data-size="s" data-semantic="warning"><span class="so-com-bonus">2 anos</span><span class="so-sem-bonus">1 ano</span></span>
                                 <span class="tag-status" data-size="s" data-semantic="warning">75% OFF</span>
                             </span>
                         </div>
@@ -1227,8 +1244,8 @@
                 <a class="of-lateral-stub-corpo" href="#" data-abre-form>
                     <span class="bf-btn of-stub-cta"><span>GARANTIR MINHA VAGA</span></span>
                     <!-- O ano a mais, em verde, no lugar da linha de bônus da
-                         origem: não é bônus, é parte da oferta. -->
-                    <span class="of-stub-bonus">+ 1 ano grátis no Xperiun Completo</span>
+                         origem. Só nas fases 1 e 2: na fase 3 não há o ano a mais. -->
+                    <span class="of-stub-bonus so-com-bonus">+ 1 ano grátis no Xperiun Completo</span>
                     <!-- Código de barras ilustrativo: desenho, não dado. -->
                     <span class="of-stub-barras" aria-hidden="true"></span>
                 </a>
@@ -1287,7 +1304,8 @@
                 <div class="of-faq-fonte" hidden>
                     <p data-faq="1">Esta condição de 75% OFF é exclusiva para o dia de hoje (06 de novembro) ou enquanto durarem os lotes promocionais de servidores</p>
                     <p data-faq="2">Assim que o pagamento for aprovado, você recebe os dados de acesso no seu e-mail e já pode começar a estudar.</p>
-                    <p data-faq="3">1 ano de acesso a Plataforma da Xperiun e a todos os novos conteúdos que forem atualizados durante o seu período de acesso.</p>
+                    <p data-faq="3" class="so-com-bonus">2 anos de acesso à Plataforma da Xperiun (1 ano + 1 ano bônus da Black Friday) e a todos os novos conteúdos que forem atualizados durante o seu período de acesso.</p>
+                    <p data-faq="3" class="so-sem-bonus">1 ano de acesso à Plataforma da Xperiun e a todos os novos conteúdos que forem atualizados durante o seu período de acesso.</p>
                     <p data-faq="4">Sim! Você tem 7 dias de garantia incondicional. Se entrar, olhar a plataforma e sentir que não é para você, basta pedir o reembolso com um clique e devolvemos 100% do seu dinheiro.</p>
                     <p data-faq="5">Sim, em até 12 vezes no cartão de crédito.</p>
                 </div>
@@ -1421,7 +1439,8 @@
 
      O .bf-rodape-cta de /ed/bf/: o resumo da oferta à esquerda e, à
      direita, o botão com a contagem embaixo. Lá a contagem é o tempo até
-     a abertura; aqui é a de vagas, e o nome do plano leva o "2 anos".
+     a abertura; aqui é a de vagas, e o nome do plano leva o "2 anos"
+     ("1 ano" na fase 3).
 
      Só aparece quando NENHUM dos tickets está na tela. A contagem é um
      `.of-vagas` com a mesma marca `data-vagas` dos tickets, e o script
@@ -1435,7 +1454,7 @@
              --label-s e --bw-75, como o resto da linha, ele sumia. -->
         <span class="bf-rodape-plano">
             <span class="bf-rodape-nome">Xperiun Completo</span>
-            <span class="tag-status" data-size="m" data-semantic="warning">2 anos</span>
+            <span class="tag-status" data-size="m" data-semantic="warning"><span class="so-com-bonus">2 anos</span><span class="so-sem-bonus">1 ano</span></span>
         </span>
         <span class="bf-rodape-preco">
             <span class="bf-rodape-multi">12×</span>
@@ -1470,7 +1489,7 @@
      botão de compra com `data-abre-form`. O form ainda NÃO existe na
      ActiveCampaign: ver o comentário do topo daquele arquivo. -->
 <div data-popup-form="bf-oferta"></div>
-<script src="/ed/site-dependencias/site-popups/form-include.js?v=4"></script>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=5"></script>
 
 <!-- Smooth scroll global (links âncora com behavior: smooth) -->
 <script src="/ed/site-dependencias/scroll-suave.js"></script>
@@ -1487,7 +1506,7 @@
 <script src="/ed/areas/pasta.js?v=1"></script>
 
 <!-- Foil do ticket, pastas, carrosséis, FAQ, vagas e CTA flutuante. -->
-<script src="/ed/bf/oferta/dependencias/script.js?v=14"></script>
+<script src="/ed/bf/oferta/dependencias/script.js?v=15"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

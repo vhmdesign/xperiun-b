@@ -22,12 +22,14 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
 
     <!-- ─── CSS do upsell (o mesmo do obrigado da oferta) ────── -->
-    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=4">
+    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=5">
 
     <!-- Com JS, o bloco da compra começa escondido e só aparece 4s depois
          do clique no vídeo (script.js). A classe entra antes da pintura
          pra ele não piscar; sem JS, ele aparece normal. -->
-    <script>document.documentElement.classList.add('vit-espera');</script>
+    <script>document.documentElement.classList.add('vit-espera');
+    /* Fase 3 da BF (10/11 em diante): sem o +1 ano bônus, o plano comprado é de 1 ano. */
+    if (Date.now() >= Date.parse('2026-11-10T00:00:00-03:00')) document.documentElement.classList.add('bf-sem-bonus');</script>
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -89,12 +91,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span>Compra em 1 clique: ao confirmar, a cobrança é feita <span class="vit-note-em">imediatamente</span> no cartão do seu cadastro, sem etapa extra de checkout.</span>
             </p>
             <div class="vit-cta-row">
-                <!-- ⚠️ PENDENTE: link da compra em 1 clique do upgrade
-                     vitalício da Black Friday (no AI Champion é
-                     go.xperiun.com/pay/<produto>/1click). Sem ele o botão
-                     não compra nada. -->
-                <a class="bf-btn vit-cta" href="#" data-pendente="link-1click"><span>GARANTIR ACESSO VITALÍCIO</span></a>
-                <a class="btn vit-cta-alt" data-size="m" data-emphasis="subtle" href="/ed/bf/oferta/obrigado/">Manter acesso de 2 anos</a>
+                <!-- Compra em 1 clique do upgrade vitalício da Black Friday
+                     (o mesmo esquema go.xperiun.com/pay/<produto>/1click
+                     do AI Champion). -->
+                <a class="bf-btn vit-cta" href="https://go.xperiun.com/pay/app-ultra-oferta-novos-up-vitalicio-bf26/1click"><span>GARANTIR ACESSO VITALÍCIO</span></a>
+                <a class="btn vit-cta-alt" data-size="m" data-emphasis="subtle" href="/ed/bf/oferta/obrigado/">Manter acesso de <span class="so-com-bonus">2 anos</span><span class="so-sem-bonus">1 ano</span></a>
             </div>
         </div>
 

@@ -529,7 +529,15 @@
     }
 
     function escreve(chip) {
-        var fonte = document.querySelector('.of-faq-fonte [data-faq="' + chip.dataset.faq + '"]');
+        /* A resposta 3 tem duas versões (com e sem o +1 ano bônus); vale a
+           da fase atual, a que o CSS não esconderia. */
+        var semBonus = document.documentElement.classList.contains('bf-sem-bonus');
+        var fonte = null;
+        Array.prototype.some.call(document.querySelectorAll('.of-faq-fonte [data-faq="' + chip.dataset.faq + '"]'), function (el) {
+            if (el.classList.contains(semBonus ? 'so-com-bonus' : 'so-sem-bonus')) return false;
+            fonte = el;
+            return true;
+        });
         if (!fonte) return false;
         pergunta.textContent = chip.textContent;
         resposta.textContent = fonte.textContent;
@@ -708,7 +716,7 @@
      06/11 08:00 a 06/11 23:59   de 56% a 97%   (a abertura: o timer
                                                 termina às 08:00)
      07/11 00:00 a 09/11 23:59   de 56% a 97%
-     10/11 00:00 a 23/11 23:59   de 56% a 99%
+     10/11 00:00 a 23/11 23:59   de 56% a 99%   (sem o +1 ano bônus)
 
    Dentro de cada fase a subida é LINEAR: o mesmo tanto por hora, do
    começo ao fim. A origem usava 1-(1-t)^2, que sobe rápido no começo e
@@ -749,6 +757,11 @@
     /* Quando o "Somente hoje" do hero vira "Últimas vagas": o fim do dia 6,
        ou seja, o começo da segunda fase. */
     var VIRADA_TAG = FASES[1].inicio;
+
+    /* Fim do +1 ano bônus: o começo da fase 3. O script do <head> já põe
+       .bf-sem-bonus na carga; aqui é pra quem está com a página aberta na
+       virada. */
+    var FIM_BONUS = (window.XpOferta && window.XpOferta.FIM_BONUS) || FASES[2].inicio;
 
     /* Quanto a curva desacelera. 1 é linear (o que vale aqui); 2 seria o
        ease-out quadrático da origem, que sobe rápido demais no começo. */
@@ -800,6 +813,10 @@
            mora no atributo, e o de antes no próprio HTML. */
         if (tag && agora >= VIRADA_TAG && tag.textContent !== tag.dataset.depois) {
             tag.textContent = tag.dataset.depois;
+        }
+
+        if (agora >= FIM_BONUS && !document.documentElement.classList.contains('bf-sem-bonus')) {
+            document.documentElement.classList.add('bf-sem-bonus');
         }
     }
 
