@@ -762,6 +762,7 @@
        .bf-sem-bonus na carga; aqui é pra quem está com a página aberta na
        virada. */
     var FIM_BONUS = (window.XpOferta && window.XpOferta.FIM_BONUS) || FASES[2].inicio;
+    var FIM_OFERTA = (window.XpOferta && window.XpOferta.FIM_OFERTA) || Date.parse('2026-11-24T00:00:00-03:00');
 
     /* Quanto a curva desacelera. 1 é linear (o que vale aqui); 2 seria o
        ease-out quadrático da origem, que sobe rápido demais no começo. */
@@ -817,6 +818,13 @@
 
         if (agora >= FIM_BONUS && !document.documentElement.classList.contains('bf-sem-bonus')) {
             document.documentElement.classList.add('bf-sem-bonus');
+        }
+
+        /* Fim da oferta, pra quem está com a página aberta na virada: o
+           <head> já faz isto na carga. */
+        if (agora >= FIM_OFERTA && !document.documentElement.classList.contains('bf-encerrada')) {
+            document.documentElement.classList.add('bf-encerrada');
+            window.scrollTo(0, 0);
         }
     }
 

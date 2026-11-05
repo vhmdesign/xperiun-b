@@ -3,6 +3,30 @@
 <head>
     <!-- ─── Meta básicos ─────────────────────────────────────── -->
     <meta charset="UTF-8">
+    <!-- A partir da abertura da oferta (06/11/2026 08:00, Brasília) esta
+         página manda direto pra /ed/bf/oferta/, levando a query (UTMs) e o
+         hash. Inline e no topo do <head>: decide antes de pintar qualquer
+         coisa. replace: a /ed/bf/ não fica no histórico. Quem está com a
+         página aberta na hora é levado pela contagem do script.js.
+         Teste: ?agora=2026-11-06T08:00 (Brasília) vai pra oferta com o
+         mesmo ?agora=, que a oferta também entende. -->
+    <script>
+    (function () {
+        var ABERTURA = Date.parse('2026-11-06T08:00:00-03:00');
+        var agora = Date.now();
+        var pedido = new URLSearchParams(location.search).get('agora');
+        if (pedido) {
+            var t = pedido.trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(t)) t += 'T00:00';
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(t)) t += ':00';
+            if (!/(Z|[+-]\d{2}:\d{2})$/.test(t)) t += '-03:00';
+            var alvo = Date.parse(t);
+            if (!isNaN(alvo)) agora = alvo;
+        }
+        window.XpBf = { ABERTURA: ABERTURA, desvio: agora - Date.now() };
+        if (agora >= ABERTURA) location.replace('/ed/bf/oferta/' + location.search + location.hash);
+    })();
+    </script>
     <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
@@ -1167,7 +1191,7 @@
 
 <!-- Popup, comparativo, entradas, pastas, tags, carrossel dos extras e
      diagrama do marketplace. -->
-<script src="/ed/bf/dependencias/script.js?v=15"></script>
+<script src="/ed/bf/dependencias/script.js?v=16"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

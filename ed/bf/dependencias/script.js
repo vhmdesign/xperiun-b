@@ -1119,8 +1119,9 @@ function iniciaParado() {
 
    Dias, horas e minutos até o data-alvo (06/11/2026, 08h de Brasília,
    com o fuso escrito na data pra valer em qualquer relógio). A precisão
-   é de minuto, então 15s de intervalo bastam. Passado o alvo, para em
-   00 00 00.
+   é de minuto, então 15s de intervalo bastam. Passado o alvo, a
+   página vai pra /ed/bf/oferta/ (é a abertura da oferta; o <head> já
+   faz o mesmo na carga), levando a query e o hash.
    ══════════════════════════════════════════════════════════════════════ */
 (function () {
     'use strict';
@@ -1137,13 +1138,24 @@ function iniciaParado() {
     };
     function dois(n) { return (n < 10 ? '0' : '') + n; }
 
+    /* O desvio do ?agora= de teste, que o script do <head> calcula. */
+    var desvio = (window.XpBf && window.XpBf.desvio) || 0;
+
     var timer;
     function atualiza() {
-        var falta = Math.max(0, alvo - Date.now());
+        var falta = Math.max(0, alvo - (Date.now() + desvio));
         if (campos.d) campos.d.textContent = dois(Math.floor(falta / 86400000));
         if (campos.h) campos.h.textContent = dois(Math.floor((falta % 86400000) / 3600000));
         if (campos.m) campos.m.textContent = dois(Math.floor((falta % 3600000) / 60000));
-        if (!falta) clearInterval(timer);
+        if (!falta) {
+            clearInterval(timer);
+            /* No teste, o ?agora= vai pra oferta já no instante da
+               abertura, senão ela abriria no instante antigo, no timer. */
+            var q = new URLSearchParams(location.search);
+            if (q.has('agora')) q.set('agora', '2026-11-06T08:00');
+            var qs = q.toString();
+            location.replace('/ed/bf/oferta/' + (qs ? '?' + qs : '') + location.hash);
+        }
     }
     atualiza();
     timer = setInterval(atualiza, 15000);

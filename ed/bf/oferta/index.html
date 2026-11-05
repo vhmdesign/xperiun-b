@@ -84,7 +84,7 @@
          hero é o de /ed/bf/, e o que ainda valia daquele arquivo mora no
          style.css desta pasta. -->
     <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
-    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=21">
+    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=22">
 
     <!-- Relógio da página e o estado ANTES DA ABERTURA. Inline e no <head>
          de propósito: a decisão "timer ou oferta" precisa estar tomada
@@ -105,6 +105,10 @@
            FASES do script.js). A partir daí o <html> leva .bf-sem-bonus e o
            CSS troca toda a copy marcada com .so-com-bonus / .so-sem-bonus. */
         var FIM_BONUS = Date.parse('2026-11-10T00:00:00-03:00');
+        /* Fim da oferta: depois da fase 3 (23/11 23:59). Daí em diante o
+           <html> leva .bf-encerrada e a página vira só o aviso de
+           "Oferta Finalizada" (a .bf-fim). */
+        var FIM_OFERTA = Date.parse('2026-11-24T00:00:00-03:00');
         var desvio = 0, alvo = NaN;
         var pedido = new URLSearchParams(location.search).get('agora');
         if (pedido) {
@@ -118,12 +122,14 @@
         window.XpOferta = {
             ABERTURA: ABERTURA,
             FIM_BONUS: FIM_BONUS,
+            FIM_OFERTA: FIM_OFERTA,
             pedido: pedido,
             simulado: isNaN(alvo) ? null : alvo,
             agora: function () { return Date.now() + desvio; }
         };
         if (window.XpOferta.agora() < ABERTURA) document.documentElement.classList.add('bf-antes');
         if (window.XpOferta.agora() >= FIM_BONUS) document.documentElement.classList.add('bf-sem-bonus');
+        if (window.XpOferta.agora() >= FIM_OFERTA) document.documentElement.classList.add('bf-encerrada');
     })();
     </script>
 
@@ -150,6 +156,20 @@
 
      Sem JS a classe não entra e esta seção não aparece, então os "00"
      daqui só seguram a largura até o primeiro tique do script. -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     DEPOIS DO FIM: OFERTA FINALIZADA
+
+     A partir de 24/11 00:00 (Brasília) o script do <head> põe
+     .bf-encerrada no <html>: o <main>, o CTA fixo e o timer somem e a
+     página é só este aviso. Pra testar: ?agora=2026-11-24T00:00.
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="bf-fim" aria-labelledby="bf-fim-titulo">
+    <img class="bf-espera-logo" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
+         alt="Xperiun" width="160" height="48" decoding="async">
+    <h1 class="bf-fim-titulo" id="bf-fim-titulo">Oferta Finalizada</h1>
+    <p class="bf-fim-texto">A Black Friday da Xperiun foi encerrada.</p>
+</section>
+
 <section class="bf-espera" aria-label="Contagem para a abertura da Black Friday">
     <img class="bf-espera-logo" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
          alt="Xperiun" width="160" height="48" decoding="async">
@@ -1506,7 +1526,7 @@
 <script src="/ed/areas/pasta.js?v=1"></script>
 
 <!-- Foil do ticket, pastas, carrosséis, FAQ, vagas e CTA flutuante. -->
-<script src="/ed/bf/oferta/dependencias/script.js?v=15"></script>
+<script src="/ed/bf/oferta/dependencias/script.js?v=16"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>
