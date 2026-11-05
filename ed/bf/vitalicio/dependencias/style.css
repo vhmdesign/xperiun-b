@@ -1,0 +1,273 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   UPSELL DO VITALÍCIO DA BLACK FRIDAY, duas páginas, este arquivo:
+     /ed/bf/vitalicio/         upsell: vídeo + compra em 1 clique
+     /ed/bf/oferta/obrigado/   obrigado da compra, com a volta pro vitalício
+
+   O mesmo princípio de /ed/aichampion/vitalicio/ e /ed/aichampion/obrigado/
+   (uma seção só, logo no topo, conteúdo no meio da tela, o vídeo o maior
+   possível sem esconder os botões), com a identidade da /ed/bf/: Syne na
+   página inteira, o lockup BLACK FRIDAY, o glow do topo da
+   /ed/bf/obrigado/ e o .bf-btn, o botão padrão da campanha, na compra.
+
+   Tokens: todos do root.css. Nenhuma cor escrita à mão.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Syne na página inteira, como na /ed/bf/: trocar a família do token troca
+   todos os tokens de texto do DS de uma vez (--h*, --p*, --label*, --btn*). */
+:root { --font-family: "Syne", sans-serif; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Fundo só no body (ele passa pro canvas): com fundo no html também, o
+   body pintava o próprio fundo por cima do glow, que é z-index -1. */
+body {
+    margin: 0;
+    background: var(--bb);
+    color: var(--bw);
+}
+
+/* Glow do topo: o mesmo da /ed/bf/obrigado/. */
+.vit-glow {
+    position: fixed;
+    top: -848px;
+    left: calc(50% - 720px);
+    width: 1440px;
+    height: 1440px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, var(--pc100) 0%, var(--pc200) 10%, var(--pc300) 25%, var(--pc500) 35%, var(--pc700) 45%, transparent 70%);
+    opacity: 0.35;
+}
+
+/* ── Marca no topo ──────────────────────────────────────────────────────────
+   Como o .vit-brand do AI Champion (marca + divisória de 2px em --bw-10 +
+   Xperiun a 50%), com o lockup BLACK FRIDAY no lugar do Infinite Pass. */
+.vit-brand {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    height: 48px;
+    margin: 24px 0;
+}
+.vit-brand-div {
+    width: 2px;
+    height: 48px;
+    background: var(--bw-10);
+    flex-shrink: 0;
+}
+.vit-brand-xp {
+    height: 32px;
+    width: auto;
+    display: block;
+    opacity: 0.5;
+}
+
+/* Lockup BLACK FRIDAY: o .bf-titulo da /ed/bf/obrigado/, menor. */
+.bf-titulo {
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 900;
+    /* Syne variável: sem fixar o eixo o Safari desenha o 400 padrão. */
+    font-variation-settings: 'wght' 900;
+    font-size: 32px;
+    line-height: 0.75;
+    text-transform: uppercase;
+    color: var(--bw);
+    display: flex;
+    flex-direction: column;
+}
+.bf-titulo-linha {
+    display: block;
+    width: fit-content;
+    padding: 0.1em 0;
+    margin: -0.1em 0;
+    white-space: nowrap;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bf-titulo-linha--black {
+    margin-left: auto;
+    background-image: linear-gradient(90deg, var(--bw), var(--bw-50));
+}
+.bf-titulo-linha--friday {
+    background-image: linear-gradient(270deg, var(--bw), var(--bw-50));
+}
+
+/* ── Seção única: ocupa a tela, conteúdo no meio da altura ─────────────── */
+.vit {
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 96px);    /* fallback */
+    min-height: calc(100dvh - 96px);   /* 96 = marca (48) + margens (24 + 24) */
+    display: flex;
+    align-items: center;
+    padding: 0 0 56px;
+}
+
+/* Grid do DS: Wide 1440, 10 cols, cai 8/6/4, gaps 32/32/24/16. O texto e
+   os botões vivem em 6 cols centradas; o vídeo usa a largura toda. */
+.vit-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+    row-gap: 32px;
+    align-items: center;
+}
+
+.vit-title {
+    grid-column: 3 / span 6;
+    margin: 0;
+    text-align: center;
+    font: var(--h2-horizontal);
+    font-weight: 400;
+    color: var(--bw);
+}
+/* Destaque em warning: a cor da oferta na /ed/bf/. */
+.vit-em { color: var(--wr500); }
+
+.vit-sub {
+    grid-column: 3 / span 6;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    font: var(--p);
+    color: var(--bw-75);
+}
+.vit-sub p { margin: 0; }
+
+/* Vídeo 16:9 o maior possível: a largura é a menor entre a da linha e a
+   altura livre da tela (100dvh menos marca, texto, aviso, botões e gaps)
+   convertida em 16/9. Assim os botões aparecem sem rolar. */
+.vit-video {
+    grid-column: 1 / -1;
+    justify-self: center;
+    position: relative;
+    width: 100%;
+    width: min(100%, calc((100vh - 432px) * 16 / 9));
+    width: min(100%, calc((100dvh - 432px) * 16 / 9));
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--dn900);
+}
+.vit-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* ── CTA + aviso ────────────────────────────────────────────────────────── */
+.vit-cta-wrap {
+    grid-column: 3 / span 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+.vit-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+/* A saída de baixa ênfase fica à esquerda, como no AI Champion. */
+.vit-cta-alt { order: -1; }
+
+/* Aviso honesto da compra em 1 clique: tag "Atenção" em cima do texto. */
+.vit-oneclick-note {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+    font: var(--p-s);
+    color: var(--bw-50);
+}
+.vit-oneclick-note .tag-status { flex-shrink: 0; }
+.vit-note-em { color: var(--wr300); }
+
+/* Obrigado: o aviso é só texto, centralizado. */
+.vit-oneclick-note--centro {
+    align-items: center;
+    text-align: center;
+}
+
+/* ── .bf-btn, o botão padrão da campanha (cópia do da /ed/bf/oferta/) ─────
+   Pílula externa translúcida + pílula interna em gradiente amarelo; no
+   hover a externa vira roxa e a interna ganha brilho em --pc200. */
+.bf-btn {
+    display: flex;
+    padding: 8px;
+    border-radius: 1920px;
+    background: var(--wr500-25);
+    text-decoration: none;
+    transition: background 0.5s ease;
+}
+.bf-btn > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 1920px;
+    background-image: linear-gradient(90deg, var(--wr500), var(--wr700));
+    font: 400 1rem/1 var(--font-family-horizontal);
+    color: var(--bb);
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.5s ease;
+}
+/* `a.bf-btn`: empata com o `a:not(.btn):hover` do root.css (underline), e
+   este arquivo vem depois. */
+a.bf-btn:hover,
+a.bf-btn:focus-visible {
+    background: var(--pc500-50);
+    text-decoration: none;
+    outline: none;
+}
+.bf-btn:hover > span,
+.bf-btn:focus-visible > span {
+    box-shadow: 0 16px 32px 0 var(--pc200), inset 0 -4px 16px 2px var(--pc200);
+}
+
+/* ── Responsivo do grid do DS (media DEPOIS da base) ───────────────────── */
+@media (max-width: 1439px) {
+    .vit-grid { grid-template-columns: repeat(8, 1fr); }
+    .vit-title,
+    .vit-sub,
+    .vit-cta-wrap { grid-column: 2 / span 6; }
+}
+@media (max-width: 864px) {
+    .vit-grid { grid-template-columns: repeat(6, 1fr); column-gap: 24px; }
+    .vit-title,
+    .vit-sub,
+    .vit-cta-wrap { grid-column: 1 / -1; }
+}
+@media (max-width: 576px) {
+    .vit-grid { grid-template-columns: repeat(4, 1fr); column-gap: 16px; }
+    .vit-brand { gap: 12px; height: 40px; }
+    .vit-brand-div { height: 40px; }
+    .vit-brand-xp { height: 24px; }
+    .bf-titulo { font-size: 26px; }
+    .vit { padding: 0 0 40px; }
+    /* Empilhados, na largura toda, com a compra em cima. */
+    .vit-cta-row { flex-direction: column; align-items: stretch; width: 100%; }
+    .vit-cta-alt { order: 0; }
+}
