@@ -22,7 +22,12 @@
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
 
     <!-- ─── CSS do upsell (o mesmo do obrigado da oferta) ────── -->
-    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=2">
+    <link rel="stylesheet" href="/ed/bf/vitalicio/dependencias/style.css?v=3">
+
+    <!-- Com JS, o bloco da compra começa escondido e só aparece 4s depois
+         do clique no vídeo (script.js). A classe entra antes da pintura
+         pra ele não piscar; sem JS, ele aparece normal. -->
+    <script>document.documentElement.classList.add('vit-espera');</script>
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -98,6 +103,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- Scroll suave da página inteira, self-hosted. -->
 <script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- O bloco da compra aparece 4s depois do clique no vídeo. -->
+<script src="/ed/bf/vitalicio/dependencias/script.js?v=1"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

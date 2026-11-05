@@ -184,6 +184,22 @@ body {
     align-items: center;
     gap: 16px;
 }
+/* Na /ed/bf/vitalicio/ o bloco da compra espera: o html leva .vit-espera
+   (script no <head>) e o script.js põe .is-visivel 4s depois do clique no
+   vídeo. visibility, e não display: o espaço fica reservado, então o vídeo
+   não muda de tamanho nem de lugar quando o bloco entra. */
+.vit-espera .vit-cta-wrap {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, visibility 0s linear 0.6s;
+}
+.vit-espera .vit-cta-wrap.is-visivel {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, visibility 0s;
+}
 .vit-cta-row {
     display: flex;
     flex-wrap: wrap;
