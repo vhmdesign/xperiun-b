@@ -1381,7 +1381,7 @@ main {
        côncavo com --pc200 nas laterais de baixo + degradê --pc200-10 de
        baixo pra cima), que o fundo --bb da seção esconderia. */
     background:
-        url("/ed/aisummit/dependencias/agenda/ais-agenda-palco.webp?v=3927c75f") no-repeat left bottom / min(100%, 1920px) auto,
+        url("/ed/aisummit/dependencias/agenda/ais-agenda-palco.webp?v=5739eecb") no-repeat left bottom / min(100%, 1920px) auto,
         radial-gradient(ellipse 150% 125% at 50% 0%, transparent 90%, var(--pc200) 100%),
         linear-gradient(to top, var(--pc200-10), transparent);
     /* O fundo da imagem é --bb opaco: lighten deixa o preto dela ceder à
@@ -1618,6 +1618,15 @@ main {
     .ais-agenda-card  { padding: 128px 16px 80px; }
     .ais-agenda-num   { left: 8px; top: 24px; font-size: 6rem; }
     .ais-agenda-avatar { width: 64px; height: 64px; }
+}
+/* Tela baixa (altura abaixo de 768, acima de 864 de largura): a arte
+   centralizada no pé e um pouco maior que a tela (115%, até 1920), senão
+   ela fica pequena demais no bloco de 100svh. Até 864 segue a de 960 fixa. */
+@media (min-width: 865px) and (max-height: 767px) {
+    .ais-agenda-arte-fixa {
+        background-position: center bottom, 0 0, 0 0;
+        background-size: min(115%, 1920px) auto, auto, auto;
+    }
 }
 
 /* Palco (.is-seq, script.js; sem reduced motion, acima de 864): a
