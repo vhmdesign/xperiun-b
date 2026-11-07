@@ -2077,8 +2077,9 @@ a.bf-btn:focus-visible,
     grid-template-columns: repeat(10, 1fr);
     /* DUAS fileiras declaradas: o FAQ e os depoimentos. Elas precisam ser explícitas porque a lateral pede
        `1 / -1`, e o -1 aponta pro fim do grid EXPLÍCITO. Sem isto ele não
-       existiria e o ticket ficaria preso numa fileira só. */
-    grid-template-rows: auto auto;
+       existiria e o ticket ficaria preso numa fileira só.
+       Agora são TRÊS: o vídeo entrou em cima do FAQ. */
+    grid-template-rows: auto auto auto;
     column-gap: 32px;
     /* Sem `row-gap`: o respiro entre as duas fileiras vem do padding do
        bloco de baixo, igual ao que o topo faz com o `.of-conta`. Assim a
@@ -2140,15 +2141,257 @@ a.bf-btn:focus-visible,
 /* O FAQ não é mais seção própria: é a segunda fileira do grid do bloco
    acima, na mesma coluna do conteúdo dele. Por isso não há `.of-faq-inner`
    nem lateral própria aqui, e o `.of-faq` (seção, com padding) sumiu. */
-.of-faq-conteudo {
+/* Fonte de ícones redeclarada AQUI de propósito. O player estreou ícones
+   no subset (volume_off, fullscreen, fullscreen_exit). Em produção o
+   root.css e o fonts.css ficam até 4h no cache do navegador, e quem visitou
+   antes do deploy seguiria com a URL velha do woff2, sem esses glifos:
+   ícone virando texto. Este style.css vem com ?v= no HTML (sempre fresco) e
+   carrega depois do root.css, então esta @font-face vence a do fonts.css e
+   força a fonte atual. O ?v= é carimbado pelo dl-symbols.cjs. Descritores
+   idênticos aos do fonts.css. */
+@font-face {
+    font-family: 'Material Symbols Outlined';
+    font-style: normal;
+    font-weight: 200 400;
+    font-display: block;
+    src: url(/ed/site-dependencias/site-fonts/material-symbols-200.woff2?v=ef9e700d) format('woff2');
+}
+
+/* Vídeo: primeira fileira, na coluna do conteúdo. Sem respiro em cima, o
+   espaço até a seção anterior é o padding do .of-leva. */
+.of-video-conteudo {
     grid-column: 4 / span 7;
     grid-row: 1;
     display: flex;
     flex-direction: column;
     gap: 32px;
-    /* Sem respiro em cima: o FAQ abre a seção, e o espaço até a seção
-       anterior é o padding do .of-leva. */
     padding: 0;
+}
+/* Mesmo tratamento do título do FAQ: --h3, peso 400, máscara anulada. O
+   padding/margin de 64px do .sec-title fica, é o halo do blur da entrada. */
+.of-video-titulo {
+    font: var(--h3);
+    font-weight: 400;
+    color: var(--bw);
+    -webkit-mask-image: none;
+    mask-image: none;
+    max-width: 24ch;
+}
+.of-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--dn900);
+    isolation: isolate;
+}
+/* Em tela cheia a caixa vira a tela inteira; o vídeo segue 16:9 no meio,
+   porque o YouTube encaixa o quadro dentro do iframe. */
+.of-video:fullscreen { border-radius: 0; aspect-ratio: auto; }
+.of-video:-webkit-full-screen { border-radius: 0; aspect-ratio: auto; }
+
+/* O iframe com 3x a altura da caixa, centrado: o YouTube encaixa o vídeo
+   no meio dele e põe título, logo e "mais vídeos" nas bordas, que ficam
+   fora do overflow. */
+.of-video-palco {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -100%;
+    height: 300%;
+    z-index: 1;
+    pointer-events: none;
+}
+.of-video-palco iframe,
+.of-video-player {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* Cobre o vídeo inteiro: clique aqui pausa ou volta a tocar, e nunca
+   chega no iframe. */
+.of-video-escudo {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.of-video-capa {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 0;
+    border: 0;
+    background: var(--dn900);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.of-video-capa img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+/* Véu --bb-50 por cima da imagem da capa, embaixo do botão de play. */
+.of-video-capa::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bb-50);
+}
+.of-video-capa .of-video-play-grande { z-index: 1; }
+.of-video-capa[hidden] { display: none; }
+
+/* O play é o .btn do DS, tamanho L só de ícone, ênfase core (medium-core): medida,
+   cor e hover vêm todos do root.css. Aqui só o que é da capa: ele fica
+   acima da imagem, o ícone preenchido, e o hover acende com a capa inteira,
+   não só em cima do botão. */
+.of-video-play-grande {
+    position: relative;
+    pointer-events: none;
+}
+.of-video-play-grande .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+.of-video-capa:hover .of-video-play-grande { background-position: 100% 0%; }
+.of-video-capa:focus-visible { outline: none; }
+.of-video-capa:focus-visible .of-video-play-grande { outline: 2px solid var(--pc300); outline-offset: 4px; }
+
+/* Barra de controles por baixo, aparece com o mouse em cima ou pausado. */
+.of-video-controles {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--dn900-75);
+    transition: opacity 0.2s ease;
+}
+.of-video-controles[hidden] { display: none; }
+.of-video.is-tocando:not(:hover):not(:focus-within) .of-video-controles { opacity: 0; }
+
+.of-video-btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 1920px;
+    background: var(--bw-15);
+    color: var(--bw);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+.of-video-btn:hover { background: var(--bw-25); }
+.of-video-btn:focus-visible { outline: 2px solid var(--pc300); outline-offset: 2px; }
+.of-video-btn .material-symbols-outlined {
+    font-size: 24px;
+    font-variation-settings: 'FILL' 1;
+}
+
+/* Ícone duplo por botão: o estado da caixa escolhe qual aparece. */
+.of-video-ic-play,
+.of-video-ic-mudo,
+.of-video-ic-sair { display: none; }
+.of-video:not(.is-tocando) .of-video-ic-pausa { display: none; }
+.of-video:not(.is-tocando) .of-video-ic-play { display: inline-block; }
+.of-video.is-mudo .of-video-ic-som { display: none; }
+.of-video.is-mudo .of-video-ic-mudo { display: inline-block; }
+.of-video.is-cheia .of-video-ic-cheia { display: none; }
+.of-video.is-cheia .of-video-ic-sair { display: inline-block; }
+.of-video.sem-tela-cheia [data-acao="tela"] { display: none; }
+
+.of-video-tempo {
+    font: var(--label-s);
+    color: var(--bw-75);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Linha do tempo: o preenchido até o ponto atual vem do --p (0 a 1), que
+   o script atualiza. O centro do círculo (16px) anda de 8px até 100% - 8px,
+   não de 0 a 100%; por isso o preenchido usa a mesma conta, senão descola
+   do círculo nas pontas. */
+.of-video-barra {
+    --p: 0;
+    flex: 1;
+    min-width: 0;
+    height: 8px;
+    margin: 0;
+    /* A regra global `input, textarea, select` põe padding 12px 16px em todo
+       input, range incluso: em cima/embaixo inflava a barra pra 24px, e dos
+       lados encurtava o curso do círculo, que descolava do preenchido. */
+    padding: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 1920px;
+    background: linear-gradient(to right,
+        var(--pc300) calc(8px + (100% - 16px) * var(--p)),
+        var(--bw-25) calc(8px + (100% - 16px) * var(--p)));
+    cursor: pointer;
+}
+.of-video-barra::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 1920px;
+    background: var(--bw);
+    border: 0;
+}
+.of-video-barra::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 1920px;
+    background: var(--bw);
+    border: 0;
+}
+.of-video-barra:focus-visible { outline: 2px solid var(--pc300); outline-offset: 4px; }
+
+@media (max-width: 576px) {
+    .of-video-controles { gap: 8px; padding: 8px 12px; }
+    .of-video-btn { width: 32px; height: 32px; }
+    .of-video-btn .material-symbols-outlined { font-size: 20px; }
+}
+@media (max-width: 1439px) {
+    .of-video-conteudo { grid-column: 4 / span 5; }
+}
+/* Empilhado, o vídeo vem logo depois do ticket e leva o mesmo respiro em
+   cima que o FAQ e os depoimentos: 96 em 6 colunas, 64 em 4. */
+@media (max-width: 864px) {
+    .of-video-conteudo {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        padding-top: 96px;
+    }
+}
+@media (max-width: 576px) {
+    .of-video-conteudo { padding-top: 64px; }
+}
+
+.of-faq-conteudo {
+    grid-column: 4 / span 7;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    /* O respiro até o vídeo, no lugar do row-gap do grid. Mesma cadência
+       dos depoimentos. Abaixo de 864 as media queries do fim do FAQ trocam. */
+    padding: 192px 0 0;
 }
 /* Mesmo tratamento dos outros títulos da página: peso 400 (a Syne não tem
    600 self-hosted) e máscara anulada, senão o degradê do .sec-title come o
@@ -3050,7 +3293,7 @@ a.bf-btn:focus-visible,
    ====================================================================== */
 .of-depos-conteudo {
     grid-column: 4 / span 7;
-    grid-row: 2;
+    grid-row: 3;
     display: flex;
     flex-direction: column;
     gap: 32px;

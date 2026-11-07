@@ -84,7 +84,7 @@
          hero é o de /ed/bf/, e o que ainda valia daquele arquivo mora no
          style.css desta pasta. -->
     <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
-    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=22">
+    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=30">
 
     <!-- Relógio da página e o estado ANTES DA ABERTURA. Inline e no <head>
          de propósito: a decisão "timer ou oferta" precisa estar tomada
@@ -1274,6 +1274,45 @@
             </div>
         </div>
 
+        <!-- Vídeo da Black Friday, acima do FAQ, na mesma coluna dele.
+
+             Player próprio por cima da API do YouTube: a página só carrega a
+             capa (frame de 4:41). O YouTube entra no primeiro clique, sem
+             controles nativos, e o script.js põe os nossos no lugar. O
+             iframe fica 3x mais alto que a caixa e centrado, então a barra
+             de título, o logo e o "mais vídeos" do YouTube caem fora do
+             recorte; o escudo transparente por cima engole qualquer clique
+             que levaria pro youtube.com. -->
+        <section class="of-video-conteudo" id="video" aria-labelledby="of-tit-video">
+            <h2 class="sec-title of-video-titulo" id="of-tit-video">Conheça a Plataforma Xperiun por dentro</h2>
+            <div class="of-video" data-yt="QuZJusq322k">
+                <div class="of-video-palco" aria-hidden="true"><div class="of-video-player"></div></div>
+                <div class="of-video-escudo" aria-hidden="true"></div>
+
+                <button class="of-video-capa" type="button" aria-label="Assistir ao vídeo">
+                    <img src="/ed/bf/oferta/dependencias/video-capa.webp" alt="" width="1280" height="720" loading="lazy" decoding="async">
+                    <span class="btn of-video-play-grande" data-size="l" data-icon data-emphasis="medium-core"><span class="material-symbols-outlined">play_arrow</span></span>
+                </button>
+
+                <div class="of-video-controles" hidden>
+                    <button class="of-video-btn" type="button" data-acao="tocar" aria-label="Pausar">
+                        <span class="material-symbols-outlined of-video-ic-pausa">pause</span>
+                        <span class="material-symbols-outlined of-video-ic-play">play_arrow</span>
+                    </button>
+                    <span class="of-video-tempo"><span data-tempo-atual>0:00</span> / <span data-tempo-total>0:00</span></span>
+                    <input class="of-video-barra" type="range" min="0" max="1000" step="1" value="0" aria-label="Posição do vídeo">
+                    <button class="of-video-btn" type="button" data-acao="som" aria-label="Tirar o som">
+                        <span class="material-symbols-outlined of-video-ic-som">volume_up</span>
+                        <span class="material-symbols-outlined of-video-ic-mudo">volume_off</span>
+                    </button>
+                    <button class="of-video-btn" type="button" data-acao="tela" aria-label="Tela cheia">
+                        <span class="material-symbols-outlined of-video-ic-cheia">fullscreen</span>
+                        <span class="material-symbols-outlined of-video-ic-sair">fullscreen_exit</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <section class="of-faq-conteudo" id="faq" aria-labelledby="of-tit-faq">
             <h2 class="sec-title of-faq-titulo" id="of-tit-faq">Pergunte como você perguntaria no WhatsApp</h2>
 
@@ -1526,7 +1565,7 @@
 <script src="/ed/areas/pasta.js?v=1"></script>
 
 <!-- Foil do ticket, pastas, carrosséis, FAQ, vagas e CTA flutuante. -->
-<script src="/ed/bf/oferta/dependencias/script.js?v=16"></script>
+<script src="/ed/bf/oferta/dependencias/script.js?v=19"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

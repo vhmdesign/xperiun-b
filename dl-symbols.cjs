@@ -14,8 +14,13 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
    pega — setados via JS concatenado (ex.: folder_open), em CSS content (ex.:
    keyboard_arrow_down) ou setados dinamicamente. O auto-scan abaixo só ADICIONA
    novos que aparecem no HTML; nada é removido. Se um ícone sumir/quebrar, é só
-   garantir que está aqui ou usado num <span class="material-symbols-outlined">. */
-const BASE = ('account_balance,account_balance_wallet,account_tree,add,alarm,analytics,api,apps,architecture,arrow_back,arrow_cool_down,arrow_forward,arrow_insert,arrow_left_alt,arrow_outward,arrow_right_alt,assignment,attach_file,auto_awesome,auto_graph,battery_full,bluetooth,bolt,bookmark,build,business_center,cable,calendar_month,camera_alt,cancel,chat,check,check_circle,chevron_left,chevron_right,cleaning_services,close,cloud,cloud_upload,co_present,code,contact_support,content_copy,conveyor_belt,data_object,database,dataset,delete,deployed_code,description,device_hub,directions_car,download,edit,error,expand_less,expand_more,favorite,flight,folder,folder_open,folder_special,function,grid_view,group,groups,handshake,help,home,how_to_reg,hub,image,info,insights,key,keyboard_arrow_down,keyboard_double_arrow_down,language,leaderboard,link,live_tv,local_shipping,location_on,lock,mail,manage_accounts,map,memory,menu,menu_book,mic,model_training,monitoring,notifications,palette,pause,person,phone,place,play_arrow,play_circle,print,psychology,quiz,recommend,refresh,remove,restaurant,rocket_launch,rule,save,schedule,schema,school,search,sell,send,settings,share,shield,shopping_cart,skip_next,skip_previous,smart_toy,south,south_west,speed,star,storage,table_view,terminal,thumb_up,timer,train,trending_up,verified,verified_user,videocam,visibility,volume_up,warehouse,warning,wifi,work,workspace_premium').split(',');
+   garantir que está aqui ou usado num <span class="material-symbols-outlined">.
+   Os ícones do gerador de certificados (temp/certificados, fora de ed/) são
+   criados via JS e também estão aqui (format_list_bulleted, logout,
+   text_fields, toggle_on, toggle_off, além dos que já existiam). As
+   animações do AI Summit (temp/ai-summit/animacoes) também ficam fora de
+   ed/: arrow_upward e tune estão aqui por elas. */
+const BASE = ('account_balance,account_balance_wallet,account_tree,add,alarm,analytics,api,apps,architecture,arrow_back,arrow_cool_down,arrow_forward,arrow_insert,arrow_left_alt,arrow_outward,arrow_right_alt,arrow_upward,assignment,attach_file,auto_awesome,auto_graph,battery_full,bluetooth,bolt,bookmark,build,business_center,cable,calendar_month,camera_alt,cancel,chat,check,check_circle,chevron_left,chevron_right,cleaning_services,close,cloud,cloud_upload,co_present,code,contact_support,content_copy,conveyor_belt,data_object,database,dataset,delete,deployed_code,description,device_hub,directions_car,download,edit,error,expand_less,expand_more,favorite,flight,folder,folder_open,folder_special,format_list_bulleted,function,grid_view,group,groups,handshake,help,home,how_to_reg,hub,image,info,insights,key,keyboard_arrow_down,keyboard_double_arrow_down,language,leaderboard,link,live_tv,local_shipping,location_on,lock,logout,mail,manage_accounts,map,memory,menu,menu_book,mic,model_training,monitoring,notifications,palette,pause,person,phone,place,play_arrow,play_circle,print,psychology,quiz,recommend,refresh,remove,restaurant,rocket_launch,rule,save,schedule,schema,school,search,sell,send,settings,share,shield,shopping_cart,skip_next,skip_previous,smart_toy,south,south_west,speed,star,storage,table_view,terminal,text_fields,thumb_up,timer,toggle_off,toggle_on,train,trending_up,tune,verified,verified_user,videocam,visibility,volume_up,warehouse,warning,wifi,work,workspace_premium').split(',');
 
 /* Varre recursivamente ed/ por .html e .js */
 function walk(dir, acc) {
@@ -50,6 +55,42 @@ const icons = [...set].sort().join(',');
    dependência de CDN pra ícone em qualquer página. */
 const url = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..400,0..1,0&icon_names=' + icons + '&display=block';
 
+/* CACHE-BUST NA FONTE (ed/), não só no dist.
+   A causa nº 1 do "ícone virando texto" no preview: o woff2 era regenerado
+   (ícone novo entrou no subset), mas a URL continuava `...woff2?v=6`, e o
+   browser seguia com o woff2 VELHO em cache, sem o glifo novo => ligatura
+   vira texto. Agora o ?v= é o md5 do próprio woff2: mudou o subset, mudou a
+   URL, o browser é obrigado a baixar a fonte nova. No Live Server o fonts.css
+   revalida a cada carga (max-age=0), então a URL nova chega na hora. Em
+   PRODUÇÃO não: o painel do Cloudflare força max-age=14400 (4h) em todo
+   CSS, root.css e fonts.css inclusos (medido em 07/11/2026), daí a
+   redeclaração por página descrita abaixo. O build.js continua carimbando
+   o dist do mesmo jeito. */
+function carimbaVersao() {
+  const woff2 = path.join(OUT, 'material-symbols-200.woff2');
+  if (!fs.existsSync(woff2)) return;
+  const hash = require('crypto').createHash('md5').update(fs.readFileSync(woff2)).digest('hex').slice(0, 8);
+  /* Todo CSS de ed/ que aponta pro woff2, não só o fonts.css: página que
+     estreia ícone novo redeclara a @font-face no próprio style.css (que vem
+     com ?v= no HTML, sempre fresco), porque em produção o root.css/fonts.css
+     ficam até 4h no cache do navegador e segurariam a URL velha. */
+  const alvos = [];
+  (function varre(d) {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      if (e.name === 'node_modules' || e.name.startsWith('.')) continue;
+      const p = path.join(d, e.name);
+      if (e.isDirectory()) varre(p);
+      else if (/\.css$/i.test(e.name)) alvos.push(p);
+    }
+  })('ed');
+  for (const p of alvos) {
+    const txt = fs.readFileSync(p, 'utf8');
+    const novo = txt.replace(/material-symbols-200\.woff2(\?v=[A-Za-z0-9]+)?/g, 'material-symbols-200.woff2?v=' + hash);
+    if (novo !== txt) fs.writeFileSync(p, novo);
+  }
+  console.log('cache-bust ed/: material-symbols-200.woff2?v=' + hash);
+}
+
 async function dl(u) {
   const r = await fetch(u, { headers: { 'User-Agent': UA } });
   if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + u);
@@ -81,6 +122,7 @@ async function dl(u) {
   outCss += ".material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}\n";
   fs.writeFileSync(path.join(OUT, 'material-symbols.css'), outCss);
   console.log('--- material-symbols.css OK (' + faces.length + ' faces) ---');
+  carimbaVersao();
 })().catch(e => {
   /* Não-fatal: se a rede/API falhar, mantém o subset existente e deixa o build
      seguir (nunca quebra o deploy por causa disso). Exit 0 de propósito. */

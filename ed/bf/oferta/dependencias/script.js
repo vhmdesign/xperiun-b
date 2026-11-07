@@ -1437,3 +1437,193 @@
 
     Array.prototype.forEach.call(blocos, function (b) { olho.observe(b); });
 })();
+
+/* ══════════════════════════════════════════════════════════════════════
+   PLAYER DO VÍDEO (acima do FAQ)
+
+   A página só tem a capa. No primeiro clique entra a IFrame API do
+   YouTube, com todos os controles nativos desligados, e quem manda são os
+   botões daqui: tocar/pausar, linha do tempo, som e tela cheia. O iframe
+   não recebe clique nenhum (o escudo do CSS fica por cima), então não há
+   caminho de dentro do player para o youtube.com.
+   ══════════════════════════════════════════════════════════════════════ */
+(function () {
+    var caixa = document.querySelector('.of-video[data-yt]');
+    if (!caixa) return;
+
+    var vid = caixa.dataset.yt;
+    var capa = caixa.querySelector('.of-video-capa');
+    var escudo = caixa.querySelector('.of-video-escudo');
+    var controles = caixa.querySelector('.of-video-controles');
+    var btnTocar = caixa.querySelector('[data-acao="tocar"]');
+    var btnSom = caixa.querySelector('[data-acao="som"]');
+    var btnTela = caixa.querySelector('[data-acao="tela"]');
+    var barra = caixa.querySelector('.of-video-barra');
+    var tAtual = caixa.querySelector('[data-tempo-atual]');
+    var tTotal = caixa.querySelector('[data-tempo-total]');
+
+    var player = null;
+    var pronto = false;
+    var arrastando = false;
+    var relogio = null;
+
+    var temTelaCheia = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+    if (!temTelaCheia) caixa.classList.add('sem-tela-cheia');
+
+    function mmss(s) {
+        s = Math.max(0, Math.floor(s || 0));
+        var m = Math.floor(s / 60), r = s % 60;
+        return m + ':' + (r < 10 ? '0' : '') + r;
+    }
+
+    function pintaBarra() {
+        if (!pronto || arrastando) return;
+        var dur = player.getDuration() || 0;
+        var cur = player.getCurrentTime() || 0;
+        var v = dur ? Math.round(cur / dur * 1000) : 0;
+        barra.value = v;
+        barra.style.setProperty('--p', v / 1000);
+        tAtual.textContent = mmss(cur);
+        tTotal.textContent = mmss(dur);
+    }
+
+    function marcaTocando(sim) {
+        caixa.classList.toggle('is-tocando', sim);
+        btnTocar.setAttribute('aria-label', sim ? 'Pausar' : 'Tocar');
+        clearInterval(relogio);
+        if (sim) relogio = setInterval(pintaBarra, 250);
+        pintaBarra();
+    }
+
+    function marcaSom() {
+        var mudo = player.isMuted();
+        caixa.classList.toggle('is-mudo', mudo);
+        btnSom.setAttribute('aria-label', mudo ? 'Ligar o som' : 'Tirar o som');
+    }
+
+    function alterna() {
+        if (!pronto) return;
+        if (player.getPlayerState() === 1) player.pauseVideo();
+        else player.playVideo();
+    }
+
+    function aoMudarEstado(e) {
+        var s = e.data;
+        if (s === 1) {               /* tocando */
+            capa.hidden = true;
+            marcaTocando(true);
+        } else if (s === 0) {        /* acabou: a capa volta, e o clique recomeça */
+            marcaTocando(false);
+            player.seekTo(0, true);
+            player.pauseVideo();
+            capa.hidden = false;
+            controles.hidden = true;
+        } else if (s === 2) {        /* pausado */
+            marcaTocando(false);
+        }
+    }
+
+    function carregaApi(pronta) {
+        if (window.YT && window.YT.Player) return pronta();
+        var anterior = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () {
+            if (typeof anterior === 'function') anterior();
+            pronta();
+        };
+        if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+            var s = document.createElement('script');
+            s.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(s);
+        }
+    }
+
+    function monta() {
+        carregaApi(function () {
+            player = new YT.Player(caixa.querySelector('.of-video-player'), {
+                host: 'https://www.youtube-nocookie.com',
+                videoId: vid,
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    disablekb: 1,
+                    fs: 0,
+                    rel: 0,
+                    iv_load_policy: 3,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    cc_load_policy: 0,
+                    origin: location.origin
+                },
+                events: {
+                    onReady: function () {
+                        pronto = true;
+                        var f = player.getIframe();
+                        f.setAttribute('tabindex', '-1');
+                        f.setAttribute('title', 'Vídeo da Black Friday');
+                        controles.hidden = false;
+                        marcaSom();
+                        player.playVideo();
+                        pintaBarra();
+                    },
+                    onStateChange: aoMudarEstado
+                }
+            });
+        });
+    }
+
+    /* `montando` trava o segundo toque enquanto a API ainda carrega (rede
+       lenta no celular): sem isso nasciam dois players no mesmo nó. Se o
+       navegador barrar o autoplay (iOS), a capa continua na tela e o próximo
+       toque cai no playVideo() abaixo, já dentro do gesto do usuário. */
+    var montando = false;
+    capa.addEventListener('click', function () {
+        if (!player) {
+            if (montando) return;
+            montando = true;
+            monta();
+            return;
+        }
+        if (pronto) {
+            controles.hidden = false;
+            player.playVideo();
+        }
+    });
+
+    escudo.addEventListener('click', alterna);
+    btnTocar.addEventListener('click', alterna);
+
+    btnSom.addEventListener('click', function () {
+        if (!pronto) return;
+        if (player.isMuted()) player.unMute(); else player.mute();
+        setTimeout(marcaSom, 50);
+    });
+
+    barra.addEventListener('input', function () {
+        arrastando = true;
+        barra.style.setProperty('--p', barra.value / 1000);
+        if (pronto) tAtual.textContent = mmss(barra.value / 1000 * player.getDuration());
+    });
+    barra.addEventListener('change', function () {
+        arrastando = false;
+        if (!pronto) return;
+        player.seekTo(barra.value / 1000 * player.getDuration(), true);
+    });
+
+    function emTelaCheia() {
+        return (document.fullscreenElement || document.webkitFullscreenElement) === caixa;
+    }
+    btnTela.addEventListener('click', function () {
+        if (emTelaCheia()) {
+            (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        } else {
+            (caixa.requestFullscreen || caixa.webkitRequestFullscreen).call(caixa);
+        }
+    });
+    function marcaTela() {
+        var sim = emTelaCheia();
+        caixa.classList.toggle('is-cheia', sim);
+        btnTela.setAttribute('aria-label', sim ? 'Sair da tela cheia' : 'Tela cheia');
+    }
+    document.addEventListener('fullscreenchange', marcaTela);
+    document.addEventListener('webkitfullscreenchange', marcaTela);
+})();
