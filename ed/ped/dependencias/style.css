@@ -1,0 +1,786 @@
+/* ═══════════════════════════════════════════════════════════════
+   PROFISSÃO ENGENHEIRO DE DADOS
+   /ed/ped/
+
+   ─── GRID: tier WIDE do DS Xperiun ─────────────────────────────
+     container max-width 1440 + padding 0 16px
+     base (≥1440): repeat(10, 1fr) / column-gap 32
+     ≤1439:        repeat(8, 1fr)  / column-gap 32
+     ≤864:         repeat(6, 1fr)  / column-gap 24
+     ≤576:         repeat(4, 1fr)  / column-gap 16
+   O max-width NUNCA muda, só a contagem de colunas. Posicionamento
+   sempre por span, remapeado a cada breakpoint, e 1 / -1 em ≤864 e
+   ≤576. Palcos, listas e caixas claras usam subgrid, então os filhos
+   caem nas mesmas colunas do container. As @media vivem no FIM do
+   arquivo, depois das regras base.
+
+   ─── TIPOGRAFIA ────────────────────────────────────────────────
+   A página é em Syne 400, como a original. Sempre via font: var(--x)
+   com os tokens do root.css: aqui o --font-family da página aponta
+   pro --font-family-horizontal (Syne, self-hosted em 400/700/800), e
+   todo token de texto (--p, --h4, --h5, --btn-l...) passa a sair em
+   Syne. O --h3 do DS é peso 600, que o Syne não tem, então os títulos
+   grandes usam --ped-h3: mesmo tamanho e line-height do --h3, em 400.
+
+   ─── PALETA ────────────────────────────────────────────────────
+   Identidade da original (post-106975.css do Elementor). O que existe
+   no root.css vem de lá:
+     fundo #14141E = --dn800    claro #F5F5FF = --bw
+     lilás #9696FF = --pc200    vermelho #FF0032 = --er500
+     cinza dos ícones #50505A = --dn200
+   Três cores da original NÃO existem no design system e ficam
+   declaradas aqui, com os valores exatos de lá:
+     --ped-ac  #96C8FF  azul claro: botões, destaques, eyebrows
+     --ped-gn  #00FFC8  verde: card positivo do paradoxo
+     --ped-cta #0000FF  azul puro: botão sobre as caixas claras
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Tipografia (ver bloco TIPOGRAFIA acima). Redefinido no :root, os
+       tokens do root.css que usam var(--font-family) resolvem em Syne. */
+    --font-family: var(--font-family-horizontal);
+    --ped-h3: 400 clamp(1.75rem, 1.42rem + 0.93vw, 2.25rem)/1.25 var(--font-family-horizontal);
+
+    --ped-ac: #96C8FF;
+    --ped-ac-5:  rgba(150, 200, 255, 0.05);
+    --ped-ac-25: rgba(150, 200, 255, 0.25);
+
+    --ped-gn: #00FFC8;
+    --ped-gn-25: rgba(0, 255, 200, 0.25);
+    --ped-gn-50: rgba(0, 255, 200, 0.50);
+
+    --ped-cta: #0000FF;
+    /* Véu azul que a original põe sobre TODA mídia (vídeo e fotos). */
+    --ped-cta-25: rgba(0, 0, 255, 0.25);
+
+    /* Raio dos palcos/caixas e dos cards (e dos cantos invertidos). */
+    --ped-r: 32px;
+    --ped-r-s: 16px;
+
+    /* Respiro entre seções. */
+    --ped-sec-gap: 160px;
+
+    /* Ícones Material Symbols da original, como máscara (a cor vem do
+       background-color, sempre token). */
+    --ped-i-hand: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M398-120q-27 0-51.5-11.5T305-164L46-483l26-25q19-19 45-22t47 12l116 81v-403q0-17 11.5-28.5T320-880q17 0 28.5 11.5T360-840v557l-111-78 118 146q6 7 14 11t17 4h282q33 0 56.5-23.5T760-280v-280q0-17 11.5-28.5T800-600q17 0 28.5 11.5T840-560v280q0 66-47 113t-113 47H398Zm122-240Zm-80-80v-240q0-17 11.5-28.5T480-720q17 0 28.5 11.5T520-680v240h-80Zm160 0v-200q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640v200h-80Z'/%3E%3C/svg%3E");
+    --ped-i-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z'/%3E%3C/svg%3E");
+    --ped-i-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z'/%3E%3C/svg%3E");
+    --ped-i-nw: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M704-240 320-624v344h-80v-480h480v80H376l384 384-56 56Z'/%3E%3C/svg%3E");
+    --ped-i-ne: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z'/%3E%3C/svg%3E");
+}
+
+html, body { margin: 0; padding: 0; }
+html { scrollbar-gutter: stable; }
+body { background-color: var(--dn800); }
+
+/* Container do grid, comum a todas as seções. */
+.ped-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+
+main > section + section { margin-top: var(--ped-sec-gap); }
+main { padding-bottom: var(--ped-sec-gap); }
+
+/* ─── Texto ─────────────────────────────────────────────────── */
+.ped-titulo   { font: var(--h4); color: var(--bw); }
+.ped-eyebrow  { font: var(--h5); color: var(--ped-ac); }
+.ped-texto    { font: var(--p);  color: var(--bw-75); }
+.ped-texto-s  { font: var(--p-s); color: var(--bw-75); }
+.ped-acento   { font: var(--p);  color: var(--ped-ac); }
+
+.ped-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.ped-corpo p { color: var(--bw-75); }
+.ped-corpo .ped-acento { color: var(--ped-ac); }
+
+/* ─── Botão da página ──────────────────────────────────────────
+   Pílula do DS (radius 1920px, font --btn-l) com a identidade da
+   original: fundo --ped-ac e círculo escuro com a mão à esquerda.
+   a.ped-btn (e não só .ped-btn) pra vencer o a:not(.btn) do root.css. */
+a.ped-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    justify-self: start;
+    align-self: start;
+    padding: 8px 32px 8px 8px;
+    border-radius: 1920px;
+    background-color: var(--ped-ac);
+    color: var(--bb);
+    font: var(--btn-l);
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+.ped-btn-ico {
+    position: relative;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--bb);
+    transition: background-color 0.5s ease;
+}
+/* A mão fica inclinada 15° em repouso e endireita no hover, como na
+   original. */
+.ped-btn-ico::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    background-color: var(--ped-ac);
+    -webkit-mask: var(--ped-i-hand) center / contain no-repeat;
+            mask: var(--ped-i-hand) center / contain no-repeat;
+    transform: rotate(15deg);
+    transition: transform 0.5s ease, background-color 0.5s ease;
+}
+
+/* Hover, igual à original: o botão claro vira azul puro com texto
+   claro, e a mão (sobre o círculo escuro) ganha o mesmo azul. */
+a.ped-btn:hover {
+    background-color: var(--ped-cta);
+    color: var(--bw);
+    text-decoration: none;
+}
+a.ped-btn:hover .ped-btn-ico::after {
+    background-color: var(--ped-cta);
+    transform: rotate(0deg);
+}
+
+/* Variante sobre as caixas claras: azul puro com círculo claro. No
+   hover inverte pro azul claro com texto escuro. */
+a.ped-btn--claro { background-color: var(--ped-cta); color: var(--bw); }
+a.ped-btn--claro .ped-btn-ico { background-color: var(--bw); }
+a.ped-btn--claro .ped-btn-ico::after { background-color: var(--ped-cta); }
+a.ped-btn--claro:hover { background-color: var(--ped-ac); color: var(--bb); }
+a.ped-btn--claro:hover .ped-btn-ico::after { background-color: var(--ped-cta); }
+
+/* Teclado: mesmo estado do hover, mais o anel de foco. */
+a.ped-btn:focus-visible { outline: 2px solid var(--ped-ac); outline-offset: 4px; }
+a.ped-btn--claro:focus-visible { outline-color: var(--ped-cta); }
+
+/* ─── Cantos invertidos ────────────────────────────────────────
+   Quadrado do tamanho do raio, pintado com a cor do fundo e furado
+   por um círculo de mesmo raio. --a diz onde fica o centro do furo,
+   o que decide para que lado o canto curva. */
+.ped-notch::before,
+.ped-notch::after,
+.ped-tab::before,
+.ped-tab::after,
+.ped-ver-ico::before,
+.ped-ver-ico::after,
+.ped-par-ico::before,
+.ped-par-ico::after {
+    content: "";
+    position: absolute;
+    width: var(--cr, var(--ped-r));
+    height: var(--cr, var(--ped-r));
+    pointer-events: none;
+    background: radial-gradient(circle at var(--a),
+        transparent calc(var(--cr, var(--ped-r)) - 0.5px),
+        var(--dn800) var(--cr, var(--ped-r)));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MARCA
+   ═══════════════════════════════════════════════════════════════ */
+.ped-marca { padding: 32px 0; }
+.ped-marca-lockup {
+    grid-column: 1 / -1;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.ped-marca-lockup img { display: block; height: auto; }
+.ped-marca-div {
+    width: 2px;
+    height: 60px;
+    background-color: var(--bw-25);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PALCO (hero, "pela primeira vez" e "desbloqueie")
+   Subgrid de 10 colunas. A mídia ocupa todas as linhas e colunas;
+   os recortes (.ped-notch) ficam por cima, na cor do fundo.
+   ═══════════════════════════════════════════════════════════════ */
+.ped-stage {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--ped-r);
+    overflow: hidden;
+}
+.ped-stage-media {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    position: relative;
+    z-index: 0;
+}
+.ped-stage-media video,
+.ped-stage-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.ped-stage-media::after,
+.ped-veu::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--ped-cta-25);
+    pointer-events: none;
+}
+.ped-notch {
+    position: relative;
+    z-index: 1;
+    background-color: var(--dn800);
+    padding: 48px;
+}
+
+/* Recorte no canto superior esquerdo. */
+.ped-notch--tl { border-bottom-right-radius: var(--ped-r); }
+.ped-notch--tl::before { top: 0; left: 100%; --a: 100% 100%; }
+.ped-notch--tl::after  { top: 100%; left: 0; --a: 100% 100%; }
+
+/* Recorte no canto inferior direito. */
+.ped-notch--br { border-top-left-radius: var(--ped-r); }
+.ped-notch--br::before { bottom: 100%; right: 0; --a: 0 0; }
+.ped-notch--br::after  { bottom: 0; right: 100%; --a: 0 0; }
+
+/* Recorte no canto superior direito. */
+.ped-notch--tr { border-bottom-left-radius: var(--ped-r); }
+.ped-notch--tr::before { top: 0; right: 100%; --a: 0 100%; }
+.ped-notch--tr::after  { top: 100%; right: 0; --a: 0 100%; }
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════ */
+.ped-hero .ped-inner {
+    row-gap: 64px;
+    align-items: center;
+}
+.ped-stage--hero {
+    grid-template-rows: auto minmax(64px, 1fr) auto;
+    min-height: 512px;
+}
+.ped-hero-tl {
+    grid-column: 1 / span 6;
+    grid-row: 1;
+    text-align: right;
+}
+.ped-hero-br {
+    grid-column: 8 / -1;
+    grid-row: 3;
+}
+.ped-hero-title,
+.ped-hero-title-fim {
+    font: var(--ped-h3);
+    color: var(--bw);
+}
+/* O fim da frase é lido pelo leitor de tela dentro do h1; na tela ele
+   aparece no recorte de baixo (que é aria-hidden). */
+.ped-hero-title-cont {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    margin: -2px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.ped-hero-cta  { grid-column: 2 / span 3; }
+.ped-hero-nota { grid-column: 5 / span 5; }
+
+/* ═══════════════════════════════════════════════════════════════
+   O MUNDO ESTÁ RODANDO EM CIMA DE DADOS
+   ═══════════════════════════════════════════════════════════════ */
+.ped-mundo .ped-inner { row-gap: 48px; }
+.ped-mundo-texto {
+    grid-column: 2 / span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ped-mundo-texto .ped-corpo { margin-top: 32px; }
+.ped-mundo-lado {
+    grid-column: 6 / span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+/* Faixa de imagem do "mundo": wrapper .ped-veu leva o raio e o véu. */
+.ped-veu {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--ped-r);
+}
+.ped-veu img {
+    display: block;
+    width: 100%;
+    height: 96px;
+    object-fit: cover;
+}
+.ped-mundo-img { width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PELA PRIMEIRA VEZ + VOCÊ VAI VER
+   ═══════════════════════════════════════════════════════════════ */
+.ped-stage--dentro {
+    grid-template-rows: auto 160px;
+}
+.ped-dentro-tr {
+    grid-column: 6 / -1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Lista de cards: subgrid, sobe 64px por cima da base da foto. */
+.ped-ver {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 32px;
+    position: relative;
+    z-index: 1;
+    list-style: none;
+    margin: -64px 0 0;
+    padding: 0;
+}
+.ped-ver > li { margin: 0; }
+.ped-ver > li:nth-child(3n+1) { grid-column: 2 / span 3; }
+.ped-ver > li:nth-child(3n+2) { grid-column: 5 / span 3; }
+.ped-ver > li:nth-child(3n)   { grid-column: 8 / span 3; }
+
+.ped-ver-card {
+    position: relative;
+    padding: 32px 32px 96px;
+    border-radius: var(--ped-r-s);
+    background-image: linear-gradient(135deg, var(--ped-ac-5), var(--ped-ac-25));
+    /* Blur estático, igual à original (não anima). */
+    -webkit-backdrop-filter: blur(32px);
+            backdrop-filter: blur(32px);
+}
+.ped-ver-card p { color: var(--bw-75); }
+.ped-ver-cta { align-self: end; }
+
+/* Encaixe do ícone no canto inferior direito do card. */
+.ped-ver-ico {
+    --cr: var(--ped-r-s);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 16px 0 0 16px;
+    background-color: var(--dn800);
+    border-top-left-radius: var(--ped-r-s);
+}
+.ped-ver-ico::before { bottom: 100%; right: 0; --a: 0 0; }
+.ped-ver-ico::after  { bottom: 0; right: 100%; --a: 0 0; }
+.ped-ver-ico > span {
+    position: relative;
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background-color: var(--bw-75);
+}
+.ped-ver-ico > span::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    background-color: var(--dn200);
+    -webkit-mask: var(--ped-i-nw) center / contain no-repeat;
+            mask: var(--ped-i-nw) center / contain no-repeat;
+}
+
+
+/* Nota centrada depois dos cards. */
+.ped-ver-nota {
+    grid-column: 1 / -1;
+    margin-top: 32px;
+    text-align: center;
+    font: var(--p);
+    color: var(--bw-75);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CAIXA CLARA ("pra você que" e "produzido pela Xperiun")
+   Subgrid de 10 colunas em bw (ou pc200), com aba da cor do fundo no
+   topo (e na base, quando houver), nas mesmas colunas do conteúdo.
+   ═══════════════════════════════════════════════════════════════ */
+.ped-light {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--bw);
+    border-radius: var(--ped-r);
+}
+.ped-tab {
+    grid-column: 3 / span 6;
+    position: relative;
+    height: 96px;
+    background-color: var(--dn800);
+}
+.ped-tab--top { border-radius: 0 0 var(--ped-r) var(--ped-r); }
+.ped-tab--top::before { top: 0; right: 100%; --a: 0 100%; }
+.ped-tab--top::after  { top: 0; left: 100%; --a: 100% 100%; }
+.ped-tab--bot { border-radius: var(--ped-r) var(--ped-r) 0 0; }
+.ped-tab--bot::before { bottom: 0; right: 100%; --a: 0 0; }
+.ped-tab--bot::after  { bottom: 0; left: 100%; --a: 100% 0; }
+
+.ped-light-conteudo {
+    grid-column: 3 / span 6;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 48px;
+    padding: 64px 0;
+}
+.ped-light .ped-titulo { color: var(--bb); }
+
+.ped-pra-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.ped-pra-lista li {
+    position: relative;
+    margin: 0;
+    min-height: 32px;
+    padding-left: 48px;
+    display: flex;
+    align-items: center;
+    font: var(--p);
+    color: var(--dn200);
+}
+.ped-pra-lista li::before,
+.ped-pra-lista li::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    transform: translateY(-50%);
+}
+.ped-pra-lista li::before {
+    border-radius: 8px;
+    background-color: var(--ped-ac);
+}
+.ped-pra-lista li::after {
+    background-color: var(--bw);
+    -webkit-mask: var(--ped-i-ne) center / 20px no-repeat;
+            mask: var(--ped-i-ne) center / 20px no-repeat;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   O PARADOXO
+   ═══════════════════════════════════════════════════════════════ */
+.ped-paradoxo .ped-inner {
+    row-gap: 32px;
+    align-items: center;
+}
+.ped-paradoxo-head {
+    grid-column: 2 / span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.ped-par-card--er { grid-column: 2 / span 4; }
+.ped-par-card--gn { grid-column: 6 / span 4; }
+.ped-paradoxo-res {
+    grid-column: 2 / span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.ped-paradoxo-cta { grid-column: 6 / span 4; }
+
+.ped-par-card {
+    position: relative;
+    align-self: stretch;
+    padding: 96px 32px 32px;
+    border-radius: var(--ped-r-s);
+    -webkit-backdrop-filter: blur(32px);
+            backdrop-filter: blur(32px);
+}
+.ped-par-card p { color: var(--bw); }
+.ped-par-card--er { background-image: linear-gradient(-45deg, transparent, var(--er500-25)); }
+.ped-par-card--gn { background-image: linear-gradient(-45deg, transparent, var(--ped-gn-25)); }
+
+/* Encaixe do ícone no canto superior esquerdo do card. */
+.ped-par-ico {
+    --cr: var(--ped-r-s);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 16px 16px 0;
+    background-color: var(--dn800);
+    border-bottom-right-radius: var(--ped-r-s);
+}
+.ped-par-ico::before { top: 0; left: 100%; --a: 100% 100%; }
+.ped-par-ico::after  { top: 100%; left: 0; --a: 100% 100%; }
+.ped-par-ico > span {
+    position: relative;
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+}
+.ped-par-ico > span::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+}
+.ped-par-card--er .ped-par-ico > span { background-image: linear-gradient(135deg, var(--er500-50), var(--er500-25)); }
+.ped-par-card--er .ped-par-ico > span::after {
+    background-color: var(--er500);
+    -webkit-mask: var(--ped-i-down) center / contain no-repeat;
+            mask: var(--ped-i-down) center / contain no-repeat;
+}
+.ped-par-card--gn .ped-par-ico > span { background-image: linear-gradient(135deg, var(--ped-gn-50), var(--ped-gn-25)); }
+.ped-par-card--gn .ped-par-ico > span::after {
+    background-color: var(--ped-gn);
+    -webkit-mask: var(--ped-i-up) center / contain no-repeat;
+            mask: var(--ped-i-up) center / contain no-repeat;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DESBLOQUEIE O WEBINAR
+   Palco igual ao do hero, mais baixo: título no recorte superior
+   esquerdo, texto no inferior direito e o CTA centrado abaixo.
+   ═══════════════════════════════════════════════════════════════ */
+.ped-libera .ped-inner { row-gap: 32px; }
+.ped-stage--libera {
+    grid-template-rows: auto minmax(32px, 1fr) auto;
+    min-height: 352px;
+}
+.ped-libera-tl {
+    grid-column: 1 / span 6;
+    grid-row: 1;
+    text-align: right;
+}
+.ped-libera-br {
+    grid-column: 4 / -1;
+    grid-row: 3;
+}
+.ped-libera-cta {
+    grid-column: 1 / -1;
+    justify-self: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRODUZIDO PELA XPERIUN
+   Mesma caixa clara, em pc200, com o lettering da Xperiun (arquivo do
+   DS em site-imagens) como marca d'água em bw a 7,5%, como a original.
+   ═══════════════════════════════════════════════════════════════ */
+.ped-light--pc { background-color: var(--pc200); }
+
+.ped-marca-dagua {
+    position: absolute;
+    z-index: 0;
+    top: 112px;
+    left: 50%;
+    width: 110%;
+    aspect-ratio: 960 / 80;
+    transform: translateX(-50%);
+    opacity: 0.075;
+    pointer-events: none;
+    background-color: var(--bw);
+    -webkit-mask: url("/ed/site-dependencias/site-imagens/Xperiun%20Lettering%20Syne.svg") center / contain no-repeat;
+            mask: url("/ed/site-dependencias/site-imagens/Xperiun%20Lettering%20Syne.svg") center / contain no-repeat;
+}
+
+.ped-xperiun-conteudo {
+    align-items: center;
+    padding-bottom: 128px;
+}
+.ped-xperiun-title {
+    font: var(--ped-h3);
+    color: var(--dn800);
+    text-align: center;
+}
+
+/* Lista da caixa pc200: quadrado em pc500 e texto em bb a 75%. */
+.ped-pra-lista--pc { align-self: stretch; }
+.ped-pra-lista--pc li { color: var(--bb-75); }
+.ped-pra-lista--pc li::before { background-color: var(--pc500); }
+
+.ped-prova {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+.ped-prova-logo {
+    display: block;
+    width: 160px;
+    height: auto;
+    opacity: 0.75;
+}
+.ped-prova-linha {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.ped-prova-fotos { display: flex; }
+.ped-prova-fotos img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.ped-prova-fotos img + img { margin-left: -16px; }
+.ped-prova-texto { font: var(--p); color: var(--bb-75); }
+
+/* ═══════════════════════════════════════════════════════════════
+   BREAKPOINTS (sempre depois das regras base)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ≤1439: 8 colunas. */
+@media (max-width: 1439px) {
+    .ped-inner { grid-template-columns: repeat(8, 1fr); }
+
+    .ped-hero-tl  { grid-column: 1 / span 5; }
+    .ped-hero-br  { grid-column: 6 / -1; }
+    .ped-hero-cta { grid-column: 1 / span 3; }
+    .ped-hero-nota { grid-column: 4 / span 5; }
+
+    .ped-mundo-texto { grid-column: 1 / span 4; }
+    .ped-mundo-lado  { grid-column: 5 / span 4; }
+
+    .ped-dentro-tr { grid-column: 5 / -1; }
+    .ped-ver > li:nth-child(n) { grid-column: span 4; }
+
+    .ped-tab,
+    .ped-light-conteudo { grid-column: 2 / span 6; }
+
+    .ped-paradoxo-head,
+    .ped-par-card--er,
+    .ped-paradoxo-res { grid-column: 1 / span 4; }
+    .ped-par-card--gn,
+    .ped-paradoxo-cta { grid-column: 5 / span 4; }
+
+    .ped-libera-tl { grid-column: 1 / span 5; }
+    .ped-libera-br { grid-column: 3 / -1; }
+}
+
+/* ≤864: 6 colunas. Tudo 1 / -1 e os palcos desmontam: título, mídia e
+   texto empilhados, sem recorte. */
+@media (max-width: 864px) {
+    :root { --ped-sec-gap: 96px; }
+
+    .ped-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+    }
+
+    .ped-stage {
+        border-radius: 0;
+        overflow: visible;
+        row-gap: 24px;
+        min-height: 0;
+    }
+    .ped-stage--hero,
+    .ped-stage--libera,
+    .ped-stage--dentro { grid-template-rows: none; min-height: 0; }
+    .ped-stage-media {
+        grid-row: 2;
+        aspect-ratio: 16 / 9;
+        border-radius: var(--ped-r-s);
+        overflow: hidden;
+    }
+    .ped-stage--dentro .ped-stage-media { grid-row: 1; aspect-ratio: 4 / 3; }
+    .ped-notch {
+        padding: 0;
+        background-color: transparent;
+        border-radius: 0;
+    }
+    .ped-notch::before,
+    .ped-notch::after { display: none; }
+
+    .ped-hero-tl,
+    .ped-libera-tl { grid-column: 1 / -1; grid-row: 1; text-align: left; }
+    .ped-hero-br,
+    .ped-libera-br { grid-column: 1 / -1; grid-row: 3; }
+    .ped-dentro-tr { grid-column: 1 / -1; grid-row: 2; }
+
+    .ped-hero .ped-inner { row-gap: 32px; }
+    .ped-hero-cta,
+    .ped-hero-nota { grid-column: 1 / -1; }
+
+    .ped-mundo-texto,
+    .ped-mundo-lado { grid-column: 1 / -1; }
+
+    .ped-ver { margin-top: 32px; row-gap: 24px; }
+    .ped-ver > li:nth-child(n) { grid-column: 1 / -1; }
+    .ped-ver-nota { text-align: left; }
+
+    /* Caixa clara: sem abas, conteúdo na largura cheia com respiro. */
+    .ped-light { padding: 0 24px; }
+    .ped-tab { display: none; }
+    .ped-light-conteudo { grid-column: 1 / -1; }
+    .ped-xperiun-conteudo { padding-bottom: 64px; }
+    .ped-marca-dagua { top: 24px; }
+
+    .ped-paradoxo .ped-inner { row-gap: 24px; }
+    .ped-paradoxo-head,
+    .ped-par-card--er,
+    .ped-par-card--gn,
+    .ped-paradoxo-res,
+    .ped-paradoxo-cta { grid-column: 1 / -1; }
+
+    .ped-libera-cta { justify-self: start; }
+}
+
+/* ≤576: 4 colunas. */
+@media (max-width: 576px) {
+    :root { --ped-sec-gap: 64px; }
+
+    .ped-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+
+    .ped-light { padding: 0 16px; border-radius: var(--ped-r-s); }
+    .ped-light-conteudo { gap: 32px; padding: 48px 0; }
+    .ped-xperiun-conteudo { padding-bottom: 48px; }
+    .ped-prova-texto { font: var(--p-xs); }
+
+    .ped-marca-lockup img:first-child { width: 124px; }
+    .ped-marca-lockup img:last-child { width: 128px; }
+    .ped-marca-div { height: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a.ped-btn,
+    .ped-btn-ico,
+    .ped-btn-ico::after { transition: none; }
+}

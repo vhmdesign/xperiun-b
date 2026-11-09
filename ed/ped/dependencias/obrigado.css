@@ -1,0 +1,243 @@
+/* ═══════════════════════════════════════════════════════════════
+   OBRIGADO, PROFISSÃO ENGENHEIRO DE DADOS, /ed/ped/obrigado/
+
+   ─── GRID: tier WIDE do DS Xperiun ─────────────────────────────
+     container max-width 1440 + padding 0 16px
+     base (≥1440): repeat(10, 1fr) / column-gap 32   bloco 3 / span 6
+     ≤1439:        repeat(8, 1fr)  / column-gap 32   bloco 2 / span 6
+     ≤864:         repeat(6, 1fr)  / column-gap 24   bloco 1 / -1
+     ≤576:         repeat(4, 1fr)  / column-gap 16   bloco 1 / -1
+   6 colunas = 832px, a mesma largura de conteúdo da original. As
+   @media vivem no FIM do arquivo, depois das regras base.
+
+   ─── TIPOGRAFIA ────────────────────────────────────────────────
+   Syne 400, como a /ed/ped/: o --font-family da página aponta pro
+   --font-family-horizontal e todo token de texto sai em Syne.
+
+   ─── PALETA ────────────────────────────────────────────────────
+   Tudo do root.css, sem cor nova:
+     fundo --dn800, botão Pós Tech: gradiente --pc100 → --pc300,
+     botão consultor: --sc500 (hover --bw), setas: --wr500
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    --font-family: var(--font-family-horizontal);
+}
+
+html, body { margin: 0; padding: 0; }
+html { scrollbar-gutter: stable; }
+body { background-color: var(--dn800); }
+
+.ped-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: 32px;
+}
+
+/* ─── Marca (igual à /ed/ped/) ─────────────────────────────────── */
+.ped-marca { padding: 32px 0; }
+.ped-marca-lockup {
+    grid-column: 1 / -1;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.ped-marca-lockup img { display: block; height: auto; }
+.ped-marca-div {
+    width: 2px;
+    height: 60px;
+    background-color: var(--bw-25);
+}
+
+/* ─── Bloco ────────────────────────────────────────────────────── */
+.ped-ob { padding-bottom: 160px; }
+.ped-ob-bloco {
+    grid-column: 3 / span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.ped-ob-title {
+    font: var(--h4);
+    color: var(--bw);
+    text-align: center;
+}
+.ped-ob-texto { font: var(--p); color: var(--bw-75); }
+
+.ped-ob-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-color: var(--dn900);
+}
+.ped-ob-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* ─── CTAs + setas ─────────────────────────────────────────────── */
+.ped-ob-acoes {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+.ped-ob-acoes[hidden] { display: none; }
+
+/* Seta amarela curva (desenho da original), pintada via máscara. */
+.ped-ob-acoes::before,
+.ped-ob-acoes::after {
+    content: "";
+    position: absolute;
+    top: -128px;
+    width: 128px;
+    height: 128px;
+    pointer-events: none;
+    background-color: var(--wr500);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'%3E%3Cpath d='m96 124-24-20v8c-28.72 0-52-23.28-52-52 0-20.06 11.36-37.45 28-46.13v-1.2C24.55 22.17 8 45.14 8 72c0 35.35 28.65 64 64 64v8z'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'%3E%3Cpath d='m96 124-24-20v8c-28.72 0-52-23.28-52-52 0-20.06 11.36-37.45 28-46.13v-1.2C24.55 22.17 8 45.14 8 72c0 35.35 28.65 64 64 64v8z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.ped-ob-acoes::before {
+    left: -64px;
+    animation: ped-seta-esq 1s ease-in-out infinite;
+}
+.ped-ob-acoes::after {
+    right: -64px;
+    animation: ped-seta-dir 1s ease-in-out infinite;
+}
+@keyframes ped-seta-esq {
+    0%   { transform: rotate(90deg); opacity: 0; }
+    50%  { transform: rotate(30deg); opacity: 1; }
+    95%  { transform: rotate(30deg); opacity: 0; }
+    100% { transform: rotate(90deg); opacity: 0; }
+}
+@keyframes ped-seta-dir {
+    0%   { transform: rotate(-90deg) scaleX(-1); opacity: 0; }
+    50%  { transform: rotate(-30deg) scaleX(-1); opacity: 1; }
+    95%  { transform: rotate(-30deg) scaleX(-1); opacity: 0; }
+    100% { transform: rotate(-90deg) scaleX(-1); opacity: 0; }
+}
+
+.ped-ob-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px;
+    font: var(--btn);
+    text-align: center;
+    text-decoration: none;
+}
+a.ped-ob-btn,
+a.ped-ob-btn:hover { text-decoration: none; }
+
+/* Pós Tech: gradiente pc100 → pc300 que corre no hover, com o brilho
+   girando no canto superior direito (asset do /ed/infinite-pass/). */
+a.ped-ob-btn--pos {
+    color: var(--bb);
+    background-image: linear-gradient(270deg, var(--pc100), var(--pc100), var(--pc100), var(--pc300));
+    background-size: 200%;
+    background-position: 0% 0;
+    transition: background-position 0.5s ease;
+}
+a.ped-ob-btn--pos:hover { color: var(--bb); background-position: 100% 0; }
+.ped-ob-btn--pos::before,
+.ped-ob-btn--pos::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: -64px;
+    right: -64px;
+    width: 128px;
+    height: 128px;
+    pointer-events: none;
+    background: url("/ed/infinite-pass/dependencias/ip_shiny.webp") center / contain no-repeat;
+}
+.ped-ob-btn--pos::after  { animation: ped-giro 10s linear infinite; }
+.ped-ob-btn--pos::before { animation: ped-giro-blur 10s linear infinite; }
+.ped-ob-btn--pos:hover::after  { animation-duration: 2s; }
+.ped-ob-btn--pos:hover::before { animation-duration: 2s; }
+@keyframes ped-giro {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes ped-giro-blur {
+    0%   { transform: rotate(360deg); filter: blur(16px); }
+    50%  { transform: rotate(180deg); filter: blur(0); }
+    100% { transform: rotate(0deg);   filter: blur(16px); }
+}
+
+/* Consultor: sc500, hover em bw. */
+a.ped-ob-btn--consultor {
+    color: var(--dn800);
+    background-color: var(--sc500);
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+a.ped-ob-btn--consultor:hover { color: var(--dn900); background-color: var(--bw); }
+
+a.ped-ob-btn:focus-visible { outline: 2px solid var(--bw); outline-offset: 4px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   BREAKPOINTS (sempre depois das regras base)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ≤1439: 8 colunas. */
+@media (max-width: 1439px) {
+    .ped-inner { grid-template-columns: repeat(8, 1fr); }
+    .ped-ob-bloco { grid-column: 2 / span 6; }
+}
+
+/* ≤864: 6 colunas, bloco na largura cheia, CTAs empilhados. As setas
+   sobem e encostam nas bordas, e o brilho gira sem blur (blur animado
+   não roda abaixo de 864). */
+@media (max-width: 864px) {
+    .ped-inner {
+        grid-template-columns: repeat(6, 1fr);
+        column-gap: 24px;
+    }
+    .ped-ob { padding-bottom: 96px; }
+    .ped-ob-bloco { grid-column: 1 / -1; }
+    .ped-ob-title { font: var(--h5); }
+
+    .ped-ob-acoes { grid-template-columns: 1fr; gap: 24px; }
+    .ped-ob-acoes::before { left: 0; top: -160px; }
+    .ped-ob-acoes::after  { right: 0; top: -160px; }
+
+    @keyframes ped-giro-blur {
+        from { transform: rotate(360deg); }
+        to   { transform: rotate(0deg); }
+    }
+}
+
+/* ≤576: 4 colunas. */
+@media (max-width: 576px) {
+    .ped-inner {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 16px;
+    }
+    .ped-ob { padding-bottom: 64px; }
+    .ped-ob-bloco { gap: 24px; }
+
+    .ped-marca-lockup img:first-child { width: 124px; }
+    .ped-marca-lockup img:last-child { width: 128px; }
+    .ped-marca-div { height: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ped-ob-acoes::before,
+    .ped-ob-acoes::after,
+    .ped-ob-btn--pos::before,
+    .ped-ob-btn--pos::after { animation: none; }
+    .ped-ob-acoes::before { transform: rotate(30deg); }
+    .ped-ob-acoes::after  { transform: rotate(-30deg) scaleX(-1); }
+    a.ped-ob-btn--pos,
+    a.ped-ob-btn--consultor { transition: none; }
+}

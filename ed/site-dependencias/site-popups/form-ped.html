@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fragmento de popup, carregado pelo form-include.js: não é página, fica fora da busca e do sitemap. -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>Profissão Engenheiro de Dados, Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Form ActiveCampaign da Profissão Engenheiro de Dados
+     (/ed/ped/).
+     Id do form na AC: 411. É o mesmo form da página original no
+     WordPress (/ed/ped/, post 106975): u, f, or e os field[N] foram
+     copiados de lá, nenhum foi chutado.
+
+       field[2] utm_campaign   field[3] utm_source
+       field[4] utm_medium     field[5] utm_content
+       field[207] e field[208]: hidden vazios na original, mantidos iguais
+       (o form.js não preenche esses dois).
+       field[195] grau de escolaridade, obrigatório. Os quatro valores
+       são os mesmos da original, com acento. -->
+
+<!-- Dropdown no padrão da casa (form-data-squads): o form.js valida o
+     hidden e mostra o erro se ficar vazio.
+
+     Telefone vai em E.164 pelo form.js; o redirect do sucesso vem da AC.
+
+     Acento do card: o azul claro da página (--ped-ac #96C8FF). -->
+<div class="popup-form" id="popup-form-ped" style="--popup-accent-rgb: 150, 200, 255;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <img src="/ed/ped/dependencias/ped_logo.webp" alt="Profissão Engenheiro de Dados" class="popup-form-logo" width="155" height="60" style="width: 155px; height: auto; display: block;">
+            </div>
+            <p class="popup-form-label">Preencha os dados abaixo:</p>
+            <form
+                class="popup-form-form _form _form_411 _inline-form _dark"
+                id="_form_411_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                novalidate
+            >
+                <input type="hidden" name="u" value="411">
+                <input type="hidden" name="f" value="411">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <input type="hidden" name="or" value="0c129120f039e9672d943d8b03f97038">
+
+                <input type="hidden" name="field[2]" value="">
+                <input type="hidden" name="field[3]" value="">
+                <input type="hidden" name="field[4]" value="">
+                <input type="hidden" name="field[5]" value="">
+                <input type="hidden" name="field[208]" value="">
+                <input type="hidden" name="field[207]" value="">
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Digite seu nome" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="seu@email.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Grau de Escolaridade</span>
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Selecione uma opção</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-value="Ensino Fundamental">Ensino Fundamental</li>
+                            <li class="dropdown-option" data-value="Ensino Médio">Ensino Médio</li>
+                            <li class="dropdown-option" data-value="Ensino Superior">Ensino Superior</li>
+                            <li class="dropdown-option" data-value="Pós-Graduação">Pós-Graduação</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="field[195]" value="">
+                    <span class="input-error-text" style="display:none">Selecione seu grau de escolaridade.</span>
+                </div>
+
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Sair</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_411_submit">Inscrever-se Gratuitamente</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Aguarde um instante, você será redirecionado...</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>
