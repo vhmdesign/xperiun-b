@@ -37,11 +37,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
      Baseada na /ed/infinite-pass/checkout/. A AC redireciona o form 522
      (popup da /ed/bf/oferta/) pra cá, e o script manda a pessoa pro
-     checkout da oferta repassando email, nome, telefone e UTMs:
-       https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26
+     checkout da oferta repassando email, nome, telefone e UTMs. O
+     checkout depende da fase (horário de Brasília):
+       até 09/11 23:59 (2 anos, com o bônus):
+         https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26
+       de 10/11 00:00 (só 1 ano):
+         https://go.xperiun.com/subscribe/app-ultra-oferta-novos-1ano-bf26
 
-     Diferente da do Infinite Pass, aqui não há consulta de aluno: a BF tem
-     um link só, então não existe /api pra decidir o destino.
+     Diferente da do Infinite Pass, aqui não há consulta de aluno: o
+     destino sai só da data, então não existe /api pra decidir.
+     O link de saída manual e o <noscript> nascem no de 2 anos; com JS o
+     script troca o link de saída pelo da fase atual.
 -->
 <div class="vit-glow" aria-hidden="true"></div>
 
@@ -73,7 +79,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </main>
 
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>
-<script src="/ed/bf/checkout/dependencias/script.js?v=1"></script>
+<script src="/ed/bf/checkout/dependencias/script.js?v=2"></script>
 
 <!-- © 2026 Xperiun. Conteúdo protegido por direitos autorais. Reprodução não autorizada será objeto de medidas legais. -->
 <script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>

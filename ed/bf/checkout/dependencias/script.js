@@ -19,7 +19,14 @@
    Sem email nenhum a pessoa vai pro checkout do mesmo jeito, só sem o
    campo preenchido. Ninguém fica preso nesta tela. */
 (function () {
-    var DESTINO = 'https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26';
+    /* Dois checkouts, um por fase da oferta (horário de Brasília):
+         até 09/11 23:59   2 anos (1 ano + 1 ano bônus): DESTINO_2_ANOS
+         de 10/11 00:00    só 1 ano, sem o bônus:         DESTINO_1_ANO
+       A virada é a mesma do FIM_BONUS da /ed/bf/oferta/ (o começo da fase
+       3); se a data mudar lá, muda aqui junto. */
+    var DESTINO_2_ANOS = 'https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26';
+    var DESTINO_1_ANO = 'https://go.xperiun.com/subscribe/app-ultra-oferta-novos-1ano-bf26';
+    var FIM_BONUS = Date.parse('2026-11-10T00:00:00-03:00');
     var CHAVE = 'xp_lead_email';
     var RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -28,7 +35,7 @@
     var RE_TAG_CRU = /%[A-Za-z0-9_]+%/g;
 
     /* Parâmetros que são desta página e não têm o que fazer no checkout. */
-    var CONTROLE = ['go', 'status'];
+    var CONTROLE = ['go', 'status', 'agora'];
 
     /* PII que sai da barra de endereço depois de lida. As UTMs ficam. */
     var PII = ['email', 'fullname', 'phone'];
@@ -63,8 +70,11 @@
        checkout. */
     function comParams(url, params) {
         var q = params.toString().replace(/\+/g, '%20');
-        if (!q) return url;
-        return url + (url.indexOf('?') === -1 ? '?' : '&') + q;
+        var saida = q ? url + (url.indexOf('?') === -1 ? '?' : '&') + q : url;
+        // Regra da casa (09/11/2026): a UTM sempre chega ao checkout. Quem veio do anúncio
+        // pra oferta e voltou por email/redirect da AC chega aqui sem utm_* na URL; a
+        // guardada pelo /js/xp-utm.js (cookie) completa o que faltar.
+        return window.xpUtm ? window.xpUtm.decorate(saida) : saida;
     }
 
     function lerEmail() {
@@ -89,6 +99,22 @@
         var q = visivel.toString();
         history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
     }
+
+    /* Que horas são, pra escolher o checkout. Aceita o teste pela URL, no
+       horário de Brasília, como a /ed/bf/oferta/:
+         ?agora=2026-11-09T23:59   ainda 2 anos
+         ?agora=2026-11-10T00:00   já 1 ano
+       O `agora` não vai pro checkout (está em CONTROLE). */
+    function agora() {
+        var t = limpa(entrada.get('agora'));
+        if (!t) return Date.now();
+        if (/^\d{4}-\d{2}-\d{2}$/.test(t)) t += 'T00:00';
+        if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(t)) t += ':00';
+        if (!/(Z|[+-]\d{2}:\d{2})$/.test(t)) t += '-03:00';
+        var alvo = Date.parse(t);
+        return isNaN(alvo) ? Date.now() : alvo;
+    }
+    var DESTINO = agora() >= FIM_BONUS ? DESTINO_1_ANO : DESTINO_2_ANOS;
 
     var email = lerEmail();
     var url = comParams(DESTINO, paramsDeSaida(email));
