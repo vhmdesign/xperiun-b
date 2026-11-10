@@ -1240,30 +1240,24 @@ a.of-lateral-stub-corpo:hover {
 .bf-titulo-linha--friday { animation: bf-entra-esq 0.9s ease-out 0.15s both; }
 .bf-selo                 { animation: bf-selo-entra 0.6s ease-out 0.7s both; }
 
+/* Só deslize e fade, SEM o blur de 4px de /ed/bf/, em qualquer largura.
+   A entrada roda no primeiro segundo da página, justamente quando o
+   navegador está ocupado montando o resto (o primeiro layout da página
+   leva ~130ms, mais os scripts). `transform` e `opacity` a GPU anima
+   sozinha, mesmo com o resto ocupado; com o `filter` no meio, cada quadro
+   da entrada esperava a vez e o título entrava aos trancos. Abaixo de 864
+   já era assim pela regra do projeto (sem blur animado). */
 @keyframes bf-entra-dir {
-    from { opacity: 0; transform: translateX(0.5em); filter: blur(4px); }
-    to   { opacity: 1; transform: translateX(0);     filter: blur(0); }
+    from { opacity: 0; transform: translateX(0.5em); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes bf-entra-esq {
-    from { opacity: 0; transform: translateX(-0.5em); filter: blur(4px); }
-    to   { opacity: 1; transform: translateX(0);      filter: blur(0); }
+    from { opacity: 0; transform: translateX(-0.5em); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes bf-selo-entra {
     from { opacity: 0; transform: scale(0.5) rotate(-180deg); }
     to   { opacity: 1; transform: scale(1) rotate(0deg); }
-}
-
-/* Regra do projeto: sem blur ANIMADO abaixo de 864. As keyframes são
-   redefinidas sem o filter; o deslize e o fade continuam. */
-@media (max-width: 864px) {
-    @keyframes bf-entra-dir {
-        from { opacity: 0; transform: translateX(0.5em); }
-        to   { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes bf-entra-esq {
-        from { opacity: 0; transform: translateX(-0.5em); }
-        to   { opacity: 1; transform: translateX(0); }
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1383,17 +1377,18 @@ a.of-lateral-stub-corpo:hover {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
 }
-/* As duas faixas de trás ficam PARADAS abaixo de 864. O blur delas é
-   fixo, mas o texto dentro anda, e conteúdo que muda debaixo de um
+/* As duas faixas de trás ficam PARADAS, em qualquer largura. O blur delas
+   é fixo, mas o texto dentro anda, e conteúdo que muda debaixo de um
    `filter` obriga o navegador a refazer o desfoque a cada quadro: na
-   prática é blur animado, o que a regra do projeto veta aqui, e era a
-   segunda maior causa de travada na rolagem do celular. Elas são só a luz
-   diagonal do fundo, o texto delas não se lê, então paradas leem igual. A
-   da frente, que é a legível, continua andando. */
-@media (max-width: 864px) {
-    .bf-faixa--meio .bf-faixa-trilha,
-    .bf-faixa--fundo .bf-faixa-trilha { animation: none; }
-}
+   prática é blur animado. Abaixo de 864 isso já era regra do projeto (e a
+   segunda maior causa de travada na rolagem do celular); no computador
+   ficou de fora, e a de fundo, com `scale(2)`, refazia o desfoque de uma
+   área maior que a tela inteira a cada quadro, sem parar, no topo da
+   página. Elas são só a luz diagonal do fundo, o texto delas não se lê,
+   então paradas leem igual. A da frente, que é a legível, continua
+   andando. */
+.bf-faixa--meio .bf-faixa-trilha,
+.bf-faixa--fundo .bf-faixa-trilha { animation: none; }
 @media (prefers-reduced-motion: reduce) {
     .bf-faixa-trilha,
     .bf-selo::before { animation: none; }
@@ -2154,7 +2149,7 @@ a.bf-btn:focus-visible,
     font-style: normal;
     font-weight: 200 400;
     font-display: block;
-    src: url(/ed/site-dependencias/site-fonts/material-symbols-200.woff2?v=ef9e700d) format('woff2');
+    src: url(/ed/site-dependencias/site-fonts/material-symbols-200.woff2?v=dd7bb025) format('woff2');
 }
 
 /* Vídeo: primeira fileira, na coluna do conteúdo. Sem respiro em cima, o

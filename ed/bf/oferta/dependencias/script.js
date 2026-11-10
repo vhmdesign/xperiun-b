@@ -792,23 +792,16 @@
         var pct = Math.min(TETO, porcentagem(agora));
         var mostra = Math.floor(pct);
 
-        Array.prototype.forEach.call(blocos, function (bloco) {
-            var texto = bloco.querySelector('.of-vagas-texto');
-            /* No CTA fixo a frase é partida em duas peças, pra o número
-               ganhar a cor da oferta: lá o script escreve só o número, e o
-               "das vagas" mora no HTML. */
-            var num = bloco.querySelector('.of-vagas-num');
-            var barra = bloco.querySelector('.of-vagas-barra');
-            var trilho = bloco.querySelector('.of-vagas-trilho');
-
-            if (texto) texto.textContent = mostra + '% das vagas preenchidas';
-            if (num) num.textContent = mostra + '%';
-            if (barra) barra.style.width = pct.toFixed(2) + '%';
-            /* O valor também vai pro ARIA: a barra é um progressbar de
-               verdade, e sem isto ela anunciaria para sempre o número que
-               está escrito no HTML. */
-            if (trilho) trilho.setAttribute('aria-valuenow', mostra);
-        });
+        /* Só grava quando algo mudou. O tique é de 1s, mas a barra anda
+           devagar (na fase 3, um centésimo de ponto a cada poucos minutos),
+           e gravar a mesma largura todo segundo refazia o layout dos três
+           blocos e o desfoque do brilho atrás de cada barra, à toa. */
+        var largura = pct.toFixed(2) + '%';
+        if (largura !== ultimaLargura || mostra !== ultimoNumero) {
+            ultimaLargura = largura;
+            ultimoNumero = mostra;
+            escreveVagas(mostra, largura);
+        }
 
         /* A tag troca de texto uma vez só, na virada; o texto de depois
            mora no atributo, e o de antes no próprio HTML. */
@@ -826,6 +819,28 @@
             document.documentElement.classList.add('bf-encerrada');
             window.scrollTo(0, 0);
         }
+    }
+
+    var ultimaLargura = null, ultimoNumero = null;
+
+    function escreveVagas(mostra, largura) {
+        Array.prototype.forEach.call(blocos, function (bloco) {
+            var texto = bloco.querySelector('.of-vagas-texto');
+            /* No CTA fixo a frase é partida em duas peças, pra o número
+               ganhar a cor da oferta: lá o script escreve só o número, e o
+               "das vagas" mora no HTML. */
+            var num = bloco.querySelector('.of-vagas-num');
+            var barra = bloco.querySelector('.of-vagas-barra');
+            var trilho = bloco.querySelector('.of-vagas-trilho');
+
+            if (texto) texto.textContent = mostra + '% das vagas preenchidas';
+            if (num) num.textContent = mostra + '%';
+            if (barra) barra.style.width = largura;
+            /* O valor também vai pro ARIA: a barra é um progressbar de
+               verdade, e sem isto ela anunciaria para sempre o número que
+               está escrito no HTML. */
+            if (trilho) trilho.setAttribute('aria-valuenow', mostra);
+        });
     }
 
     pinta();
@@ -908,6 +923,7 @@
     if (!palcos.length) return;
 
     var NS = 'http://www.w3.org/2000/svg';
+    var redes = [];      /* um registro por palco: { palco, fichas, mede, escreve } */
     var ALCA_MIN = 64;   /* alça mínima das tangentes, mantém a saída horizontal */
     var POR_TRACO = 3;   /* partículas por conector */
 
@@ -958,54 +974,59 @@
             }
         });
 
-        function desenha() {
+        /* Em DUAS fases, e isso é desempenho, não estilo: `mede` só LÊ o
+           layout e devolve as rotas; `escreve` só grava. Intercaladas (ler
+           uma ficha, gravar o traço dela, ler a próxima), cada leitura depois
+           de uma gravação obrigava o navegador a refazer o layout da página
+           inteira, por traço e por palco. Na carga, com a CPU 4x mais lenta,
+           eram ~540ms de quadro travado, bem na entrada do título. */
+        function mede() {
             var c = palco.getBoundingClientRect();
-            if (!c.width) return;
-            svg.setAttribute('viewBox', '0 0 ' + c.width + ' ' + c.height);
+            if (!c.width) return null;
 
             var h = hub.getBoundingClientRect();
             var hEsq = h.left - c.left, hDir = h.right - c.left;
             var hMeio = h.top - c.top + h.height / 2;
 
-            tracos.forEach(function (t) {
-                var d;
-                if (t.ficha) {
-                    var r = t.ficha.getBoundingClientRect();
-                    var esq = r.left - c.left, dir = r.right - c.left;
-                    /* Cada ponta encosta na borda virada pro outro: a ficha da
-                       esquerda sai pela direita dela e chega na esquerda do
-                       hub, e vice-versa. */
-                    var aEsquerda = (esq + dir) / 2 < (hEsq + hDir) / 2;
-                    d = rota(aEsquerda ? dir : esq, r.top - c.top + r.height / 2,
-                             aEsquerda ? hEsq : hDir, hMeio);
-                } else {
+            return {
+                vb: '0 0 ' + c.width + ' ' + c.height,
+                rotas: tracos.map(function (t) {
+                    if (t.ficha) {
+                        var r = t.ficha.getBoundingClientRect();
+                        var esq = r.left - c.left, dir = r.right - c.left;
+                        /* Cada ponta encosta na borda virada pro outro: a ficha da
+                           esquerda sai pela direita dela e chega na esquerda do
+                           hub, e vice-versa. */
+                        var aEsquerda = (esq + dir) / 2 < (hEsq + hDir) / 2;
+                        return rota(aEsquerda ? dir : esq, r.top - c.top + r.height / 2,
+                                    aEsquerda ? hEsq : hDir, hMeio);
+                    }
                     /* Os dois ramos que saem do hub pras bordas do palco. Eles
                        eram horizontais e agora terminam 32px fora da altura do
                        hub: o da direita sobe, o da esquerda desce. É a mesma
                        bézier dos outros, então o desvio acontece ao longo do
                        trecho inteiro em vez de num cotovelo no fim. */
                     var pra = t.borda < 0;
-                    d = rota(pra ? hEsq : hDir, hMeio,
-                             pra ? 0 : c.width, hMeio + (pra ? 32 : -32));
-                }
+                    return rota(pra ? hEsq : hDir, hMeio,
+                                pra ? 0 : c.width, hMeio + (pra ? 32 : -32));
+                })
+            };
+        }
+
+        function escreve(m) {
+            if (!m) return;
+            svg.setAttribute('viewBox', m.vb);
+            tracos.forEach(function (t, i) {
+                var d = m.rotas[i];
+                if (t.d === d) return;   // nada mudou: não toca no DOM
+                t.d = d;
                 t.path.setAttribute('d', d);
                 var caminho = 'path("' + d + '")';
                 t.pontos.forEach(function (p) { p.style.offsetPath = caminho; });
             });
         }
 
-        desenha();
-        if (window.ResizeObserver) {
-            var ro = new ResizeObserver(desenha);
-            ro.observe(palco);
-            fichas.forEach(function (f) { ro.observe(f); });
-        } else {
-            window.addEventListener('resize', desenha);
-        }
-        /* As fichas mudam de largura quando a fonte chega, e o traço é medido
-           a partir delas: sem este redesenho ele ficaria preso à medida que o
-           texto tinha com a fonte de sistema. */
-        if (document.fonts && document.fonts.ready) document.fonts.ready.then(desenha);
+        redes.push({ palco: palco, fichas: fichas, mede: mede, escreve: escreve });
 
         /* Fora da tela, nada anima. */
         if (window.IntersectionObserver) {
@@ -1014,6 +1035,35 @@
             }, { rootMargin: '128px' }).observe(palco);
         }
     });
+
+    /* Os três palcos (o original e as duas cópias do carrossel) são
+       redesenhados JUNTOS: primeiro todas as leituras, depois todas as
+       gravações. Um palco por vez, a gravação de um invalidaria o layout
+       que o seguinte ia ler. */
+    function redesenha() {
+        var medidas = redes.map(function (r) { return r.mede(); });
+        redes.forEach(function (r, i) { r.escreve(medidas[i]); });
+    }
+
+    /* Sem chamada síncrona na carga: o ResizeObserver avisa uma vez logo
+       que começa a observar, DEPOIS do layout que o navegador já ia fazer,
+       então a primeira medida sai de graça em vez de forçar um layout no
+       meio do carregamento. Um observador só, pros três palcos, pra o aviso
+       chegar numa chamada só por quadro. */
+    if (window.ResizeObserver) {
+        var ro = new ResizeObserver(redesenha);
+        redes.forEach(function (r) {
+            ro.observe(r.palco);
+            r.fichas.forEach(function (f) { ro.observe(f); });
+        });
+    } else {
+        requestAnimationFrame(redesenha);
+        window.addEventListener('resize', redesenha);
+    }
+    /* As fichas mudam de largura quando a fonte chega, e o traço é medido
+       a partir delas: sem este redesenho ele ficaria preso à medida que o
+       texto tinha com a fonte de sistema. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(redesenha);
 })();
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1352,6 +1402,10 @@
     var tickets = document.querySelectorAll('.of-ticket-fx');
     if (!tickets.length) return;
 
+    /* Em duas fases, como os traços da rede: `mede` só lê, `escreve` só
+       grava, e os dois tickets são lidos ANTES de qualquer gravação. A
+       versão antiga gravava a variável de uma metade e logo lia a posição
+       da outra, e cada leitura dessas refazia o layout da página. */
     function mede(fx) {
         var metades = fx.querySelectorAll('.of-lateral-card, .of-lateral-stub');
         var r = fx.getBoundingClientRect();
@@ -1359,10 +1413,21 @@
         /* A diagonal da caixa, com folga: girando 10 graus, o quadrado do
            leque não pode deixar um canto do ticket descoberto. */
         var d = Math.ceil(Math.sqrt(r.width * r.width + r.height * r.height) * 1.1);
-        Array.prototype.forEach.call(metades, function (m) {
-            m.style.setProperty('--of-brilho-cy', (centro - m.getBoundingClientRect().top) + 'px');
-            m.style.setProperty('--of-brilho-d', d + 'px');
+        return Array.prototype.map.call(metades, function (m) {
+            return { el: m, cy: Math.round(centro - m.getBoundingClientRect().top) + 'px', d: d + 'px' };
         });
+    }
+    function escreve(lista) {
+        lista.forEach(function (x) {
+            /* Só grava o que mudou: gravar o mesmo valor ainda invalida o
+               estilo do leque, que é uma camada grande. */
+            if (x.el.style.getPropertyValue('--of-brilho-cy') !== x.cy) x.el.style.setProperty('--of-brilho-cy', x.cy);
+            if (x.el.style.getPropertyValue('--of-brilho-d') !== x.d) x.el.style.setProperty('--of-brilho-d', x.d);
+        });
+    }
+    function medeTodos() {
+        var medidas = Array.prototype.map.call(tickets, mede);
+        medidas.forEach(escreve);
     }
 
     var semMovimento = window.matchMedia &&
@@ -1390,18 +1455,19 @@
         });
     }
 
+    /* Sem medida síncrona na carga: o ResizeObserver avisa uma vez assim
+       que começa a observar, depois do layout que o navegador já faria, e
+       a primeira medida sai daí. Um observador só pros dois tickets. */
+    if ('ResizeObserver' in window) {
+        var ro = new ResizeObserver(medeTodos);
+        Array.prototype.forEach.call(tickets, function (fx) { ro.observe(fx); });
+    } else {
+        requestAnimationFrame(medeTodos);
+        window.addEventListener('resize', medeTodos);
+    }
     Array.prototype.forEach.call(tickets, function (fx) {
-        mede(fx);
-        if ('ResizeObserver' in window) {
-            new ResizeObserver(function () { mede(fx); }).observe(fx);
-        }
         if (!semMovimento) giroPeloMouse(fx);
     });
-    if (!('ResizeObserver' in window)) {
-        window.addEventListener('resize', function () {
-            Array.prototype.forEach.call(tickets, mede);
-        });
-    }
 })();
 
 /* ══════════════════════════════════════════════════════════════════════
