@@ -762,8 +762,8 @@
     var VIRADA_TAG = FASES[1].inicio;
 
     /* O +1 ano bônus vai e volta: vale nas janelas de
-       /ed/bf/dependencias/bonus.js (a abertura, a quinta 12/11 às 19h com a
-       sexta 13/11, e a sexta 20/11). O script do <head> já acerta a classe
+       /ed/bf/dependencias/bonus.js (a abertura e as sextas 13/11 e 20/11,
+       o dia inteiro). O script do <head> já acerta a classe
        na carga; aqui é pra quem está com a página aberta numa virada, nos
        dois sentidos. */
     function comBonus(t) {

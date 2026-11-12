@@ -3902,8 +3902,8 @@ html.bf-antes .bf-espera {
 /* ======================================================================
    +1 ANO BÔNUS: SÓ NAS JANELAS DO bonus.js
 
-   O ano a mais vale só em algumas janelas (a abertura, a quinta 12/11 às
-   19h com a sexta 13/11, e a sexta 20/11), que moram em
+   O ano a mais vale só em algumas janelas (a abertura e as sextas 13/11
+   e 20/11, o dia inteiro), que moram em
    /ed/bf/dependencias/bonus.js. Fora delas o script do <head> põe
    .bf-sem-bonus no <html> antes da pintura, e o script.js tira e põe a
    classe nas viradas pra quem está com a página aberta. A copy que muda

@@ -28,10 +28,9 @@
     var JANELAS = [
         /* Abertura: do fim do timer até o fim da fase 2. */
         { inicio: '2026-11-06T08:00:00-03:00', fim: '2026-11-10T00:00:00-03:00' },
-        /* A volta do bônus: quinta 12/11 a partir das 19h e a sexta 13/11
-           inteira. */
-        { inicio: '2026-11-12T19:00:00-03:00', fim: '2026-11-14T00:00:00-03:00' },
-        /* Toda sexta até o fim da BF (23/11): só sobra a 20/11. */
+        /* Depois da abertura, o bônus volta só nas sextas, o dia inteiro,
+           até o fim da BF (23/11): a 13/11 e a 20/11. */
+        { inicio: '2026-11-13T00:00:00-03:00', fim: '2026-11-14T00:00:00-03:00' },
         { inicio: '2026-11-20T00:00:00-03:00', fim: '2026-11-21T00:00:00-03:00' }
     ].map(function (j) {
         return { inicio: Date.parse(j.inicio), fim: Date.parse(j.fim) };
@@ -45,7 +44,7 @@
     }
 
     /* Lê o ?agora= de teste (horário de Brasília), o mesmo formato da
-       /ed/bf/oferta/: 2026-11-12T19:00 ou só 2026-11-13. Sem ele, ou com
+       /ed/bf/oferta/: 2026-11-13T12:00 ou só 2026-11-13. Sem ele, ou com
        ele inválido, é o relógio de verdade. */
     function agoraDaUrl() {
         var t = '';

@@ -102,8 +102,8 @@
 
     /* Que horas são, pra escolher o checkout. Aceita o teste pela URL, no
        horário de Brasília, como a /ed/bf/oferta/:
-         ?agora=2026-11-12T18:59   1 ano
-         ?agora=2026-11-12T19:00   2 anos (até 13/11 23:59)
+         ?agora=2026-11-12T23:59   1 ano
+         ?agora=2026-11-13T00:00   2 anos (sexta, até 23:59)
          ?agora=2026-11-14T00:00   1 ano de novo
        O `agora` não vai pro checkout (está em CONTROLE). */
     function agora() {
