@@ -19,14 +19,14 @@
    Sem email nenhum a pessoa vai pro checkout do mesmo jeito, só sem o
    campo preenchido. Ninguém fica preso nesta tela. */
 (function () {
-    /* Dois checkouts, um por fase da oferta (horário de Brasília):
-         até 09/11 23:59   2 anos (1 ano + 1 ano bônus): DESTINO_2_ANOS
-         de 10/11 00:00    só 1 ano, sem o bônus:         DESTINO_1_ANO
-       A virada é a mesma do FIM_BONUS da /ed/bf/oferta/ (o começo da fase
-       3); se a data mudar lá, muda aqui junto. */
+    /* Dois checkouts, um por oferta (horário de Brasília):
+         dentro de uma janela do +1 ano bônus   2 anos: DESTINO_2_ANOS
+         fora delas                             1 ano:  DESTINO_1_ANO
+       As janelas moram em /ed/bf/dependencias/bonus.js, o mesmo arquivo
+       que decide a copy da /ed/bf/oferta/, então página e pagamento não
+       discordam. Sem o bonus.js, vai pro de 1 ano, como a oferta. */
     var DESTINO_2_ANOS = 'https://go.xperiun.com/subscribe/app-ultra-oferta-novos-bf26';
     var DESTINO_1_ANO = 'https://go.xperiun.com/subscribe/app-ultra-oferta-novos-1ano-bf26';
-    var FIM_BONUS = Date.parse('2026-11-10T00:00:00-03:00');
     var CHAVE = 'xp_lead_email';
     var RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -102,8 +102,9 @@
 
     /* Que horas são, pra escolher o checkout. Aceita o teste pela URL, no
        horário de Brasília, como a /ed/bf/oferta/:
-         ?agora=2026-11-09T23:59   ainda 2 anos
-         ?agora=2026-11-10T00:00   já 1 ano
+         ?agora=2026-11-12T18:59   1 ano
+         ?agora=2026-11-12T19:00   2 anos (até 13/11 23:59)
+         ?agora=2026-11-14T00:00   1 ano de novo
        O `agora` não vai pro checkout (está em CONTROLE). */
     function agora() {
         var t = limpa(entrada.get('agora'));
@@ -114,7 +115,8 @@
         var alvo = Date.parse(t);
         return isNaN(alvo) ? Date.now() : alvo;
     }
-    var DESTINO = agora() >= FIM_BONUS ? DESTINO_1_ANO : DESTINO_2_ANOS;
+    var comBonus = !!(window.XpBonus && window.XpBonus.ativo(agora()));
+    var DESTINO = comBonus ? DESTINO_2_ANOS : DESTINO_1_ANO;
 
     var email = lerEmail();
     var url = comParams(DESTINO, paramsDeSaida(email));

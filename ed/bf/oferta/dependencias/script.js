@@ -716,7 +716,10 @@
      06/11 08:00 a 06/11 23:59   de 56% a 97%   (a abertura: o timer
                                                 termina às 08:00)
      07/11 00:00 a 09/11 23:59   de 56% a 97%
-     10/11 00:00 a 23/11 23:59   de 56% a 99%   (sem o +1 ano bônus)
+     10/11 00:00 a 23/11 23:59   de 56% a 99%
+
+   (O +1 ano bônus NÃO segue estas fases: ele tem calendário próprio, em
+   /ed/bf/dependencias/bonus.js.)
 
    Dentro de cada fase a subida é LINEAR: o mesmo tanto por hora, do
    começo ao fim. A origem usava 1-(1-t)^2, que sobe rápido no começo e
@@ -758,10 +761,16 @@
        ou seja, o começo da segunda fase. */
     var VIRADA_TAG = FASES[1].inicio;
 
-    /* Fim do +1 ano bônus: o começo da fase 3. O script do <head> já põe
-       .bf-sem-bonus na carga; aqui é pra quem está com a página aberta na
-       virada. */
-    var FIM_BONUS = (window.XpOferta && window.XpOferta.FIM_BONUS) || FASES[2].inicio;
+    /* O +1 ano bônus vai e volta: vale nas janelas de
+       /ed/bf/dependencias/bonus.js (a abertura, a quinta 12/11 às 19h com a
+       sexta 13/11, e a sexta 20/11). O script do <head> já acerta a classe
+       na carga; aqui é pra quem está com a página aberta numa virada, nos
+       dois sentidos. */
+    function comBonus(t) {
+        return window.XpOferta && window.XpOferta.comBonus
+            ? window.XpOferta.comBonus(t)
+            : !!(window.XpBonus && window.XpBonus.ativo(t));
+    }
     var FIM_OFERTA = (window.XpOferta && window.XpOferta.FIM_OFERTA) || Date.parse('2026-11-24T00:00:00-03:00');
 
     /* Quanto a curva desacelera. 1 é linear (o que vale aqui); 2 seria o
@@ -809,8 +818,9 @@
             tag.textContent = tag.dataset.depois;
         }
 
-        if (agora >= FIM_BONUS && !document.documentElement.classList.contains('bf-sem-bonus')) {
-            document.documentElement.classList.add('bf-sem-bonus');
+        var semBonus = !comBonus(agora);
+        if (semBonus !== document.documentElement.classList.contains('bf-sem-bonus')) {
+            document.documentElement.classList.toggle('bf-sem-bonus', semBonus);
         }
 
         /* Fim da oferta, pra quem está com a página aberta na virada: o

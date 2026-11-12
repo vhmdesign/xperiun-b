@@ -84,7 +84,7 @@
          hero é o de /ed/bf/, e o que ainda valia daquele arquivo mora no
          style.css desta pasta. -->
     <link rel="stylesheet" href="/ed/areas/pasta.css?v=1">
-    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=31">
+    <link rel="stylesheet" href="/ed/bf/oferta/dependencias/style.css?v=32">
 
     <!-- Relógio da página e o estado ANTES DA ABERTURA. Inline e no <head>
          de propósito: a decisão "timer ou oferta" precisa estar tomada
@@ -98,13 +98,13 @@
          Todo o resto da página pergunta as horas a window.XpOferta.agora,
          então o teste vale pra tudo de uma vez. Sem JS a classe não entra
          e a página mostra a oferta. -->
+    <!-- Janelas do +1 ano bônus (2 anos de acesso): o calendário mora em
+         /ed/bf/dependencias/bonus.js, o mesmo que o checkout, o Vitalício
+         e o obrigado leem. Síncrono de propósito, antes do script abaixo. -->
+    <script src="/ed/bf/dependencias/bonus.js?v=1"></script>
     <script>
     (function () {
         var ABERTURA = Date.parse('2026-11-06T08:00:00-03:00');
-        /* Fim do +1 ano bônus: o começo da fase 3 (a mesma data da tabela
-           FASES do script.js). A partir daí o <html> leva .bf-sem-bonus e o
-           CSS troca toda a copy marcada com .so-com-bonus / .so-sem-bonus. */
-        var FIM_BONUS = Date.parse('2026-11-10T00:00:00-03:00');
         /* Fim da oferta: depois da fase 3 (23/11 23:59). Daí em diante o
            <html> leva .bf-encerrada e a página vira só o aviso de
            "Oferta Finalizada" (a .bf-fim). */
@@ -119,16 +119,21 @@
             alvo = Date.parse(t);
             if (!isNaN(alvo)) desvio = alvo - Date.now();
         }
+        /* Bônus de 2 anos ativo agora? Fora das janelas do bonus.js o <html>
+           leva .bf-sem-bonus e o CSS troca a copy marcada com
+           .so-com-bonus / .so-sem-bonus. Sem o bonus.js, fica sem bônus
+           (é o que o checkout faz no mesmo caso). */
+        function comBonus(t) { return !!(window.XpBonus && window.XpBonus.ativo(t)); }
         window.XpOferta = {
             ABERTURA: ABERTURA,
-            FIM_BONUS: FIM_BONUS,
             FIM_OFERTA: FIM_OFERTA,
+            comBonus: comBonus,
             pedido: pedido,
             simulado: isNaN(alvo) ? null : alvo,
             agora: function () { return Date.now() + desvio; }
         };
         if (window.XpOferta.agora() < ABERTURA) document.documentElement.classList.add('bf-antes');
-        if (window.XpOferta.agora() >= FIM_BONUS) document.documentElement.classList.add('bf-sem-bonus');
+        if (!comBonus(window.XpOferta.agora())) document.documentElement.classList.add('bf-sem-bonus');
         if (window.XpOferta.agora() >= FIM_OFERTA) document.documentElement.classList.add('bf-encerrada');
     })();
     </script>
@@ -1565,7 +1570,7 @@
 <script src="/ed/areas/pasta.js?v=1"></script>
 
 <!-- Foil do ticket, pastas, carrosséis, FAQ, vagas e CTA flutuante. -->
-<script src="/ed/bf/oferta/dependencias/script.js?v=20"></script>
+<script src="/ed/bf/oferta/dependencias/script.js?v=21"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>

@@ -3900,14 +3900,16 @@ html.bf-antes .bf-espera {
 }
 
 /* ======================================================================
-   +1 ANO BÔNUS: SÓ NAS FASES 1 E 2
+   +1 ANO BÔNUS: SÓ NAS JANELAS DO bonus.js
 
-   Na fase 3 (a partir de 10/11 00:00, Brasília) não há o ano a mais. O
-   script do <head> põe .bf-sem-bonus no <html> antes da pintura, e o
-   script.js põe na virada pra quem está com a página aberta. A copy que
-   muda vem nas duas versões, marcadas:
-     .so-com-bonus   fases 1 e 2 (some na 3)
-     .so-sem-bonus   fase 3 (some na 1 e na 2)
+   O ano a mais vale só em algumas janelas (a abertura, a quinta 12/11 às
+   19h com a sexta 13/11, e a sexta 20/11), que moram em
+   /ed/bf/dependencias/bonus.js. Fora delas o script do <head> põe
+   .bf-sem-bonus no <html> antes da pintura, e o script.js tira e põe a
+   classe nas viradas pra quem está com a página aberta. A copy que muda
+   vem nas duas versões, marcadas:
+     .so-com-bonus   dentro de uma janela (2 anos)
+     .so-sem-bonus   fora delas (1 ano)
    Sem JS fica a versão com bônus. O `html` no seletor sobe a
    especificidade acima da das tags do DS (.tag-status[data-*]), que
    também declaram display. Vale também pro popup do form, que é injetado

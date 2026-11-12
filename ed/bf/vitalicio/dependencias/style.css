@@ -356,8 +356,8 @@ a.bf-btn:focus-visible {
     .vit--video .vit-cta-wrap { grid-column: 6 / span 3; }
 }
 
-/* +1 ano bônus só nas fases 1 e 2 da BF: na fase 3 (10/11 em diante) o
-   <html> leva .bf-sem-bonus (script no <head>) e o plano comprado é de
-   1 ano. Mesma convenção da /ed/bf/oferta/. */
+/* +1 ano bônus só nas janelas de /ed/bf/dependencias/bonus.js: fora
+   delas o <html> leva .bf-sem-bonus (script no <head>) e o plano comprado
+   é de 1 ano. Mesma convenção da /ed/bf/oferta/. */
 html.bf-sem-bonus .so-com-bonus,
 html:not(.bf-sem-bonus) .so-sem-bonus { display: none; }
