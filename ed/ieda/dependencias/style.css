@@ -1,0 +1,1499 @@
+/* IEDA, /ed/ieda/ (Imersão Engenharia de Dados Agêntica)
+   Layout e copy: ed/ieda/assets/pagina.pdf (frame de 1920; conteúdo de 1408 = grid Wide do DS).
+   Tokens e fontes do root.css: Poppins (--font-family) no texto, Cormorant Infant nos títulos.
+   Cores fora do root.css, tiradas do PDF / passadas pelo usuário nas cenas da IEDA:
+     #F0F0FA (cards do "Na prática" e dos dias), #FFFFC8 e #C8FFFF (degradê da programação
+     e caixas "Missão do dia"). As animações têm CSS próprio: programacao.css, plantao.css, radar.css. */
+
+body {
+    background: var(--bw);
+    color: var(--bb);
+    font: var(--p);
+}
+
+main {
+    overflow-x: clip;
+}
+
+/* ---------- grid do DS: container Wide 1440, 10 > 8 > 6 > 4 colunas ---------- */
+.ieda-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    column-gap: 32px;
+}
+
+/* ---------- tipografia comum ---------- */
+.ieda-eyebrow {
+    margin: 0;
+    font: var(--p-l);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--bb-50);
+}
+
+/* títulos fluidos: linha reta entre 576px (mínimo) e 1440px (máximo), travados fora disso.
+   inclinação = (máx - mín) / (1440 - 576); base = mín - inclinação * 576.
+   Seção: 24px > 36px  =>  12/864 = 1.3889vw; 24 - 8 = 16px (1rem) */
+.ieda-titulo {
+    margin: 8px 0 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: clamp(1.5rem, 1rem + 1.3889vw, 2.25rem);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--bb);
+}
+
+.ieda-texto {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bb-75);
+}
+
+.ieda-datas {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--bb);
+    text-align: center;
+}
+
+/* ---------- botão ---------- */
+.ieda-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 304px;
+    padding: 16px 32px;
+    border-radius: 16px;
+    background: var(--bb);
+    font: var(--btn-l);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+/* só a cor vai com o a: precisa empatar com o a:not(.btn) do root.css (que pinta o texto
+   de --pc300); o resto fica em .ieda-btn para as media queries conseguirem sobrescrever */
+a.ieda-btn {
+    color: var(--bw);
+}
+
+a.ieda-btn:hover {
+    background: var(--dn700);
+    color: var(--bw);
+    text-decoration: none;
+}
+
+/* ===================================================================
+   HERO
+   =================================================================== */
+/* o fundo (faixas coloridas) fica num ::before com no mínimo a proporção da arte (1920 x 1080),
+   passando por trás do começo da seção seguinte: assim as faixas terminam esmaecidas e não
+   cortam seco na base do hero.
+   Telas baixas (ex.: 1350 x 625): os espaços verticais, o logo e o título encolhem com a altura
+   da tela (vh), com teto nos valores do PDF, pra o botão e as datas aparecerem sem rolar.
+   Os dois espaços de 112px (antes das ferramentas e antes do botão) encolhem mais rápido
+   (20.8vh - 112px: 112 em 1080 de altura, 32 a partir de ~690 pra baixo). Em telas altas
+   (a partir de ~1080 de altura) os tetos valem e nada muda. */
+.ieda-hero {
+    position: relative;
+    isolation: isolate;
+    padding: clamp(32px, 8.9vh, 96px) 0 112px;
+    text-align: center;
+}
+
+.ieda-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    height: max(100%, 56.25vw);
+    background: url('/ed/ieda/dependencias/bg-hero.webp') center top / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+.ieda-hero-logo {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: clamp(160px, 22.2vh, 240px);
+    height: auto;
+}
+
+/* título + subtítulo num bloco só (como os headers do DS): o espaço entre eles fica aqui
+   dentro e o espaço do bloco pros vizinhos vem do grid (row-gap no mobile) */
+.ieda-hero-texto {
+    grid-column: 3 / span 6;
+    margin-top: clamp(24px, 5.2vh, 56px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2.2vh, 24px);
+}
+
+.ieda-hero-titulo {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    /* 32px em 576 > 64px em 1440: 32/864 = 3.7037vw; 32 - 21.33 = 10.67px (0.6667rem).
+       O 9vh continua de teto em telas baixas (ver .ieda-hero) */
+    font-size: clamp(2rem, min(0.6667rem + 3.7037vw, 9vh), 4rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bb);
+}
+
+.ieda-hero-sub {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bb-75);
+}
+
+.ieda-ferramentas {
+    grid-column: 1 / -1;
+    margin: clamp(32px, 20.8vh - 112px, 112px) 0 0;
+    padding: 0 48px;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.ieda-ferramenta {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font: 400 1.125rem/1.25 var(--font-family);
+    color: var(--bb);
+}
+
+.ieda-ferramenta img {
+    width: 32px;
+    height: 32px;
+}
+
+/* a marca da Orca é fina e comprida: em 32px some; fica em 48px */
+.ieda-ferramenta--orca img {
+    width: 48px;
+    height: 48px;
+}
+
+/* as das pontas ficam desfocadas, como no PDF (blur estático) */
+.ieda-ferramenta:first-child,
+.ieda-ferramenta:last-child {
+    filter: blur(2px);
+}
+
+.ieda-hero-cta {
+    grid-column: 1 / -1;
+    margin-top: clamp(32px, 20.8vh - 112px, 112px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ===================================================================
+   O PROJETO
+   Linha 1: texto (cols 1-5) + Coleta (7-8) + Organiza (9-10)
+   Linha 2: texto final (cols 1-4, alinhado embaixo) + Lê (5-6) + Mostra (7-8) + Avisa (9-10)
+   Os cards entram direto no grid (display: contents na lista).
+   =================================================================== */
+.ieda-projeto {
+    padding: 128px 0;
+}
+
+.ieda-projeto .ieda-inner {
+    row-gap: 32px;
+}
+
+.ieda-projeto-intro {
+    grid-column: 1 / span 5;
+    grid-row: 1;
+}
+
+.ieda-projeto-intro .ieda-texto {
+    margin-top: 32px;
+    max-width: 544px;
+}
+
+.ieda-projeto-cards {
+    display: contents;
+}
+
+.ieda-projeto-card {
+    margin: 0;
+    aspect-ratio: 1;
+    padding: 32px;
+    border-radius: 32px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--bw);
+}
+
+.ieda-projeto-card--a { grid-column: 7 / span 2; grid-row: 1; background-image: url('/ed/ieda/dependencias/bg-container-a.webp'); }
+.ieda-projeto-card--b { grid-column: 9 / span 2; grid-row: 1; background-image: url('/ed/ieda/dependencias/bg-container-b.webp'); }
+.ieda-projeto-card--c { grid-column: 5 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-c.webp'); }
+.ieda-projeto-card--d { grid-column: 7 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-d.webp'); color: var(--bb); }
+.ieda-projeto-card--e { grid-column: 9 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-e.webp'); color: var(--bb); }
+
+.ieda-projeto-card-titulo {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: inherit;
+}
+
+.ieda-projeto-card-texto {
+    margin: 0;
+    font: var(--p-l);
+    color: inherit;
+}
+
+.ieda-projeto-fim {
+    grid-column: 1 / span 4;
+    grid-row: 2;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.ieda-projeto-fim .ieda-texto {
+    max-width: 432px;
+}
+
+/* ===================================================================
+   NA PRÁTICA
+   Dois cards de 448px de altura (span 5 + span 5). As animações são de
+   688px (o span 5); em telas menores escalam por --anim-escala.
+   =================================================================== */
+.ieda-pratica {
+    padding: 128px 0 0;
+}
+
+/* as linhas dos cards (implícitas, depois da intro) têm a mesma altura (1fr): lado a lado
+   ou empilhados, o card do radar fica sempre do tamanho do card do plantão */
+.ieda-pratica .ieda-inner {
+    row-gap: 96px;
+    grid-template-rows: auto;
+    grid-auto-rows: 1fr;
+}
+
+.ieda-pratica-intro {
+    grid-column: 1 / span 5;
+}
+
+/* a altura vem do plantão (texto + relógio); o radar só tem conteúdo absoluto e estica até ela */
+.ieda-pratica-card {
+    margin: 0;
+    --anim-escala: 1;
+    --card-respiro: 48px;
+    position: relative;
+    border-radius: 32px;
+    background: #F0F0FA;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* radar: o vídeo (544px de altura, maior que o card; webm com alfa) passa pra fora em cima
+   e embaixo; nas laterais continua cortado na borda do card (clip-path só estende o corte na
+   vertical). Onde o vídeo cai no mp4 sem alfa (Safari), o JS põe .sem-alfa e ele fica
+   recortado no card */
+.ieda-pratica-card--radar {
+    overflow: visible;
+    clip-path: inset(-100vh 0);
+}
+
+.ieda-pratica-card--radar.sem-alfa {
+    overflow: hidden;
+    clip-path: none;
+}
+
+/* vídeos do "Na prática": o tamanho da animação original (688px de largura); a caixa
+   .ieda-pratica-anim escala por --anim-escala */
+.ieda-pratica-video {
+    display: block;
+    width: 688px;
+    height: 336px;
+}
+
+.ieda-pratica-card--radar .ieda-pratica-video {
+    height: 544px;
+}
+
+.ieda-pratica-card--plantao {
+    grid-column: 1 / span 5;
+    grid-row: 2;
+}
+
+.ieda-pratica-card--radar {
+    grid-column: 6 / span 5;
+    grid-row: 2;
+}
+
+.ieda-pratica-texto {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* plantão: texto no fluxo, em cima; o relógio vem logo abaixo dele */
+.ieda-pratica-card--plantao .ieda-pratica-texto {
+    padding: var(--card-respiro) var(--card-respiro) 0;
+}
+
+/* radar: texto por cima da animação, na base */
+.ieda-pratica-card--radar .ieda-pratica-texto {
+    position: absolute;
+    left: var(--card-respiro);
+    right: var(--card-respiro);
+    bottom: calc(var(--card-respiro) - 8px);
+}
+
+.ieda-pratica-titulo {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: var(--bb);
+}
+
+.ieda-pratica-desc {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bb);
+}
+
+/* animações de 688px, escaladas por --anim-escala a partir do canto superior esquerdo */
+.ieda-pratica-anim {
+    transform: scale(var(--anim-escala));
+    transform-origin: 0 0;
+}
+
+/* plantão, como no PDF: o relógio logo abaixo do texto e o contador das 07:00 cortado na
+   base do card. A caixa reserva 336px (do topo do quadro até o meio do contador) e a
+   margem negativa desconta o que a escala encolhe, pra o card acabar no mesmo corte. */
+.ieda-pratica-card--plantao .ieda-pratica-anim {
+    position: relative;
+    height: 336px;
+    margin-bottom: calc(336px * (var(--anim-escala) - 1));
+}
+
+/* radar: centrado na vertical do card (o centro do quadro é o centro do target);
+   escala a partir do meio da borda esquerda, então o centro não sai do lugar */
+.ieda-pratica-card--radar .ieda-pratica-anim {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scale(var(--anim-escala));
+    transform-origin: 0 50%;
+}
+
+/* ===================================================================
+   PROGRAMAÇÃO
+   Fundo: degradê --bw > #FFFFC8 > #C8FFFF (do PDF) com as faixas
+   brancas (bg-secao) por cima, no topo.
+   =================================================================== */
+.ieda-prog {
+    margin-top: 128px;
+    padding: 128px 0 256px;
+    background:
+        url('/ed/ieda/dependencias/bg-secao.webp') center top / 100% 40% no-repeat,
+        linear-gradient(to bottom, var(--bw), #FFFFC8 50%, #C8FFFF);
+}
+
+.ieda-prog-topo {
+    grid-column: 3 / span 6;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ieda-prog-topo .ieda-datas {
+    margin-top: 24px;
+}
+
+/* dia: info (cols 1-4) e lado com card + missão (cols 7-10); no dia 13, invertido */
+.ieda-dia {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    margin-top: 192px;
+    align-items: center;
+}
+
+.ieda-dia-info {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+}
+
+.ieda-dia-lado {
+    grid-column: 7 / span 4;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ieda-dia--13 .ieda-dia-info {
+    grid-column: 7 / span 4;
+}
+
+.ieda-dia--13 .ieda-dia-lado {
+    grid-column: 1 / span 4;
+}
+
+.ieda-dia-data {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 2rem;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--bb);
+}
+
+.ieda-dia-titulo {
+    margin: 8px 0 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: var(--bb);
+}
+
+.ieda-dia-desc {
+    margin: 16px 0 0;
+    font: var(--p-l);
+    color: var(--bb);
+}
+
+/* navegação: o ativo vira pílula --wr500; os outros ficam mais apagados e
+   desfocados quanto mais longe do ativo (data-dist, do programacao.js) */
+.ieda-dia-nav {
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.ieda-dia-nav-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 0;
+    border-radius: 1920px;
+    background: transparent;
+    font: 400 1.25rem/1.25 var(--font-family);
+    color: var(--bb-50);
+    text-align: left;
+    cursor: pointer;
+    transition: padding 0.4s ease, background-color 0.4s ease, color 0.4s ease, filter 0.4s ease;
+}
+
+/* com o anel, a pílula fica com 16px à direita (o anel já dá o respiro visual) */
+.ieda-dia-nav-item[data-dist="0"] {
+    padding: 8px 16px 8px 24px;
+    background: var(--wr500);
+    color: var(--bb);
+}
+
+/* anel de progresso (criado pelo programacao.js): 16px, traço de 2px, trilho --bb-10 e
+   preenchimento --bb no sentido horário a partir do topo. Só aparece no ativo; nos outros
+   fica com largura 0, pra não ocupar espaço */
+.ieda-dia-nav-prog {
+    flex: none;
+    width: 0;
+    height: 16px;
+    margin-left: 0;
+    opacity: 0;
+    transform: rotate(-90deg);
+    overflow: visible;
+    transition: width 0.4s ease, margin-left 0.4s ease, opacity 0.4s ease;
+}
+
+.ieda-dia-nav-item[data-dist="0"] .ieda-dia-nav-prog {
+    width: 16px;
+    margin-left: 8px;
+    opacity: 1;
+}
+
+.ieda-dia-nav-prog circle {
+    fill: none;
+    stroke-width: 2;
+}
+
+.ieda-dia-nav-prog-trilho {
+    stroke: var(--bb-10);
+}
+
+.ieda-dia-nav-prog-cheio {
+    stroke: var(--bb);
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.15s linear;
+}
+
+.ieda-dia-nav-item[data-dist="1"] {
+    color: var(--bb-50);
+    filter: blur(2px);
+}
+
+.ieda-dia-nav-item[data-dist="2"] {
+    color: var(--bb-25);
+    filter: blur(2px);
+}
+
+.ieda-dia-nav-item:hover,
+.ieda-dia-nav-item:focus-visible {
+    filter: none;
+    color: var(--bb);
+}
+
+.ieda-dia-nav-item[data-dist="0"]:hover {
+    color: var(--bb);
+}
+
+.ieda-dia-nav-item:focus-visible {
+    outline: 2px solid var(--bb);
+    outline-offset: 4px;
+}
+
+/* indicador do carrossel (criado pelo programacao.js): só abaixo de 864 */
+.ieda-dia-slides {
+    display: none;
+}
+
+/* card do dia: os 5 tópicos empilhados no mesmo lugar; só o ativo aparece */
+.ieda-dia-card {
+    --card-pad: 48px;
+    padding: var(--card-pad);
+    border-radius: 32px;
+    background: #F0F0FA;
+    overflow: hidden;
+}
+
+.ieda-dia-palco {
+    display: grid;
+}
+
+.ieda-dia-palco > .anim {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.ieda-dia-palco > .anim.is-ativo {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0s;
+}
+
+/* texto do tópico no card: nome (com dois-pontos) e descrição, como no PDF */
+.ieda-dia-card .anim-texto {
+    gap: 16px;
+    line-height: 1.5;
+}
+
+.ieda-dia-card .anim-nome {
+    font: 400 1.25rem/1.5 var(--font-family);
+    color: var(--bb);
+}
+
+.ieda-dia-card .anim-desc {
+    font: var(--p-l);
+    color: var(--bb-75);
+}
+
+/* tópico: texto + quadro do vídeo, empilhados (no dia 13 o texto vem depois do vídeo) */
+.anim {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.anim-texto {
+    display: flex;
+    flex-direction: column;
+}
+
+/* o quadro do vídeo vaza o padding do card nas laterais (margem negativa = --card-pad): quem
+   recorta é o card, na borda dele (com o raio). O vídeo tem o fundo do card (#F0F0FA) e
+   ajusta por contain, então sobra de largura vira fundo do card, sem emenda */
+.ieda-dia-card .quadro {
+    height: 320px;
+    margin: 0 calc(var(--card-pad) * -1);
+}
+
+.anim-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #F0F0FA;
+}
+
+.ieda-missao {
+    padding: 32px;
+    border-radius: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ieda-dia--12 .ieda-missao {
+    background: #C8FFFF;
+}
+
+.ieda-dia--13 .ieda-missao {
+    background: #FFFFC8;
+}
+
+.ieda-missao-titulo {
+    margin: 0;
+    font: 400 1.25rem/1.5 var(--font-family);
+    color: var(--bb);
+}
+
+.ieda-missao-texto {
+    margin: 0;
+    font: var(--p-l);
+    color: var(--bb-75);
+}
+
+/* ===================================================================
+   O QUE VOCÊ RECEBE (layout: assets/seção-recebe-a.pdf e -b.pdf)
+   Fundo escuro com o degradê #303D44 (do PDF) no topo. Inventário: 8 slots em 3 colunas
+   (span 2 cada; a 3ª linha só com 07 e 08, nas colunas do meio) e o painel do item
+   selecionado (span 4). Cada item tem a cor da raridade (cores passadas pelo usuário):
+     essencial #7DE1E1 / #C8FFFF   raro #7DE17D / #C8FFC8
+     épico     #E1E17D / #FFFFC8   lendário #E1967D / #FFE1C8
+   Slot selecionado: a cor a 23% no topo, esmaecendo; ícone aceso, maior e inclinado.
+   Painel: a cor a 27% no topo, esmaecendo até o fundo.
+   =================================================================== */
+.ieda-recebe {
+    padding: 256px 0;
+    background: linear-gradient(to bottom, #303D44, var(--bb) 512px) var(--bb);
+    color: var(--bw);
+}
+
+.ieda-recebe .ieda-inner {
+    row-gap: 64px;
+}
+
+.ieda-recebe .ieda-eyebrow {
+    color: var(--bw-50);
+}
+
+.ieda-recebe .ieda-titulo {
+    color: var(--bw);
+}
+
+/* 4 colunas: o título quebra depois de "benefícios", como no PDF */
+.ieda-recebe-intro {
+    grid-column: 1 / span 4;
+}
+
+[data-raridade="essencial"] { --cor: #7DE1E1; --cor-clara: #C8FFFF; }
+[data-raridade="raro"]      { --cor: #7DE17D; --cor-clara: #C8FFC8; }
+[data-raridade="epico"]     { --cor: #E1E17D; --cor-clara: #FFFFC8; }
+[data-raridade="lendario"]  { --cor: #E1967D; --cor-clara: #FFE1C8; }
+
+.ieda-slots {
+    grid-column: 1 / span 6;
+    align-self: start;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+}
+
+/* 07 começa na coluna do meio; 08 vem logo depois */
+.ieda-slot:nth-child(7) {
+    grid-column: 2;
+}
+
+.ieda-slot {
+    position: relative;
+    aspect-ratio: 256 / 272;
+    padding: 32px;
+    border-radius: 32px;
+    background: var(--bw-5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+    color: var(--bw);
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.4s ease;
+}
+
+/* fundo do selecionado: a cor da raridade a 23% no topo, esmaecendo */
+.ieda-slot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--cor) 23%, transparent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.ieda-slot[aria-selected="true"]::before {
+    opacity: 1;
+}
+
+.ieda-slot-num,
+.ieda-slot-nome,
+.ieda-slot-icone {
+    position: relative;
+    z-index: 1;
+}
+
+/* números em algarismos de estilo antigo (como no PDF) */
+.ieda-slot-num,
+.ieda-item-num,
+.ieda-item-nome {
+    font-variant-numeric: oldstyle-nums;
+}
+
+.ieda-slot-num {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.ieda-slot-nome {
+    font: 400 1.25rem/1.25 var(--font-family);
+}
+
+/* ícone: no meio do card, ocupando o espaço entre o número e o nome (encolhe junto com o
+   card, sem encostar no nome quando ele quebra em 2 linhas). Apagado nos não selecionados;
+   aceso, maior e inclinado no selecionado */
+.ieda-slot-icone {
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    margin: 8px 0;
+    object-fit: contain;
+    opacity: 0.4;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.ieda-slot:hover .ieda-slot-icone {
+    opacity: 0.7;
+}
+
+.ieda-slot[aria-selected="true"] .ieda-slot-icone {
+    opacity: 1;
+    transform: rotate(-15deg) scale(1.1);
+}
+
+.ieda-slot:focus-visible {
+    outline: 2px solid var(--bw);
+    outline-offset: 4px;
+}
+
+/* painel do item selecionado: sticky ao lado dos slots (acompanha a rolagem até o fim
+   deles); abaixo de 864, empilhado, volta ao fluxo normal */
+.ieda-item {
+    grid-column: 7 / span 4;
+    align-self: start;
+    position: sticky;
+    top: 32px;
+    padding: 32px;
+    border-radius: 32px;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--cor) 27%, var(--bb)), var(--bb));
+    display: flex;
+    flex-direction: column;
+}
+
+.ieda-item:focus-visible {
+    outline: 2px solid var(--bw);
+    outline-offset: 4px;
+}
+
+.ieda-item-barra {
+    display: flex;
+    gap: 8px;
+}
+
+.ieda-item-barra span {
+    flex: 1;
+    height: 4px;
+    background: var(--bw-25);
+    transition: background-color 0.3s ease;
+}
+
+.ieda-item-barra span.is-ativo {
+    background: var(--bw);
+}
+
+.ieda-item-topo {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.ieda-item-num {
+    font-size: 2rem;
+}
+
+.ieda-item-raridade {
+    font-size: 1.125rem;
+    color: var(--cor-clara);
+}
+
+.ieda-item-palco {
+    height: 256px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ieda-item-icone {
+    width: 160px;
+    height: 160px;
+    transform: rotate(-15deg);
+}
+
+.ieda-item-nome {
+    margin: 32px 0 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: var(--bw);
+}
+
+.ieda-item-desc {
+    margin: 24px 0 0;
+    font: var(--p-l);
+    color: var(--bw-75);
+}
+
+.ieda-item .ieda-btn {
+    margin-top: 32px;
+    min-width: 0;
+    width: 100%;
+}
+
+/* troca de item: o ícone entra girando pro lugar e o texto aparece */
+.ieda-item.is-trocando .ieda-item-icone {
+    animation: ieda-item-icone 0.5s ease;
+}
+
+.ieda-item.is-trocando .ieda-item-num,
+.ieda-item.is-trocando .ieda-item-raridade,
+.ieda-item.is-trocando .ieda-item-nome,
+.ieda-item.is-trocando .ieda-item-desc {
+    animation: ieda-item-texto 0.4s ease;
+}
+
+@keyframes ieda-item-icone {
+    from { opacity: 0; transform: rotate(0deg) scale(0.85); }
+    to { opacity: 1; transform: rotate(-15deg) scale(1); }
+}
+
+@keyframes ieda-item-texto {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* botão claro (no fundo escuro) */
+.ieda-btn--claro {
+    background: var(--bw);
+}
+
+a.ieda-btn.ieda-btn--claro {
+    color: var(--bb);
+}
+
+a.ieda-btn.ieda-btn--claro:hover {
+    background: var(--ln200);
+    color: var(--bb);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ieda-item.is-trocando .ieda-item-icone,
+    .ieda-item.is-trocando .ieda-item-num,
+    .ieda-item.is-trocando .ieda-item-raridade,
+    .ieda-item.is-trocando .ieda-item-nome,
+    .ieda-item.is-trocando .ieda-item-desc {
+        animation: none;
+    }
+}
+
+/* ===================================================================
+   GRID RESPONSIVO (depois das regras base)
+   =================================================================== */
+@media (max-width: 1439px) {
+    .ieda-inner {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .ieda-hero-texto,
+    .ieda-prog-topo {
+        grid-column: 2 / span 6;
+    }
+
+    /* o projeto: texto (1-4) + Coleta (5-6) + Organiza (7-8);
+       texto final (1-2) + Lê (3-4) + Mostra (5-6) + Avisa (7-8) */
+    .ieda-projeto-intro { grid-column: 1 / span 4; }
+    .ieda-projeto-card--a { grid-column: 5 / span 2; }
+    .ieda-projeto-card--b { grid-column: 7 / span 2; }
+    .ieda-projeto-card--c { grid-column: 3 / span 2; }
+    .ieda-projeto-card--d { grid-column: 5 / span 2; }
+    .ieda-projeto-card--e { grid-column: 7 / span 2; }
+    .ieda-projeto-fim { grid-column: 1 / span 2; gap: 32px; }
+
+    .ieda-btn {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .ieda-hero-cta .ieda-btn {
+        width: auto;
+        min-width: 304px;
+    }
+
+    /* abaixo de 1440 todo texto em --p-l (18px) cai para --p (16px) */
+    .ieda-eyebrow,
+    .ieda-texto,
+    .ieda-hero-sub,
+    .ieda-projeto-card-texto,
+    .ieda-pratica-desc,
+    .ieda-dia-desc,
+    .ieda-dia-card .anim-desc,
+    .ieda-missao-texto {
+        font: var(--p);
+    }
+
+    /* cards do projeto em span 2: menos respiro */
+    .ieda-projeto-card {
+        padding: 24px;
+    }
+
+    .ieda-pratica-intro { grid-column: 1 / span 5; }
+    .ieda-pratica-card {
+        --anim-escala: 0.8;
+        --card-respiro: 32px;
+    }
+    .ieda-pratica-card--plantao { grid-column: 1 / span 4; }
+    .ieda-pratica-card--radar { grid-column: 5 / span 4; }
+
+    .ieda-dia-info,
+    .ieda-dia--13 .ieda-dia-lado {
+        grid-column: 1 / span 4;
+    }
+
+    .ieda-dia-lado,
+    .ieda-dia--13 .ieda-dia-info {
+        grid-column: 5 / span 4;
+    }
+
+    .ieda-dia-card {
+        --card-pad: 32px;
+    }
+}
+
+/* o projeto abaixo de 1152 (ainda no grid de 8): os cards em span 2 ficam pequenos demais
+   pro texto e o texto final some espremido no canto. Vira: intro sozinha em cima (span 6) e
+   os 5 cards + o texto final em pares de span 4 (Coleta | Organiza, Lê | Mostra, Avisa | texto) */
+@media (max-width: 1152px) {
+    .ieda-projeto-intro {
+        grid-column: 1 / span 6;
+        grid-row: auto;
+        margin-bottom: 32px;
+    }
+
+    .ieda-projeto-card--a,
+    .ieda-projeto-card--b,
+    .ieda-projeto-card--c,
+    .ieda-projeto-card--d,
+    .ieda-projeto-card--e,
+    .ieda-projeto-fim {
+        grid-column: span 4;
+        grid-row: auto;
+    }
+
+    .ieda-projeto-card {
+        aspect-ratio: auto;
+        min-height: 256px;
+        padding: 32px;
+        gap: 48px;
+    }
+
+    .ieda-projeto-fim {
+        align-self: center;
+        padding: 0 32px;
+    }
+
+    .ieda-projeto-fim .ieda-btn {
+        width: auto;
+        min-width: 304px;
+    }
+}
+
+@media (max-width: 864px) {
+    .ieda-inner {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        column-gap: 24px;
+    }
+
+    .ieda-hero-logo,
+    .ieda-hero-texto,
+    .ieda-ferramentas,
+    .ieda-hero-cta,
+    .ieda-prog-topo,
+    .ieda-projeto-intro,
+    .ieda-projeto-card--a,
+    .ieda-projeto-card--b,
+    .ieda-projeto-card--c,
+    .ieda-projeto-card--d,
+    .ieda-projeto-card--e,
+    .ieda-projeto-fim,
+    .ieda-pratica-intro,
+    .ieda-pratica-card--plantao,
+    .ieda-pratica-card--radar,
+    .ieda-dia-info,
+    .ieda-dia-lado,
+    .ieda-dia--13 .ieda-dia-info,
+    .ieda-dia--13 .ieda-dia-lado {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .ieda-hero {
+        padding: 64px 0 96px;
+    }
+
+    /* hero e programação no row-gap do grid (48px aqui, 32px em <=576): logo, texto,
+       ferramentas e CTA (e topo > dias) sem margens soltas entre si */
+    .ieda-hero .ieda-inner,
+    .ieda-prog .ieda-inner {
+        row-gap: 48px;
+    }
+
+    .ieda-hero-texto {
+        margin-top: 0;
+    }
+
+    .ieda-ferramentas {
+        margin-top: 0;
+        padding: 0;
+        justify-content: center;
+        gap: 24px 32px;
+    }
+
+    .ieda-ferramenta {
+        gap: 8px;
+    }
+
+    .ieda-hero-cta {
+        margin-top: 0;
+    }
+
+    /* espaçamento no padrão do DS (ver ed/formacoes/style.css): seções com 128px de respiro
+       (96 em <=576), 48px entre blocos (32 em <=576) e o gap das colunas (24 / 16) entre
+       itens da mesma lista (cards empilhados, card + missão, cards do carrossel) */
+    .ieda-projeto {
+        padding: 128px 0;
+    }
+
+    .ieda-projeto .ieda-inner {
+        row-gap: 24px;
+    }
+
+    .ieda-projeto-intro {
+        margin-bottom: 24px;
+    }
+
+    /* cards em largura cheia: deixam de ser quadrados */
+    .ieda-projeto-card {
+        aspect-ratio: auto;
+        min-height: 256px;
+        padding: 32px;
+        gap: 64px;
+    }
+
+    /* texto final + botão depois dos cards (48px = 24 do row-gap + 24) */
+    .ieda-projeto-fim {
+        padding: 0;
+        order: 1;
+        margin-top: 24px;
+    }
+
+    .ieda-projeto-fim .ieda-btn {
+        width: auto;
+        min-width: 304px;
+    }
+
+    .ieda-pratica {
+        padding-top: 128px;
+    }
+
+    /* intro > cards 48px (24 + 24 de margem); entre os cards 24px. As animações ficam em 80%
+       (como abaixo de 1440): assim a do radar (544px) cabe na altura do card e não vaza
+       por cima do card do plantão com só 24px entre eles */
+    .ieda-pratica .ieda-inner {
+        row-gap: 24px;
+    }
+
+    .ieda-pratica-intro {
+        margin-bottom: 24px;
+    }
+
+    /* o radar (544px de altura) em 80% ainda passaria uns 34px do card em cima e embaixo;
+       em 66% (359px) cabe na altura do card (~366px) e não encosta no plantão */
+    .ieda-pratica-card--radar {
+        --anim-escala: 0.66;
+    }
+
+    .ieda-prog {
+        margin-top: 128px;
+        padding: 128px 0;
+    }
+
+    /* topo > dia 12 > dia 13: 96px (48 do row-gap + 48), o dobro do espaço de dentro de cada
+       dia (48), pra cada dia ler como um bloco próprio; 64px em <=576 (32 + 32) */
+    .ieda-dia {
+        margin-top: 48px;
+        row-gap: 48px;
+    }
+
+    .ieda-dia-lado {
+        gap: 24px;
+    }
+
+    .ieda-dia-info,
+    .ieda-dia--13 .ieda-dia-info {
+        grid-row: 1;
+    }
+
+    .ieda-dia-lado,
+    .ieda-dia--13 .ieda-dia-lado {
+        grid-row: 2;
+    }
+
+    .ieda-dia-titulo {
+        font-size: 2.25rem;
+    }
+
+    /* sem navegação: os tópicos viram um carrossel (abaixo) */
+    .ieda-dia-nav {
+        display: none;
+    }
+
+    /* carrossel infinito (programacao.js): o card do dia deixa de ser a caixa e cada tópico
+       vira um card próprio, lado a lado. O card do dia vaza os 16px de padding do container
+       (margem negativa + padding igual) e recorta ali: o card da vez fica alinhado ao conteúdo
+       e o preview do próximo vai até a borda da tela. Card = largura - (gap + 32px de preview),
+       com o gap das colunas: 24px aqui, 16px em <=576. */
+    .ieda-dia-card {
+        --car-gap: 24px;
+        margin: 0 -16px;
+        padding: 0 16px;
+        border-radius: 0;
+        background: none;
+        overflow: hidden;
+    }
+
+    /* indicador acima do carrossel: um retângulo de 4px por slide, 8px entre eles, --bb-25 e
+       o do card da vez em --bb. Cada um é um botão com 20px de altura (área de toque); o
+       retângulo de 4px é o ::before */
+    .ieda-dia-slides {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .ieda-dia-slides button {
+        flex: 1;
+        height: 20px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .ieda-dia-slides button::before {
+        content: "";
+        width: 100%;
+        height: 4px;
+        background: var(--bb-25);
+        transition: background-color 0.3s ease;
+    }
+
+    .ieda-dia-slides button.is-ativo::before {
+        background: var(--bb);
+    }
+
+    .ieda-dia-slides button:focus-visible {
+        outline: 2px solid var(--bb);
+        outline-offset: 2px;
+    }
+
+    /* o palco anda por translateX (JS); pan-y deixa a rolagem vertical com o navegador e o
+       gesto horizontal com o carrossel */
+    .ieda-dia-palco {
+        display: flex;
+        gap: var(--car-gap);
+        touch-action: pan-y;
+        cursor: grab;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .ieda-dia-palco.is-arrastando {
+        cursor: grabbing;
+    }
+
+    .ieda-dia-palco > .anim,
+    .ieda-dia-palco > .anim.is-ativo {
+        --card-pad: 32px;
+        flex: 0 0 calc(100% - var(--car-gap) - 32px);
+        padding: var(--card-pad);
+        border-radius: 32px;
+        background: #F0F0FA;
+        overflow: hidden;
+        opacity: 1;
+        visibility: visible;
+        transition: none;
+    }
+
+    /* dia 13: o texto do tópico sobe pro topo do card, igual ao dia 12
+       (no desktop ele fica embaixo da animação, como no PDF) */
+    .ieda-dia--13 .anim-texto {
+        order: -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .ieda-inner {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        column-gap: 16px;
+    }
+
+    .ieda-ferramenta:first-child,
+    .ieda-ferramenta:last-child {
+        filter: none;
+    }
+
+    .ieda-btn,
+    .ieda-hero-cta .ieda-btn,
+    .ieda-projeto-fim .ieda-btn {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .ieda-hero-cta {
+        align-self: stretch;
+    }
+
+    .ieda-hero .ieda-inner,
+    .ieda-prog .ieda-inner {
+        row-gap: 32px;
+    }
+
+    /* título e subtítulo do hero alinhados à esquerda */
+    .ieda-hero-texto {
+        text-align: left;
+    }
+
+    .ieda-projeto-card {
+        padding: 32px;
+        min-height: 224px;
+    }
+
+    .ieda-projeto {
+        padding: 96px 0;
+    }
+
+    .ieda-projeto .ieda-inner,
+    .ieda-pratica .ieda-inner {
+        row-gap: 16px;
+    }
+
+    .ieda-projeto-intro,
+    .ieda-pratica-intro {
+        margin-bottom: 16px;
+    }
+
+    .ieda-projeto-fim {
+        margin-top: 16px;
+    }
+
+    .ieda-pratica {
+        padding-top: 96px;
+    }
+
+    .ieda-prog {
+        margin-top: 96px;
+        padding: 96px 0;
+    }
+
+    .ieda-dia {
+        margin-top: 32px;
+        row-gap: 32px;
+    }
+
+    .ieda-dia-lado {
+        gap: 16px;
+    }
+
+    .ieda-dia-card {
+        --car-gap: 16px;
+    }
+
+    .ieda-pratica-card {
+        --anim-escala: 0.5;
+        --card-respiro: 24px;
+        border-radius: 24px;
+    }
+
+    .ieda-dia-palco > .anim,
+    .ieda-dia-palco > .anim.is-ativo {
+        --card-pad: 24px;
+        border-radius: 24px;
+    }
+
+    .ieda-missao {
+        padding: 24px;
+        border-radius: 24px;
+    }
+}
+
+/* ---------- o que você recebe: responsivo (depois das regras base) ---------- */
+@media (max-width: 1439px) {
+    /* 8 colunas: slots em 2 colunas (span 4) e painel ao lado (span 4) */
+    .ieda-slots {
+        grid-column: 1 / span 4;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ieda-slot:nth-child(7) {
+        grid-column: auto;
+    }
+
+    .ieda-item {
+        grid-column: 5 / span 4;
+    }
+
+    .ieda-slot {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 864px) {
+    /* empilha: título, painel, slots (3 por linha, span 2) */
+    .ieda-recebe {
+        padding: 128px 0;
+    }
+
+    .ieda-recebe .ieda-inner {
+        row-gap: 48px;
+    }
+
+    .ieda-recebe-intro,
+    .ieda-item,
+    .ieda-slots {
+        grid-column: 1 / -1;
+    }
+
+    .ieda-slot-icone {
+        margin: 4px 0;
+    }
+
+    /* empilhado (painel em cima dos slots): sem sticky */
+    .ieda-item {
+        order: 1;
+        position: static;
+    }
+
+    .ieda-slots {
+        order: 2;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .ieda-item-palco {
+        height: 224px;
+    }
+}
+
+@media (max-width: 576px) {
+    .ieda-recebe {
+        padding: 96px 0;
+    }
+
+    .ieda-recebe .ieda-inner {
+        row-gap: 32px;
+    }
+
+    .ieda-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .ieda-slot,
+    .ieda-item {
+        padding: 24px;
+        border-radius: 24px;
+    }
+
+    .ieda-slot-num {
+        font-size: 1.5rem;
+    }
+
+    .ieda-slot-nome {
+        font-size: 1rem;
+    }
+
+    .ieda-item-palco {
+        height: 192px;
+    }
+
+    .ieda-item-icone {
+        width: 128px;
+        height: 128px;
+    }
+
+    .ieda-item-nome {
+        font-size: 1.5rem;
+    }
+
+    .ieda-item-desc {
+        font: var(--p);
+    }
+}
