@@ -226,7 +226,11 @@ a.ieda-btn:hover {
    Linha 2: texto final (cols 1-4, alinhado embaixo) + Lê (5-6) + Mostra (7-8) + Avisa (9-10)
    Os cards entram direto no grid (display: contents na lista).
    =================================================================== */
+/* position + z-index: o fundo do hero (.ieda-hero::before, que pode passar da altura do hero
+   pra manter a proporção da imagem) fica atrás do conteúdo desta seção, não por cima */
 .ieda-projeto {
+    position: relative;
+    z-index: 1;
     padding: 128px 0;
 }
 
