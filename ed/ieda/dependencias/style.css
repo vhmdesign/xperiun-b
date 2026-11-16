@@ -717,23 +717,20 @@ a.ieda-btn:hover {
 [data-raridade="lendario"]  { --cor: #E1967D; --cor-clara: #FFE1C8; }
 
 .ieda-slots {
-    grid-column: 1 / span 6;
+    /* só as 5 primeiras colunas (o painel fica em 7-10) */
+    grid-column: 1 / span 5;
     align-self: start;
     display: grid;
+    /* 3 slots por linha, 16px entre eles */
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 32px;
-}
-
-/* 07 começa na coluna do meio; 08 vem logo depois */
-.ieda-slot:nth-child(7) {
-    grid-column: 2;
+    gap: 16px;
 }
 
 .ieda-slot {
     position: relative;
     aspect-ratio: 256 / 272;
     padding: 32px;
-    border-radius: 32px;
+    border-radius: 16px;
     background: var(--bw-5);
     display: flex;
     flex-direction: column;
@@ -777,23 +774,22 @@ a.ieda-btn:hover {
 
 .ieda-slot-num {
     font-family: 'Cormorant Infant', serif;
-    font-size: 2rem;
+    font-size: 1.125rem;
     font-weight: 400;
     line-height: 1.25;
 }
 
 .ieda-slot-nome {
-    font: 400 1.25rem/1.25 var(--font-family-horizontal);
+    font: 400 1.125rem/1.25 var(--font-family-horizontal);
 }
 
-/* ícone: no meio do card, ocupando o espaço entre o número e o nome (encolhe junto com o
-   card, sem encostar no nome quando ele quebra em 2 linhas). Apagado nos não selecionados;
+/* ícone: 64px, no meio do card, entre o número e o nome. Apagado nos não selecionados;
    aceso, maior e inclinado no selecionado */
 .ieda-slot-icone {
-    flex: 1 1 0;
-    min-height: 0;
-    width: 100%;
-    margin: 8px 0;
+    flex: none;
+    align-self: center;
+    width: 64px;
+    height: 64px;
     object-fit: contain;
     opacity: 0.4;
     transition: transform 0.4s ease, opacity 0.4s ease;
@@ -812,6 +808,11 @@ a.ieda-btn:hover {
 .ieda-slot:focus-visible {
     outline: 2px solid var(--bw);
     outline-offset: 4px;
+}
+
+/* lista com um card por item: só abaixo de 864 (montada pelo recebe.js) */
+.ieda-itens {
+    display: none;
 }
 
 /* painel do item selecionado: sticky ao lado dos slots (acompanha a rolagem até o fim
@@ -839,14 +840,36 @@ a.ieda-btn:hover {
 }
 
 .ieda-item-barra span {
+    position: relative;
     flex: 1;
     height: 4px;
     background: var(--bw-25);
-    transition: background-color 0.3s ease;
+    overflow: hidden;
 }
 
-.ieda-item-barra span.is-ativo {
+/* barra do item ativo = progresso até a troca: enche em 6s (recebe.js troca no fim dela,
+   no animationend). Só anda com .is-rodando no painel (seção na tela, sem mouse/foco em
+   cima); pausada, a barra congela e a troca espera junto */
+.ieda-item-barra span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
     background: var(--bw);
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+.ieda-item-barra span.is-ativo::after {
+    animation: ieda-barra 6s linear forwards;
+    animation-play-state: paused;
+}
+
+.ieda-item.is-rodando .ieda-item-barra span.is-ativo::after {
+    animation-play-state: running;
+}
+
+@keyframes ieda-barra {
+    to { transform: scaleX(1); }
 }
 
 .ieda-item-topo {
@@ -868,26 +891,29 @@ a.ieda-btn:hover {
     color: var(--cor-clara);
 }
 
+/* telas baixas (ex.: 1350 x 625): o painel é sticky e precisa caber na altura da tela com o
+   respiro de 32px em cima e embaixo. O resto do painel (barra, topo, nome, descrição mais
+   longa, botão e padding) soma ~380px; a área do ícone fica com o que sobra
+   (100vh - 448px), entre 128 e 256px, e o ícone encolhe junto (160px de teto) */
 .ieda-item-palco {
-    height: 256px;
+    height: clamp(128px, 100vh - 448px, 256px);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .ieda-item-icone {
-    width: 160px;
-    height: 160px;
+    width: clamp(96px, 100vh - 480px, 160px);
+    height: clamp(96px, 100vh - 480px, 160px);
     transform: rotate(-15deg);
 }
 
 .ieda-item-nome {
     margin: 32px 0 0;
     font-family: 'Cormorant Infant', serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 400;
     line-height: 1.25;
-    text-transform: uppercase;
     color: var(--bw);
 }
 
@@ -940,6 +966,12 @@ a.ieda-btn.ieda-btn--claro:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    /* sem troca automática: a barra do ativo fica cheia, parada */
+    .ieda-item-barra span.is-ativo::after {
+        animation: none;
+        transform: scaleX(1);
+    }
+
     .ieda-item.is-trocando .ieda-item-icone,
     .ieda-item.is-trocando .ieda-item-num,
     .ieda-item.is-trocando .ieda-item-raridade,
@@ -1391,27 +1423,39 @@ a.ieda-btn.ieda-btn--claro:hover {
 
 /* ---------- o que você recebe: responsivo (depois das regras base) ---------- */
 @media (max-width: 1439px) {
-    /* 8 colunas: slots em 2 colunas (span 4) e painel ao lado (span 4) */
+    /* 8 colunas: slots no span 4, 3 por linha, e painel ao lado (span 4) */
     .ieda-slots {
         grid-column: 1 / span 4;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .ieda-slot:nth-child(7) {
-        grid-column: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .ieda-item {
         grid-column: 5 / span 4;
     }
 
+    /* slots estreitos (~160px em 1152, ~108px em 390): menos padding e a altura vem do
+       conteúdo (número, ícone de 64px e nome em até 3 linhas), não da proporção */
     .ieda-slot {
-        padding: 24px;
+        aspect-ratio: auto;
+        padding: 16px;
+        gap: 8px;
+    }
+
+    .ieda-slot-nome {
+        font-size: 1rem;
+    }
+}
+
+/* abaixo de 1152: 2 slots por linha (abaixo de 864 os slots saem, ver .ieda-itens) */
+@media (max-width: 1152px) {
+    .ieda-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 864px) {
-    /* empilha: título, painel, slots (3 por linha, span 2) */
+    /* sem slots e sem o painel único: título e, embaixo, a lista com um card por item
+       (.ieda-itens, montada pelo recebe.js), sem barra, todos visíveis */
     .ieda-recebe {
         padding: 128px 0;
     }
@@ -1421,29 +1465,34 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 
     .ieda-recebe-intro,
-    .ieda-item,
-    .ieda-slots {
+    .ieda-itens {
         grid-column: 1 / -1;
     }
 
-    .ieda-slot-icone {
-        margin: 4px 0;
+    .ieda-slots,
+    #ieda-item {
+        display: none;
     }
 
-    /* empilhado (painel em cima dos slots): sem sticky */
-    .ieda-item {
-        order: 1;
-        position: static;
-    }
-
-    .ieda-slots {
-        order: 2;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    .ieda-itens {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
         gap: 24px;
     }
 
+    .ieda-itens li {
+        margin: 0;
+    }
+
+    .ieda-item {
+        position: static;
+    }
+
     .ieda-item-palco {
-        height: 224px;
+        height: 96px;
     }
 }
 
@@ -1456,36 +1505,23 @@ a.ieda-btn.ieda-btn--claro:hover {
         row-gap: 32px;
     }
 
-    .ieda-slots {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .ieda-itens {
         gap: 16px;
     }
 
-    .ieda-slot,
+
     .ieda-item {
         padding: 24px;
         border-radius: 24px;
     }
 
-    .ieda-slot-num {
-        font-size: 1.5rem;
-    }
-
-    .ieda-slot-nome {
-        font-size: 1rem;
-    }
-
     .ieda-item-palco {
-        height: 192px;
+        height: 96px;
     }
 
     .ieda-item-icone {
         width: 128px;
         height: 128px;
-    }
-
-    .ieda-item-nome {
-        font-size: 1.5rem;
     }
 
     .ieda-item-desc {
