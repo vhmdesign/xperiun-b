@@ -931,7 +931,7 @@ a.ieda-btn:hover {
 }
 
 .ieda-item-num {
-    font-size: 2rem;
+    font-size: 1.25rem;
 }
 
 .ieda-item-raridade {
@@ -1622,8 +1622,8 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 
     .ieda-item-icone {
-        width: 128px;
-        height: 128px;
+        width: 96px;
+        height: 96px;
     }
 
     .ieda-item-desc {
