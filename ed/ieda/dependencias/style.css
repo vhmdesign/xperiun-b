@@ -1609,123 +1609,168 @@ a.ieda-btn.ieda-btn--claro:hover {
 }
 
 /* ===================================================================
-   OFERTA (fechamento)
-   Fundo: as faixas do hero (bg-hero.webp), fechando a página como ela abre.
-   Texto (título + datas) à esquerda, card do passaporte à direita:
-   10 cols: texto 1-5, card 7-10 | 8 cols: texto 1-4, card 5-8 | <=864: empilhados.
+   OFERTA (fechamento). Layout: assets/oferta.pdf (frame de 1920; conteúdo de 1408).
+   Fundo --bb; por cima, as faixas do hero (bg-hero.webp) a 10% de opacidade e, nos 512px de
+   baixo, um degradê de transparente a #C8FFFF a 25% (tudo do PDF). Respiro de 256px.
+   Esquerda (span 5): logo (46px de altura, branco), título e os 8 itens em 2 colunas
+   (ícone de 40px a 50% + nome em Syne 16px, 16px entre linhas). Direita (cols 7-10, ao
+   centro): "12x de" (Syne 20px) + "159" (Cormorant 96px) em #7DE1E1, "ou R$ 1.597 à vista"
+   (Syne 18px), botão de 56px com degradê #7DE1E1 > #E1E17D (texto Cormorant 24px 700 em caixa
+   alta, --bb) e as datas. As duas colunas centralizadas na vertical.
+   10 cols: 1-5 | 7-10. 8 cols: 1-4 | 5-8. <=864: empilhadas.
    =================================================================== */
 .ieda-oferta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     padding: 256px 0;
-    background: url('/ed/ieda/dependencias/bg-hero.webp') center / cover no-repeat var(--bw);
+    background: var(--bb);
+    color: var(--bw);
+}
+
+.ieda-oferta::before,
+.ieda-oferta::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* faixas do hero a 10% */
+.ieda-oferta::before {
+    top: 0;
+    bottom: 0;
+    background: url('/ed/ieda/dependencias/bg-hero.webp') center / 100% 100% no-repeat;
+    opacity: 0.1;
+}
+
+/* degradê nos 512px de baixo: transparente > #C8FFFF, a 25% */
+.ieda-oferta::after {
+    bottom: 0;
+    height: 512px;
+    background: linear-gradient(to bottom, transparent, #C8FFFF);
+    opacity: 0.25;
 }
 
 .ieda-oferta .ieda-inner {
-    row-gap: 48px;
+    row-gap: 64px;
 }
 
 .ieda-oferta-texto {
     grid-column: 1 / span 5;
     align-self: center;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
 }
 
-/* mesmo tamanho fluido do título do hero (32px em 576 > 64px em 1440) */
+/* o logo é preto: no fundo escuro vai invertido (branco) */
+.ieda-oferta-logo {
+    display: block;
+    width: auto;
+    height: 46px;
+    filter: invert(1);
+}
+
+/* mesmo tamanho fluido dos títulos de seção (24px em 576 > 36px em 1440) */
 .ieda-oferta-titulo {
-    margin: 0 0 16px;
+    margin: 8px 0 0;
     font-family: 'Cormorant Infant', serif;
-    font-size: clamp(2rem, 0.6667rem + 3.7037vw, 4rem);
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--bb);
-}
-
-.ieda-oferta-datas {
-    margin: 0;
-    font-family: 'Cormorant Infant', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--bb);
-}
-
-.ieda-oferta-info {
-    margin: 0;
-    font: var(--ieda-p-l);
-    color: var(--bb-75);
-}
-
-/* card do passaporte: escuro como o painel do "O que você recebe" */
-.ieda-passaporte {
-    grid-column: 7 / span 4;
-    padding: 48px;
-    border-radius: 32px;
-    background: var(--bb);
-    color: var(--bw);
-    display: flex;
-    flex-direction: column;
-}
-
-.ieda-passaporte-nome {
-    margin: 0;
-    font: var(--ieda-p-l);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--bw-50);
-}
-
-.ieda-passaporte-preco {
-    margin: 24px 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.ieda-passaporte-parcela {
-    font-family: 'Cormorant Infant', serif;
-    font-size: 3rem;
-    font-weight: 700;
+    font-size: clamp(1.5rem, 1rem + 1.3889vw, 2.25rem);
+    font-weight: 400;
     line-height: 1.25;
     color: var(--bw);
 }
 
-.ieda-passaporte-vista {
-    font: var(--ieda-p-l);
-    color: var(--bw-75);
-}
-
-/* itens com um check desenhado (traço de 2px), separados por uma linha --bw-10 */
-.ieda-passaporte-lista {
-    margin: 32px 0 0;
+/* 8 itens em 2 colunas de 4, preenchidas de cima pra baixo (01-04 | 05-08) */
+.ieda-oferta-itens {
+    margin: 64px 0 0;
     padding: 0;
     list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(4, auto);
+    grid-auto-flow: column;
+    gap: 16px 32px;
 }
 
-.ieda-passaporte-lista li {
-    position: relative;
+.ieda-oferta-itens li {
     margin: 0;
-    padding: 12px 0 12px 32px;
-    box-shadow: inset 0 2px 0 var(--bw-10);
+    display: flex;
+    align-items: center;
+    gap: 16px;
     font: var(--ieda-p);
     color: var(--bw);
 }
 
-.ieda-passaporte-lista li::before {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: calc(12px + 0.75em - 8px);
-    width: 6px;
-    height: 12px;
-    box-shadow: inset -2px -2px 0 var(--bw);
-    transform: rotate(45deg);
+.ieda-oferta-itens img {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
 }
 
-.ieda-passaporte .ieda-btn {
+.ieda-oferta-compra {
+    grid-column: 7 / span 4;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* #7DE1E1: a cor "essencial" da página (passada pelo usuário, não existe no root.css) */
+.ieda-oferta-preco {
+    margin: 0;
+    line-height: 1.25;
+    color: #7DE1E1;
+}
+
+.ieda-oferta-parcelas {
+    font-family: var(--font-family-horizontal);
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.ieda-oferta-valor {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 6rem;
+    font-weight: 400;
+    font-variant-numeric: oldstyle-nums;
+}
+
+.ieda-oferta-vista {
+    margin: 0;
+    font: var(--ieda-p-l);
+    color: var(--bw);
+}
+
+/* botão: 56px de altura (24px x 1.25 + 13px em cima e embaixo), degradê do PDF */
+.ieda-btn--oferta {
     margin-top: 32px;
     min-width: 0;
     width: 100%;
+    padding: 13px 32px;
+    background: linear-gradient(to right, #7DE1E1, #E1E17D);
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+a.ieda-btn.ieda-btn--oferta {
+    color: var(--bb);
+}
+
+/* hover: as versões claras das mesmas cores (#C8FFFF > #FFFFC8, as "cor-clara" da página) */
+a.ieda-btn.ieda-btn--oferta:hover {
+    background: linear-gradient(to right, #C8FFFF, #FFFFC8);
+    color: var(--bb);
+}
+
+.ieda-oferta-datas {
+    margin-top: 24px;
+    color: var(--bw);
 }
 
 @media (max-width: 1439px) {
@@ -1733,20 +1778,12 @@ a.ieda-btn.ieda-btn--claro:hover {
         grid-column: 1 / span 4;
     }
 
-    .ieda-passaporte {
+    .ieda-oferta-compra {
         grid-column: 5 / span 4;
-        padding: 32px;
     }
 
-    .ieda-oferta-info,
-    .ieda-passaporte-nome,
-    .ieda-passaporte-vista {
+    .ieda-oferta-vista {
         font: var(--ieda-p);
-    }
-
-    .ieda-passaporte-nome {
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
     }
 }
 
@@ -1756,7 +1793,7 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 
     .ieda-oferta-texto,
-    .ieda-passaporte {
+    .ieda-oferta-compra {
         grid-column: 1 / -1;
     }
 }
@@ -1767,15 +1804,11 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 
     .ieda-oferta .ieda-inner {
-        row-gap: 32px;
+        row-gap: 48px;
     }
 
-    .ieda-passaporte {
-        padding: 24px;
-        border-radius: 24px;
-    }
-
-    .ieda-passaporte-parcela {
-        font-size: 2.25rem;
+    .ieda-oferta-itens {
+        margin-top: 48px;
+        column-gap: 16px;
     }
 }

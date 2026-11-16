@@ -19,7 +19,7 @@
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="preload" as="image" href="/ed/ieda/dependencias/bg-hero.webp" fetchpriority="high">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
-    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=53">
+    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=54">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/progressive-blur.css?v=1">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/programacao.css?v=1">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/plantao.css?v=1">
@@ -677,36 +677,34 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════
-     OFERTA (fechamento)
-     Texto + datas à esquerda; card do passaporte (preço, itens e CTA) à direita.
-     Fundo: as faixas do hero (bg-hero), fechando a página como ela abre.
-     PENDENTE: valor da parcela (12x de ??), aguardando o número.
+     OFERTA (fechamento). Layout: ed/ieda/assets/oferta.pdf.
+     Esquerda: logo, título e os 8 itens (ícone + nome, 2 colunas).
+     Direita: preço (12x de 159, ou R$ 1.597 à vista), botão e datas.
+     Fundo --bb com as faixas do hero (bg-hero) a 10% e um degradê #C8FFFF a 25%
+     nos 512px de baixo, tudo do PDF.
      ═══════════════════════════════════════════════════════════ -->
 <section class="ieda-oferta" id="oferta" aria-labelledby="ieda-oferta-titulo">
     <div class="ieda-inner">
-        <header class="ieda-oferta-texto">
-            <h2 class="ieda-oferta-titulo" id="ieda-oferta-titulo">Dois dias, um projeto real e a stack completa montada por você.</h2>
-            <p class="ieda-oferta-datas"><time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de dezembro de 2026</time></p>
-            <p class="ieda-oferta-info">Das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time> | 100% online e ao vivo</p>
-        </header>
-
-        <div class="ieda-passaporte">
-            <p class="ieda-passaporte-nome">Passaporte completo</p>
-            <p class="ieda-passaporte-preco">
-                <span class="ieda-passaporte-parcela">12x de ??</span>
-                <span class="ieda-passaporte-vista">R$ 1.597 à vista</span>
-            </p>
-            <ul class="ieda-passaporte-lista">
-                <li>Imersão prática de 2 dias</li>
-                <li>1 mês de assinatura de Claude ou OpenAI</li>
-                <li>O Radar de Licitações no seu GitHub</li>
-                <li>Kit da imersão: templates do projeto completo</li>
-                <li>Gravação das aulas</li>
-                <li>Certificado de participação</li>
-                <li>Comunidade ativa</li>
-                <li>Cupom de 50% OFF no Xperiun AI Summit</li>
+        <div class="ieda-oferta-texto">
+            <img class="ieda-oferta-logo" src="/ed/ieda/dependencias/logo-ieda.webp" alt="Imersão Engenharia de Dados Agêntica" width="480" height="135" loading="lazy">
+            <h2 class="ieda-oferta-titulo" id="ieda-oferta-titulo">Dois dias, um projeto real e a stack completa montada por você</h2>
+            <ul class="ieda-oferta-itens" role="list">
+                <li><img src="/ed/ieda/dependencias/icones/imersao.webp" alt="" width="160" height="160" loading="lazy">Imersão ao vivo</li>
+                <li><img src="/ed/ieda/dependencias/icones/ia.webp" alt="" width="160" height="160" loading="lazy">1 mês de IA</li>
+                <li><img src="/ed/ieda/dependencias/icones/radar.webp" alt="" width="160" height="160" loading="lazy">Radar no GitHub</li>
+                <li><img src="/ed/ieda/dependencias/icones/kit.webp" alt="" width="160" height="160" loading="lazy">Kit da imersão</li>
+                <li><img src="/ed/ieda/dependencias/icones/gravacoes.webp" alt="" width="160" height="160" loading="lazy">Gravações</li>
+                <li><img src="/ed/ieda/dependencias/icones/grupo.webp" alt="" width="160" height="160" loading="lazy">Grupo de alunos</li>
+                <li><img src="/ed/ieda/dependencias/icones/certificado.webp" alt="" width="160" height="160" loading="lazy">Certificado</li>
+                <li><img src="/ed/ieda/dependencias/icones/summit.webp" alt="" width="160" height="160" loading="lazy">50% OFF AI Summit</li>
             </ul>
-            <a class="ieda-btn ieda-btn--claro" href="#" data-cta="garantir-vaga">Garantir minha vaga</a>
+        </div>
+
+        <div class="ieda-oferta-compra">
+            <p class="ieda-oferta-preco"><span class="ieda-oferta-parcelas">12x de</span> <span class="ieda-oferta-valor">159</span></p>
+            <p class="ieda-oferta-vista">ou R$ 1.597 à vista</p>
+            <a class="ieda-btn ieda-btn--oferta" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+            <p class="ieda-datas ieda-oferta-datas">Dias <time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de Dezembro</time><br>das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time></p>
         </div>
     </div>
 </section>
