@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Superpowers: brilho de 4 pontas + brilho menor, desenhado no grid de 32px
+       (o tamanho em que aparece na página). Pontas e centros em coordenadas inteiras,
+       eixos de simetria na borda do pixel; cor #9B9BA5 dos outros logos. -->
+  <path fill="#9B9BA5" d="M13 0C14 9 17 12 26 13C17 14 14 17 13 26C12 17 9 14 0 13C9 12 12 9 13 0Z"/>
+  <path fill="#9B9BA5" d="M27 22C27.5 25.5 28.5 26.5 32 27C28.5 27.5 27.5 28.5 27 32C26.5 28.5 25.5 27.5 22 27C25.5 26.5 26.5 25.5 27 22Z"/>
+</svg>

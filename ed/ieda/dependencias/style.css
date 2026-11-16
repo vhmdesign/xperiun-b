@@ -1,14 +1,20 @@
 /* IEDA, /ed/ieda/ (Imersão Engenharia de Dados Agêntica)
    Layout e copy: ed/ieda/assets/pagina.pdf (frame de 1920; conteúdo de 1408 = grid Wide do DS).
-   Tokens e fontes do root.css: Poppins (--font-family) no texto, Cormorant Infant nos títulos.
+   Tokens e fontes do root.css: Syne (--font-family-horizontal) no texto, Cormorant Infant nos títulos.
    Cores fora do root.css, tiradas do PDF / passadas pelo usuário nas cenas da IEDA:
      #F0F0FA (cards do "Na prática" e dos dias), #FFFFC8 e #C8FFFF (degradê da programação
      e caixas "Missão do dia"). As animações têm CSS próprio: programacao.css, plantao.css, radar.css. */
 
+/* texto da página em Syne (--font-family-horizontal), não em Poppins: os tokens --p, --p-l e
+   --btn-l do root.css vêm em Poppins, então aqui ficam as versões com os mesmos tamanhos e
+   entrelinhas em Syne (pesos self-hosted: 400, 700, 800). Títulos seguem em Cormorant Infant. */
 body {
+    --ieda-p: 400 1rem/1.5 var(--font-family-horizontal);
+    --ieda-p-l: 400 1.125rem/1.5 var(--font-family-horizontal);
+    --ieda-btn-l: 400 1.125rem/1.25 var(--font-family-horizontal);
     background: var(--bw);
     color: var(--bb);
-    font: var(--p);
+    font: var(--ieda-p);
 }
 
 main {
@@ -29,7 +35,7 @@ main {
 /* ---------- tipografia comum ---------- */
 .ieda-eyebrow {
     margin: 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--bb-50);
@@ -49,7 +55,7 @@ main {
 
 .ieda-texto {
     margin: 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bb-75);
 }
 
@@ -72,7 +78,7 @@ main {
     padding: 16px 32px;
     border-radius: 16px;
     background: var(--bb);
-    font: var(--btn-l);
+    font: var(--ieda-btn-l);
     text-decoration: none;
     transition: background-color 0.2s ease;
 }
@@ -149,7 +155,7 @@ a.ieda-btn:hover {
 
 .ieda-hero-sub {
     margin: 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bb-75);
 }
 
@@ -169,7 +175,7 @@ a.ieda-btn:hover {
     display: flex;
     align-items: center;
     gap: 16px;
-    font: 400 1.125rem/1.25 var(--font-family);
+    font: 400 1.125rem/1.25 var(--font-family-horizontal);
     color: var(--bb);
 }
 
@@ -258,7 +264,7 @@ a.ieda-btn:hover {
 
 .ieda-projeto-card-texto {
     margin: 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: inherit;
 }
 
@@ -309,19 +315,8 @@ a.ieda-btn:hover {
     isolation: isolate;
 }
 
-/* radar: o vídeo (544px de altura, maior que o card; webm com alfa) passa pra fora em cima
-   e embaixo; nas laterais continua cortado na borda do card (clip-path só estende o corte na
-   vertical). Onde o vídeo cai no mp4 sem alfa (Safari), o JS põe .sem-alfa e ele fica
-   recortado no card */
-.ieda-pratica-card--radar {
-    overflow: visible;
-    clip-path: inset(-100vh 0);
-}
-
-.ieda-pratica-card--radar.sem-alfa {
-    overflow: hidden;
-    clip-path: none;
-}
+/* radar: o vídeo (544px de altura, maior que o card) não tem transparência (sai com o fundo
+   do card); fica centrado na vertical e recortado na borda do card (overflow do card) */
 
 /* vídeos do "Na prática": o tamanho da animação original (688px de largura); a caixa
    .ieda-pratica-anim escala por --anim-escala */
@@ -378,7 +373,7 @@ a.ieda-btn:hover {
 
 .ieda-pratica-desc {
     margin: 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bb);
 }
 
@@ -484,7 +479,7 @@ a.ieda-btn:hover {
 
 .ieda-dia-desc {
     margin: 16px 0 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bb);
 }
 
@@ -504,7 +499,7 @@ a.ieda-btn:hover {
     padding: 8px 0;
     border-radius: 1920px;
     background: transparent;
-    font: 400 1.25rem/1.25 var(--font-family);
+    font: 400 1.25rem/1.25 var(--font-family-horizontal);
     color: var(--bb-50);
     text-align: left;
     cursor: pointer;
@@ -617,12 +612,12 @@ a.ieda-btn:hover {
 }
 
 .ieda-dia-card .anim-nome {
-    font: 400 1.25rem/1.5 var(--font-family);
+    font: 400 1.25rem/1.5 var(--font-family-horizontal);
     color: var(--bb);
 }
 
 .ieda-dia-card .anim-desc {
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bb-75);
 }
 
@@ -673,13 +668,13 @@ a.ieda-btn:hover {
 
 .ieda-missao-titulo {
     margin: 0;
-    font: 400 1.25rem/1.5 var(--font-family);
+    font: 400 1.25rem/1.5 var(--font-family-horizontal);
     color: var(--bb);
 }
 
 .ieda-missao-texto {
     margin: 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bb-75);
 }
 
@@ -788,7 +783,7 @@ a.ieda-btn:hover {
 }
 
 .ieda-slot-nome {
-    font: 400 1.25rem/1.25 var(--font-family);
+    font: 400 1.25rem/1.25 var(--font-family-horizontal);
 }
 
 /* ícone: no meio do card, ocupando o espaço entre o número e o nome (encolhe junto com o
@@ -898,7 +893,7 @@ a.ieda-btn:hover {
 
 .ieda-item-desc {
     margin: 24px 0 0;
-    font: var(--p-l);
+    font: var(--ieda-p-l);
     color: var(--bw-75);
 }
 
@@ -996,7 +991,7 @@ a.ieda-btn.ieda-btn--claro:hover {
     .ieda-dia-desc,
     .ieda-dia-card .anim-desc,
     .ieda-missao-texto {
-        font: var(--p);
+        font: var(--ieda-p);
     }
 
     /* cards do projeto em span 2: menos respiro */
@@ -1494,6 +1489,178 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 
     .ieda-item-desc {
-        font: var(--p);
+        font: var(--ieda-p);
+    }
+}
+
+/* ===================================================================
+   OFERTA (fechamento)
+   Fundo: as faixas do hero (bg-hero.webp), fechando a página como ela abre.
+   Texto (título + datas) à esquerda, card do passaporte à direita:
+   10 cols: texto 1-5, card 7-10 | 8 cols: texto 1-4, card 5-8 | <=864: empilhados.
+   =================================================================== */
+.ieda-oferta {
+    padding: 256px 0;
+    background: url('/ed/ieda/dependencias/bg-hero.webp') center / cover no-repeat var(--bw);
+}
+
+.ieda-oferta .ieda-inner {
+    row-gap: 48px;
+}
+
+.ieda-oferta-texto {
+    grid-column: 1 / span 5;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* mesmo tamanho fluido do título do hero (32px em 576 > 64px em 1440) */
+.ieda-oferta-titulo {
+    margin: 0 0 16px;
+    font-family: 'Cormorant Infant', serif;
+    font-size: clamp(2rem, 0.6667rem + 3.7037vw, 4rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bb);
+}
+
+.ieda-oferta-datas {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bb);
+}
+
+.ieda-oferta-info {
+    margin: 0;
+    font: var(--ieda-p-l);
+    color: var(--bb-75);
+}
+
+/* card do passaporte: escuro como o painel do "O que você recebe" */
+.ieda-passaporte {
+    grid-column: 7 / span 4;
+    padding: 48px;
+    border-radius: 32px;
+    background: var(--bb);
+    color: var(--bw);
+    display: flex;
+    flex-direction: column;
+}
+
+.ieda-passaporte-nome {
+    margin: 0;
+    font: var(--ieda-p-l);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--bw-50);
+}
+
+.ieda-passaporte-preco {
+    margin: 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ieda-passaporte-parcela {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bw);
+}
+
+.ieda-passaporte-vista {
+    font: var(--ieda-p-l);
+    color: var(--bw-75);
+}
+
+/* itens com um check desenhado (traço de 2px), separados por uma linha --bw-10 */
+.ieda-passaporte-lista {
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ieda-passaporte-lista li {
+    position: relative;
+    margin: 0;
+    padding: 12px 0 12px 32px;
+    box-shadow: inset 0 2px 0 var(--bw-10);
+    font: var(--ieda-p);
+    color: var(--bw);
+}
+
+.ieda-passaporte-lista li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: calc(12px + 0.75em - 8px);
+    width: 6px;
+    height: 12px;
+    box-shadow: inset -2px -2px 0 var(--bw);
+    transform: rotate(45deg);
+}
+
+.ieda-passaporte .ieda-btn {
+    margin-top: 32px;
+    min-width: 0;
+    width: 100%;
+}
+
+@media (max-width: 1439px) {
+    .ieda-oferta-texto {
+        grid-column: 1 / span 4;
+    }
+
+    .ieda-passaporte {
+        grid-column: 5 / span 4;
+        padding: 32px;
+    }
+
+    .ieda-oferta-info,
+    .ieda-passaporte-nome,
+    .ieda-passaporte-vista {
+        font: var(--ieda-p);
+    }
+
+    .ieda-passaporte-nome {
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+    }
+}
+
+@media (max-width: 864px) {
+    .ieda-oferta {
+        padding: 128px 0;
+    }
+
+    .ieda-oferta-texto,
+    .ieda-passaporte {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .ieda-oferta {
+        padding: 96px 0;
+    }
+
+    .ieda-oferta .ieda-inner {
+        row-gap: 32px;
+    }
+
+    .ieda-passaporte {
+        padding: 24px;
+        border-radius: 24px;
+    }
+
+    .ieda-passaporte-parcela {
+        font-size: 2.25rem;
     }
 }

@@ -1,0 +1,1060 @@
+/* PRÉVIA ALTO CONTRASTE (/ed/ieda/contraste/), gerada de temp/ieda/videos/fonte/programacao.css.
+   Cores trocadas por tokens do root.css com mais contraste e sem par verde/vermelho;
+   sem blur nos elementos que informam. */
+/* IEDA, animações da programação (/ed/ieda/, cards dos dias 12 e 13)
+   Portado de /temp/ieda/diversas/. Cada tópico é um <article class="anim"> dentro do card do dia;
+   só o ativo aparece (ver .ieda-dia-palco em style.css e programacao.js).
+   Cores fora do root.css, passadas pelo usuário nas cenas da IEDA:
+     #F0F0FA (quadro), var(--pc500) (verde de destaque), var(--er700) (vermelho claro), var(--wr300) (pisca do 01),
+     var(--sg800) (bronze). O resto é token do root.css. */
+
+.ieda-dia-card {
+    --quadro-cor: #F0F0FA;
+    --destaque: var(--pc500);
+    --ok-cor: var(--pc500);
+    --erro-cor: var(--er700);
+    --apagado-blur: 0px;
+    font-family: var(--font-family-horizontal);
+    color: var(--bb);
+}
+
+/* ---------- card de animação ---------- */
+.anim {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.quadro {
+    position: relative;
+    height: 320px;
+    padding: 0 32px 32px;
+    /* o fundo #F0F0FA fica no card do dia (.ieda-dia-card) */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.anim-texto {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.anim-num {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 2rem;
+    line-height: 1.25;
+    color: var(--bb-25);
+}
+
+.anim-nome {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--pp900);
+}
+
+.anim-desc {
+    font-size: 1.125rem;
+    color: var(--bb-75);
+}
+
+/* ---------- logo (filler até chegarem as marcas) ----------
+   64px, --ln200, radius 16 (mesmo desenho do edital) com um círculo --ln400 no meio
+   (um tom acima do edital para não sumir no quadro #F0F0FA).
+   Para trocar: substituir o <span class="logo-filler"> por <img> dentro do .logo. */
+.no {
+    position: relative;
+    flex: none;
+    width: 64px;
+    height: 64px;
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--ln500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+/* logos reais: webp de 64px (dependencias/logos) mostrados a 32px dentro do bloco de 64,
+   no lugar do círculo filler (2x para ficar nítido em tela retina) */
+.logo img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* a marca da Orca é fina e comprida: em 32px some; fica em 48px dentro do bloco de 64 */
+.logo[data-logo="orca"] img {
+    width: 48px;
+    height: 48px;
+}
+
+.logo-filler {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ln400);
+}
+
+/* em destaque: anel de 2px na cor de destaque */
+.logo.hi {
+    box-shadow: inset 0 0 0 2px var(--destaque);
+}
+
+/* dia 01: sem anel; o destaque é uma girada de 15deg */
+.anim-ieda .logo,
+.anim-ieda .camada {
+    transition: transform 0.4s ease, opacity 0.4s ease, filter 0.4s ease, background-color 1s ease;
+}
+
+/* 01, 02 e 03: destaque em var(--pc500) no lugar de --pc500 (cor passada pelo usuário, não existe no root.css) */
+.anim[data-anim="arq"],
+.anim[data-anim="cc"],
+.anim[data-anim="md"] {
+    --destaque: var(--pc500);
+}
+
+/* 02: check marcado sem radius; arquivos só como texto, sem caixa */
+.anim[data-anim="cc"] .chk {
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.anim[data-anim="cc"] .chk.on {
+    border-radius: 0;
+}
+
+/* 02: ligação dupla em curvas: cada curva sai da altura do centro de um logo (32px e 144px da pilha:
+   logos de 64 com gap 48) e as duas se encontram no meio (88px); dali sai um traço único até a spec.
+   Caixa de 64 x 112 (do centro de um logo ao do outro); margin-bottom 24px compensa o padding-bottom
+   da pilha para as curvas baterem no centro dos logos com o quadro centralizando tudo.
+   Preenchimento: traço em --destaque desenhado da esquerda para a direita (stroke-dashoffset). */
+.junta-pb {
+    flex: none;
+    width: 64px;
+    height: 112px;
+    margin-bottom: 24px;
+}
+
+.junta {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.junta-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.junta-svg path {
+    fill: none;
+    stroke-width: 2;
+}
+
+.junta-base {
+    stroke: var(--bb-25);
+}
+
+.junta-cheio {
+    stroke: var(--destaque);
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.15s ease;
+}
+
+.junta.on .junta-cheio {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.6s ease;
+}
+
+/* depois que as duas curvas se encontram, o trecho único até a spec */
+.junta.on .junta-saida {
+    transition: stroke-dashoffset 0.3s ease 0.6s;
+}
+
+.anim[data-anim="cc"] .arquivo {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+}
+
+/* 03: camadas sem caixa (só o círculo e o texto) e sem girar no destaque */
+.anim[data-anim="md"] .camada {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+}
+
+.anim[data-anim="md"] .camada.hi {
+    transform: none;
+}
+
+/* troca de cor lenta (1s) para o "piscar" ser suave, sem flash */
+.anim-ieda .logo-filler {
+    transition: background-color 1s ease;
+}
+
+.anim-ieda .logo.hi,
+.anim-ieda .camada.hi {
+    box-shadow: none;
+    transform: rotate(15deg);
+}
+
+/* 01, depois de chegar no Power BI: logos piscando em var(--wr300) (cor passada pelo usuário,
+   não existe no root.css) com o círculo em --sc300 */
+.logo,
+.logo-filler {
+    transition: box-shadow 0.3s ease, background-color 0.3s ease, transform 0.4s ease;
+}
+
+.logo.pisca {
+    background: var(--wr300);
+}
+
+.logo.pisca .logo-filler {
+    background: var(--sc300);
+}
+
+.logo-p {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+}
+
+/* no bloco menor (48px) o logo fica com 24px, na mesma proporção dos blocos de 64 */
+.logo-p img {
+    width: 24px;
+    height: 24px;
+}
+
+.logo-p .logo-filler {
+    width: 16px;
+    height: 16px;
+}
+
+.no-nome {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb-75);
+    white-space: nowrap;
+}
+
+/* inativo: apagado e com blur (abaixo de 864px, sem blur animado; ver media no fim) */
+.apagado {
+    opacity: 0.35;
+    filter: blur(var(--apagado-blur));
+}
+
+/* ---------- fio (conexão) ----------
+   .fio-pb envolve o fio com progressive blur de 0 (esquerda) a 4px (direita); é ele que ocupa o espaço. */
+.fio-pb {
+    flex: 1 1 16px;
+    max-width: 56px;
+    height: 2px;
+}
+
+.fio-pb.fio-curto,
+.fio-curto {
+    max-width: 32px;
+}
+
+.fio {
+    position: relative;
+    display: block;
+    flex: 1 1 16px;
+    max-width: 56px;
+    height: 2px;
+    background: var(--bb-25);
+    overflow: hidden;
+}
+
+.fio-pb .fio {
+    width: 100%;
+    max-width: none;
+}
+
+.fio i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: var(--destaque);
+    transition: width 0.4s ease;
+}
+
+/* fio vertical (descendo): 2 x 24px; com a classe on o preenchimento desce de cima para baixo */
+.fio-pb.fio-v-pb {
+    flex: none;
+    width: 2px;
+    height: 24px;
+    max-width: none;
+}
+
+.fio-pb .fio.fio-v {
+    width: 2px;
+    height: 100%;
+}
+
+.fio-v i {
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 0;
+    transition: height 0.4s ease;
+}
+
+.fio-v.on i {
+    height: 100%;
+}
+
+/* ---------- composições em quadrado (dia 01) ---------- */
+
+/* 01: PNCP e Supabase em cima, Claude Code e Power BI embaixo; a curva em S (240 x 96)
+   sai de baixo do nome do Supabase (x 208) e chega em cima do Claude Code (x 32) */
+.arq-grade {
+    display: grid;
+    grid-template-columns: 64px 112px 64px;
+    grid-template-rows: 64px 96px 64px;
+    grid-template-areas:
+        "a f0 b"
+        "c c c"
+        "d f2 e";
+    margin-bottom: 24px;
+}
+
+.arq-a { grid-area: a; }
+.arq-b { grid-area: b; }
+.arq-c { grid-area: c; }
+.arq-d { grid-area: d; }
+.arq-e { grid-area: e; }
+.arq-f0 { grid-area: f0; }
+.arq-f2 { grid-area: f2; }
+
+.arq-grade .fio-pb {
+    align-self: center;
+    max-width: none;
+    margin: 0 16px;
+}
+
+.curva-pb {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* 02: a spec fica alinhada com a ligação dupla e os arquivos descem abaixo dela
+   (fora do fluxo, por isso o padding-bottom maior do quadro sobe tudo e recentraliza) */
+.anim-ieda .quadro {
+    padding-bottom: 0;
+}
+
+.anim[data-anim="cc"] .quadro {
+    padding-bottom: 32px;
+}
+
+.spec {
+    position: relative;
+    flex: 0 1 176px;
+    min-width: 0;
+    margin-bottom: 24px;
+}
+
+.spec-desce {
+    position: absolute;
+    top: 100%;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+}
+
+/* 03: Supabase, fio e medalhões em cima; o gráfico embaixo na largura toda da linha de cima */
+.md-grade {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.md-topo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.md-topo .fio-pb {
+    flex: none;
+    width: 32px;
+}
+
+/* 04: Claude Code, fio e PR em cima; o Codex no meio, embaixo, e uma curva em S (320 x 48)
+   sai do centro do PR (x 224) e chega no centro do Codex (x 160) */
+.cx-grade {
+    display: grid;
+    grid-template-columns: 64px 32px 192px;
+    grid-template-rows: auto 48px 64px;
+    grid-template-areas:
+        "a f0 b"
+        "f1 f1 f1"
+        "c c c";
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 8px;
+    margin-bottom: 24px;
+}
+
+.cx-a { grid-area: a; }
+.cx-b { grid-area: b; }
+.cx-c { grid-area: c; justify-self: center; }
+.cx-f0 { grid-area: f0; width: 32px; }
+.cx-f1 { grid-area: f1; align-self: stretch; }
+
+/* 05: GitHub Actions em cima, o cron embaixo */
+.quadro-coluna {
+    flex-direction: column;
+    gap: 48px;
+}
+
+.quadro-coluna .cron {
+    margin-left: 0;
+    align-items: center;
+}
+
+/* ---------- caixa (documento, PR, painel) ---------- */
+.caixa {
+    flex: 0 1 176px;
+    min-width: 0;
+    padding: 16px;
+    border-radius: 16px;
+    background: var(--bw);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.caixa-titulo {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb-75);
+    white-space: nowrap;
+}
+
+.linha {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.barra {
+    flex: 1;
+    height: 8px;
+    background: var(--ln500);
+    transition: background-color 0.3s ease;
+}
+
+.barra-70 {
+    flex: none;
+    width: 70%;
+}
+
+/* check: quadrado de 16px, --ln200; marcado em --destaque */
+.chk {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: var(--ln500);
+    transition: background-color 0.3s ease;
+}
+
+.chk.on {
+    background: var(--destaque);
+}
+
+/* ---------- 02: arquivos gerados ---------- */
+.pilha {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    padding-bottom: 24px;
+}
+
+.arquivos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.arquivo {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--bw);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    white-space: nowrap;
+    opacity: 0;
+    filter: blur(var(--apagado-blur));
+    transform: translateX(-8px);
+    transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+}
+
+.arquivo.on {
+    opacity: 1;
+    filter: none;
+    transform: none;
+}
+
+/* ---------- 03: camadas medalhão ---------- */
+.camadas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.camada {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--bw);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    transition: opacity 0.4s ease, filter 0.4s ease, box-shadow 0.3s ease;
+}
+
+.camada::before {
+    content: "";
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.camada-bronze::before { background: var(--sg800); }
+.camada-silver::before { background: var(--ln800); }
+.camada-gold::before { background: var(--wr700); }
+
+.camada.hi {
+    box-shadow: inset 0 0 0 2px var(--destaque);
+}
+
+/* container --ln100 na largura da linha de cima; barras de 4px distribuídas por igual, base alinhada */
+.grafico {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 128px;
+    padding: 16px;
+    border-radius: 16px;
+    background: var(--bw);
+}
+
+.grafico span {
+    width: 4px;
+    background: var(--destaque);
+    transition: height 0.5s ease;
+}
+
+/* ---------- 04: PR e revisão ---------- */
+.caixa-pr {
+    flex-basis: 192px;
+}
+
+.barra[data-k="flag"] {
+    flex: none;
+    width: 90%;
+}
+
+.barra.flag-erro {
+    background: var(--erro-cor);
+}
+
+.barra.flag-ok {
+    background: var(--ok-cor);
+}
+
+.status {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--ln500);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.status.st-erro {
+    background: var(--erro-cor);
+    color: var(--bw);
+}
+
+.status.st-ok {
+    background: var(--ok-cor);
+    color: var(--bb);
+}
+
+.spin {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    /* arco de 1/4 com corte seco (o border-top afinava nas pontas, parecendo gradiente);
+       a máscara deixa só o anel de 2px */
+    background: conic-gradient(var(--destaque) 0 25%, var(--bb-25) 25% 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+    transition: transform 0.15s linear, opacity 0.3s ease;
+}
+
+/* 04 em tons claros: vermelho var(--er700) e verde var(--pc500) (fios, spin e aprovado no mesmo verde);
+   texto do status escuro nos dois, porque o branco some no vermelho claro */
+.anim[data-anim="cx"] {
+    --destaque: var(--pc500);
+    --ok-cor: var(--pc500);
+    --erro-cor: var(--er700);
+}
+
+/* 04: a curva até o Codex não se desenha; a cor só esmaece por cima do traço cinza */
+.anim[data-anim="cx"] .junta-cheio,
+.anim[data-anim="cx"] .junta.on .junta-cheio {
+    stroke-dashoffset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.anim[data-anim="cx"] .junta.on .junta-cheio {
+    opacity: 1;
+}
+
+.anim[data-anim="cx"] .junta.erro .junta-cheio {
+    stroke: var(--erro-cor);
+}
+
+.anim[data-anim="cx"] .status.st-erro {
+    color: var(--bb);
+}
+
+.status.st-erro .spin,
+.status.st-ok .spin {
+    display: none;
+}
+
+/* ---------- 05: cron ---------- */
+.cron {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-left: 16px;
+}
+
+.dias {
+    display: flex;
+    gap: 8px;
+}
+
+.dia {
+    width: 8px;
+    height: 24px;
+    background: var(--ln500);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.dia.on {
+    background: var(--destaque);
+}
+
+/* 05 no mesmo verde dos cards do dia 1: dias rodados e o check de concluído */
+.anim[data-anim="gh"] {
+    --destaque: var(--pc500);
+    --ok-cor: var(--pc500);
+}
+
+.dia.pulo {
+    transform: scale(1.2);
+}
+
+.feito {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feito.on {
+    opacity: 1;
+}
+
+/* ok: só um círculo de 8px em --ok-cor */
+.ok {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ok-cor);
+    transition: opacity 0.3s ease;
+}
+
+/* ---------- 06 e 08: árvore em quadrado ----------
+   raiz em cima no meio; três curvas (288 x 96) saem de baixo do nome da raiz (x 144) e chegam
+   em cima de cada folha (x 32, 144, 256: folhas de 64 com 48 entre elas) */
+.arvore {
+    display: grid;
+    grid-template-columns: 64px 48px 64px 48px 64px;
+    grid-template-rows: 64px 96px 64px;
+    grid-template-areas:
+        ". . r . ."
+        "c c c c c"
+        "f0 . f1 . f2";
+    margin-bottom: 24px;
+}
+
+.arvore-raiz { grid-area: r; }
+.arvore-c { grid-area: c; }
+.arvore-f0 { grid-area: f0; }
+.arvore-f1 { grid-area: f1; }
+.arvore-f2 { grid-area: f2; }
+
+/* 06: cada curva preenche sozinha (classe on direto no path) */
+.junta-cheio.on {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.6s ease;
+}
+
+/* ---------- 07: RAG ---------- */
+.rag-col {
+    width: 320px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.busca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.busca-campo {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 12px;
+    background: var(--bw);
+    box-shadow: inset 0 0 0 2px var(--destaque);
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.busca-campo.parado {
+    box-shadow: inset 0 0 0 2px transparent;
+}
+
+.cursor {
+    flex: none;
+    width: 2px;
+    height: 20px;
+    margin-left: 2px;
+    background: var(--destaque);
+}
+
+.resultado {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 60px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 12px;
+    background: var(--bw);
+    opacity: 0;
+    filter: blur(var(--apagado-blur));
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+}
+
+.resultado.on {
+    opacity: 1;
+    filter: none;
+    transform: none;
+}
+
+.trilho {
+    position: relative;
+    flex: 1;
+    height: 8px;
+    background: var(--ln500);
+    overflow: hidden;
+}
+
+.trilho i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: var(--destaque);
+    transition: width 0.15s linear;
+}
+
+.resultado .trilho i {
+    transition: width 0.5s ease;
+}
+
+/* texto escuro: o branco some no verde claro */
+.resposta {
+    align-self: flex-start;
+    margin-left: 60px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--destaque);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.resposta.on {
+    opacity: 1;
+}
+
+/* ---------- 08: Orca ----------
+   cada agente é um trilho vertical de 8 x 64 que enche de cima para baixo (continua a curva);
+   o nome fica embaixo (como o nome dos logos) e o check aparece ao lado dele quando termina */
+.agente {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.trilho.trilho-v {
+    flex: none;
+    width: 8px;
+    height: 64px;
+}
+
+.trilho-v i {
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 0;
+    transition: height 0.15s linear;
+}
+
+.agente-nome {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb-75);
+    white-space: nowrap;
+}
+
+.agente .ok {
+    opacity: 0;
+}
+
+.agente .ok.on {
+    opacity: 1;
+}
+
+/* ---------- 09: OpenRouter + Hermes ----------
+   mesma grade do 01, com a coluna da direita mais larga para os modelos (só texto, sem caixa;
+   o escolhido fica normal e os outros apagados); a curva sai de baixo dos modelos (x 224) */
+.hm-grade {
+    grid-template-columns: 64px 112px 96px;
+}
+
+.hm-grade .arq-b,
+.hm-grade .arq-e {
+    justify-self: center;
+}
+
+.modelos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    gap: 8px;
+}
+
+.modelo {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    white-space: nowrap;
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.aviso {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--erro-cor);
+    color: var(--bb);
+    font-size: 0.75rem;
+    line-height: 1.25;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity 0.25s ease, transform 0.3s ease;
+}
+
+.aviso.on {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ---------- 10: Power BI ----------
+   Power BI em cima, o fio desce (depois do nome) até o painel; barras como o gráfico do 03 */
+.pbi-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* sem fio: o painel começa 16px abaixo do nome do Power BI */
+.pbi-col .caixa-painel {
+    margin-top: 40px;
+}
+
+.caixa-painel {
+    flex: none;
+    width: 256px;
+    gap: 16px;
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filtro {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--ln500);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bb);
+    white-space: nowrap;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filtro.on {
+    background: var(--destaque);
+    color: var(--bb);
+}
+
+.colunas {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.pb {
+    width: 4px;
+    height: 16px;
+    background: var(--destaque);
+    transition: height 0.5s ease;
+}
+
+
+/* sem blur animado abaixo de 864px: inativos só ficam apagados */
+@media (max-width: 864px) {
+    .ieda-dia-card {
+        --apagado-blur: 0px;
+    }
+
+    .apagado,
+    .arquivo,
+    .resultado {
+        filter: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .quadro {
+        padding: 0 16px 32px;
+        gap: 8px;
+    }
+}
+
+/* ===================== alto contraste ===================== */
+/* texto claro sobre o azul e o vermelho (o escuro não lia) */
+.status.st-ok,
+.status.st-erro,
+.anim[data-anim="cx"] .status.st-erro,
+.resposta,
+.filtro.on,
+.aviso {
+    color: var(--bw);
+}
+
+/* blocos de logo e caixas em --bw com anel de 2px (--bb-25): borda visível no quadro #F0F0FA */
+.logo {
+    background: var(--bw);
+    box-shadow: inset 0 0 0 2px var(--bb-25);
+}
+
+.logo.pisca {
+    background: var(--wr300);
+}
+
+.caixa,
+.resultado,
+.grafico {
+    box-shadow: inset 0 0 0 2px var(--bb-25);
+}
+
+.busca-campo.parado {
+    box-shadow: inset 0 0 0 2px var(--bb-25);
+}

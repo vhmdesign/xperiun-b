@@ -568,6 +568,13 @@
         function submit() {
             const errBox = form.querySelector('.popup-form-error');
             if (errBox) errBox.hidden = true;            // limpa erro anterior
+            // Form ainda sem id na AC (u/f/or = PENDENTE): valida, mas não envia
+            // nada pra AC. Tirar o data-ac-pendente do <form> quando ganhar id.
+            if (form.hasAttribute('data-ac-pendente')) {
+                console.warn('[form] ' + modal.id + ' sem id da ActiveCampaign (data-ac-pendente): envio bloqueado.');
+                showFormError(modal, 'As inscrições abrem em breve.');
+                return;
+            }
             // Guarda o email pra página seguinte. O redirect que a AC dispara
             // depois do envio (configurado no painel do form) não carrega campo
             // nenhum, então quem chega do outro lado só sabe quem enviou por

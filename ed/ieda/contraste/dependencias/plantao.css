@@ -1,0 +1,1029 @@
+/* PRÉVIA ALTO CONTRASTE (/ed/ieda/contraste/), gerada de temp/ieda/videos/fonte/plantao.css.
+   Cores trocadas por tokens do root.css com mais contraste e sem par verde/vermelho;
+   sem blur nos elementos que informam. */
+/*
+ * IEDA, card "Agente de plantão" (/ed/ieda/). Portado de /temp/ieda/meia-noite-a-manha/,
+ * com as classes prefixadas em mn- (o .quadro e o .cena colidiam com as outras animações).
+ *
+ * Animação: meia-noite > meia-noite/madrugada (in-between) > madrugada > amanhecer > manhã,
+ * depois esmaece para o primeiro frame e recomeça.
+ *
+ * Ciclo de 15.5s: 14s de ida + 1.5s de fade.
+ *   0%     a 4.52%  0:00 meia-noite (parado)
+ *   4.52%  a 23.85% 0:00 > 2:00 (2 horas)
+ *   23.85% a 28.36% 2:00 in-between: lua no meio do caminho, céu ainda da meia-noite (parado)
+ *   28.36% a 47.78% 2:00 > 4:00 (2 horas)
+ *   47.78% a 52.3%  4:00 madrugada (parado)
+ *   52.3%  a 71.63% 4:00 > 6:00 (2 horas; lua sai pelo alto à direita, sol nasce por baixo)
+ *   71.63% a 76.14% 6:00 amanhecer (parado)
+ *   76.14% a 85.81% 6:00 > 7:00 (1 hora)
+ *   85.81% a 90.32% 7:00 manhã (parado)
+ *   90.32% a 100%   7:00 parado; a cópia do primeiro frame (.cena-inicio) esmaece por cima.
+ *                   No 100% a cena recomeça do 0:00, igual à cópia, e a cópia some.
+ *
+ * Pausas iguais e transições proporcionais às horas (2h, 2h, 2h, 1h),
+ * então o ponteiro e o contador andam sempre no mesmo ritmo na ida.
+ *
+ * O blur de cada forma é fixo (lua 0 a 8px, sol 0 a 16px), só posição, cor e
+ * opacidade animam, então não há blur animado em nenhuma largura de tela.
+ */
+
+@property --ceu-a {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #3700C8; /* --pc600 */
+}
+
+@property --ceu-b {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #190032; /* --pp900 */
+}
+
+@property --sol-cor {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #FFC800; /* --wr700 */
+}
+
+/* cena: a animada e a cópia parada do primeiro frame, empilhadas no mesmo lugar */
+/* quadro: container de 688px, #F0F0FA (cor passada pelo usuário), com toda a animação */
+.mn-quadro {
+    --quadro-respiro: 16px;
+    width: 688px;
+    padding: var(--quadro-respiro) 0;
+    box-sizing: border-box;
+    /* o fundo #F0F0FA fica no card da página (.ieda-pratica-card) */
+}
+
+/* a cena tem a largura do relógio; ela é posicionada para o céu ficar
+   64px da borda esquerda do quadro. Relógio, contador e lista acompanham. */
+.mn-cena {
+    position: relative;
+    display: grid;
+    width: calc(var(--relogio-raio) * 2);
+    margin-left: calc(64px - (var(--relogio-raio) - var(--ceu-tamanho) / 2));
+}
+
+/* evento: lista que rola, 32px à direita do céu, com a altura do céu e o atual
+   centralizado na vertical. Cada item é o horário com a descrição 16px abaixo (68px de altura).
+     abaixo (próximos): só o horário, com blur de 4px; o primeiro fica 16px abaixo da
+                        descrição do atual (84px) e os seguintes a cada 48px
+     0 (atual):         horário e descrição, nítido
+     -1 (anterior):     sobe 84px, com blur de 4px
+     -2 (mais antigo):  sobe mais e some
+   Em cada pausa (02:00, 04:00, 06:00, 07:00) a lista sobe uma posição.
+   No fim do ciclo (90.32% a 100%) a lista animada esmaece parada no lugar e, ao mesmo tempo,
+   a cópia parada do primeiro frame (.mn-evento-inicio, criada pelo plantao.js) aparece por
+   cima, no mesmo ritmo do relógio (.mn-cena-inicio). No 100% a lista animada volta pro
+   início, igual à cópia, e a cópia some: os horários reaparecem junto com o resto da cena.
+   O fade fica em cada item, não no pai: os horários com blur são camadas próprias e não
+   seguiam a opacidade do pai. */
+@property --evento-texto {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+/* cópia parada do primeiro frame: cada horário na posição do 0:00 (84, 132, 180, 228px),
+   com blur e sem descrição; só a opacidade anima, de 0 a 1 entre 90.32% e 100% */
+.mn-evento-inicio .mn-evento-item {
+    --evento-texto: 0;
+    --evento-inicio-alvo: 1;
+    opacity: 0;
+    filter: blur(4px);
+    animation: mn-evento-inicio var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-evento-inicio .mn-evento-1 { transform: translateY(84px); }
+.mn-evento-inicio .mn-evento-2 { transform: translateY(132px); }
+.mn-evento-inicio .mn-evento-3 { transform: translateY(180px); }
+.mn-evento-inicio .mn-evento-4 { transform: translateY(228px); }
+
+@keyframes mn-evento-inicio {
+    0%, 90.32% {
+        opacity: 0;
+    }
+    100% {
+        opacity: var(--evento-inicio-alvo);
+    }
+}
+
+/* abaixo de 864px, sem blur: os horários fora do atual ficam em 50% (igual à lista animada) */
+
+    .mn-evento-inicio .mn-evento-item {
+        --evento-inicio-alvo: 0.7;
+        filter: none;
+    }
+
+
+/* a caixa da lista cobre a altura inteira do quadro (incluindo os 16px de respiro em cima e
+   embaixo), com o centro ainda no centro do céu (padding-bottom compensa a diferença).
+   A máscara esmaece os horários perto das bordas do quadro e some com eles na borda:
+   o que passaria do quadro fica esmaecido em vez de vazar. */
+.mn-evento {
+    position: absolute;
+    top: calc(var(--quadro-respiro) * -1);
+    /* 16px de folga de cada lado para o blur dos horários não ser cortado pela máscara */
+    left: calc(50% + var(--ceu-tamanho) / 2 + 32px - 16px);
+    padding-left: 16px;
+    padding-right: 16px;
+    /* cena = 320px (relógio de 312 + 8 do contador); caixa = cena + 16 + 16 = altura do quadro.
+       Centro do céu = 156px da cena; padding-bottom 8px leva o centro da caixa para lá. */
+    height: calc(var(--relogio-raio) * 2 + 8px + var(--quadro-respiro) * 2);
+    padding-bottom: 8px;
+    box-sizing: border-box;
+    margin: 0;
+    list-style: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+    display: grid;
+    align-content: center;
+    white-space: nowrap;
+}
+
+/* lista de horários (ol > li com <time>); a fonte vai no próprio item */
+.mn-evento-item {
+    grid-area: 1 / 1;
+    margin: 0;
+    font-family: var(--font-family-horizontal);
+    font-weight: 400;
+    line-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.mn-evento-hora {
+    font-size: 2rem;
+    color: var(--bb);
+}
+
+.mn-evento-texto {
+    font-size: 1.25rem;
+    color: var(--dn500);
+    opacity: var(--evento-texto);
+}
+
+.mn-evento-1 {
+    animation: evento-1 var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-evento-2 {
+    animation: evento-2 var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-evento-3 {
+    animation: evento-3 var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-evento-4 {
+    animation: evento-4 var(--ceu-duracao) ease-in-out infinite;
+}
+
+@keyframes evento-1 {
+    0% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    23.85% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    26.85% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    47.78% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    50.78% {
+        transform: translateY(-84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    71.63% {
+        transform: translateY(-84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    74.63% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    85.81% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    88.81% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    90.32% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    100% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+}
+
+@keyframes evento-2 {
+    0% {
+        transform: translateY(132px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    23.85% {
+        transform: translateY(132px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    26.85% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    47.78% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    50.78% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    71.63% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    74.63% {
+        transform: translateY(-84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    85.81% {
+        transform: translateY(-84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    88.81% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    90.32% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    100% {
+        transform: translateY(-132px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+}
+
+@keyframes evento-3 {
+    0% {
+        transform: translateY(180px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    23.85% {
+        transform: translateY(180px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    26.85% {
+        transform: translateY(132px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    47.78% {
+        transform: translateY(132px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    50.78% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    71.63% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    74.63% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    85.81% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    88.81% {
+        transform: translateY(-84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    90.32% {
+        transform: translateY(-84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+    100% {
+        transform: translateY(-84px);
+        opacity: 0;
+        filter: blur(4px);
+        --evento-texto: 1;
+    }
+}
+
+@keyframes evento-4 {
+    0% {
+        transform: translateY(228px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    23.85% {
+        transform: translateY(228px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    26.85% {
+        transform: translateY(180px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    47.78% {
+        transform: translateY(180px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    50.78% {
+        transform: translateY(132px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    71.63% {
+        transform: translateY(132px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    74.63% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    85.81% {
+        transform: translateY(84px);
+        opacity: 1;
+        filter: blur(4px);
+        --evento-texto: 0;
+    }
+    88.81% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    90.32% {
+        transform: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 0;
+        filter: blur(0px);
+        --evento-texto: 1;
+    }
+}
+
+/* abaixo de 864px: sem blur animado; os itens fora do atual ficam com 50% de opacidade no lugar do blur */
+
+    @keyframes evento-1 {
+        0% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        23.85% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        26.85% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        47.78% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        50.78% {
+            transform: translateY(-84px);
+            opacity: 0.7;
+            --evento-texto: 1;
+        }
+        71.63% {
+            transform: translateY(-84px);
+            opacity: 0.7;
+            --evento-texto: 1;
+        }
+        74.63% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+        85.81% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+        88.81% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+        90.32% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+        100% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+    }
+
+    @keyframes evento-2 {
+        0% {
+            transform: translateY(132px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        23.85% {
+            transform: translateY(132px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        26.85% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        47.78% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        50.78% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        71.63% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        74.63% {
+            transform: translateY(-84px);
+            opacity: 0.7;
+            --evento-texto: 1;
+        }
+        85.81% {
+            transform: translateY(-84px);
+            opacity: 0.7;
+            --evento-texto: 1;
+        }
+        88.81% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+        90.32% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+        100% {
+            transform: translateY(-132px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+    }
+
+    @keyframes evento-3 {
+        0% {
+            transform: translateY(180px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        23.85% {
+            transform: translateY(180px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        26.85% {
+            transform: translateY(132px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        47.78% {
+            transform: translateY(132px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        50.78% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        71.63% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        74.63% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        85.81% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        88.81% {
+            transform: translateY(-84px);
+            opacity: 0.7;
+            --evento-texto: 1;
+        }
+        90.32% {
+            transform: translateY(-84px);
+            opacity: 0.7;
+            --evento-texto: 1;
+        }
+        100% {
+            transform: translateY(-84px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+    }
+
+    @keyframes evento-4 {
+        0% {
+            transform: translateY(228px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        23.85% {
+            transform: translateY(228px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        26.85% {
+            transform: translateY(180px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        47.78% {
+            transform: translateY(180px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        50.78% {
+            transform: translateY(132px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        71.63% {
+            transform: translateY(132px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        74.63% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        85.81% {
+            transform: translateY(84px);
+            opacity: 0.7;
+            --evento-texto: 0;
+        }
+        88.81% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        90.32% {
+            transform: translateY(0px);
+            opacity: 1;
+            --evento-texto: 1;
+        }
+        100% {
+            transform: translateY(0px);
+            opacity: 0;
+            --evento-texto: 1;
+        }
+    }
+
+
+.mn-cena-camada {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* cópia do primeiro frame: tudo parado (os valores-base do CSS já são os da meia-noite) */
+.mn-cena-inicio * {
+    animation: none !important;
+}
+
+.mn-cena-inicio {
+    opacity: 0;
+    animation: cena-fade var(--ceu-duracao) ease-in-out infinite;
+}
+
+@keyframes cena-fade {
+    0%, 90.32% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* os riscos não mudam: na cópia ficam escondidos para não somar com os da cena animada */
+.mn-cena-inicio .mn-relogio-risco {
+    visibility: hidden;
+}
+
+.mn-palco {
+    --ceu-duracao: 15.5s;
+    --relogio-raio: 156px;
+    --ceu-tamanho: 200px;
+}
+
+/* contador de horas: mesmas paradas e easing do ponteiro, em minutos
+   (0:00 = 0, 2:00 = 120, 4:00 = 240, 6:00 = 360, 7:00 = 420).
+   Propriedades <integer> arredondam o calc, o que vira o "floor" das horas. */
+@property --hora-min {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --hora-h {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --hora-m {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+}
+
+.mn-relogio-hora {
+    --hora-h: calc((var(--hora-min) - 30) / 60);
+    --hora-m: calc(var(--hora-min) - var(--hora-h) * 60);
+    /* 16px abaixo da base do céu: sobe o que sobra do relógio abaixo do céu
+       (raio do relógio - raio do céu) e desce 16px */
+    margin: calc(16px - (var(--relogio-raio) - var(--ceu-tamanho) / 2)) 0 0;
+    position: relative;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 100%;
+    color: var(--pp900);
+    font-variant-numeric: tabular-nums;
+    counter-reset: hora-h var(--hora-h) hora-m var(--hora-m);
+    animation: relogio-hora var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-relogio-hora::after {
+    content: counter(hora-h, decimal-leading-zero) ":" counter(hora-m, decimal-leading-zero);
+}
+
+/* cor do contador em cada pausa: 0:00 e 2:00 --pp900, 4:00 --pc500,
+   6:00 var(--er700) e 7:00 var(--sc900) (cores passadas pelo usuário) */
+@keyframes relogio-hora {
+    0%, 4.52% {
+        --hora-min: 0;
+        color: var(--pp900);
+    }
+    23.85%, 28.36% {
+        --hora-min: 120;
+        color: var(--pp900);
+    }
+    47.78%, 52.3% {
+        --hora-min: 240;
+        color: var(--pc500);
+    }
+    71.63%, 76.14% {
+        --hora-min: 360;
+        color: var(--er700);
+    }
+    85.81%, 100% {
+        --hora-min: 420;
+        color: var(--sc900);
+    }
+}
+
+/* relógio: anel de 60 riscos (2px x 24px, --bb-10) em volta do céu.
+   Os riscos começam 32px depois da borda do céu: raio interno 132px, externo 156px */
+.mn-relogio {
+    position: relative;
+    width: calc(var(--relogio-raio) * 2);
+    height: calc(var(--relogio-raio) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* progressive blur 0 a 4px no anel de riscos inteiro */
+.mn-relogio-blur {
+    position: absolute;
+    inset: 0;
+}
+
+.mn-relogio-riscos {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.mn-relogio-risco {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 1px);
+    width: 2px;
+    height: 24px;
+    background: var(--bb-25);
+    transform-origin: 1px var(--relogio-raio);
+    transform: rotate(calc(var(--i) * 6deg));
+}
+
+/* ponteiro de horas: 4px x 32px, cor muda a cada pausa (igual ao contador). Fica dentro do anel de riscos, então
+   recebe o mesmo progressive blur. A ponta externa encosta no topo dos riscos
+   (raio 156px) e ele entra 32px para dentro.
+   30deg por hora: 0:00 0deg, 2:00 60deg, 4:00 120deg, 6:00 180deg, 7:00 210deg */
+.mn-relogio-ponteiro {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 2px);
+    width: 4px;
+    height: 32px;
+    background: var(--pp900);
+    transform-origin: 2px var(--relogio-raio);
+    animation: relogio-ponteiro var(--ceu-duracao) ease-in-out infinite;
+}
+
+@keyframes relogio-ponteiro {
+    0%, 4.52% {
+        transform: rotate(0deg);
+        background: var(--pp900);
+    }
+    23.85%, 28.36% {
+        transform: rotate(60deg);
+        background: var(--pp900);
+    }
+    47.78%, 52.3% {
+        transform: rotate(120deg);
+        background: var(--pc500);
+    }
+    71.63%, 76.14% {
+        transform: rotate(180deg);
+        background: var(--er700);
+    }
+    85.81%, 90.32% {
+        transform: rotate(210deg);
+        background: var(--sc900);
+    }
+    /* recomeço: em vez de esmaecer (cruzando com o ponteiro parado da cópia, o que piscava),
+       o ponteiro gira das 07:00 até o topo, nítido, e volta à cor do 00:00; 360deg = 0deg,
+       então o loop recomeça sem emenda */
+    100% {
+        transform: rotate(360deg);
+        background: var(--pp900);
+    }
+}
+
+.mn-ceu {
+    position: relative;
+    width: var(--ceu-tamanho);
+    height: var(--ceu-tamanho);
+    border-radius: 50%;
+    background: linear-gradient(to bottom, var(--ceu-a), var(--ceu-b));
+    overflow: hidden;
+    animation: ceu-cores var(--ceu-duracao) ease-in-out infinite;
+}
+
+/* lua: 64px, --bw até transparente */
+.mn-ceu-lua {
+    position: absolute;
+    top: 68px;
+    left: 68px;
+    width: 64px;
+    height: 64px;
+    animation: ceu-lua var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-ceu-lua-forma {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, var(--bw), transparent);
+}
+
+/* sol: 128px, --sol-cor até transparente */
+.mn-ceu-sol {
+    position: absolute;
+    top: 200px;
+    left: 36px;
+    width: 128px;
+    height: 128px;
+    animation: ceu-sol var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-ceu-sol-forma {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, var(--sol-cor), transparent);
+}
+
+/* fundo do círculo pai em cada momento (0:00 e 2:00 com o céu da meia-noite) */
+@keyframes ceu-cores {
+    0%, 28.36% {
+        --ceu-a: var(--pc600);
+        --ceu-b: var(--pp900);
+    }
+    47.78%, 52.3% {
+        --ceu-a: var(--pc500);
+        --ceu-b: var(--pp600);
+    }
+    71.63%, 76.14% {
+        --ceu-a: var(--pp400);
+        --ceu-b: var(--er700);
+    }
+    85.81%, 100% {
+        --ceu-a: var(--sc300);
+        --ceu-b: var(--wr500);
+    }
+}
+
+/* 0:00 centro; 2:00 in-between (-16px top e -16px right); 4:00 madrugada (-32px top e -32px right);
+   6:00 já saiu pelo alto à direita */
+@keyframes ceu-lua {
+    0%, 4.52% {
+        top: 68px;
+        left: 68px;
+        opacity: 1;
+    }
+    23.85%, 28.36% {
+        top: 52px;
+        left: 84px;
+        opacity: 1;
+    }
+    47.78%, 52.3% {
+        top: 36px;
+        left: 100px;
+        opacity: 1;
+    }
+    71.63%, 100% {
+        top: -32px;
+        left: 168px;
+        opacity: 0;
+    }
+}
+
+/* escondido abaixo; amanhecer: top no meio do pai; manhã: centro completo */
+@keyframes ceu-sol {
+    0%, 52.3% {
+        top: 200px;
+        --sol-cor: var(--wr700);
+    }
+    71.63%, 76.14% {
+        top: 100px;
+        --sol-cor: var(--wr700);
+    }
+    85.81%, 100% {
+        top: 36px;
+        --sol-cor: var(--wr500);
+    }
+}
+
+/* o contador não é coberto pela cópia (fundo transparente), então o da cena animada
+   esmaece enquanto o da cópia aparece: cross-fade de verdade. O ponteiro não entra no
+   cross-fade (piscava): ele gira de volta ao topo (ver relogio-ponteiro) e o da cópia fica
+   escondido */
+.mn-cena-animada .mn-relogio-ponteiro {
+    animation: relogio-ponteiro var(--ceu-duracao) ease-in-out infinite;
+}
+
+.mn-cena-inicio .mn-relogio-ponteiro {
+    visibility: hidden;
+}
+
+.mn-cena-animada .mn-relogio-hora {
+    animation:
+        relogio-hora var(--ceu-duracao) ease-in-out infinite,
+        cena-some var(--ceu-duracao) ease-in-out infinite;
+}
+
+@keyframes cena-some {
+    0%, 90.32% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mn-ceu,
+    .mn-ceu-lua,
+    .mn-ceu-sol,
+    .mn-relogio-ponteiro,
+    .mn-relogio-hora,
+    .mn-cena-inicio,
+    .mn-cena-animada .mn-relogio-ponteiro,
+    .mn-cena-animada .mn-relogio-hora {
+        animation: none;
+    }
+
+    /* a lista fica parada no primeiro frame (próximos horários abaixo, em blur) */
+    .mn-evento-item,
+    .mn-evento {
+        animation-play-state: paused;
+        animation-delay: 0s;
+    }
+}

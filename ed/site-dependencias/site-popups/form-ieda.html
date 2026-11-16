@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fragmento de popup, carregado pelo form-include.js: não é página, fica fora da busca e do sitemap. -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>Imersão Engenharia de Dados Agêntica, Xperiun</title>
+    <link rel="stylesheet" href="../root.css">
+    <link rel="stylesheet" href="form.css">
+    <style>body { margin: 0; background: var(--bb); min-height: 100vh; }</style>
+</head>
+<body>
+
+<!-- Form ActiveCampaign da Imersão Engenharia de Dados Agêntica (/ed/ieda/).
+
+     PENDENTE: o form ainda não existe na AC. Enquanto isso o <form> leva
+     data-ac-pendente e o form.js valida os campos mas NÃO envia (mostra o
+     aviso de form inativo). Quando o form for criado, pegar no embed oficial
+     (AC > Forms > o form > Integrate > HTML) e trocar:
+       - os PENDENTE de u, f e or;
+       - a classe _form_PENDENTE, o id _form_PENDENTE_ e o do botão;
+       - conferir os field[N] (UTMs abaixo são os da conta: 2 campaign,
+         3 source, 4 medium, 5 content; o form.js preenche pela URL);
+     e tirar o atributo data-ac-pendente. Nenhum valor da AC foi chutado.
+
+     Campos: nome, email e WhatsApp (E.164 pelo form.js). O redirect do
+     sucesso vem da AC (ação do form), não daqui.
+
+     Acento do card: o ciano da página (essencial, #7DE1E1, passado pelo usuário).
+     O logo da IEDA é preto: no card escuro vai invertido. -->
+<div class="popup-form" id="popup-form-ieda" style="--popup-accent-rgb: 125, 225, 225;">
+    <div class="popup-form-backdrop"></div>
+    <div class="popup-form-content">
+        <div class="popup-form-card">
+            <div class="popup-form-header">
+                <img src="/ed/ieda/dependencias/logo-ieda.webp" alt="Imersão Engenharia de Dados Agêntica" class="popup-form-logo" width="480" height="135" style="width: 205px; height: auto; display: block; filter: invert(1);">
+            </div>
+            <p class="popup-form-label">Preencha os dados abaixo:</p>
+            <form
+                class="popup-form-form _form _form_PENDENTE _inline-form _dark"
+                id="_form_PENDENTE_"
+                method="POST"
+                action="https://karpinskileonardo.activehosted.com/proc.php"
+                data-ac-pendente
+                novalidate
+            >
+                <input type="hidden" name="u" value="PENDENTE">
+                <input type="hidden" name="f" value="PENDENTE">
+                <input type="hidden" name="s">
+                <input type="hidden" name="c" value="0">
+                <input type="hidden" name="m" value="0">
+                <input type="hidden" name="act" value="sub">
+                <input type="hidden" name="v" value="2">
+                <input type="hidden" name="or" value="PENDENTE">
+
+                <input type="hidden" name="field[2]" value="">
+                <input type="hidden" name="field[3]" value="">
+                <input type="hidden" name="field[4]" value="">
+                <input type="hidden" name="field[5]" value="">
+
+                <div class="input-group">
+                    <span class="input-label">Nome</span>
+                    <input name="fullname" class="input" type="text" placeholder="Digite seu nome" autocomplete="name" required>
+                    <span class="input-error-text" style="display:none">Informe seu nome.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">Email</span>
+                    <input name="email" class="input" type="email" placeholder="seu@email.com" autocomplete="email" required>
+                    <span class="input-error-text" style="display:none">Insira um email válido.</span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">WhatsApp</span>
+                    <input name="phone" class="input" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15" required>
+                    <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
+                </div>
+
+                <div class="popup-form-actions">
+                    <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Sair</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_PENDENTE_submit">Garantir minha vaga</button>
+                </div>
+            </form>
+            <p class="popup-form-success" hidden>Aguarde um instante, você será redirecionado...</p>
+        </div>
+    </div>
+</div>
+
+<script src="form.js"></script>
+
+</body>
+</html>

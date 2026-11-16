@@ -1,0 +1,151 @@
+/* IEDA, PRÉVIA ALTO CONTRASTE / DALTONISMO (/ed/ieda/contraste/)
+   Vem depois do /ed/ieda/dependencias/style.css e só sobrescreve o que muda.
+   Critérios:
+     - texto secundário sólido (--dn500, ~12:1 no --bw) no lugar de --bb-50/--bb-75 (alfa varia
+       com o fundo); nada de texto em --bb-25;
+     - sem blur em texto nem em elemento que informa (ferramentas das pontas, abas inativas);
+     - elementos gráficos com pelo menos 3:1 (trilhos, indicadores, bordas via anel de 2px);
+     - nenhuma informação só pela cor: raridade com cor + losangos (1 a 4) + nome; seleção com
+       anel além do degradê;
+     - cores da raridade em eixos que o daltonismo separa (cinza, azul, amarelo, salmão, com
+       luminâncias diferentes), todas tokens do root.css. */
+
+/* ---------- texto ---------- */
+.ieda-eyebrow {
+    color: var(--dn500);
+}
+
+.ieda-texto,
+.ieda-hero-sub,
+.ieda-dia-card .anim-desc,
+.ieda-missao-texto {
+    color: var(--dn500);
+}
+
+/* ---------- hero: ferramentas das pontas nítidas ---------- */
+.ieda-ferramenta:first-child,
+.ieda-ferramenta:last-child {
+    filter: none;
+}
+
+/* ---------- na prática ---------- */
+/* plantão: com os horários nítidos, a lista começa 16px depois do anel de riscos (no original
+   ela entrava por cima do anel, o que só funcionava com os horários desfocados e apagados) */
+.mn-evento {
+    left: calc(50% + var(--relogio-raio));
+}
+
+/* radar: os editais agora têm contraste; atrás do título e da frase entra um degradê na cor do
+   card (#F0F0FA, a mesma do .ieda-pratica-card), pra o texto não ficar por cima deles */
+.ieda-pratica-card--radar::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    height: calc(var(--card-respiro) + 136px);
+    background: linear-gradient(to top, #F0F0FA 60%, rgba(240, 240, 250, 0));
+    pointer-events: none;
+}
+
+/* ---------- programação: abas sem blur, inativas legíveis ---------- */
+.ieda-dia-nav-item {
+    color: var(--dn500);
+}
+
+.ieda-dia-nav-item[data-dist="1"] {
+    color: var(--dn500);
+    filter: none;
+}
+
+.ieda-dia-nav-item[data-dist="2"] {
+    color: var(--dn100);
+    filter: none;
+}
+
+.ieda-dia-nav-prog-trilho {
+    stroke: var(--bb-25);
+}
+
+/* quadro das animações (HTML/CSS, sem vídeo): vaza o padding do card nas laterais, como antes */
+.ieda-dia-card .quadro {
+    height: 320px;
+    margin: 0 calc(var(--card-pad) * -1);
+}
+
+/* ---------- o que você recebe ---------- */
+.ieda-recebe .ieda-eyebrow {
+    color: var(--bw-75);
+}
+
+/* raridade: cinza, azul, amarelo, salmão (tokens do root.css) */
+[data-raridade="essencial"] { --cor: var(--ln300); --cor-clara: var(--bw); }
+[data-raridade="raro"]      { --cor: var(--pc200); --cor-clara: var(--pc100); }
+[data-raridade="epico"]     { --cor: var(--wr300); --cor-clara: var(--wr100); }
+[data-raridade="lendario"]  { --cor: var(--er300); --cor-clara: var(--er100); }
+
+/* slots com borda visível; o selecionado ganha anel na cor da raridade */
+.ieda-slot {
+    box-shadow: var(--ring-15);
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.ieda-slot[aria-selected="true"] {
+    box-shadow: inset 0 0 0 2px var(--cor);
+}
+
+.ieda-slot-topo {
+    position: relative;
+    z-index: 1;
+    align-self: stretch;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+/* losangos da raridade: 4 vazados (anel --bw-50), preenchidos conforme o nível */
+.ieda-pips {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.ieda-pips i {
+    width: 8px;
+    height: 8px;
+    box-shadow: inset 0 0 0 2px var(--bw-50);
+    transform: rotate(45deg);
+}
+
+[data-raridade="essencial"] .ieda-pips i:nth-child(-n+1),
+[data-raridade="raro"] .ieda-pips i:nth-child(-n+2),
+[data-raridade="epico"] .ieda-pips i:nth-child(-n+3),
+[data-raridade="lendario"] .ieda-pips i:nth-child(-n+4) {
+    background: var(--cor);
+    box-shadow: none;
+}
+
+.ieda-item-rar {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ieda-item-barra span {
+    background: var(--bw-50);
+}
+
+/* ---------- celular ---------- */
+@media (max-width: 864px) {
+    .ieda-dia-slides button::before {
+        background: var(--bb-50);
+    }
+}
+
+/* desenho das animações a 75% no carrossel do celular (o quadro tem ~320px de largura) */
+@media (max-width: 576px) {
+    .ieda-dia-card .quadro > * {
+        transform: scale(0.75);
+    }
+}

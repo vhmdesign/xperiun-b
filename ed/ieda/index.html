@@ -18,7 +18,7 @@
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="preload" as="image" href="/ed/ieda/dependencias/bg-hero.webp" fetchpriority="high">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
-    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=29">
+    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=32">
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -46,6 +46,7 @@
        programação (dias 12 e 13)                (.ieda-prog)
          animações em vídeo: dependencias/videos/<tópico>-* (programacao.js)
        o que você recebe (8 itens + painel)      (.ieda-recebe, recebe.js)
+       oferta (texto + card do passaporte)       (.ieda-oferta)
 
      Os 12 vídeos (d = desktop, m = mobile <=576; webm VP9 + mp4 H.264 + poster webp) são
      gerados a partir das animações em HTML/CSS por temp/ieda/videos/ (captura.mjs +
@@ -137,10 +138,10 @@
             </figcaption>
         <div class="ieda-pratica-anim" aria-hidden="true">
             <video class="ieda-pratica-video" data-video="plantao" muted playsinline loop preload="none">
-                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/plantao-m.webm" type="video/webm">
-                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/plantao-m.mp4" type="video/mp4">
-                <source src="/ed/ieda/dependencias/videos/plantao-d.webm" type="video/webm">
-                <source src="/ed/ieda/dependencias/videos/plantao-d.mp4" type="video/mp4">
+                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/plantao-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/plantao-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                <source src="/ed/ieda/dependencias/videos/plantao-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                <source src="/ed/ieda/dependencias/videos/plantao-d.webm?v=3" type='video/webm; codecs="vp9"'>
             </video>
         </div>
         </figure>
@@ -148,10 +149,10 @@
         <figure class="ieda-pratica-card ieda-pratica-card--radar">
         <div class="ieda-pratica-anim" aria-hidden="true">
             <video class="ieda-pratica-video" data-video="radar" muted playsinline loop preload="none">
-                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/radar-m.webm" type="video/webm">
-                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/radar-m.mp4" type="video/mp4">
-                <source src="/ed/ieda/dependencias/videos/radar-d.webm" type="video/webm">
-                <source src="/ed/ieda/dependencias/videos/radar-d.mp4" type="video/mp4">
+                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/radar-m.mp4?v=5" type='video/mp4; codecs="avc1.640028"'>
+                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/radar-m.webm?v=5" type='video/webm; codecs="vp9"'>
+                <source src="/ed/ieda/dependencias/videos/radar-d.mp4?v=5" type='video/mp4; codecs="avc1.640028"'>
+                <source src="/ed/ieda/dependencias/videos/radar-d.webm?v=5" type='video/webm; codecs="vp9"'>
             </video>
         </div>
             <figcaption class="ieda-pratica-texto">
@@ -197,10 +198,10 @@
                         <div class="anim-texto"><h4 class="anim-nome">Arquitetura do projeto:</h4><p class="anim-desc">o desafio, os dados do PNCP e o que precisa ser entregue.</p></div>
                         <div class="quadro">
                             <video class="anim-video" data-video="arq" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/arq-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/arq-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/arq-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/arq-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/arq-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/arq-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/arq-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/arq-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                     </div>
@@ -209,10 +210,10 @@
                         <div class="anim-texto"><h4 class="anim-nome">Claude Code + Superpowers:</h4><p class="anim-desc">da especificação ao código, com agentes.</p></div>
                         <div class="quadro">
                             <video class="anim-video" data-video="cc" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cc-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cc-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/cc-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/cc-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cc-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cc-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/cc-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/cc-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                     </div>
@@ -221,10 +222,10 @@
                         <div class="anim-texto"><h4 class="anim-nome">Supabase + camadas medalhão:</h4><p class="anim-desc">a esteira de dados ganha forma.</p></div>
                         <div class="quadro">
                             <video class="anim-video" data-video="md" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/md-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/md-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/md-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/md-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/md-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/md-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/md-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/md-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                     </div>
@@ -233,10 +234,10 @@
                         <div class="anim-texto"><h4 class="anim-nome">Codex como tech lead:</h4><p class="anim-desc">nenhuma entrega passa sem revisão.</p></div>
                         <div class="quadro">
                             <video class="anim-video" data-video="cx" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cx-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cx-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/cx-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/cx-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cx-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/cx-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/cx-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/cx-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                     </div>
@@ -245,10 +246,10 @@
                         <div class="anim-texto"><h4 class="anim-nome">GitHub Actions:</h4><p class="anim-desc">a coleta passa a rodar sozinha, todos os dias.</p></div>
                         <div class="quadro">
                             <video class="anim-video" data-video="gh" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/gh-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/gh-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/gh-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/gh-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/gh-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/gh-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/gh-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/gh-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                     </div>
@@ -282,10 +283,10 @@
                     <div class="anim anim-ieda" data-anim="mcp" id="ieda-d2-t0" role="tabpanel" aria-labelledby="ieda-d2-b0">
                         <div class="quadro">
                             <video class="anim-video" data-video="mcp" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/mcp-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/mcp-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/mcp-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/mcp-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/mcp-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/mcp-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/mcp-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/mcp-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                         <div class="anim-texto"><h4 class="anim-nome">MCPs:</h4><p class="anim-desc">agentes conectados ao banco, ao GitHub e ao Power BI.</p></div>
@@ -294,10 +295,10 @@
                     <div class="anim anim-ieda" data-anim="rag" id="ieda-d2-t1" role="tabpanel" aria-labelledby="ieda-d2-b1">
                         <div class="quadro">
                             <video class="anim-video" data-video="rag" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/rag-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/rag-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/rag-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/rag-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/rag-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/rag-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/rag-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/rag-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                         <div class="anim-texto"><h4 class="anim-nome">RAG:</h4><p class="anim-desc">perguntas em linguagem natural direto nos editais.</p></div>
@@ -306,10 +307,10 @@
                     <div class="anim anim-ieda" data-anim="orca" id="ieda-d2-t2" role="tabpanel" aria-labelledby="ieda-d2-b2">
                         <div class="quadro">
                             <video class="anim-video" data-video="orca" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/orca-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/orca-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/orca-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/orca-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/orca-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/orca-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/orca-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/orca-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                         <div class="anim-texto"><h4 class="anim-nome">Orca:</h4><p class="anim-desc">vários agentes trabalhando em paralelo.</p></div>
@@ -318,10 +319,10 @@
                     <div class="anim anim-ieda" data-anim="hermes" id="ieda-d2-t3" role="tabpanel" aria-labelledby="ieda-d2-b3">
                         <div class="quadro">
                             <video class="anim-video" data-video="hermes" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/hermes-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/hermes-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/hermes-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/hermes-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/hermes-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/hermes-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/hermes-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/hermes-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                         <div class="anim-texto"><h4 class="anim-nome">OpenRouter + Hermes:</h4><p class="anim-desc">o modelo certo para cada tarefa e um agente de plantão 24/7 no Telegram.</p></div>
@@ -330,10 +331,10 @@
                     <div class="anim anim-ieda" data-anim="pbi" id="ieda-d2-t4" role="tabpanel" aria-labelledby="ieda-d2-b4">
                         <div class="quadro">
                             <video class="anim-video" data-video="pbi" muted playsinline preload="none" aria-hidden="true">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/pbi-m.webm" type="video/webm">
-                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/pbi-m.mp4" type="video/mp4">
-                                <source src="/ed/ieda/dependencias/videos/pbi-d.webm" type="video/webm">
-                                <source src="/ed/ieda/dependencias/videos/pbi-d.mp4" type="video/mp4">
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/pbi-m.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source media="(max-width: 576px)" src="/ed/ieda/dependencias/videos/pbi-m.webm?v=3" type='video/webm; codecs="vp9"'>
+                                <source src="/ed/ieda/dependencias/videos/pbi-d.mp4?v=3" type='video/mp4; codecs="avc1.640028"'>
+                                <source src="/ed/ieda/dependencias/videos/pbi-d.webm?v=3" type='video/webm; codecs="vp9"'>
                             </video>
                         </div>
                         <div class="anim-texto"><h4 class="anim-nome">Power BI:</h4><p class="anim-desc">o painel final e a apresentação do projeto.</p></div>
@@ -448,13 +449,58 @@
     </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════
+     OFERTA (fechamento)
+     Texto + datas à esquerda; card do passaporte (preço, itens e CTA) à direita.
+     Fundo: as faixas do hero (bg-hero), fechando a página como ela abre.
+     PENDENTE: valor da parcela (12x de ??), aguardando o número.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-oferta" id="oferta" aria-labelledby="ieda-oferta-titulo">
+    <div class="ieda-inner">
+        <header class="ieda-oferta-texto">
+            <h2 class="ieda-oferta-titulo" id="ieda-oferta-titulo">Dois dias, um projeto real e a stack completa montada por você.</h2>
+            <p class="ieda-oferta-datas"><time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de dezembro de 2026</time></p>
+            <p class="ieda-oferta-info">Das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time> | 100% online e ao vivo</p>
+        </header>
+
+        <div class="ieda-passaporte">
+            <p class="ieda-passaporte-nome">Passaporte completo</p>
+            <p class="ieda-passaporte-preco">
+                <span class="ieda-passaporte-parcela">12x de ??</span>
+                <span class="ieda-passaporte-vista">R$ 1.597 à vista</span>
+            </p>
+            <ul class="ieda-passaporte-lista">
+                <li>Imersão prática de 2 dias</li>
+                <li>1 mês de assinatura de Claude ou OpenAI</li>
+                <li>O Radar de Licitações no seu GitHub</li>
+                <li>Kit da imersão: templates do projeto completo</li>
+                <li>Gravação das aulas</li>
+                <li>Certificado de participação</li>
+                <li>Comunidade ativa</li>
+                <li>Cupom de 50% OFF no Xperiun AI Summit</li>
+            </ul>
+            <a class="ieda-btn ieda-btn--claro" href="#" data-cta="garantir-vaga">Garantir minha vaga</a>
+        </div>
+    </div>
+</section>
+
 </main>
 
 <!-- programação (abas, carrossel) e controle dos vídeos das animações -->
-<script src="/ed/ieda/dependencias/programacao.js?v=7"></script>
+<script src="/ed/ieda/dependencias/programacao.js?v=11"></script>
 
 <!-- o que você recebe: seleção dos itens -->
 <script src="/ed/ieda/dependencias/recebe.js?v=1"></script>
+
+<!-- Formulário de inscrição (popup). O form-include.js troca este placeholder pelo
+     conteúdo de site-popups/form-ieda.html e injeta form.css e form.js.
+     PENDENTE: o form ainda não tem id na ActiveCampaign (ver form-ieda.html);
+     até lá ele valida mas não envia. -->
+<div data-popup-form="ieda"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=10"></script>
+
+<!-- CTAs "Garantir vaga" abrem o popup -->
+<script src="/ed/ieda/dependencias/popup.js?v=1"></script>
 
 <script src="/ed/site-dependencias/scroll-suave.js"></script>
 

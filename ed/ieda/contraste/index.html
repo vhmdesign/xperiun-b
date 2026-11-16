@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){var p=location.protocol;if(p!=='https:'&&p!=='http:'){document.documentElement.innerHTML='';}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ─── Meta de proteção (NÃO REMOVER) ───────────────────── -->
+    <meta name="copyright" content="© 2026 Xperiun. Todos os direitos reservados. Reprodução proibida sem autorização prévia.">
+    <meta name="author" content="Xperiun">
+    <meta name="xperiun-build" content="2026-11-13">
+
+    <!-- ─── Título e SEO ─────────────────────────────────────── -->
+    <!-- descrição = subtítulo do hero + datas (copy do PDF em ed/ieda/assets/pagina.pdf) -->
+    <title>Imersão Engenharia de Dados Agêntica (alto contraste) | Xperiun</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Uma imersão prática para construir um projeto real de Engenharia de Dados, com uma stack de agentes de IA. Dias 12 e 13 de dezembro.">
+
+    <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
+    <link rel="preload" as="image" href="/ed/ieda/dependencias/bg-hero.webp" fetchpriority="high">
+    <link rel="stylesheet" href="/ed/site-dependencias/root.css">
+    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=32">
+    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/progressive-blur.css?v=1">
+    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/programacao.css?v=1">
+    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/plantao.css?v=1">
+    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/radar.css?v=1">
+    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/contraste.css?v=2">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K5VFKRH');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5VFKRH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ===================================================================
+     IMERSÃO ENGENHARIA DE DADOS AGÊNTICA, /ed/ieda/
+
+     Layout e copy: ed/ieda/assets/pagina.pdf (fonte do design).
+     Landing sem menu e sem footer, como /ed/ped/.
+
+     ORDEM DAS SEÇÕES
+       hero (logo, título, ferramentas, CTA)     (.ieda-hero)
+       o projeto (texto + 5 cards)               (.ieda-projeto)
+       na prática (plantão + radar)              (.ieda-pratica)
+         animações em HTML/CSS: plantao.css/js, radar.css
+       programação (dias 12 e 13)                (.ieda-prog)
+         animações em HTML/CSS: programacao.css/js
+       o que você recebe (8 itens + painel)      (.ieda-recebe, recebe.js)
+
+     PRÉVIA ALTO CONTRASTE / DALTONISMO (/ed/ieda/contraste/, noindex):
+       mesma página, com as 12 animações em HTML/CSS (sem vídeo) e cores trocadas por
+       tokens do root.css com mais contraste e sem par verde/vermelho (contraste.css e as
+       cópias ajustadas em contraste/dependencias/). Gerada a partir de /ed/ieda/ e de
+       temp/ieda/videos/fonte/.
+
+     Grid Wide do DS em .ieda-inner: 1440, 10/8/6/4 colunas.
+     =================================================================== -->
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-hero" aria-labelledby="ieda-hero-titulo">
+    <div class="ieda-inner">
+        <img class="ieda-hero-logo" src="/ed/ieda/dependencias/logo-ieda.webp"
+             alt="Imersão Engenharia de Dados Agêntica" width="240" height="68">
+        <div class="ieda-hero-texto">
+            <h1 class="ieda-hero-titulo" id="ieda-hero-titulo">Monte uma stack agêntica de engenharia de dados em 2 dias</h1>
+            <p class="ieda-hero-sub">Uma imersão prática para construir um projeto real de Engenharia de Dados, com uma stack de agentes de IA que desenvolvem código, revisam entregas, automatizam pipelines e integram sistemas</p>
+        </div>
+        <ul class="ieda-ferramentas" aria-label="Ferramentas da imersão">
+            <li class="ieda-ferramenta"><img src="/ed/ieda/dependencias/logos/hero-codex.webp" alt="" width="32" height="32"><span>Codex</span></li>
+            <li class="ieda-ferramenta ieda-ferramenta--orca"><img src="/ed/ieda/dependencias/logos/hero-orca.webp" alt="" width="48" height="48"><span>Orca</span></li>
+            <li class="ieda-ferramenta"><img src="/ed/ieda/dependencias/logos/hero-claude.webp" alt="" width="32" height="32"><span>Claude</span></li>
+            <li class="ieda-ferramenta"><img src="/ed/ieda/dependencias/logos/hero-hermes.webp" alt="" width="32" height="32"><span>Hermes</span></li>
+            <li class="ieda-ferramenta"><img src="/ed/ieda/dependencias/logos/hero-openrouter.webp" alt="" width="32" height="32"><span>Openrouter</span></li>
+        </ul>
+        <div class="ieda-hero-cta">
+            <a class="ieda-btn" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+            <p class="ieda-datas">Dias <time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de Dezembro</time><br>das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time></p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     O PROJETO
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-projeto" aria-labelledby="ieda-projeto-titulo">
+    <div class="ieda-inner">
+        <header class="ieda-projeto-intro">
+            <p class="ieda-eyebrow">O projeto</p>
+            <h2 class="ieda-titulo" id="ieda-projeto-titulo">Vamos construir um radar que acompanha as licitações do governo enquanto você dorme</h2>
+            <p class="ieda-texto">Todo dia, o Portal Nacional de Contratações Públicas (PNCP) publica mais licitações do que qualquer equipe consegue ler. São editais longos, dados espalhados e oportunidades que passam sem ninguém ver.</p>
+        </header>
+        <ul class="ieda-projeto-cards" role="list">
+        <li class="ieda-projeto-card ieda-projeto-card--a">
+            <h3 class="ieda-projeto-card-titulo">Coleta</h3>
+            <p class="ieda-projeto-card-texto">Coleta as licitações do PNCP automaticamente, todos os dias</p>
+        </li>
+        <li class="ieda-projeto-card ieda-projeto-card--b">
+            <h3 class="ieda-projeto-card-titulo">Organiza</h3>
+            <p class="ieda-projeto-card-texto">Organiza os dados em camadas medalhão no Supabase</p>
+        </li>
+        <li class="ieda-projeto-card ieda-projeto-card--c">
+            <h3 class="ieda-projeto-card-titulo">Lê</h3>
+            <p class="ieda-projeto-card-texto">Lê os editais e responde perguntas.</p>
+        </li>
+        <li class="ieda-projeto-card ieda-projeto-card--d">
+            <h3 class="ieda-projeto-card-titulo">Mostra</h3>
+            <p class="ieda-projeto-card-texto">Mostra tudo num painel no Power BI</p>
+        </li>
+        <li class="ieda-projeto-card ieda-projeto-card--e">
+            <h3 class="ieda-projeto-card-titulo">Avisa</h3>
+            <p class="ieda-projeto-card-texto">Avisa no Telegram quando aparece algo novo</p>
+        </li>
+        </ul>
+        <div class="ieda-projeto-fim">
+            <p class="ieda-texto">Na imersão, você vai construir o Radar Inteligente de Licitações Públicas, um projeto real, com dados reais.</p>
+            <a class="ieda-btn" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NA PRÁTICA
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-pratica" aria-labelledby="ieda-pratica-titulo">
+    <div class="ieda-inner">
+        <header class="ieda-pratica-intro">
+            <p class="ieda-eyebrow">Na prática</p>
+            <h2 class="ieda-titulo" id="ieda-pratica-titulo">Engenharia de dados, IA e análise no mesmo projeto, do primeiro dado ao dashboard completo</h2>
+        </header>
+
+        <figure class="ieda-pratica-card ieda-pratica-card--plantao">
+            <figcaption class="ieda-pratica-texto">
+                <h3 class="ieda-pratica-titulo">Agente de plantão</h3>
+                <p class="ieda-pratica-desc">Enquanto você dorme, o Radar coleta, organiza e avisa.</p>
+            </figcaption>
+        <div class="ieda-pratica-anim" aria-hidden="true">
+            <div class="mn-palco" aria-hidden="true">
+                <div class="mn-quadro">
+                <div class="mn-cena">
+                <div class="mn-cena-camada mn-cena-animada">
+                <div class="mn-relogio">
+                    <div class="mn-relogio-blur">
+                    <div class="mn-relogio-riscos">
+                        <span class="mn-relogio-risco" style="--i: 0"></span>
+                        <span class="mn-relogio-risco" style="--i: 1"></span>
+                        <span class="mn-relogio-risco" style="--i: 2"></span>
+                        <span class="mn-relogio-risco" style="--i: 3"></span>
+                        <span class="mn-relogio-risco" style="--i: 4"></span>
+                        <span class="mn-relogio-risco" style="--i: 5"></span>
+                        <span class="mn-relogio-risco" style="--i: 6"></span>
+                        <span class="mn-relogio-risco" style="--i: 7"></span>
+                        <span class="mn-relogio-risco" style="--i: 8"></span>
+                        <span class="mn-relogio-risco" style="--i: 9"></span>
+                        <span class="mn-relogio-risco" style="--i: 10"></span>
+                        <span class="mn-relogio-risco" style="--i: 11"></span>
+                        <span class="mn-relogio-risco" style="--i: 12"></span>
+                        <span class="mn-relogio-risco" style="--i: 13"></span>
+                        <span class="mn-relogio-risco" style="--i: 14"></span>
+                        <span class="mn-relogio-risco" style="--i: 15"></span>
+                        <span class="mn-relogio-risco" style="--i: 16"></span>
+                        <span class="mn-relogio-risco" style="--i: 17"></span>
+                        <span class="mn-relogio-risco" style="--i: 18"></span>
+                        <span class="mn-relogio-risco" style="--i: 19"></span>
+                        <span class="mn-relogio-risco" style="--i: 20"></span>
+                        <span class="mn-relogio-risco" style="--i: 21"></span>
+                        <span class="mn-relogio-risco" style="--i: 22"></span>
+                        <span class="mn-relogio-risco" style="--i: 23"></span>
+                        <span class="mn-relogio-risco" style="--i: 24"></span>
+                        <span class="mn-relogio-risco" style="--i: 25"></span>
+                        <span class="mn-relogio-risco" style="--i: 26"></span>
+                        <span class="mn-relogio-risco" style="--i: 27"></span>
+                        <span class="mn-relogio-risco" style="--i: 28"></span>
+                        <span class="mn-relogio-risco" style="--i: 29"></span>
+                        <span class="mn-relogio-risco" style="--i: 30"></span>
+                        <span class="mn-relogio-risco" style="--i: 31"></span>
+                        <span class="mn-relogio-risco" style="--i: 32"></span>
+                        <span class="mn-relogio-risco" style="--i: 33"></span>
+                        <span class="mn-relogio-risco" style="--i: 34"></span>
+                        <span class="mn-relogio-risco" style="--i: 35"></span>
+                        <span class="mn-relogio-risco" style="--i: 36"></span>
+                        <span class="mn-relogio-risco" style="--i: 37"></span>
+                        <span class="mn-relogio-risco" style="--i: 38"></span>
+                        <span class="mn-relogio-risco" style="--i: 39"></span>
+                        <span class="mn-relogio-risco" style="--i: 40"></span>
+                        <span class="mn-relogio-risco" style="--i: 41"></span>
+                        <span class="mn-relogio-risco" style="--i: 42"></span>
+                        <span class="mn-relogio-risco" style="--i: 43"></span>
+                        <span class="mn-relogio-risco" style="--i: 44"></span>
+                        <span class="mn-relogio-risco" style="--i: 45"></span>
+                        <span class="mn-relogio-risco" style="--i: 46"></span>
+                        <span class="mn-relogio-risco" style="--i: 47"></span>
+                        <span class="mn-relogio-risco" style="--i: 48"></span>
+                        <span class="mn-relogio-risco" style="--i: 49"></span>
+                        <span class="mn-relogio-risco" style="--i: 50"></span>
+                        <span class="mn-relogio-risco" style="--i: 51"></span>
+                        <span class="mn-relogio-risco" style="--i: 52"></span>
+                        <span class="mn-relogio-risco" style="--i: 53"></span>
+                        <span class="mn-relogio-risco" style="--i: 54"></span>
+                        <span class="mn-relogio-risco" style="--i: 55"></span>
+                        <span class="mn-relogio-risco" style="--i: 56"></span>
+                        <span class="mn-relogio-risco" style="--i: 57"></span>
+                        <span class="mn-relogio-risco" style="--i: 58"></span>
+                        <span class="mn-relogio-risco" style="--i: 59"></span>
+                        <span class="mn-relogio-ponteiro"></span>
+                    </div>
+                    </div>
+                    <div class="mn-ceu">
+                        <div class="mn-ceu-sol" data-pblur-from="0" data-pblur-to="16">
+                            <div class="mn-ceu-sol-forma"></div>
+                        </div>
+                        <div class="mn-ceu-lua" data-pblur-from="0" data-pblur-to="8">
+                            <div class="mn-ceu-lua-forma"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mn-relogio-hora"></div>
+                </div>
+                <ol class="mn-evento">
+                    <li class="mn-evento-item mn-evento-1">
+                        <time class="mn-evento-hora" datetime="02:00">02:00</time>
+                        <span class="mn-evento-texto">coleta do PNCP concluída</span>
+                    </li>
+                    <li class="mn-evento-item mn-evento-2">
+                        <time class="mn-evento-hora" datetime="04:00">04:00</time>
+                        <span class="mn-evento-texto">camadas bronze e gold atualizadas</span>
+                    </li>
+                    <li class="mn-evento-item mn-evento-3">
+                        <time class="mn-evento-hora" datetime="06:00">06:00</time>
+                        <span class="mn-evento-texto">editais novos lidos</span>
+                    </li>
+                    <li class="mn-evento-item mn-evento-4">
+                        <time class="mn-evento-hora" datetime="07:00">07:00</time>
+                        <span class="mn-evento-texto">alerta enviado no Telegram</span>
+                    </li>
+                </ol>
+                </div>
+                </div>
+            </div>
+        </div>
+        </figure>
+
+        <figure class="ieda-pratica-card ieda-pratica-card--radar">
+        <div class="ieda-pratica-anim" aria-hidden="true">
+            <div class="rd-palco" aria-hidden="true">
+                <div class="rd-quadro">
+                    <div class="rd-cena">
+
+                        <!-- flecha: pilares de 5, 4, 3, 2 e 1 editais em fluxo infinito para o portal
+                             (posições e deslocamentos gerados; ver style.css) -->
+                        <div class="rd-flecha">
+                            <div class="rd-edital rd-edital-entra" style="--x: -80px; --y: -56px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-entra" style="--x: -80px; --y: 56px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-entra" style="--x: -80px; --y: 168px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-entra" style="--x: -80px; --y: 280px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-entra" style="--x: -80px; --y: 392px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-entra" style="--x: -80px; --y: 504px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 0px; --y: 0px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 0px; --y: 112px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-some" style="--x: 0px; --y: 224px; --dy: 0px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 0px; --y: 336px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 0px; --y: 448px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 80px; --y: 56px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 80px; --y: 168px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 80px; --y: 280px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 80px; --y: 392px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 160px; --y: 112px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-some" style="--x: 160px; --y: 224px; --dy: 0px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 160px; --y: 336px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 240px; --y: 168px; --dy: 56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital" style="--x: 240px; --y: 280px; --dy: -56px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                            <div class="rd-edital rd-edital-some" style="--x: 320px; --y: 224px; --dy: 0px"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                        </div>
+
+                        <!-- portal de scan: ilustração elipses -->
+                        <div class="rd-elipses">
+                            <div class="rd-elipse rd-elipse-1"></div>
+                            <div class="rd-elipse-2" data-pblur-from="90" data-pblur-to="0" data-pblur-dir="right">
+                                <div class="rd-elipse rd-elipse-2-forma"></div>
+                            </div>
+                            <div class="rd-elipse rd-elipse-3"></div>
+                        </div>
+
+                        <!-- alvo: ilustração target + edital que sai do portal e pousa no centro dele -->
+                        <div class="rd-alvo">
+                            <!-- itens (edital + descrição) em revezamento; antes do target no DOM: ficam atrás dele -->
+                            <div class="rd-alvo-item rd-alvo-item-1">
+                                <div class="rd-edital rd-alvo-edital"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                                <ul class="rd-alvo-descricao"><li class="rd-alvo-descricao-linha">[ pregão ]</li><li class="rd-alvo-descricao-linha">[ serviços de TI ]</li><li class="rd-alvo-descricao-linha">[ SP ]</li></ul>
+                            </div>
+                            <div class="rd-alvo-item rd-alvo-item-2">
+                                <div class="rd-edital rd-alvo-edital"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                                <ul class="rd-alvo-descricao"><li class="rd-alvo-descricao-linha">[ dispensa ]</li><li class="rd-alvo-descricao-linha">[ software ]</li><li class="rd-alvo-descricao-linha">[ SP ]</li></ul>
+                            </div>
+                            <div class="rd-alvo-item rd-alvo-item-3">
+                                <div class="rd-edital rd-alvo-edital"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                                <ul class="rd-alvo-descricao"><li class="rd-alvo-descricao-linha">[ concorrência ]</li><li class="rd-alvo-descricao-linha">[ nuvem ]</li><li class="rd-alvo-descricao-linha">[ SP ]</li></ul>
+                            </div>
+                            <div class="rd-alvo-item rd-alvo-item-4">
+                                <div class="rd-edital rd-alvo-edital"><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span><span class="rd-edital-linha"></span></div>
+                                <ul class="rd-alvo-descricao"><li class="rd-alvo-descricao-linha">[ pregão ]</li><li class="rd-alvo-descricao-linha">[ licenças ]</li><li class="rd-alvo-descricao-linha">[ SP ]</li></ul>
+                            </div>
+                            <div class="rd-target">
+                                <span class="rd-target-linha rd-target-linha-topo"></span>
+                                <span class="rd-target-linha rd-target-linha-base"></span>
+                                <span class="rd-target-linha rd-target-linha-esquerda"></span>
+                                <span class="rd-target-linha rd-target-linha-direita"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+            <figcaption class="ieda-pratica-texto">
+                <h3 class="ieda-pratica-titulo">PNCP - Radar</h3>
+                <p class="ieda-pratica-desc">Muitos editais entram. Só o que importa chega até você.</p>
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROGRAMAÇÃO
+     Cada dia: texto + navegação dos 5 tópicos de um lado; do outro, card
+     com a animação do tópico ativo + missão do dia (programacao.js).
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-prog" id="programacao" aria-labelledby="ieda-prog-titulo">
+    <div class="ieda-inner">
+        <header class="ieda-prog-topo">
+            <p class="ieda-eyebrow">Programação</p>
+            <h2 class="ieda-titulo" id="ieda-prog-titulo">Da primeira especificação ao projeto publicado: 2 dias para colocar sua stack agêntica em operação</h2>
+            <p class="ieda-datas">Dias <time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de Dezembro</time><br>das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time></p>
+        </header>
+
+        <!-- ================= DIA 12 ================= -->
+        <section class="ieda-dia ieda-dia--12" aria-labelledby="ieda-dia-12-titulo">
+            <div class="ieda-dia-info">
+                <p class="ieda-dia-data"><time datetime="2026-12-12">Dia 12 - Sábado</time></p>
+                <h3 class="ieda-dia-titulo" id="ieda-dia-12-titulo">Arquitetura e construção</h3>
+                <p class="ieda-dia-desc">Ligamos as máquinas e os primeiros agentes começam a trabalhar.</p>
+                <div class="ieda-dia-nav" role="tablist" aria-label="Tópicos do dia 12">
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d1-b0" aria-controls="ieda-d1-t0">Arquitetura do projeto:</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d1-b1" aria-controls="ieda-d1-t1">Claude Code + Superpowers:</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d1-b2" aria-controls="ieda-d1-t2">Supabase + camadas medalhão:</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d1-b3" aria-controls="ieda-d1-t3">Codex como tech lead:</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d1-b4" aria-controls="ieda-d1-t4">GitHub Actions:</button>
+                </div>
+            </div>
+            <div class="ieda-dia-lado">
+                <div class="ieda-dia-card">
+                    <div class="ieda-dia-palco">
+                    <!-- 01 arquitetura -->
+                    <div class="anim anim-ieda" data-anim="arq" id="ieda-d1-t0" role="tabpanel" aria-labelledby="ieda-d1-b0">
+                        <div class="anim-texto"><h4 class="anim-nome">Arquitetura do projeto:</h4><p class="anim-desc">o desafio, os dados do PNCP e o que precisa ser entregue.</p></div>
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: PNCP e Supabase em cima, Claude Code e Power BI embaixo;
+                                 do Supabase ao Claude Code, uma curva em S descendo -->
+                            <div class="arq-grade">
+                                <div class="no arq-a" data-k="n0"><div class="logo" data-logo="pncp"><img src="/ed/ieda/contraste/dependencias/logos/pncp.webp" alt="" width="64" height="64"></div><span class="no-nome">PNCP</span></div>
+                                <span class="fio-pb arq-f0"><span class="fio" data-k="l0"><i></i></span></span>
+                                <div class="no arq-b" data-k="n1"><div class="logo" data-logo="supabase"><img src="/ed/ieda/contraste/dependencias/logos/supabase.webp" alt="" width="64" height="64"></div><span class="no-nome">Supabase</span></div>
+                                <span class="curva-pb arq-c"><span class="junta" data-k="l1"><svg class="junta-svg" viewBox="0 0 240 96" preserveAspectRatio="none" aria-hidden="true"><path class="junta-base" d="M208 32 C208 64 32 56 32 88"/><path class="junta-cheio" pathLength="1" d="M208 32 C208 64 32 56 32 88"/></svg></span></span>
+                                <div class="no arq-d" data-k="n2"><div class="logo" data-logo="claude-code"><img src="/ed/ieda/contraste/dependencias/logos/claude-code.webp" alt="" width="64" height="64"></div><span class="no-nome">Claude Code</span></div>
+                                <span class="fio-pb arq-f2"><span class="fio" data-k="l2"><i></i></span></span>
+                                <div class="no arq-e" data-k="n3"><div class="logo" data-logo="power-bi"><img src="/ed/ieda/contraste/dependencias/logos/power-bi.webp" alt="" width="64" height="64"></div><span class="no-nome">Power BI</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 02 claude code + superpowers -->
+                    <div class="anim anim-ieda" data-anim="cc" id="ieda-d1-t1" role="tabpanel" aria-labelledby="ieda-d1-b1">
+                        <div class="anim-texto"><h4 class="anim-nome">Claude Code + Superpowers:</h4><p class="anim-desc">da especificação ao código, com agentes.</p></div>
+                        <div class="quadro" aria-hidden="true">
+                            <div class="pilha">
+                                <div class="no"><div class="logo" data-logo="claude-code"><img src="/ed/ieda/contraste/dependencias/logos/claude-code.webp" alt="" width="64" height="64"></div><span class="no-nome">Claude Code</span></div>
+                                <div class="no"><div class="logo" data-logo="superpowers"><img src="/ed/ieda/contraste/dependencias/logos/superpowers.svg" alt="" width="32" height="32"></div><span class="no-nome">Superpowers</span></div>
+                            </div>
+                            <!-- ligação dupla: sai de Claude Code e de Superpowers e converge em uma até a spec -->
+                            <span class="junta-pb"><span class="junta" data-k="j"><svg class="junta-svg" viewBox="0 0 64 112" aria-hidden="true"><path class="junta-base" d="M0 1 C24 1 20 56 44 56"/><path class="junta-base" d="M0 111 C24 111 20 56 44 56"/><path class="junta-base" d="M44 56 L64 56"/><path class="junta-cheio" pathLength="1" d="M0 1 C24 1 20 56 44 56"/><path class="junta-cheio" pathLength="1" d="M0 111 C24 111 20 56 44 56"/><path class="junta-cheio junta-saida" pathLength="1" d="M44 56 L64 56"/></svg></span></span>
+                            <!-- a spec fica no centro da ligação; os arquivos descem abaixo dela -->
+                            <div class="spec">
+                                <div class="caixa">
+                                    <span class="caixa-titulo">spec.md</span>
+                                    <div class="linha"><span class="chk" data-k="r0"></span><span class="barra"></span></div>
+                                    <div class="linha"><span class="chk" data-k="r1"></span><span class="barra"></span></div>
+                                    <div class="linha"><span class="chk" data-k="r2"></span><span class="barra"></span></div>
+                                </div>
+                                <div class="spec-desce">
+                                    <div class="arquivos">
+                                        <span class="arquivo" data-k="f0">coletor.py</span>
+                                        <span class="arquivo" data-k="f1">test_coletor.py</span>
+                                        <span class="arquivo" data-k="f2">README.md</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 03 supabase + medalhão -->
+                    <div class="anim anim-ieda" data-anim="md" id="ieda-d1-t2" role="tabpanel" aria-labelledby="ieda-d1-b2">
+                        <div class="anim-texto"><h4 class="anim-nome">Supabase + camadas medalhão:</h4><p class="anim-desc">a esteira de dados ganha forma.</p></div>
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: Supabase e medalhões em cima, o gráfico embaixo na mesma largura -->
+                            <div class="md-grade">
+                                <div class="md-topo">
+                                    <div class="no"><div class="logo" data-logo="supabase"><img src="/ed/ieda/contraste/dependencias/logos/supabase.webp" alt="" width="64" height="64"></div><span class="no-nome">Supabase</span></div>
+                                    <span class="fio-pb fio-curto"><span class="fio" data-k="l0"><i></i></span></span>
+                                    <div class="camadas">
+                                        <span class="camada camada-bronze" data-k="p0">bronze</span>
+                                        <span class="camada camada-silver" data-k="p1">silver</span>
+                                        <span class="camada camada-gold" data-k="p2">gold</span>
+                                    </div>
+                                </div>
+                                <div class="grafico">
+                                    <span data-k="b0"></span><span data-k="b1"></span><span data-k="b2"></span><span data-k="b3"></span><span data-k="b4"></span><span data-k="b5"></span><span data-k="b6"></span><span data-k="b7"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 04 codex como tech lead -->
+                    <div class="anim anim-ieda" data-anim="cx" id="ieda-d1-t3" role="tabpanel" aria-labelledby="ieda-d1-b3">
+                        <div class="anim-texto"><h4 class="anim-nome">Codex como tech lead:</h4><p class="anim-desc">nenhuma entrega passa sem revisão.</p></div>
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: Claude Code e o PR em cima, o Codex embaixo do PR -->
+                            <div class="cx-grade">
+                                <div class="no cx-a"><div class="logo" data-k="cc" data-logo="claude-code"><img src="/ed/ieda/contraste/dependencias/logos/claude-code.webp" alt="" width="64" height="64"></div><span class="no-nome">Claude Code</span></div>
+                                <span class="fio-pb fio-curto cx-f0"><span class="fio" data-k="l0"><i></i></span></span>
+                                <div class="caixa caixa-pr cx-b">
+                                    <span class="caixa-titulo">PR do coletor PNCP</span>
+                                    <span class="barra barra-70"></span>
+                                    <span class="barra" data-k="flag"></span>
+                                    <span class="status" data-k="st"><span class="spin" data-k="spin"></span><span data-k="stt">revisando</span></span>
+                                </div>
+                                <span class="curva-pb cx-f1"><span class="junta" data-k="l1"><svg class="junta-svg" viewBox="0 0 320 48" preserveAspectRatio="none" aria-hidden="true"><path class="junta-base" d="M224 0 C224 28 160 20 160 48"/><path class="junta-cheio" pathLength="1" d="M224 0 C224 28 160 20 160 48"/></svg></span></span>
+                                <div class="no cx-c"><div class="logo" data-k="cx" data-logo="codex"><img src="/ed/ieda/contraste/dependencias/logos/codex.webp" alt="" width="64" height="64"></div><span class="no-nome">Codex</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 05 github actions -->
+                    <div class="anim anim-ieda" data-anim="gh" id="ieda-d1-t4" role="tabpanel" aria-labelledby="ieda-d1-b4">
+                        <div class="anim-texto"><h4 class="anim-nome">GitHub Actions:</h4><p class="anim-desc">a coleta passa a rodar sozinha, todos os dias.</p></div>
+                        <div class="quadro quadro-coluna" aria-hidden="true">
+                            <div class="no"><div class="logo" data-logo="github-actions"><img src="/ed/ieda/contraste/dependencias/logos/github.webp" alt="" width="64" height="64"></div><span class="no-nome">GitHub Actions</span></div>
+                            <div class="cron">
+                                <span class="caixa-titulo">cron, todo dia</span>
+                                <div class="dias"><span class="dia"></span><span class="dia"></span><span class="dia"></span><span class="dia"></span><span class="dia"></span><span class="dia"></span><span class="dia"></span></div>
+                                <span class="feito" data-k="ok"><span class="ok"></span>coleta concluída</span>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="ieda-missao">
+                    <h4 class="ieda-missao-titulo">Missão do dia:</h4>
+                    <p class="ieda-missao-texto">colocar de pé a base do Radar, com dados chegando e sendo organizados.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DIA 13 ================= -->
+        <section class="ieda-dia ieda-dia--13" aria-labelledby="ieda-dia-13-titulo">
+            <div class="ieda-dia-info">
+                <p class="ieda-dia-data"><time datetime="2026-12-13">Dia 13 - Domingo</time></p>
+                <h3 class="ieda-dia-titulo" id="ieda-dia-13-titulo">Orquestração e entrega</h3>
+                <p class="ieda-dia-desc">As peças se conectam e o radar começa a responder.</p>
+                <div class="ieda-dia-nav" role="tablist" aria-label="Tópicos do dia 13">
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d2-b0" aria-controls="ieda-d2-t0">MCPs</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d2-b1" aria-controls="ieda-d2-t1">RAG</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d2-b2" aria-controls="ieda-d2-t2">Orca</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d2-b3" aria-controls="ieda-d2-t3">OpenRouter + Hermes</button>
+                    <button class="ieda-dia-nav-item" type="button" role="tab" id="ieda-d2-b4" aria-controls="ieda-d2-t4">Power BI</button>
+                </div>
+            </div>
+            <div class="ieda-dia-lado">
+                <div class="ieda-dia-card">
+                    <div class="ieda-dia-palco">
+                    <!-- 06 MCPs -->
+                    <div class="anim anim-ieda" data-anim="mcp" id="ieda-d2-t0" role="tabpanel" aria-labelledby="ieda-d2-b0">
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: Claude Code em cima e as três curvas descendo até cada MCP -->
+                            <div class="arvore">
+                                <div class="no arvore-raiz"><div class="logo" data-logo="claude-code"><img src="/ed/ieda/contraste/dependencias/logos/claude-code.webp" alt="" width="64" height="64"></div><span class="no-nome">Claude Code</span></div>
+                                <span class="curva-pb arvore-c"><span class="junta"><svg class="junta-svg" viewBox="0 0 288 96" preserveAspectRatio="none" aria-hidden="true"><path class="junta-base" d="M144 32 C144 64 32 56 32 88"/><path class="junta-base" d="M144 32 L144 88"/><path class="junta-base" d="M144 32 C144 64 256 56 256 88"/><path class="junta-cheio" data-k="v0" pathLength="1" d="M144 32 C144 64 32 56 32 88"/><path class="junta-cheio" data-k="v1" pathLength="1" d="M144 32 L144 88"/><path class="junta-cheio" data-k="v2" pathLength="1" d="M144 32 C144 64 256 56 256 88"/></svg></span></span>
+                                <div class="no arvore-f0" data-k="m0"><div class="logo" data-logo="supabase"><img src="/ed/ieda/contraste/dependencias/logos/supabase.webp" alt="" width="64" height="64"></div><span class="no-nome">Supabase</span></div>
+                                <div class="no arvore-f1" data-k="m1"><div class="logo" data-logo="github"><img src="/ed/ieda/contraste/dependencias/logos/github.webp" alt="" width="64" height="64"></div><span class="no-nome">GitHub</span></div>
+                                <div class="no arvore-f2" data-k="m2"><div class="logo" data-logo="power-bi"><img src="/ed/ieda/contraste/dependencias/logos/power-bi.webp" alt="" width="64" height="64"></div><span class="no-nome">Power BI</span></div>
+                            </div>
+                        </div>
+                        <div class="anim-texto"><h4 class="anim-nome">MCPs:</h4><p class="anim-desc">agentes conectados ao banco, ao GitHub e ao Power BI.</p></div>
+                    </div>
+                    <!-- 07 RAG -->
+                    <div class="anim anim-ieda" data-anim="rag" id="ieda-d2-t1" role="tabpanel" aria-labelledby="ieda-d2-b1">
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: coluna de 320px com a busca, os editais e a resposta -->
+                            <div class="rag-col">
+                                <div class="busca">
+                                    <div class="logo logo-p" data-logo="rag"><img src="/ed/ieda/contraste/dependencias/logos/telegram.webp" alt="" width="64" height="64"></div>
+                                    <div class="busca-campo" data-k="sb"><span data-k="typed"></span><span class="cursor" data-k="caret"></span></div>
+                                </div>
+                                <div class="resultado" data-k="r0"><span class="caixa-titulo">edital</span><span class="trilho"><i data-k="h0"></i></span></div>
+                                <div class="resultado" data-k="r1"><span class="caixa-titulo">edital</span><span class="trilho"><i data-k="h1"></i></span></div>
+                                <span class="resposta" data-k="ans">resposta com fontes</span>
+                            </div>
+                        </div>
+                        <div class="anim-texto"><h4 class="anim-nome">RAG:</h4><p class="anim-desc">perguntas em linguagem natural direto nos editais.</p></div>
+                    </div>
+                    <!-- 08 Orca -->
+                    <div class="anim anim-ieda" data-anim="orca" id="ieda-d2-t2" role="tabpanel" aria-labelledby="ieda-d2-b2">
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: Orca em cima, três curvas descendo juntas até os agentes, que enchem em paralelo -->
+                            <div class="arvore">
+                                <div class="no arvore-raiz"><div class="logo" data-logo="orca"><img src="/ed/ieda/contraste/dependencias/logos/orca.webp" alt="" width="64" height="64"></div><span class="no-nome">Orca</span></div>
+                                <span class="curva-pb arvore-c"><span class="junta" data-k="j"><svg class="junta-svg" viewBox="0 0 288 96" preserveAspectRatio="none" aria-hidden="true"><path class="junta-base" d="M144 32 C144 64 32 56 32 88"/><path class="junta-base" d="M144 32 L144 88"/><path class="junta-base" d="M144 32 C144 64 256 56 256 88"/><path class="junta-cheio" pathLength="1" d="M144 32 C144 64 32 56 32 88"/><path class="junta-cheio" pathLength="1" d="M144 32 L144 88"/><path class="junta-cheio" pathLength="1" d="M144 32 C144 64 256 56 256 88"/></svg></span></span>
+                                <div class="agente arvore-f0"><span class="trilho trilho-v"><i data-k="p0"></i></span><span class="agente-nome">agente 1<span class="ok" data-k="c0"></span></span></div>
+                                <div class="agente arvore-f1"><span class="trilho trilho-v"><i data-k="p1"></i></span><span class="agente-nome">agente 2<span class="ok" data-k="c1"></span></span></div>
+                                <div class="agente arvore-f2"><span class="trilho trilho-v"><i data-k="p2"></i></span><span class="agente-nome">agente 3<span class="ok" data-k="c2"></span></span></div>
+                            </div>
+                        </div>
+                        <div class="anim-texto"><h4 class="anim-nome">Orca:</h4><p class="anim-desc">vários agentes trabalhando em paralelo.</p></div>
+                    </div>
+                    <!-- 09 OpenRouter + Hermes -->
+                    <div class="anim anim-ieda" data-anim="hermes" id="ieda-d2-t3" role="tabpanel" aria-labelledby="ieda-d2-b3">
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: OpenRouter e modelos em cima, Hermes e Telegram embaixo;
+                                 dos modelos ao Hermes, uma curva em S descendo -->
+                            <div class="arq-grade hm-grade">
+                                <div class="no arq-a"><div class="logo" data-logo="openrouter"><img src="/ed/ieda/contraste/dependencias/logos/openrouter.webp" alt="" width="64" height="64"></div><span class="no-nome">OpenRouter</span></div>
+                                <span class="fio-pb arq-f0"><span class="fio" data-k="l0"><i></i></span></span>
+                                <div class="modelos arq-b">
+                                    <span class="modelo" data-k="ch0">rápido</span>
+                                    <span class="modelo" data-k="ch1">raciocínio</span>
+                                    <span class="modelo" data-k="ch2">econômico</span>
+                                </div>
+                                <span class="curva-pb arq-c"><span class="junta" data-k="l1"><svg class="junta-svg" viewBox="0 0 272 96" preserveAspectRatio="none" aria-hidden="true"><path class="junta-base" d="M224 16 C224 60 32 44 32 88"/><path class="junta-cheio" pathLength="1" d="M224 16 C224 60 32 44 32 88"/></svg></span></span>
+                                <div class="no arq-d"><div class="logo" data-logo="hermes"><img src="/ed/ieda/contraste/dependencias/logos/hermes.webp" alt="" width="64" height="64"></div><span class="no-nome">Hermes</span></div>
+                                <span class="fio-pb arq-f2"><span class="fio" data-k="l2"><i></i></span></span>
+                                <div class="no arq-e"><div class="logo" data-logo="telegram"><img src="/ed/ieda/contraste/dependencias/logos/telegram.webp" alt="" width="64" height="64"></div><span class="no-nome">Telegram</span><span class="aviso" data-k="badge">1</span></div>
+                            </div>
+                        </div>
+                        <div class="anim-texto"><h4 class="anim-nome">OpenRouter + Hermes:</h4><p class="anim-desc">o modelo certo para cada tarefa e um agente de plantão 24/7 no Telegram.</p></div>
+                    </div>
+                    <!-- 10 Power BI -->
+                    <div class="anim anim-ieda" data-anim="pbi" id="ieda-d2-t4" role="tabpanel" aria-labelledby="ieda-d2-b4">
+                        <div class="quadro" aria-hidden="true">
+                            <!-- em quadrado: Power BI em cima, o fio desce até o painel -->
+                            <div class="pbi-col">
+                                <div class="no"><div class="logo" data-logo="power-bi"><img src="/ed/ieda/contraste/dependencias/logos/power-bi.webp" alt="" width="64" height="64"></div><span class="no-nome">Power BI</span></div>
+                                <div class="caixa caixa-painel">
+                                    <div class="filtros"><span class="filtro" data-k="f0">UF: SP</span><span class="filtro" data-k="f1">TI</span><span class="filtro" data-k="f2">esta semana</span></div>
+                                    <div class="colunas"><span class="pb"></span><span class="pb"></span><span class="pb"></span><span class="pb"></span><span class="pb"></span><span class="pb"></span><span class="pb"></span><span class="pb"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="anim-texto"><h4 class="anim-nome">Power BI:</h4><p class="anim-desc">o painel final e a apresentação do projeto.</p></div>
+                    </div>
+                    </div>
+                </div>
+                <div class="ieda-missao">
+                    <h4 class="ieda-missao-titulo">Missão do dia:</h4>
+                    <p class="ieda-missao-texto">conectar tudo e colocar o Radar no ar.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     O QUE VOCÊ RECEBE
+     Inventário: 8 slots (abas) e o painel do item selecionado. Cada item tem uma
+     raridade e a cor dela (essencial ciano, raro verde, épico amarelo, lendário
+     laranja). O painel já vem com o item 01; recebe.js troca o item no clique, nas
+     setas do teclado e sozinho a cada alguns segundos (com a seção na tela).
+     Layout: ed/ieda/assets/seção-recebe-a.pdf e -b.pdf.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-recebe" aria-labelledby="ieda-recebe-titulo">
+    <div class="ieda-inner">
+        <header class="ieda-recebe-intro">
+            <p class="ieda-eyebrow">O que você recebe</p>
+            <h2 class="ieda-titulo" id="ieda-recebe-titulo">Uma stack completa de benefícios para levar com você</h2>
+        </header>
+
+        <div class="ieda-slots" role="tablist" aria-label="Itens da imersão">
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-01" aria-controls="ieda-item" aria-selected="true"
+                        data-raridade="essencial" data-raridade-rotulo="essencial" data-icone="/ed/ieda/dependencias/icones/imersao.webp"
+                        data-nome="Imersão prática e ao vivo" data-desc="Dois dias construindo um projeto real com agentes de IA.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">01</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/imersao.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">Imersão ao vivo</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-02" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="raro" data-raridade-rotulo="raro" data-icone="/ed/ieda/dependencias/icones/ia.webp"
+                        data-nome="1 mês de Claude ou OpenAI" data-desc="Uma assinatura de IA inclusa para colocar a mão na massa.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">02</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/ia.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">1 mês de IA</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-03" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="raro" data-raridade-rotulo="raro" data-icone="/ed/ieda/dependencias/icones/radar.webp"
+                        data-nome="Projeto completo no GitHub" data-desc="Um Radar Inteligente de Licitações para o seu portfólio.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">03</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/radar.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">Radar no GitHub</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-04" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="epico" data-raridade-rotulo="épico" data-icone="/ed/ieda/dependencias/icones/kit.webp"
+                        data-nome="Kit exclusivo da Imersão" data-desc="Templates de CLAUDE.md, PRD, critérios de aceite e GitHub Actions.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">04</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/kit.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">Kit da imersão</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-05" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="essencial" data-raridade-rotulo="essencial" data-icone="/ed/ieda/dependencias/icones/gravacoes.webp"
+                        data-nome="Gravações dos dois dias" data-desc="Reveja as aulas e consulte o conteúdo depois do evento pelo tempo que quiser.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">05</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/gravacoes.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">Gravações</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-06" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="raro" data-raridade-rotulo="raro" data-icone="/ed/ieda/dependencias/icones/grupo.webp"
+                        data-nome="Grupo exclusivo de alunos" data-desc="Tire dúvidas e troque experiências.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">06</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/grupo.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">Grupo de alunos</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-07" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="essencial" data-raridade-rotulo="essencial" data-icone="/ed/ieda/dependencias/icones/certificado.webp"
+                        data-nome="Certificado de participação" data-desc="Registre sua experiência com Engenharia de Dados e IA.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">07</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/certificado.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">Certificado</span>
+                </button>
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-08" aria-controls="ieda-item" aria-selected="false"
+                        data-raridade="lendario" data-raridade-rotulo="lendário" data-icone="/ed/ieda/dependencias/icones/summit.webp"
+                        data-nome="50% OFF no Xperiun AI Summit 2027" data-desc="Desconto no ingresso do maior evento presencial de Dados e IA, em 6 de março de 2027, em Florianópolis (SC). Um dia com especialistas, aplicações reais de IA e networking com a comunidade Xperiun.">
+                    <span class="ieda-slot-topo"><span class="ieda-slot-num">08</span><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/summit.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">50% OFF AI Summit</span>
+                </button>
+        </div>
+
+        <div class="ieda-item" id="ieda-item" role="tabpanel" aria-labelledby="ieda-slot-01" data-raridade="essencial" tabindex="0">
+            <div class="ieda-item-barra" aria-hidden="true">
+                <span class="is-ativo"></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="ieda-item-topo">
+                <span class="ieda-item-num">01</span>
+                <span class="ieda-item-rar"><span class="ieda-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="ieda-item-raridade">essencial</span></span>
+            </div>
+            <div class="ieda-item-palco" aria-hidden="true">
+                <img class="ieda-item-icone" src="/ed/ieda/dependencias/icones/imersao.webp" alt="" width="160" height="160">
+            </div>
+            <h3 class="ieda-item-nome">Imersão prática e ao vivo</h3>
+            <p class="ieda-item-desc">Dois dias construindo um projeto real com agentes de IA.</p>
+            <a class="ieda-btn ieda-btn--claro" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     OFERTA (fechamento)
+     Texto + datas à esquerda; card do passaporte (preço, itens e CTA) à direita.
+     Fundo: as faixas do hero (bg-hero), fechando a página como ela abre.
+     PENDENTE: valor da parcela (12x de ??), aguardando o número.
+     ═══════════════════════════════════════════════════════════ -->
+<section class="ieda-oferta" id="oferta" aria-labelledby="ieda-oferta-titulo">
+    <div class="ieda-inner">
+        <header class="ieda-oferta-texto">
+            <h2 class="ieda-oferta-titulo" id="ieda-oferta-titulo">Dois dias, um projeto real e a stack completa montada por você.</h2>
+            <p class="ieda-oferta-datas"><time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de dezembro de 2026</time></p>
+            <p class="ieda-oferta-info">Das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time> | 100% online e ao vivo</p>
+        </header>
+
+        <div class="ieda-passaporte">
+            <p class="ieda-passaporte-nome">Passaporte completo</p>
+            <p class="ieda-passaporte-preco">
+                <span class="ieda-passaporte-parcela">12x de ??</span>
+                <span class="ieda-passaporte-vista">R$ 1.597 à vista</span>
+            </p>
+            <ul class="ieda-passaporte-lista">
+                <li>Imersão prática de 2 dias</li>
+                <li>1 mês de assinatura de Claude ou OpenAI</li>
+                <li>O Radar de Licitações no seu GitHub</li>
+                <li>Kit da imersão: templates do projeto completo</li>
+                <li>Gravação das aulas</li>
+                <li>Certificado de participação</li>
+                <li>Comunidade ativa</li>
+                <li>Cupom de 50% OFF no Xperiun AI Summit</li>
+            </ul>
+            <a class="ieda-btn ieda-btn--claro" href="#" data-cta="garantir-vaga">Garantir minha vaga</a>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- programação (abas, carrossel) e animações dos tópicos -->
+<script src="/ed/ieda/contraste/dependencias/programacao.js?v=1"></script>
+
+<!-- plantão: cópia parada do primeiro frame (antes do progressive blur) -->
+<script src="/ed/ieda/contraste/dependencias/plantao.js?v=1"></script>
+<script src="/ed/ieda/contraste/dependencias/progressive-blur.js?v=1"></script>
+
+<!-- o que você recebe: seleção dos itens -->
+<script src="/ed/ieda/dependencias/recebe.js?v=1"></script>
+
+<!-- Formulário de inscrição (popup). O form-include.js troca este placeholder pelo
+     conteúdo de site-popups/form-ieda.html e injeta form.css e form.js.
+     PENDENTE: o form ainda não tem id na ActiveCampaign (ver form-ieda.html);
+     até lá ele valida mas não envia. -->
+<div data-popup-form="ieda"></div>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=10"></script>
+
+<!-- CTAs "Garantir vaga" abrem o popup -->
+<script src="/ed/ieda/dependencias/popup.js?v=1"></script>
+
+<script src="/ed/site-dependencias/scroll-suave.js"></script>
+
+<!-- Anti-copy: página de captação, fica. -->
+<script src="/ed/site-dependencias/anti-copy.js" defer></script>
+
+<!-- ─── Fingerprint de proteção (NÃO REMOVER) ─────────────── -->
+<!-- © 2026 Xperiun · Conteúdo protegido por direitos autorais · Reprodução não autorizada será objeto de medidas legais. -->
+<script>location.protocol.indexOf('http')===0||(document.documentElement.innerHTML='');</script>
+</body>
+</html>

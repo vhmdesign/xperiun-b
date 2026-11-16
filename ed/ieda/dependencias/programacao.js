@@ -2,7 +2,7 @@
  * IEDA, programação e vídeos da página (/ed/ieda/).
  * As 12 animações são vídeos (dependencias/videos/, gerados por temp/ieda/videos/): 10 da
  * programação (um por tópico) + plantão e radar no "Na prática". Cada vídeo tem variante
- * desktop (d) e mobile (m, abaixo de 576px), em webm VP9 e mp4 H.264; a variante vem do
+ * desktop (d) e mobile (m, abaixo de 576px), em mp4 H.264 e webm VP9; a variante vem do
  * <source media> e o poster é escolhido aqui.
  *
  * Programação acima de 864px: cada dia tem uma navegação (.ieda-dia-nav, abas) e um painel por
@@ -11,8 +11,8 @@
  * progresso na pílula do ativo mostra quanto falta.
  * Abaixo de 864px não há navegação: os tópicos viram um carrossel infinito (criaCarrossel), com
  * avanço automático no fim do vídeo do card da vez, arrastar e o indicador de slides clicável.
- * Plantão e radar: tocam em loop enquanto estão na tela. O radar tem alfa (webm VP9); onde o
- * vídeo cai no mp4 (Safari, sem alfa), ele fica recortado no card (.sem-alfa).
+ * Plantão e radar: tocam em loop enquanto estão na tela. Nenhum vídeo tem transparência: o
+ * radar sai com o fundo do card (#F0F0FA) e fica recortado no card.
  * Com prefers-reduced-motion: nada toca sozinho; ficam os posters e a navegação manual.
  */
 (function () {
@@ -30,11 +30,14 @@
     }
 
     // ---------- vídeos ----------
-    // Safari (desktop e iOS): toca webm VP9, mas sem a transparência; o radar usa o mp4
-    var safari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
-
+    // Nenhum vídeo tem transparência (o radar sai com o fundo do card). No HTML o mp4 H.264
+    // (High 4.0, decodificado por hardware em qualquer aparelho) vem antes do webm VP9 (reserva).
+    // VERSAO quebra o cache dos posters junto com o ?v= das fontes no HTML (o radar foi
+    // regravado com as elipses em azul, por isso tem versão própria).
+    var VERSAO = { radar: '?v=5' };
     function poster(v) {
-        v.poster = PASTA + v.getAttribute('data-video') + '-' + (mobile.matches ? 'm' : 'd') + '.webp';
+        var nome = v.getAttribute('data-video');
+        v.poster = PASTA + nome + '-' + (mobile.matches ? 'm' : 'd') + '.webp' + (VERSAO[nome] || '?v=3');
     }
     function toca(v, doZero) {
         if (!v || reduz) return;
@@ -47,11 +50,6 @@
     var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-video]'));
     videos.forEach(function (v) {
         poster(v);
-        if (safari && v.getAttribute('data-video') === 'radar') {
-            Array.prototype.forEach.call(v.querySelectorAll('source[type="video/webm"]'), function (s) { s.remove(); });
-            var card = v.closest('.ieda-pratica-card');
-            if (card) liga(card, 'sem-alfa', true);
-        }
     });
     // passou de 576 pra cima ou pra baixo: troca a variante (posters e fontes)
     aoMudar(mobile, function () {

@@ -1,0 +1,315 @@
+/* PRÉVIA ALTO CONTRASTE (/ed/ieda/contraste/), gerada de temp/ieda/videos/fonte/radar.css.
+   Cores trocadas por tokens do root.css com mais contraste e sem par verde/vermelho;
+   sem blur nos elementos que informam. */
+/* IEDA, card "PNCP - Radar" (/ed/ieda/). Portado de /temp/ieda/editais-scan/,
+   com as classes prefixadas em rd- (o .quadro e o .cena colidiam com as outras animações).
+   O corte do brilho das elipses fica no card da página (.ieda-pratica-card, overflow hidden). */
+
+/* quadro: container de 688px #F0F0FA (cor passada pelo usuário, não existe no root.css),
+   igual ao de /temp/ieda/meia-noite-a-manha/. Corta o brilho das elipses e o que passa da borda;
+   sem padding. A referência de posição é a flecha: a borda esquerda dela fica
+   96px para fora da borda esquerda do quadro (-96px); portal, alvo e descrições acompanham. */
+.rd-quadro {
+    width: 688px;
+    box-sizing: border-box;
+    /* o fundo #F0F0FA fica no card da página (.ieda-pratica-card) */
+    display: flex;
+}
+
+/* cena: flecha de editais, portal (elipses) e alvo (target), da esquerda para a direita,
+   todos centralizados na vertical, 32px entre eles */
+.rd-cena {
+    flex: none;
+    margin-left: -96px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+/* ---------- flecha: fluxo infinito de editais afunilando para o portal ----------
+   Caixa de 384px x 544px (5 pilares de 64px com gap 16px; pilar de 5 editais de 96px com gap 16px).
+   Cada edital fica na sua posição (--x, --y) e, em um ciclo de --fluxo, anda 1 pilar para a
+   direita (80px) e --dy na vertical, chegando exatamente na posição do pilar seguinte, que é
+   1 edital mais estreito (5 > 4 > 3 > 2 > 1). Para afunilar, o edital do meio de um pilar ímpar
+   some no caminho e o par do meio de um pilar par se funde no centro. O pilar de 1 entra no
+   portal e some; um pilar de 6 invisível, à esquerda, aparece e vira o novo pilar de 5.
+   No fim do ciclo o desenho é idêntico ao do início, então o loop não tem emenda. */
+.rd-flecha {
+    --fluxo: 2s;
+    /* contexto de empilhamento próprio: os editais continuam abaixo das elipses (entram no portal) */
+    position: relative;
+    z-index: 0;
+    flex: none;
+    width: 384px;
+    height: 544px;
+}
+
+/* edital: 64px x 96px, radius 16px, --ln100; 4 linhas simuladas centralizadas */
+.rd-edital {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 64px;
+    height: 96px;
+    border-radius: 16px;
+    background: var(--bw);
+    box-shadow: inset 0 0 0 2px var(--bb-25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: edital-fluxo var(--fluxo) linear infinite;
+}
+
+/* linha: 40px x 8px, --ln200 */
+.rd-edital-linha {
+    display: block;
+    width: 40px;
+    height: 8px;
+    background: var(--ln500);
+}
+
+/* o que some fica atrás dos vizinhos enquanto esmaece */
+.rd-edital-some {
+    z-index: -1;
+    animation-name: edital-fluxo-some;
+}
+
+.rd-edital-entra {
+    animation-name: edital-fluxo-entra;
+}
+
+@keyframes edital-fluxo {
+    from { transform: translate(0, 0); }
+    to { transform: translate(80px, var(--dy)); }
+}
+
+@keyframes edital-fluxo-some {
+    from { transform: translate(0, 0); opacity: 1; }
+    to { transform: translate(80px, var(--dy)); opacity: 0; }
+}
+
+@keyframes edital-fluxo-entra {
+    from { transform: translate(0, 0); opacity: 0; }
+    to { transform: translate(80px, var(--dy)); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rd-edital {
+        animation: none;
+    }
+
+    .rd-edital-entra {
+        opacity: 0;
+    }
+}
+
+/* ---------- portal: elipses (mesma ilustração de /temp/ieda/elipses/) ----------
+   Cores passadas pelo usuário (não existem no root.css):
+   #7DE1E1 a 50% = var(--pc300-50); var(--pc100). */
+.rd-elipses {
+    --elipse-ciano-50: var(--pc300-50);
+    position: relative;
+    flex: none;
+    width: 216px;
+    height: 422px;
+    /* a ponta da flecha entra 128px dentro das elipses (anula o gap de 32px e sobrepõe 128px) */
+    margin-left: -160px;
+}
+
+.rd-elipse {
+    border-radius: 50%;
+    background: linear-gradient(to right, transparent, var(--elipse-ciano-50));
+}
+
+.rd-elipse-1,
+.rd-elipse-2,
+.rd-elipse-3 {
+    --elipse-altura: 288px;
+    position: absolute;
+    right: 0;
+    top: calc(50% - var(--elipse-altura) / 2);
+    height: var(--elipse-altura);
+}
+
+.rd-elipse-1 {
+    width: 144px;
+    filter: blur(32px);
+}
+
+.rd-elipse-2 {
+    width: 108px;
+}
+
+.rd-elipse-2-forma {
+    width: 100%;
+    height: 100%;
+}
+
+.rd-elipse-3 {
+    --elipse-altura: 422px;
+    width: 216px;
+    background: linear-gradient(to right, var(--pc100), var(--elipse-ciano-50));
+    filter: blur(64px);
+}
+
+/* ---------- alvo: target (mesma ilustração de /temp/ieda/target/) ---------- */
+.rd-target {
+    --target-tamanho: 120px;
+    position: relative;
+    flex: none;
+    width: var(--target-tamanho);
+    height: var(--target-tamanho);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--bb);
+    opacity: 0.5;
+    transform: rotate(45deg);
+}
+
+.rd-target-linha {
+    position: absolute;
+    display: block;
+    background: var(--bb);
+}
+
+.rd-target-linha-topo,
+.rd-target-linha-base {
+    left: calc(50% - 1px);
+    width: 2px;
+    height: 32px;
+}
+
+.rd-target-linha-topo {
+    top: -8px;
+}
+
+.rd-target-linha-base {
+    bottom: -8px;
+}
+
+.rd-target-linha-esquerda,
+.rd-target-linha-direita {
+    top: calc(50% - 1px);
+    width: 32px;
+    height: 2px;
+}
+
+.rd-target-linha-esquerda {
+    left: -8px;
+}
+
+.rd-target-linha-direita {
+    right: -8px;
+}
+
+/* ---------- alvo: editais que saem do portal e pousam no centro do target ----------
+   4 itens (edital + descrição) em revezamento, um a cada --alvo-ciclo; volta completa = 4 ciclos.
+   Cada item: o edital esmaece do centro do portal (centro da elipse de 144px, 72px antes da
+   borda direita das elipses) até o centro do target girando de 0 a -15deg; a descrição aparece
+   16px à direita dele. Quando o próximo chega, o item sobe 1 posição (112px = 96 + 16) com
+   blur 8px; no ciclo seguinte sobe mais 1 e some.
+   Porcentagens sobre a volta de 4 ciclos (25% = 1 ciclo):
+   0 a 7.5% chega, 7.5 a 10% descrição aparece, 25 a 32.5% sobe com blur (enquanto o próximo chega),
+   50 a 57.5% sobe de novo e some, resto invisível. */
+.rd-alvo {
+    --alvo-ciclo: 6s;
+    --alvo-volta: calc(var(--alvo-ciclo) * 4);
+    --alvo-passo: 112px;
+    /* do centro do target até o centro do portal: 60px (meio target) + 32px (gap) + 72px */
+    --alvo-saida: -164px;
+    position: relative;
+    flex: none;
+}
+
+/* item: mesma caixa do target; vem antes dele no DOM, então fica atrás */
+.rd-alvo-item {
+    position: absolute;
+    inset: 0;
+    animation: alvo-item var(--alvo-volta) ease infinite;
+}
+
+/* atrasos negativos: a cena já começa com o anterior em cima, sem tela vazia */
+.rd-alvo-item-2 { animation-delay: calc(var(--alvo-ciclo) * -3); }
+.rd-alvo-item-3 { animation-delay: calc(var(--alvo-ciclo) * -2); }
+.rd-alvo-item-4 { animation-delay: calc(var(--alvo-ciclo) * -1); }
+
+.rd-alvo-item-2 .rd-alvo-edital,
+.rd-alvo-item-2 .rd-alvo-descricao { animation-delay: calc(var(--alvo-ciclo) * -3); }
+.rd-alvo-item-3 .rd-alvo-edital,
+.rd-alvo-item-3 .rd-alvo-descricao { animation-delay: calc(var(--alvo-ciclo) * -2); }
+.rd-alvo-item-4 .rd-alvo-edital,
+.rd-alvo-item-4 .rd-alvo-descricao { animation-delay: calc(var(--alvo-ciclo) * -1); }
+
+.rd-alvo-edital {
+    left: calc(50% - 32px);
+    top: calc(50% - 48px);
+    transform: rotate(-15deg);
+    animation: alvo-edital var(--alvo-volta) ease-in-out infinite;
+}
+
+/* descrição: lista de tags do edital (ul > li), Syne (token do DS) 1.125rem --bb-50 */
+.rd-alvo-descricao {
+    position: absolute;
+    left: calc(50% + 32px + 16px);
+    top: 50%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    transform: translateY(-50%);
+    font-family: var(--font-family-horizontal);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--bb);
+    white-space: nowrap;
+    animation: alvo-descricao var(--alvo-volta) ease infinite;
+}
+
+/* cada colchete da descrição em uma linha */
+.rd-alvo-descricao-linha {
+    display: block;
+    margin: 0;
+}
+
+/* chega: esmaece do portal até o centro do target girando de 0 a -15deg ao mesmo tempo */
+@keyframes alvo-edital {
+    0% { transform: translate(var(--alvo-saida), 0) rotate(0deg); opacity: 0; }
+    7.5%, 100% { transform: translate(0, 0) rotate(-15deg); opacity: 1; }
+}
+
+@keyframes alvo-descricao {
+    0%, 7.5% { opacity: 0; }
+    10%, 100% { opacity: 1; }
+}
+
+/* sobe com blur 8px quando o próximo chega; depois sobe mais e some */
+@keyframes alvo-item {
+    0%, 25% { transform: translateY(0); filter: blur(0); opacity: 1; }
+    32.5%, 50% { transform: translateY(calc(var(--alvo-passo) * -1)); filter: blur(8px); opacity: 1; }
+    57.5%, 100% { transform: translateY(calc(var(--alvo-passo) * -2)); filter: blur(8px); opacity: 0; }
+}
+
+/* abaixo de 864px, sem blur animado: o anterior fica em meia opacidade */
+
+    @keyframes alvo-item {
+        0%, 25% { transform: translateY(0); opacity: 1; }
+        32.5%, 50% { transform: translateY(calc(var(--alvo-passo) * -1)); opacity: 0.6; }
+        57.5%, 100% { transform: translateY(calc(var(--alvo-passo) * -2)); opacity: 0; }
+    }
+
+
+@media (prefers-reduced-motion: reduce) {
+    .rd-alvo-item,
+    .rd-alvo-edital,
+    .rd-alvo-descricao {
+        animation: none;
+    }
+
+    /* sem animação, fica só o primeiro item, pousado */
+    .rd-alvo-item-2,
+    .rd-alvo-item-3,
+    .rd-alvo-item-4 {
+        opacity: 0;
+    }
+}
