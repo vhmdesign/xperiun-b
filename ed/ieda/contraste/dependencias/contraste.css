@@ -149,3 +149,13 @@
         transform: scale(0.75);
     }
 }
+
+/* item 08 (AI Summit, fundo claro #AFAFFF): losangos vazios com anel --bb-50 */
+.ieda-item[data-item="summit"] .ieda-pips i {
+    box-shadow: inset 0 0 0 2px var(--bb-50);
+}
+
+.ieda-item[data-item="summit"] .ieda-pips i:nth-child(-n+4) {
+    background: var(--bb);
+    box-shadow: none;
+}

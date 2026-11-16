@@ -685,8 +685,8 @@ a.ieda-btn:hover {
    selecionado (span 4). Cada item tem a cor da raridade (cores passadas pelo usuário):
      essencial #7DE1E1 / #C8FFFF   raro #7DE17D / #C8FFC8
      épico     #E1E17D / #FFFFC8   lendário #E1967D / #FFE1C8
-   Slot selecionado: a cor a 23% no topo, esmaecendo; ícone aceso, maior e inclinado.
-   Painel: a cor a 27% no topo, esmaecendo até o fundo.
+   Slot selecionado: a cor a 23% no topo, esmaecendo; ícone aceso e inclinado.
+   Painel: a cor da raridade de 25% (topo) a 5% (base) de opacidade.
    =================================================================== */
 .ieda-recebe {
     padding: 256px 0;
@@ -784,7 +784,7 @@ a.ieda-btn:hover {
 }
 
 /* ícone: 64px, no meio do card, entre o número e o nome. Apagado nos não selecionados;
-   aceso, maior e inclinado no selecionado */
+   aceso e inclinado no selecionado */
 .ieda-slot-icone {
     flex: none;
     align-self: center;
@@ -802,7 +802,7 @@ a.ieda-btn:hover {
 
 .ieda-slot[aria-selected="true"] .ieda-slot-icone {
     opacity: 1;
-    transform: rotate(-15deg) scale(1.1);
+    transform: rotate(-15deg);
 }
 
 .ieda-slot:focus-visible {
@@ -810,23 +810,48 @@ a.ieda-btn:hover {
     outline-offset: 4px;
 }
 
-/* lista com um card por item: só abaixo de 864 (montada pelo recebe.js) */
-.ieda-itens {
-    display: none;
-}
-
-/* painel do item selecionado: sticky ao lado dos slots (acompanha a rolagem até o fim
-   deles); abaixo de 864, empilhado, volta ao fluxo normal */
-.ieda-item {
+/* painel: os 8 itens (.ieda-item, montados pelo recebe.js a partir do 01 do HTML), cada um
+   completo e com o seu conteúdo, empilhados na mesma célula do grid. Trocar de item é só
+   trocar o .is-ativo: o que sai sobe 24px e esmaece, o que entra vem de 24px abaixo e
+   aparece (só opacity e transform). Sticky ao lado dos slots; a altura é a do item mais
+   alto (todos ficam do mesmo tamanho, com o botão sempre embaixo). Abaixo de 864 vira a
+   lista com todos visíveis (ver o responsivo). */
+.ieda-painel {
     grid-column: 7 / span 4;
     align-self: start;
     position: sticky;
     top: 32px;
+    display: grid;
+}
+
+.ieda-painel > .ieda-item {
+    grid-area: 1 / 1;
+}
+
+.ieda-item {
     padding: 32px;
     border-radius: 32px;
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--cor) 27%, var(--bb)), var(--bb));
+    /* a própria cor da raridade, de 25% de opacidade no topo a 5% na base (sobre o fundo da seção) */
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--cor) 25%, transparent), color-mix(in srgb, var(--cor) 5%, transparent));
     display: flex;
     flex-direction: column;
+    opacity: 0;
+    transform: translateY(24px);
+    visibility: hidden;
+    /* saindo: esmaece subindo; o visibility só muda no fim */
+    transition: opacity 0.5s ease, transform 0.6s ease, visibility 0s linear 0.6s;
+}
+
+/* entrando: começa um pouco depois de o anterior começar a sair */
+.ieda-item.is-ativo {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    transition: opacity 0.5s ease 0.15s, transform 0.6s ease-out 0.15s, visibility 0s;
+}
+
+.ieda-item.is-saiu {
+    transform: translateY(-24px);
 }
 
 .ieda-item:focus-visible {
@@ -847,9 +872,10 @@ a.ieda-btn:hover {
     overflow: hidden;
 }
 
-/* barra do item ativo = progresso até a troca: enche em 6s (recebe.js troca no fim dela,
-   no animationend). Só anda com .is-rodando no painel (seção na tela, sem mouse/foco em
-   cima); pausada, a barra congela e a troca espera junto */
+/* barra de progresso: em cada item, o traço da posição dele (.is-atual) enche em 4s
+   enquanto ele é o ativo (recebe.js troca no fim, no animationend). Só anda com
+   .is-rodando no painel (seção na tela, sem foco no painel) e sem o mouse em cima; pausada,
+   a barra congela e a troca espera junto */
 .ieda-item-barra span::after {
     content: "";
     position: absolute;
@@ -859,13 +885,19 @@ a.ieda-btn:hover {
     transform-origin: left;
 }
 
-.ieda-item-barra span.is-ativo::after {
-    animation: ieda-barra 6s linear forwards;
+.ieda-item.is-ativo .ieda-item-barra span.is-atual::after {
+    animation: ieda-barra 4s linear forwards;
     animation-play-state: paused;
 }
 
-.ieda-item.is-rodando .ieda-item-barra span.is-ativo::after {
+.ieda-painel.is-rodando .ieda-item.is-ativo .ieda-item-barra span.is-atual::after {
     animation-play-state: running;
+}
+
+/* :hover do CSS: se atualiza sozinho mesmo quando o painel sticky passa por baixo do mouse
+   parado durante a rolagem */
+.ieda-painel.is-rodando:hover .ieda-item.is-ativo .ieda-item-barra span.is-atual::after {
+    animation-play-state: paused;
 }
 
 @keyframes ieda-barra {
@@ -894,17 +926,17 @@ a.ieda-btn:hover {
 /* telas baixas (ex.: 1350 x 625): o painel é sticky e precisa caber na altura da tela com o
    respiro de 32px em cima e embaixo. O resto do painel (barra, topo, nome, descrição mais
    longa, botão e padding) soma ~380px; a área do ícone fica com o que sobra
-   (100vh - 448px), entre 128 e 256px, e o ícone encolhe junto (160px de teto) */
+   (100vh - 480px, já contando o item mais alto, o 08), entre 128 e 256px, e o ícone encolhe junto (160px de teto) */
 .ieda-item-palco {
-    height: clamp(128px, 100vh - 448px, 256px);
+    height: clamp(128px, 100vh - 480px, 256px);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .ieda-item-icone {
-    width: clamp(96px, 100vh - 480px, 160px);
-    height: clamp(96px, 100vh - 480px, 160px);
+    width: clamp(96px, 100vh - 512px, 160px);
+    height: clamp(96px, 100vh - 512px, 160px);
     transform: rotate(-15deg);
 }
 
@@ -918,37 +950,16 @@ a.ieda-btn:hover {
 }
 
 .ieda-item-desc {
-    margin: 24px 0 0;
+    margin: 24px 0 32px;
     font: var(--ieda-p-l);
     color: var(--bw-75);
 }
 
+/* botão sempre embaixo (os itens têm a altura do mais alto) */
 .ieda-item .ieda-btn {
-    margin-top: 32px;
+    margin-top: auto;
     min-width: 0;
     width: 100%;
-}
-
-/* troca de item: o ícone entra girando pro lugar e o texto aparece */
-.ieda-item.is-trocando .ieda-item-icone {
-    animation: ieda-item-icone 0.5s ease;
-}
-
-.ieda-item.is-trocando .ieda-item-num,
-.ieda-item.is-trocando .ieda-item-raridade,
-.ieda-item.is-trocando .ieda-item-nome,
-.ieda-item.is-trocando .ieda-item-desc {
-    animation: ieda-item-texto 0.4s ease;
-}
-
-@keyframes ieda-item-icone {
-    from { opacity: 0; transform: rotate(0deg) scale(0.85); }
-    to { opacity: 1; transform: rotate(-15deg) scale(1); }
-}
-
-@keyframes ieda-item-texto {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
 
 /* botão claro (no fundo escuro) */
@@ -965,19 +976,72 @@ a.ieda-btn.ieda-btn--claro:hover {
     color: var(--bb);
 }
 
+/* item 08, "50% OFF no Xperiun AI Summit 2027" (data-item="summit", recebe.js): visual
+   próprio no painel e no card do mobile. Fundo #AFAFFF (passado pelo usuário, não existe no
+   root.css), textos em --bb, título em Syne 800 (o peso mais alto self-hosted; 900 não
+   existe em fonts.css e cairia nele de qualquer jeito) e, no lugar do ícone, o logotipo
+   animado do rodapé da /ed/aisummit/ (.ais-rodape-logo) em --bb: cópia em
+   dependencias/ais-logotipo-bb.svg com o #F5F5FF trocado por #00000A */
+.ieda-item[data-item="summit"] {
+    background: #AFAFFF;
+    color: var(--bb);
+}
+
+.ieda-item[data-item="summit"]:focus-visible {
+    outline-color: var(--bb);
+}
+
+.ieda-item[data-item="summit"] .ieda-item-barra span {
+    background: var(--bb-25);
+}
+
+.ieda-item[data-item="summit"] .ieda-item-barra span::after {
+    background: var(--bb);
+}
+
+.ieda-item[data-item="summit"] .ieda-item-num,
+.ieda-item[data-item="summit"] .ieda-item-raridade,
+.ieda-item[data-item="summit"] .ieda-item-nome,
+.ieda-item[data-item="summit"] .ieda-item-desc {
+    color: var(--bb);
+}
+
+.ieda-item[data-item="summit"] .ieda-item-nome {
+    font-family: var(--font-family-horizontal);
+    font-weight: 800;
+}
+
+/* logotipo (874 x 622, com respiro em volta por causa da animação): sem girar, na altura
+   toda da área do ícone */
+.ieda-item[data-item="summit"] .ieda-item-icone {
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    transform: none;
+}
+
+/* botão escuro no fundo claro */
+.ieda-item[data-item="summit"] a.ieda-btn {
+    background: var(--bb);
+    color: var(--bw);
+}
+
+.ieda-item[data-item="summit"] a.ieda-btn:hover {
+    background: var(--dn700);
+    color: var(--bw);
+}
+
 @media (prefers-reduced-motion: reduce) {
     /* sem troca automática: a barra do ativo fica cheia, parada */
-    .ieda-item-barra span.is-ativo::after {
+    .ieda-item.is-ativo .ieda-item-barra span.is-atual::after {
         animation: none;
         transform: scaleX(1);
     }
 
-    .ieda-item.is-trocando .ieda-item-icone,
-    .ieda-item.is-trocando .ieda-item-num,
-    .ieda-item.is-trocando .ieda-item-raridade,
-    .ieda-item.is-trocando .ieda-item-nome,
-    .ieda-item.is-trocando .ieda-item-desc {
-        animation: none;
+    /* troca só por opacidade, sem deslocamento */
+    .ieda-item,
+    .ieda-item.is-saiu {
+        transform: none;
     }
 }
 
@@ -1429,7 +1493,7 @@ a.ieda-btn.ieda-btn--claro:hover {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .ieda-item {
+    .ieda-painel {
         grid-column: 5 / span 4;
     }
 
@@ -1446,7 +1510,7 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 }
 
-/* abaixo de 1152: 2 slots por linha (abaixo de 864 os slots saem, ver .ieda-itens) */
+/* abaixo de 1152: 2 slots por linha (abaixo de 864 os slots saem) */
 @media (max-width: 1152px) {
     .ieda-slots {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1454,8 +1518,8 @@ a.ieda-btn.ieda-btn--claro:hover {
 }
 
 @media (max-width: 864px) {
-    /* sem slots e sem o painel único: título e, embaixo, a lista com um card por item
-       (.ieda-itens, montada pelo recebe.js), sem barra, todos visíveis */
+    /* sem slots: título e, embaixo, o painel vira a lista com os 8 itens, um card por
+       item, todos visíveis, sem barra e sem botão */
     .ieda-recebe {
         padding: 128px 0;
     }
@@ -1465,34 +1529,45 @@ a.ieda-btn.ieda-btn--claro:hover {
     }
 
     .ieda-recebe-intro,
-    .ieda-itens {
+    .ieda-painel {
         grid-column: 1 / -1;
     }
 
-    .ieda-slots,
-    #ieda-item {
+    .ieda-slots {
         display: none;
     }
 
-    .ieda-itens {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+    .ieda-painel {
+        position: static;
         display: flex;
         flex-direction: column;
         gap: 24px;
     }
 
-    .ieda-itens li {
-        margin: 0;
+    .ieda-item,
+    .ieda-item.is-saiu {
+        opacity: 1;
+        transform: none;
+        visibility: visible;
+        transition: none;
     }
 
-    .ieda-item {
-        position: static;
+    .ieda-item-barra,
+    .ieda-item .ieda-btn {
+        display: none;
+    }
+
+    .ieda-item-desc {
+        margin-bottom: 0;
     }
 
     .ieda-item-palco {
         height: 96px;
+    }
+
+    /* o logotipo do AI Summit tem respiro em volta: em 96px some; fica na altura original */
+    .ieda-item[data-item="summit"] .ieda-item-palco {
+        height: 224px;
     }
 }
 
@@ -1505,10 +1580,9 @@ a.ieda-btn.ieda-btn--claro:hover {
         row-gap: 32px;
     }
 
-    .ieda-itens {
+    .ieda-painel {
         gap: 16px;
     }
-
 
     .ieda-item {
         padding: 24px;
@@ -1517,6 +1591,11 @@ a.ieda-btn.ieda-btn--claro:hover {
 
     .ieda-item-palco {
         height: 96px;
+    }
+
+    /* o logotipo do AI Summit tem respiro em volta: em 96px some; fica na altura original */
+    .ieda-item[data-item="summit"] .ieda-item-palco {
+        height: 192px;
     }
 
     .ieda-item-icone {
