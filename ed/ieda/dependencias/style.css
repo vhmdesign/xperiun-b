@@ -151,6 +151,21 @@ a.ieda-btn:hover {
     font-weight: 700;
     line-height: 1.25;
     color: var(--bb);
+    /* degradê animado no texto, no mesmo estilo do botão da oferta (.ieda-btn--oferta, que
+       segue o .completa-cta-wave da home): degradê de 600% indo e voltando em 5s (keyframes
+       ieda-onda, na oferta). Cores passadas pelo usuário: #00000A (--bb), #327332, #00000A,
+       #00000A. O color --bb acima fica de reserva se o background-clip: text não existir */
+    background: linear-gradient(90deg, var(--bb), #327332, var(--bb), var(--bb), var(--bb), #327332, var(--bb)) 0% 50% / 600% 600%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: ieda-onda 5s ease infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ieda-hero-titulo {
+        animation: none;
+    }
 }
 
 .ieda-hero-sub {
@@ -248,7 +263,7 @@ a.ieda-btn:hover {
 
 .ieda-projeto-card--a { grid-column: 7 / span 2; grid-row: 1; background-image: url('/ed/ieda/dependencias/bg-container-a.webp'); }
 .ieda-projeto-card--b { grid-column: 9 / span 2; grid-row: 1; background-image: url('/ed/ieda/dependencias/bg-container-b.webp'); }
-.ieda-projeto-card--c { grid-column: 5 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-c.webp'); }
+.ieda-projeto-card--c { grid-column: 5 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-c.webp?v=2'); }
 .ieda-projeto-card--d { grid-column: 7 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-d.webp'); color: var(--bb); }
 .ieda-projeto-card--e { grid-column: 9 / span 2; grid-row: 2; background-image: url('/ed/ieda/dependencias/bg-container-e.webp'); color: var(--bb); }
 
@@ -813,14 +828,15 @@ a.ieda-btn:hover {
 /* painel: os 8 itens (.ieda-item, montados pelo recebe.js a partir do 01 do HTML), cada um
    completo e com o seu conteúdo, empilhados na mesma célula do grid. Trocar de item é só
    trocar o .is-ativo: o que sai sobe 24px e esmaece, o que entra vem de 24px abaixo e
-   aparece (só opacity e transform). Sticky ao lado dos slots; a altura é a do item mais
+   aparece (só opacity e transform). Ao lado dos slots, com a altura deles ou a do item mais
    alto (todos ficam do mesmo tamanho, com o botão sempre embaixo). Abaixo de 864 vira a
    lista com todos visíveis (ver o responsivo). */
+/* stretch: o painel tem no mínimo a altura dos slots (se eles forem mais altos, os itens
+   esticam até o fim deles; o espaço extra fica antes do botão). Se o painel for o mais alto,
+   a linha do grid fica com a altura dele */
 .ieda-painel {
     grid-column: 7 / span 4;
-    align-self: start;
-    position: sticky;
-    top: 32px;
+    align-self: stretch;
     display: grid;
 }
 
@@ -982,8 +998,10 @@ a.ieda-btn.ieda-btn--claro:hover {
    existe em fonts.css e cairia nele de qualquer jeito) e, no lugar do ícone, o logotipo
    animado do rodapé da /ed/aisummit/ (.ais-rodape-logo) em --bb: cópia em
    dependencias/ais-logotipo-bb.svg com o #F5F5FF trocado por #00000A */
+/* imagem (arquivo de 320 x 320, bordas no mesmo lilás) em 240px no canto superior esquerdo,
+   sobre o #AFAFFF */
 .ieda-item[data-item="summit"] {
-    background: #AFAFFF;
+    background: url('/ed/ieda/dependencias/ieda-item-aisummit-bg.webp') top left / 240px 240px no-repeat #AFAFFF;
     color: var(--bb);
 }
 
@@ -1557,6 +1575,11 @@ a.ieda-btn.ieda-btn--claro:hover {
         display: none;
     }
 
+    /* sem a barra em cima, o topo (número e raridade) não precisa do espaço */
+    .ieda-item-topo {
+        margin-top: 0;
+    }
+
     .ieda-item-desc {
         margin-bottom: 0;
     }
@@ -1614,7 +1637,7 @@ a.ieda-btn.ieda-btn--claro:hover {
    baixo, um degradê de transparente a #C8FFFF a 25% (tudo do PDF). Respiro de 256px.
    Esquerda (span 5): logo (46px de altura, branco), título e os 8 itens em 2 colunas
    (ícone de 40px a 50% + nome em Syne 16px, 16px entre linhas). Direita (cols 7-10, ao
-   centro): "12x de" (Syne 20px) + "159" (Cormorant 96px) em #7DE1E1, "ou R$ 1.597 à vista"
+   centro): "12x de" (Syne 20px) + "159" (Cormorant 96px 700) em #7DE1E1, "ou R$ 1.597 à vista"
    (Syne 18px), botão de 56px com degradê #7DE1E1 > #E1E17D (texto Cormorant 24px 700 em caixa
    alta, --bb) e as datas. As duas colunas centralizadas na vertical.
    10 cols: 1-5 | 7-10. 8 cols: 1-4 | 5-8. <=864: empilhadas.
@@ -1734,7 +1757,7 @@ a.ieda-btn.ieda-btn--claro:hover {
 .ieda-oferta-valor {
     font-family: 'Cormorant Infant', serif;
     font-size: 6rem;
-    font-weight: 400;
+    font-weight: 700;
     font-variant-numeric: oldstyle-nums;
 }
 
@@ -1744,13 +1767,21 @@ a.ieda-btn.ieda-btn--claro:hover {
     color: var(--bw);
 }
 
-/* botão: 56px de altura (24px x 1.25 + 13px em cima e embaixo), degradê do PDF */
+/* botão: 56px de altura (24px x 1.25 + 13px em cima e embaixo). Degradê animado no estilo do
+   .completa-cta-wave da home (site-dependencias/home.css): um degradê largo (600%) que vai e
+   volta em 5s. Cores (passadas pelo usuário): #7DE17D, #7DE1E1, #E1967D, #E1E17D. No hover,
+   uma camada (::before) com as versões claras (#C8FFFF, #C8FFC8, #FFFFC8, #FFE1C8), na mesma
+   animação, aparece por cima em 0.5s */
 .ieda-btn--oferta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     margin-top: 32px;
     min-width: 0;
     width: 100%;
     padding: 13px 32px;
-    background: linear-gradient(to right, #7DE1E1, #E1E17D);
+    background: linear-gradient(90deg, #7DE17D, #7DE1E1, #E1967D, #E1E17D, #E1967D, #7DE1E1, #7DE17D) 0% 50% / 600% 600%;
+    animation: ieda-onda 5s ease infinite;
     font-family: 'Cormorant Infant', serif;
     font-size: 1.5rem;
     font-weight: 700;
@@ -1758,14 +1789,41 @@ a.ieda-btn.ieda-btn--claro:hover {
     text-transform: uppercase;
 }
 
+.ieda-btn--oferta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, #C8FFFF, #C8FFC8, #FFFFC8, #FFE1C8, #FFFFC8, #C8FFC8, #C8FFFF) 0% 50% / 600% 600%;
+    animation: ieda-onda 5s ease infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
 a.ieda-btn.ieda-btn--oferta {
     color: var(--bb);
 }
 
-/* hover: as versões claras das mesmas cores (#C8FFFF > #FFFFC8, as "cor-clara" da página) */
 a.ieda-btn.ieda-btn--oferta:hover {
-    background: linear-gradient(to right, #C8FFFF, #FFFFC8);
+    background: linear-gradient(90deg, #7DE17D, #7DE1E1, #E1967D, #E1E17D, #E1967D, #7DE1E1, #7DE17D) 0% 50% / 600% 600%;
     color: var(--bb);
+}
+
+a.ieda-btn.ieda-btn--oferta:hover::before {
+    opacity: 1;
+}
+
+@keyframes ieda-onda {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ieda-btn--oferta,
+    .ieda-btn--oferta::before {
+        animation: none;
+    }
 }
 
 .ieda-oferta-datas {
@@ -1810,5 +1868,94 @@ a.ieda-btn.ieda-btn--oferta:hover {
     .ieda-oferta-itens {
         margin-top: 48px;
         column-gap: 16px;
+    }
+}
+
+/* ===================================================================
+   CTA FIXO NO RODAPÉ (baseado no .bottom-cta da /ed/aichampion/)
+   Faixa de 140px colada embaixo, com blur progressivo de baixo pra cima (4 camadas de
+   backdrop-filter, 2/4/8/16px, cada uma com uma máscara que some mais cedo), sem cor por
+   cima (a página alterna seções claras e escuras). O botão é o .ieda-btn padrão. Entra de
+   baixo; popup.js mostra depois de "O projeto" e esconde quando o "O que você recebe" entra
+   na tela.
+   =================================================================== */
+.ieda-cta-fixo {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 500;
+    width: 100%;
+    height: 140px;
+    box-sizing: border-box;
+    padding-bottom: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.ieda-cta-fixo.is-escondido {
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.ieda-cta-fixo-blur {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.ieda-cta-fixo-blur-2 {
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 100%);
+    mask: linear-gradient(to top, #000 0%, transparent 100%);
+}
+
+.ieda-cta-fixo-blur-4 {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 66%);
+    mask: linear-gradient(to top, #000 0%, transparent 66%);
+}
+
+.ieda-cta-fixo-blur-8 {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 42%);
+    mask: linear-gradient(to top, #000 0%, transparent 42%);
+}
+
+.ieda-cta-fixo-blur-16 {
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    -webkit-mask: linear-gradient(to top, #000 0%, transparent 22%);
+    mask: linear-gradient(to top, #000 0%, transparent 22%);
+}
+
+.ieda-cta-fixo .ieda-cta-fixo-btn {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    width: auto;
+    min-width: 304px;
+    pointer-events: auto;
+}
+
+@media (max-width: 576px) {
+    .ieda-cta-fixo {
+        padding: 0 16px 16px;
+    }
+
+    .ieda-cta-fixo .ieda-cta-fixo-btn {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ieda-cta-fixo {
+        transition: none;
     }
 }

@@ -18,7 +18,7 @@
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="preload" as="image" href="/ed/ieda/dependencias/bg-hero.webp" fetchpriority="high">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
-    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=54">
+    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=66">
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -76,7 +76,7 @@
             <li class="ieda-ferramenta"><img src="/ed/ieda/dependencias/logos/hero-openrouter.webp" alt="" width="32" height="32"><span>Openrouter</span></li>
         </ul>
         <div class="ieda-hero-cta">
-            <a class="ieda-btn" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+            <a class="ieda-btn" href="#oferta" data-cta="ir-oferta">Garantir Vaga</a>
             <p class="ieda-datas">Dias <time datetime="2026-12-12">12</time> e <time datetime="2026-12-13">13 de Dezembro</time><br>das <time datetime="09:00">9h</time> às <time datetime="16:00">16h</time></p>
         </div>
     </div>
@@ -116,7 +116,7 @@
         </ul>
         <div class="ieda-projeto-fim">
             <p class="ieda-texto">Na imersão, você vai construir o Radar Inteligente de Licitações Públicas, um projeto real, com dados reais.</p>
-            <a class="ieda-btn" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+            <a class="ieda-btn" href="#oferta" data-cta="ir-oferta">Garantir Vaga</a>
         </div>
     </div>
 </section>
@@ -448,7 +448,7 @@
                 </div>
                 <h3 class="ieda-item-nome">Imersão prática e ao vivo</h3>
                 <p class="ieda-item-desc">Dois dias construindo um projeto real com agentes de IA.</p>
-                <a class="ieda-btn ieda-btn--claro" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
+                <a class="ieda-btn ieda-btn--claro" href="#oferta" data-cta="ir-oferta">Garantir Vaga</a>
             </div>
         </div>
     </div>
@@ -489,6 +489,18 @@
 
 </main>
 
+<!-- CTA fixo no rodapé (baseado no .bottom-cta da /ed/aichampion/, com blur progressivo):
+     aparece depois que "O projeto" sai do topo da tela e some quando o "O que você recebe"
+     entra na tela (popup.js). O botão abre o popup como os outros (data-cta). -->
+<div class="ieda-cta-fixo is-escondido">
+    <div class="ieda-cta-fixo-blur ieda-cta-fixo-blur-2" aria-hidden="true"></div>
+    <div class="ieda-cta-fixo-blur ieda-cta-fixo-blur-4" aria-hidden="true"></div>
+    <div class="ieda-cta-fixo-blur ieda-cta-fixo-blur-8" aria-hidden="true"></div>
+    <div class="ieda-cta-fixo-blur ieda-cta-fixo-blur-16" aria-hidden="true"></div>
+    <a class="ieda-btn ieda-cta-fixo-btn" href="#oferta" data-cta="ir-oferta" tabindex="-1">Garantir Vaga</a>
+</div>
+
+
 <!-- programação (abas, carrossel) e controle dos vídeos das animações -->
 <script src="/ed/ieda/dependencias/programacao.js?v=11"></script>
 
@@ -503,7 +515,7 @@
 <script src="/ed/site-dependencias/site-popups/form-include.js?v=10"></script>
 
 <!-- CTAs "Garantir vaga" abrem o popup -->
-<script src="/ed/ieda/dependencias/popup.js?v=1"></script>
+<script src="/ed/ieda/dependencias/popup.js?v=4"></script>
 
 <script src="/ed/site-dependencias/scroll-suave.js"></script>
 
