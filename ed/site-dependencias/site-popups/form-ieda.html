@@ -13,16 +13,14 @@
 <body>
 
 <!-- Form ActiveCampaign da Imersão Engenharia de Dados Agêntica (/ed/ieda/).
+     Id do form na AC: 526. u, f, or e os field[N] vêm do embed oficial da AC
+     (passado pelo usuário), nenhum foi chutado.
 
-     PENDENTE: o form ainda não existe na AC. Enquanto isso o <form> leva
-     data-ac-pendente e o form.js valida os campos mas NÃO envia (mostra o
-     aviso de form inativo). Quando o form for criado, pegar no embed oficial
-     (AC > Forms > o form > Integrate > HTML) e trocar:
-       - os PENDENTE de u, f e or;
-       - a classe _form_PENDENTE, o id _form_PENDENTE_ e o do botão;
-       - conferir os field[N] (UTMs abaixo são os da conta: 2 campaign,
-         3 source, 4 medium, 5 content; o form.js preenche pela URL);
-     e tirar o atributo data-ac-pendente. Nenhum valor da AC foi chutado.
+       field[2] utm_campaign   field[3] utm_source
+       field[4] utm_medium     field[5] utm_content   (o form.js preenche pela URL)
+       field[226] pc_assina_alguma_ferramenta_de_ia: na AC é campo de texto; aqui
+       vira dropdown Sim/Não (padrão da casa, form-ped) que grava "Sim" ou "Não"
+       no hidden. Obrigatório: o form.js valida o hidden e mostra o erro.
 
      Campos: nome, email e WhatsApp (E.164 pelo form.js). O redirect do
      sucesso vem da AC (ação do form), não daqui.
@@ -38,21 +36,20 @@
             </div>
             <p class="popup-form-label">Preencha os dados abaixo:</p>
             <form
-                class="popup-form-form _form _form_PENDENTE _inline-form _dark"
-                id="_form_PENDENTE_"
+                class="popup-form-form _form _form_526 _inline-form _dark"
+                id="_form_526_"
                 method="POST"
                 action="https://karpinskileonardo.activehosted.com/proc.php"
-                data-ac-pendente
                 novalidate
             >
-                <input type="hidden" name="u" value="PENDENTE">
-                <input type="hidden" name="f" value="PENDENTE">
+                <input type="hidden" name="u" value="526">
+                <input type="hidden" name="f" value="526">
                 <input type="hidden" name="s">
                 <input type="hidden" name="c" value="0">
                 <input type="hidden" name="m" value="0">
                 <input type="hidden" name="act" value="sub">
                 <input type="hidden" name="v" value="2">
-                <input type="hidden" name="or" value="PENDENTE">
+                <input type="hidden" name="or" value="bd2740f3-047b-4a64-bbd2-1c323b83f6b8">
 
                 <input type="hidden" name="field[2]" value="">
                 <input type="hidden" name="field[3]" value="">
@@ -77,9 +74,25 @@
                     <span class="input-error-text" style="display:none">Informe um WhatsApp válido com DDD.</span>
                 </div>
 
+                <div class="input-group">
+                    <span class="input-label">Você assina alguma ferramenta de IA?</span>
+                    <div class="dropdown-group">
+                        <div class="dropdown">
+                            <span class="dropdown-placeholder">Selecione uma opção</span>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <ul class="dropdown-options dropdown-options-detached">
+                            <li class="dropdown-option" data-value="Sim">Sim</li>
+                            <li class="dropdown-option" data-value="Não">Não</li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="field[226]" value="">
+                    <span class="input-error-text" style="display:none">Selecione uma opção.</span>
+                </div>
+
                 <div class="popup-form-actions">
                     <button type="button" class="btn popup-form-cancel" data-size="m" data-emphasis="subtle">Sair</button>
-                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_PENDENTE_submit">Garantir minha vaga</button>
+                    <button type="submit" class="btn" data-size="m" data-emphasis="medium-core" id="_form_526_submit">Garantir minha vaga</button>
                 </div>
             </form>
             <p class="popup-form-success" hidden>Aguarde um instante, você será redirecionado...</p>

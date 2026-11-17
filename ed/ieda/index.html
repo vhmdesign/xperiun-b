@@ -18,7 +18,7 @@
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="preload" as="image" href="/ed/ieda/dependencias/bg-hero.webp" fetchpriority="high">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
-    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=69">
+    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=70">
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -45,7 +45,7 @@
          animações em vídeo: dependencias/videos/plantao-*, radar-*
        programação (dias 19 e 20)                (.ieda-prog)
          animações em vídeo: dependencias/videos/<tópico>-* (programacao.js)
-       o que você recebe (7 itens + painel)      (.ieda-recebe, recebe.js)
+       o que você recebe (7 itens + painel; "1 mês de IA" hidden)      (.ieda-recebe, recebe.js)
        oferta (itens + preço, assets/oferta.pdf) (.ieda-oferta)
 
      Os 12 vídeos (d = desktop, m = mobile <=576; webm VP9 + mp4 H.264 + poster webp) são
@@ -373,6 +373,15 @@
                     <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/imersao.webp" alt="" width="160" height="160" loading="lazy">
                     <span class="ieda-slot-nome">Imersão ao vivo</span>
                 </button>
+                <!-- "1 mês de IA": escondido (hidden), não removido. O recebe.js ignora slot
+                     hidden; pra voltar, é só tirar o hidden (números e barra se ajustam sozinhos). -->
+                <button class="ieda-slot" type="button" role="tab" id="ieda-slot-ia" aria-controls="ieda-item-01" aria-selected="false" hidden
+                        data-raridade="raro" data-raridade-rotulo="Raro" data-icone="/ed/ieda/dependencias/icones/ia.webp"
+                        data-nome="1 mês de Claude ou OpenAI" data-desc="Uma assinatura de IA inclusa para colocar a mão na massa.">
+                    <span class="ieda-slot-num">02</span>
+                    <img class="ieda-slot-icone" src="/ed/ieda/dependencias/icones/ia.webp" alt="" width="160" height="160" loading="lazy">
+                    <span class="ieda-slot-nome">1 mês de IA</span>
+                </button>
                 <button class="ieda-slot" type="button" role="tab" id="ieda-slot-02" aria-controls="ieda-item-01" aria-selected="false"
                         data-raridade="raro" data-raridade-rotulo="Raro" data-icone="/ed/ieda/dependencias/icones/radar.webp"
                         data-nome="Projeto completo no GitHub" data-desc="Um Radar Inteligente de Licitações para o seu portfólio.">
@@ -448,7 +457,7 @@
 
 <!-- ═══════════════════════════════════════════════════════════
      OFERTA (fechamento). Layout: ed/ieda/assets/oferta.pdf.
-     Esquerda: logo, título e os 7 itens (ícone + nome, 2 colunas).
+     Esquerda: logo, título e os 7 itens (ícone + nome, 2 colunas; "1 mês de IA" hidden).
      Direita: preço (12x de 67, ou R$ 697 à vista), botão e datas.
      Fundo --bb com as faixas do hero (bg-hero) a 10% e um degradê #C8FFFF a 25%
      nos 512px de baixo, tudo do PDF.
@@ -460,6 +469,7 @@
             <h2 class="ieda-oferta-titulo" id="ieda-oferta-titulo">Dois dias, um projeto real e a stack completa montada por você</h2>
             <ul class="ieda-oferta-itens" role="list">
                 <li><img src="/ed/ieda/dependencias/icones/imersao.webp" alt="" width="160" height="160" loading="lazy">Imersão ao vivo</li>
+                <li hidden><img src="/ed/ieda/dependencias/icones/ia.webp" alt="" width="160" height="160" loading="lazy">1 mês de IA</li><!-- escondido, não removido -->
                 <li><img src="/ed/ieda/dependencias/icones/radar.webp" alt="" width="160" height="160" loading="lazy">Radar no GitHub</li>
                 <li><img src="/ed/ieda/dependencias/icones/kit.webp" alt="" width="160" height="160" loading="lazy">Kit da imersão</li>
                 <li><img src="/ed/ieda/dependencias/icones/gravacoes.webp" alt="" width="160" height="160" loading="lazy">Gravações</li>
@@ -496,14 +506,14 @@
 <script src="/ed/ieda/dependencias/programacao.js?v=11"></script>
 
 <!-- o que você recebe: seleção dos itens -->
-<script src="/ed/ieda/dependencias/recebe.js?v=8"></script>
+<script src="/ed/ieda/dependencias/recebe.js?v=9"></script>
 
 <!-- Formulário de inscrição (popup). O form-include.js troca este placeholder pelo
      conteúdo de site-popups/form-ieda.html e injeta form.css e form.js.
      PENDENTE: o form ainda não tem id na ActiveCampaign (ver form-ieda.html);
      até lá ele valida mas não envia. -->
 <div data-popup-form="ieda"></div>
-<script src="/ed/site-dependencias/site-popups/form-include.js?v=10"></script>
+<script src="/ed/site-dependencias/site-popups/form-include.js?v=11"></script>
 
 <!-- CTAs "Garantir vaga" abrem o popup -->
 <script src="/ed/ieda/dependencias/popup.js?v=4"></script>

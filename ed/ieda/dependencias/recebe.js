@@ -15,13 +15,19 @@
  * recomeça do zero e segue. Pausar só congela a barra, então a troca espera junto e retoma
  * de onde parou. Com prefers-reduced-motion não troca sozinha.
  *
+ * Slot com o atributo hidden (ex.: "1 mês de IA") fica de fora: não vira item, não conta na
+ * barra nem na troca. Os números (slot e item) e os traços da barra saem da quantidade de
+ * slots visíveis, então esconder ou mostrar um slot no HTML não exige renumerar nada.
+ *
  * Abaixo de 864 (CSS) não há slots: o painel vira a lista com os 8 itens visíveis (sem
  * barra e sem botão); aqui eles deixam de ficar escondidos pra leitores de tela.
  */
 (function () {
     var secao = document.querySelector('.ieda-recebe');
     if (!secao) return;
-    var slots = Array.prototype.slice.call(secao.querySelectorAll('.ieda-slot'));
+    var slots = Array.prototype.slice.call(secao.querySelectorAll('.ieda-slot')).filter(function (s) {
+        return !s.hidden;
+    });
     var painel = secao.querySelector('.ieda-painel');
     var molde = painel && painel.querySelector('.ieda-item');
     if (!slots.length || !molde) return;
@@ -31,6 +37,13 @@
     var atual = 0;
 
     function dois(n) { return String(n).padStart(2, '0'); }
+
+    // um traço na barra por slot visível (o HTML pode trazer outra quantidade)
+    var barra = molde.querySelector('.ieda-item-barra');
+    if (barra) {
+        barra.innerHTML = '';
+        slots.forEach(function () { barra.appendChild(document.createElement('span')); });
+    }
 
     // monta os 8 itens: o 01 é o próprio molde (já vem preenchido no HTML)
     var itens = slots.map(function (s, i) {
@@ -42,6 +55,8 @@
         if (marca) it.setAttribute('data-item', marca); else it.removeAttribute('data-item');
         it.classList.toggle('is-ativo', i === 0);
         it.querySelector('.ieda-item-num').textContent = dois(i + 1);
+        var num = s.querySelector('.ieda-slot-num');
+        if (num) num.textContent = dois(i + 1);
         it.querySelector('.ieda-item-raridade').textContent = s.getAttribute('data-raridade-rotulo');
         var img = it.querySelector('.ieda-item-icone');
         if (i > 0) img.loading = 'lazy';

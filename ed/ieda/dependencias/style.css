@@ -1963,3 +1963,10 @@ a.ieda-btn.ieda-btn--oferta:hover::before {
         transition: none;
     }
 }
+
+/* Itens escondidos sem remover (atributo hidden), ex.: "1 mês de IA" no inventário e na
+   oferta. O display: flex do .ieda-slot e dos li da oferta venceria o hidden sozinho. */
+.ieda-recebe [hidden],
+.ieda-oferta [hidden] {
+    display: none !important;
+}
