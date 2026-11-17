@@ -19,8 +19,8 @@
        field[2] utm_campaign   field[3] utm_source
        field[4] utm_medium     field[5] utm_content   (o form.js preenche pela URL)
        field[226] pc_assina_alguma_ferramenta_de_ia: na AC é campo de texto; aqui
-       vira dropdown Sim/Não (padrão da casa, form-ped) que grava "Sim" ou "Não"
-       no hidden. Obrigatório: o form.js valida o hidden e mostra o erro.
+       vira dropdown (padrão da casa, form-ped) que grava no hidden o texto da opção:
+       ChatGPT, Gemini, Claude, DeepSeek, Outra ou "Não assino nenhuma ferramenta de IA". Obrigatório: o form.js valida o hidden e mostra o erro.
 
      Campos: nome, email e WhatsApp (E.164 pelo form.js). O redirect do
      sucesso vem da AC (ação do form), não daqui.
@@ -82,8 +82,12 @@
                             <span class="material-symbols-outlined dropdown-icon">expand_more</span>
                         </div>
                         <ul class="dropdown-options dropdown-options-detached">
-                            <li class="dropdown-option" data-value="Sim">Sim</li>
-                            <li class="dropdown-option" data-value="Não">Não</li>
+                            <li class="dropdown-option" data-value="ChatGPT">ChatGPT</li>
+                            <li class="dropdown-option" data-value="Gemini">Gemini</li>
+                            <li class="dropdown-option" data-value="Claude">Claude</li>
+                            <li class="dropdown-option" data-value="DeepSeek">DeepSeek</li>
+                            <li class="dropdown-option" data-value="Outra">Outra</li>
+                            <li class="dropdown-option" data-value="Não assino nenhuma ferramenta de IA">Não assino nenhuma ferramenta de IA</li>
                         </ul>
                     </div>
                     <input type="hidden" name="field[226]" value="">
