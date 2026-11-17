@@ -19,12 +19,12 @@
     <link rel="icon" type="image/svg+xml" href="/ed/site-dependencias/site-imagens/S%C3%ADmbolo%20Xperiun%20%C3%ACcone.svg">
     <link rel="preload" as="image" href="/ed/ieda/dependencias/bg-hero.webp" fetchpriority="high">
     <link rel="stylesheet" href="/ed/site-dependencias/root.css">
-    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=70">
+    <link rel="stylesheet" href="/ed/ieda/dependencias/style.css?v=71">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/progressive-blur.css?v=1">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/programacao.css?v=1">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/plantao.css?v=1">
     <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/radar.css?v=1">
-    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/contraste.css?v=3">
+    <link rel="stylesheet" href="/ed/ieda/contraste/dependencias/contraste.css?v=4">
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -680,7 +680,7 @@
 <!-- ═══════════════════════════════════════════════════════════
      OFERTA (fechamento). Layout: ed/ieda/assets/oferta.pdf.
      Esquerda: logo, título e os 7 itens (ícone + nome, 2 colunas; "1 mês de IA" hidden).
-     Direita: preço (12x de 52, ou R$ 597 à vista), botão e datas.
+     Direita: lote (Lote 01: 12x de 52 ou R$ 597; cheio, Lote 02: 12x de 97 ou R$ 997; vagas.js), preço, botão e datas.
      Fundo --bb com as faixas do hero (bg-hero) a 10% e um degradê #C8FFFF a 25%
      nos 512px de baixo, tudo do PDF.
      ═══════════════════════════════════════════════════════════ -->
@@ -702,6 +702,12 @@
         </div>
 
         <div class="ieda-oferta-compra">
+            <!-- lotes em ordem: preenchidas = contagem da lista 367; passou das vagas de um lote, vira o próximo (vagas.js troca nome, contagem e preço) -->
+            <div class="ieda-lote" data-vagas-api="/api/ieda-vagas"
+                 data-lotes='[{"nome":"Lote 01","vagas":30,"parcela":"52","vista":"597"},{"nome":"Lote 02","vagas":30,"parcela":"97","vista":"997"}]'>
+                <p class="ieda-lote-titulo"><span class="ieda-lote-nome">Lote 01</span> - <span class="ieda-lote-preenchidas">00</span> de <span class="ieda-lote-total">30</span> vagas preenchidas</p>
+                <div class="ieda-lote-vagas" role="progressbar" aria-label="Vagas preenchidas no Lote 01" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
             <p class="ieda-oferta-preco"><span class="ieda-oferta-parcelas">12x de</span> <span class="ieda-oferta-valor">52</span></p>
             <p class="ieda-oferta-vista">ou R$ 597 à vista</p>
             <a class="ieda-btn ieda-btn--oferta" href="#" data-cta="garantir-vaga">Garantir Vaga</a>
@@ -733,6 +739,8 @@
 
 <!-- o que você recebe: seleção dos itens -->
 <script src="/ed/ieda/dependencias/recebe.js?v=9"></script>
+<!-- lotes: vagas preenchidas e preço (contagem da lista 367 da AC via /api/ieda-vagas) -->
+<script src="/ed/ieda/dependencias/vagas.js?v=2"></script>
 
 <!-- Formulário de inscrição (popup). O form-include.js troca este placeholder pelo
      conteúdo de site-popups/form-ieda.html e injeta form.css e form.js.

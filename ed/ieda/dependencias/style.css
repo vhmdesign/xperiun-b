@@ -1771,6 +1771,56 @@ a.ieda-btn.ieda-btn--claro:hover {
     color: var(--bw);
 }
 
+/* Lote 01, em cima do preço: "Lote 01 - 00 de 30 vagas preenchidas" (Syne) e 30 quadrados.
+   Vazio em --bw-10; preenchido vai de --sc500 (1º) a --er500 (30º) pela posição, misturado
+   em oklch pra passar por amarelo/laranja e não por um cinza-oliva (mistura em srgb).
+   A posição (--p, 0 a 1) e o .is-cheia vêm do vagas.js; a contagem, de /api/ieda-vagas. */
+.ieda-lote {
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.ieda-lote-titulo {
+    margin: 0;
+    font: var(--ieda-p-l);
+    color: var(--bw);
+}
+
+.ieda-lote-nome {
+    font-weight: 700;
+}
+
+.ieda-lote-vagas {
+    display: grid;
+    grid-template-columns: repeat(30, 1fr);
+    gap: 4px;
+    margin-top: 16px;
+}
+
+.ieda-lote-vagas span {
+    aspect-ratio: 1;
+    background: var(--bw-10);
+    transition: background-color 0.5s ease;
+}
+
+.ieda-lote-vagas span.is-cheia {
+    background: var(--sc500);
+    background: color-mix(in oklch, var(--er500) calc(var(--p, 0) * 100%), var(--sc500));
+}
+
+@media (max-width: 1439px) {
+    .ieda-lote-titulo {
+        font: var(--ieda-p);
+    }
+}
+
+/* 30 numa linha ficariam com ~8px no celular: viram 2 linhas de 15 */
+@media (max-width: 576px) {
+    .ieda-lote-vagas {
+        grid-template-columns: repeat(15, 1fr);
+    }
+}
+
 /* botão: 56px de altura (24px x 1.25 + 13px em cima e embaixo). Degradê animado no estilo do
    .completa-cta-wave da home (site-dependencias/home.css): um degradê largo (600%) que vai e
    volta em 5s. Cores (passadas pelo usuário): #7DE17D, #7DE1E1, #E1967D, #E1E17D. No hover,

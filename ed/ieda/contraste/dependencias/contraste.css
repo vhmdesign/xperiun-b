@@ -159,3 +159,14 @@
     background: var(--bb);
     box-shadow: none;
 }
+
+/* ---------- oferta: Lote 01 ---------- */
+/* sem o par verde/vermelho: vaga preenchida em --bw sólido, vazia com anel de 2px a 25% pra o
+   trilho ter contraste; a contagem continua no texto ("00 de 30 vagas preenchidas") */
+.ieda-lote-vagas span {
+    box-shadow: var(--ring-25);
+}
+
+.ieda-lote-vagas span.is-cheia {
+    background: var(--bw);
+}
