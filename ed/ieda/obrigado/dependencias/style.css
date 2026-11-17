@@ -1,0 +1,125 @@
+/* IEDA, obrigado da compra (/ed/ieda/obrigado/).
+   Vem depois do /ed/ieda/dependencias/style.css (grid .ieda-inner, .ieda-hero com o fundo
+   bg-hero, títulos, .ieda-btn, .ieda-datas) e só acrescenta o que é desta página.
+   #F0F0FA: a cor dos cards da IEDA (mesma do "Na prática" e dos dias). */
+
+/* a página é só o hero: ocupa a tela inteira, e o fundo (::before, com a proporção da arte)
+   não pode passar do fim da página e criar rolagem vazia */
+.ieda-obg {
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding-bottom: 96px;
+}
+
+.ieda-obg .ieda-hero-texto {
+    margin-top: 48px;
+}
+
+.ieda-obg .ieda-datas {
+    margin-top: 8px;
+}
+
+/* ---------- próximos passos: 2 cards, cols 2-5 e 6-9 (10 colunas) ---------- */
+.ieda-obg-passos {
+    display: contents;
+}
+
+.ieda-obg-passo {
+    margin: 64px 0 0;
+    padding: 32px;
+    border-radius: 32px;
+    background: #F0F0FA;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+
+.ieda-obg-passo:first-child { grid-column: 2 / span 4; }
+.ieda-obg-passo:last-child  { grid-column: 6 / span 4; }
+
+.ieda-obg-num {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bb-50);
+}
+
+.ieda-obg-passo-titulo {
+    margin: 0;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bb);
+}
+
+.ieda-obg-passo-texto {
+    margin: 0;
+    font: var(--ieda-p);
+    color: var(--bb-75);
+}
+
+.ieda-obg-agenda {
+    margin-top: 8px;
+    align-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ieda-obg-agenda .ieda-btn {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+/* ---------- grid: 8 colunas (≤1439), cheio e empilhado (≤864) ---------- */
+@media (max-width: 1439px) {
+    .ieda-obg-passo:first-child { grid-column: 1 / span 4; }
+    .ieda-obg-passo:last-child  { grid-column: 5 / span 4; }
+}
+
+/* ≤864 o hero da IEDA espaça os blocos pelo row-gap do grid (48px; 32px em ≤576), sem
+   margens soltas: aqui os 2 cards viram um bloco só, largura cheia, 24px/16px entre eles */
+@media (max-width: 864px) {
+    .ieda-obg .ieda-hero-texto {
+        margin-top: 0;
+    }
+
+    .ieda-obg-passos {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .ieda-obg-passo {
+        margin: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .ieda-obg {
+        padding-bottom: 64px;
+    }
+
+    /* o texto do hero fica à esquerda aqui (style.css da IEDA): as datas acompanham */
+    .ieda-obg .ieda-datas {
+        text-align: left;
+    }
+
+    .ieda-obg-passos {
+        gap: 16px;
+    }
+
+    .ieda-obg-passo {
+        padding: 24px;
+        border-radius: 24px;
+    }
+}
