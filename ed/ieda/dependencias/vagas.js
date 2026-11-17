@@ -18,8 +18,9 @@
  * resposta em cache por 60s, então isso não bate na AC a cada visitante). Se a API falhar,
  * fica o que já estava na tela.
  *
- * Teste local (só em localhost/127.0.0.1): ?vagas=N simula N compras, sem chamar a API
- * (ex.: ?vagas=42 = Lote 02 com 12 de 30).
+ * Teste: ?vagas=N na URL simula N compras, sem chamar a API (ex.: /ed/ieda/?vagas=42 =
+ * Lote 02 com 12 de 30). Vale em produção também, mas só muda a tela de quem abriu esse
+ * link: não grava nada nem altera o que os outros veem.
  */
 (function () {
     var lote = document.querySelector('.ieda-lote');
@@ -86,9 +87,8 @@
         q.style.setProperty('--p', todos.length > 1 ? (k / (todos.length - 1)).toFixed(4) : '0');
     });
 
-    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-    var simulado = local ? new URLSearchParams(location.search).get('vagas') : null;
-    if (simulado !== null) {
+    var simulado = new URLSearchParams(location.search).get('vagas');
+    if (simulado !== null && /^\d+$/.test(simulado)) {
         mostra(parseInt(simulado, 10));
         return;
     }
