@@ -1771,7 +1771,8 @@ a.ieda-btn.ieda-btn--claro:hover {
     color: var(--bw);
 }
 
-/* Lote 01, em cima do preço: "Lote 01 - 00 de 30 vagas preenchidas" (Syne) e 30 quadrados.
+/* Lote 01, em cima do preço: "Lote 01" (Cormorant Infant) + " - Restam 30 vagas" (Syne) e 30
+   quadrados, que mostram as vagas preenchidas.
    Vazio em --bw-10; preenchido vai de --sc500 (1º) a --er500 (30º) pela posição, misturado
    em oklch pra passar por amarelo/laranja e não por um cinza-oliva (mistura em srgb).
    A posição (--p, 0 a 1) e o .is-cheia vêm do vagas.js; a contagem, de /api/ieda-vagas. */
@@ -1787,7 +1788,10 @@ a.ieda-btn.ieda-btn--claro:hover {
 }
 
 .ieda-lote-nome {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 1.5rem;
     font-weight: 700;
+    line-height: 1.25;
 }
 
 .ieda-lote-vagas {

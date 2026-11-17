@@ -1,5 +1,5 @@
 /*
- * IEDA, oferta (/ed/ieda/): lote atual, "Lote 01 - 00 de 30 vagas preenchidas" + quadrados,
+ * IEDA, oferta (/ed/ieda/): lote atual, "Lote 01 - Restam 30 vagas" + quadrados (preenchidos),
  * e o preço do lote.
  *
  * A contagem vem de /api/ieda-vagas (functions/api/ieda-vagas.js), que conta quem está na
@@ -7,7 +7,7 @@
  *
  * Os lotes vêm do data-lotes do HTML, em ordem (nome, vagas, parcela, vista). A contagem
  * enche um lote de cada vez: Lote 01 tem 30 vagas; a 31ª compra já é o Lote 02, que
- * recomeça em "01 de 30" e troca o preço (12x de 97 ou R$ 997). O último lote, cheio, fica
+ * recomeça ("Restam 29 vagas") e troca o preço (12x de 97 ou R$ 997). O último lote, cheio, fica
  * cheio. O HTML já vem com o Lote 01 escrito, então sem JS (ou com a API fora) é ele que
  * aparece.
  *
@@ -36,8 +36,7 @@
     var api = lote.getAttribute('data-vagas-api');
     var oferta = lote.closest('.ieda-oferta-compra');
     var nome = lote.querySelector('.ieda-lote-nome');
-    var numero = lote.querySelector('.ieda-lote-preenchidas');
-    var totalTxt = lote.querySelector('.ieda-lote-total');
+    var restam = lote.querySelector('.ieda-lote-restam');
     var barra = lote.querySelector('.ieda-lote-vagas');
     var valor = oferta && oferta.querySelector('.ieda-oferta-valor');
     var vista = oferta && oferta.querySelector('.ieda-oferta-vista');
@@ -68,8 +67,9 @@
         var n = Math.min(resto, l.vagas);
 
         nome.textContent = l.nome;
-        numero.textContent = dois(n);
-        totalTxt.textContent = String(l.vagas);
+        /* "Restam 12 vagas"; com 1, singular ("Resta 01 vaga") */
+        var r = l.vagas - n;
+        restam.innerHTML = (r === 1 ? 'Resta ' : 'Restam ') + '<span class="ieda-lote-num">' + dois(r) + '</span>' + (r === 1 ? ' vaga' : ' vagas');
         if (valor) valor.textContent = l.parcela;
         if (vista) vista.textContent = 'ou R$ ' + l.vista + ' à vista';
 
