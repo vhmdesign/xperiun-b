@@ -3921,7 +3921,7 @@ html:not(.bf-sem-bonus) .so-sem-bonus { display: none; }
 /* ======================================================================
    DEPOIS DO FIM: OFERTA FINALIZADA
 
-   A partir de 24/11 00:00 (Brasília) o script do <head> põe .bf-encerrada
+   A partir de 01/12 00:00 (Brasília) o script do <head> põe .bf-encerrada
    no <html>: some tudo (oferta, CTA fixo, timer) e fica só a .bf-fim, no
    mesmo enquadramento da tela do timer (logo a 50% em cima, conteúdo no
    meio da tela). Sem a classe a seção não aparece.

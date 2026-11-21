@@ -29,9 +29,10 @@
         /* Abertura: do fim do timer até o fim da fase 2. */
         { inicio: '2026-11-06T08:00:00-03:00', fim: '2026-11-10T00:00:00-03:00' },
         /* Depois da abertura, o bônus volta só nas sextas, o dia inteiro,
-           até o fim da BF (23/11): a 13/11 e a 20/11. */
+           até o fim da BF (30/11): a 13/11, a 20/11 e a 27/11. */
         { inicio: '2026-11-13T00:00:00-03:00', fim: '2026-11-14T00:00:00-03:00' },
-        { inicio: '2026-11-20T00:00:00-03:00', fim: '2026-11-21T00:00:00-03:00' }
+        { inicio: '2026-11-20T00:00:00-03:00', fim: '2026-11-21T00:00:00-03:00' },
+        { inicio: '2026-11-27T00:00:00-03:00', fim: '2026-11-28T00:00:00-03:00' }
     ].map(function (j) {
         return { inicio: Date.parse(j.inicio), fim: Date.parse(j.fim) };
     });

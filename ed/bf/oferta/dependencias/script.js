@@ -716,7 +716,7 @@
      06/11 08:00 a 06/11 23:59   de 56% a 97%   (a abertura: o timer
                                                 termina às 08:00)
      07/11 00:00 a 09/11 23:59   de 56% a 97%
-     10/11 00:00 a 23/11 23:59   de 56% a 99%
+     10/11 00:00 a 30/11 23:59   de 56% a 99%
 
    (O +1 ano bônus NÃO segue estas fases: ele tem calendário próprio, em
    /ed/bf/dependencias/bonus.js.)
@@ -752,7 +752,7 @@
     var FASES = [
         { inicio: '2026-11-06T08:00:00-03:00', fim: '2026-11-06T23:59:00-03:00', de: 56, ate: 97 },
         { inicio: '2026-11-07T00:00:00-03:00', fim: '2026-11-09T23:59:00-03:00', de: 56, ate: 97 },
-        { inicio: '2026-11-10T00:00:00-03:00', fim: '2026-11-23T23:59:00-03:00', de: 56, ate: 99 }
+        { inicio: '2026-11-10T00:00:00-03:00', fim: '2026-11-30T23:59:00-03:00', de: 56, ate: 99 }
     ].map(function (f) {
         return { inicio: Date.parse(f.inicio), fim: Date.parse(f.fim), de: f.de, ate: f.ate };
     });
@@ -762,7 +762,7 @@
     var VIRADA_TAG = FASES[1].inicio;
 
     /* O +1 ano bônus vai e volta: vale nas janelas de
-       /ed/bf/dependencias/bonus.js (a abertura e as sextas 13/11 e 20/11,
+       /ed/bf/dependencias/bonus.js (a abertura e as sextas 13/11, 20/11 e 27/11,
        o dia inteiro). O script do <head> já acerta a classe
        na carga; aqui é pra quem está com a página aberta numa virada, nos
        dois sentidos. */
@@ -771,7 +771,7 @@
             ? window.XpOferta.comBonus(t)
             : !!(window.XpBonus && window.XpBonus.ativo(t));
     }
-    var FIM_OFERTA = (window.XpOferta && window.XpOferta.FIM_OFERTA) || Date.parse('2026-11-24T00:00:00-03:00');
+    var FIM_OFERTA = (window.XpOferta && window.XpOferta.FIM_OFERTA) || Date.parse('2026-12-01T00:00:00-03:00');
 
     /* Quanto a curva desacelera. 1 é linear (o que vale aqui); 2 seria o
        ease-out quadrático da origem, que sobe rápido demais no começo. */

@@ -101,14 +101,14 @@
     <!-- Janelas do +1 ano bônus (2 anos de acesso): o calendário mora em
          /ed/bf/dependencias/bonus.js, o mesmo que o checkout, o Vitalício
          e o obrigado leem. Síncrono de propósito, antes do script abaixo. -->
-    <script src="/ed/bf/dependencias/bonus.js?v=2"></script>
+    <script src="/ed/bf/dependencias/bonus.js?v=5"></script>
     <script>
     (function () {
         var ABERTURA = Date.parse('2026-11-06T08:00:00-03:00');
-        /* Fim da oferta: depois da fase 3 (23/11 23:59). Daí em diante o
+        /* Fim da oferta: depois da fase 3 (30/11 23:59). Daí em diante o
            <html> leva .bf-encerrada e a página vira só o aviso de
            "Oferta Finalizada" (a .bf-fim). */
-        var FIM_OFERTA = Date.parse('2026-11-24T00:00:00-03:00');
+        var FIM_OFERTA = Date.parse('2026-12-01T00:00:00-03:00');
         var desvio = 0, alvo = NaN;
         var pedido = new URLSearchParams(location.search).get('agora');
         if (pedido) {
@@ -164,9 +164,9 @@
 <!-- ═══════════════════════════════════════════════════════════════════
      DEPOIS DO FIM: OFERTA FINALIZADA
 
-     A partir de 24/11 00:00 (Brasília) o script do <head> põe
+     A partir de 01/12 00:00 (Brasília) o script do <head> põe
      .bf-encerrada no <html>: o <main>, o CTA fixo e o timer somem e a
-     página é só este aviso. Pra testar: ?agora=2026-11-24T00:00.
+     página é só este aviso. Pra testar: ?agora=2026-12-01T00:00.
      ═══════════════════════════════════════════════════════════════════ -->
 <section class="bf-fim" aria-labelledby="bf-fim-titulo">
     <img class="bf-espera-logo" src="/ed/site-dependencias/site-imagens/Base%20White%20Logo.svg"
@@ -292,7 +292,7 @@
 
                     <!-- Vagas, no lugar do lote da origem. A barra é de
                          efeito: o script tira a porcentagem do relógio, pelo
-                         cronograma de 06/11 a 23/11 que mora na tabela FASES
+                         cronograma de 06/11 a 30/11 que mora na tabela FASES
                          do script.js (horário de Brasília). O que está escrito
                          aqui é o estado da abertura, 56%, que é o que fica na
                          tela se o script falhar. -->
@@ -1189,7 +1189,7 @@
 
                     <!-- Vagas, no lugar do lote da origem. A barra é de
                          efeito: o script tira a porcentagem do relógio, pelo
-                         cronograma de 06/11 a 23/11 que mora na tabela FASES
+                         cronograma de 06/11 a 30/11 que mora na tabela FASES
                          do script.js (horário de Brasília). O que está escrito
                          aqui é o estado da abertura, 56%, que é o que fica na
                          tela se o script falhar. -->
@@ -1570,7 +1570,7 @@
 <script src="/ed/areas/pasta.js?v=1"></script>
 
 <!-- Foil do ticket, pastas, carrosséis, FAQ, vagas e CTA flutuante. -->
-<script src="/ed/bf/oferta/dependencias/script.js?v=21"></script>
+<script src="/ed/bf/oferta/dependencias/script.js?v=23"></script>
 
 <!-- Anti-copy: bloqueia right-click, F12, Ctrl+U/S/Shift+I/J/C, drag de imagem. -->
 <script src="/ed/site-dependencias/anti-copy.js" defer></script>
